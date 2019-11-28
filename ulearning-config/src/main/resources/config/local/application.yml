@@ -1,0 +1,28 @@
+spring:
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/master/
+  profiles:
+    active: native
+
+server:
+  port: 14002
+  tomcat:
+    basedir: ./ulearning-logs/${spring.application.name}/tomcat
+    accesslog:
+      enabled: true
+      directory: ./access
+      buffered: false
+      file-date-format: .yyyy-MM-dd
+      pattern: common
+      prefix: ulearning_log
+      rotate: true
+      suffix: .log
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:14001/eureka/
+

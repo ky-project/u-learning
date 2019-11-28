@@ -1,0 +1,26 @@
+#服务器配置
+server:
+  port: 8082
+  tomcat:
+    basedir: ./ulearning-logs/${spring.application.name}/tomcat
+    accesslog:
+      enabled: true
+      directory: ./access
+      buffered: false
+      file-date-format: .yyyy-MM-dd
+      pattern: common
+      prefix: ulearning_log
+      rotate: true
+      suffix: .log
+
+#服务注册中心配置
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:14001/eureka/
+#路由配置
+zuul:
+  routes:
+    ulearning-gateway:
+      path: /ulearning-gateway/**
+      serviceId: ulearning-gateway

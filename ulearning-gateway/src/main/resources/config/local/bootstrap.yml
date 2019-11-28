@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ulearning-gateway
+  cloud:
+    config:
+      uri: http://localhost:14002
+      label: local

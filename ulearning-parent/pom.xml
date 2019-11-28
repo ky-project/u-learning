@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.10.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.ky.ulearning</groupId>
+    <artifactId>ulearning-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <description>基于泛在学习的教学管理系统</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <jedis.version>2.9.0</jedis.version>
+        <log4jdbc.version>1.16</log4jdbc.version>
+        <swagger.version>2.9.2</swagger.version>
+        <fastjson.version>1.2.54</fastjson.version>
+        <druid.version>1.1.10</druid.version>
+        <hutool.version>5.0.6</hutool.version>
+        <commons-pool2.version>2.5.0</commons-pool2.version>
+        <mapstruct.version>1.2.0.Final</mapstruct.version>
+        <mysql.version>5.1.47</mysql.version>
+        <spring-cloud.version>Greenwich.SR4</spring-cloud.version>
+        <mybatis.version>2.1.0</mybatis.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <!--工具包-->
+            <!--<dependency>-->
+                <!--<groupId>cn.hutool</groupId>-->
+                <!--<artifactId>hutool-all</artifactId>-->
+                <!--<version>${hutool.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.lionsoul</groupId>-->
+                <!--<artifactId>ip2region</artifactId>-->
+                <!--<version>1.7.2</version>-->
+            <!--</dependency>-->
+
+            <!--监控sql日志-->
+            <!--<dependency>-->
+                <!--<groupId>org.bgee.log4jdbc-log4j2</groupId>-->
+                <!--<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>-->
+                <!--<version>${log4jdbc.version}</version>-->
+            <!--</dependency>-->
+
+            <!-- RESTful APIs swagger2 -->
+            <!--<dependency>-->
+                <!--<groupId>io.springfox</groupId>-->
+                <!--<artifactId>springfox-swagger2</artifactId>-->
+                <!--<version>${swagger.version}</version>-->
+                <!--<exclusions>-->
+                    <!--<exclusion>-->
+                        <!--<groupId>io.swagger</groupId>-->
+                        <!--<artifactId>swagger-annotations</artifactId>-->
+                    <!--</exclusion>-->
+                    <!--<exclusion>-->
+                        <!--<groupId>io.swagger</groupId>-->
+                        <!--<artifactId>swagger-models</artifactId>-->
+                    <!--</exclusion>-->
+                <!--</exclusions>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>io.springfox</groupId>-->
+                <!--<artifactId>springfox-swagger-ui</artifactId>-->
+                <!--<version>${swagger.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>io.swagger</groupId>-->
+                <!--<artifactId>swagger-annotations</artifactId>-->
+                <!--<version>1.5.21</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>io.swagger</groupId>-->
+                <!--<artifactId>swagger-models</artifactId>-->
+                <!--<version>1.5.21</version>-->
+            <!--</dependency>-->
+
+            <!--<dependency>-->
+                <!--<groupId>org.projectlombok</groupId>-->
+                <!--<artifactId>lombok</artifactId>-->
+                <!--<optional>true</optional>-->
+            <!--</dependency>-->
+
+            <!-- fastjson -->
+            <!--<dependency>-->
+                <!--<groupId>com.alibaba</groupId>-->
+                <!--<artifactId>fastjson</artifactId>-->
+                <!--<version>${fastjson.version}</version>-->
+            <!--</dependency>-->
+            <!--&lt;!&ndash;mapStruct依赖&ndash;&gt;-->
+            <!--<dependency>-->
+                <!--<groupId>org.mapstruct</groupId>-->
+                <!--<artifactId>mapstruct-jdk8</artifactId>-->
+                <!--<version>${mapstruct.version}</version>-->
+            <!--</dependency>-->
+            <!--<dependency>-->
+                <!--<groupId>org.mapstruct</groupId>-->
+                <!--<artifactId>mapstruct-processor</artifactId>-->
+                <!--<version>${mapstruct.version}</version>-->
+                <!--<scope>provided</scope>-->
+            <!--</dependency>-->
+
+            <!--&lt;!&ndash; 热部署插件 &ndash;&gt;-->
+            <!--<dependency>-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-devtools</artifactId>-->
+                <!--<optional>true</optional>-->
+            <!--</dependency>-->
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <!-- 打包时跳过测试 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>public</id>
+            <name>aliyun nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+</project>
