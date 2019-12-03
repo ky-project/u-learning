@@ -1,23 +1,23 @@
-package com.ky.ulearning.config;
+package com.ky.ulearning.system;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
-import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.util.StringUtils;
 
 /**
  * @author luyuhao
- * @date 19/11/28 17:19
+ * @date 19/12/04 01:17
  */
-@EnableConfigServer
 @SpringBootApplication
 @EnableEurekaClient
-public class ConfigApplication {
+@EnableZuulProxy
+public class SystemManageApplication {
     public static void main(String[] args) {
         setLocation();
-        SpringApplication.run(ConfigApplication.class, args);
+        SpringApplication.run(SystemManageApplication.class, args);
     }
 
     private static void setLocation(){

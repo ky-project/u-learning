@@ -1,7 +1,7 @@
 #服务配置
 spring:
   application:
-    name: ulearning-gateway
+    name: ulearning-system-manage
   cloud:
     config:
       uri: http://localhost:14002

@@ -8,7 +8,7 @@ server:
       buffered: false
       file-date-format: .yyyy-MM-dd
       pattern: common
-      prefix: ulearning_log
+      prefix: ${spring.application.name}
       rotate: true
       suffix: .log
 
@@ -21,3 +21,6 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+logging:
+  config: classpath:config/local/logback.xml

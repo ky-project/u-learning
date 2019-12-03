@@ -2,6 +2,7 @@ package com.ky.ulearning.register;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.config.ConfigFileApplicationListener;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.util.StringUtils;
 
@@ -22,6 +23,7 @@ public class RegisterApplication {
         if(StringUtils.isEmpty(path)){
             path = "local";
         }
-        System.setProperty("spring.config.location", "classpath:/config/" + path + "/");
+        System.setProperty(ConfigFileApplicationListener.CONFIG_LOCATION_PROPERTY, "classpath:/config/" + path + "/");
+        System.setProperty(ConfigFileApplicationListener.ACTIVE_PROFILES_PROPERTY, path);
     }
 }
