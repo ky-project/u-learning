@@ -3,7 +3,7 @@ spring:
     config:
       server:
         native:
-          search-locations: classpath:/master/
+          search-locations: classpath:/config/master/
   profiles:
     active: native
 
