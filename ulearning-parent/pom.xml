@@ -32,10 +32,12 @@
         <spring-cloud.version>Greenwich.SR4</spring-cloud.version>
         <mybatis.version>2.1.0</mybatis.version>
         <lombok.version>1.18.10</lombok.version>
+        <ip2region.version>1.7.2</ip2region.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Spring cloud Begin -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -43,6 +45,8 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Spring cloud End -->
+            <!-- Spring Boot Begin -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -53,87 +57,79 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-            <!--工具包-->
-            <!--<dependency>-->
-                <!--<groupId>cn.hutool</groupId>-->
-                <!--<artifactId>hutool-all</artifactId>-->
-                <!--<version>${hutool.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>org.lionsoul</groupId>-->
-                <!--<artifactId>ip2region</artifactId>-->
-                <!--<version>1.7.2</version>-->
-            <!--</dependency>-->
+            <!-- Spring Boot End -->
 
-            <!--监控sql日志-->
-            <!--<dependency>-->
-                <!--<groupId>org.bgee.log4jdbc-log4j2</groupId>-->
-                <!--<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>-->
-                <!--<version>${log4jdbc.version}</version>-->
-            <!--</dependency>-->
+            <!-- Plugins Begin -->
+            <!-- Swagger2 -->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <!-- Swagger2 End -->
 
-            <!-- RESTful APIs swagger2 -->
-            <!--<dependency>-->
-                <!--<groupId>io.springfox</groupId>-->
-                <!--<artifactId>springfox-swagger2</artifactId>-->
-                <!--<version>${swagger.version}</version>-->
-                <!--<exclusions>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>io.swagger</groupId>-->
-                        <!--<artifactId>swagger-annotations</artifactId>-->
-                    <!--</exclusion>-->
-                    <!--<exclusion>-->
-                        <!--<groupId>io.swagger</groupId>-->
-                        <!--<artifactId>swagger-models</artifactId>-->
-                    <!--</exclusion>-->
-                <!--</exclusions>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>io.springfox</groupId>-->
-                <!--<artifactId>springfox-swagger-ui</artifactId>-->
-                <!--<version>${swagger.version}</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>io.swagger</groupId>-->
-                <!--<artifactId>swagger-annotations</artifactId>-->
-                <!--<version>1.5.21</version>-->
-            <!--</dependency>-->
-            <!--<dependency>-->
-                <!--<groupId>io.swagger</groupId>-->
-                <!--<artifactId>swagger-models</artifactId>-->
-                <!--<version>1.5.21</version>-->
-            <!--</dependency>-->
-
+            <!-- lombok Begin -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
+            <!-- lombok End -->
+
+            <!-- ip2region Begin-->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
+            </dependency>
+            <!-- ip2region End-->
+
+            <!-- hutool Begin-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!-- hutool End-->
+            <!-- Plugins End -->
+
+
+            <!--监控sql日志-->
+            <!--<dependency>-->
+            <!--<groupId>org.bgee.log4jdbc-log4j2</groupId>-->
+            <!--<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>-->
+            <!--<version>${log4jdbc.version}</version>-->
+            <!--</dependency>-->
 
             <!-- fastjson -->
             <!--<dependency>-->
-                <!--<groupId>com.alibaba</groupId>-->
-                <!--<artifactId>fastjson</artifactId>-->
-                <!--<version>${fastjson.version}</version>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>fastjson</artifactId>-->
+            <!--<version>${fastjson.version}</version>-->
             <!--</dependency>-->
             <!--&lt;!&ndash;mapStruct依赖&ndash;&gt;-->
             <!--<dependency>-->
-                <!--<groupId>org.mapstruct</groupId>-->
-                <!--<artifactId>mapstruct-jdk8</artifactId>-->
-                <!--<version>${mapstruct.version}</version>-->
+            <!--<groupId>org.mapstruct</groupId>-->
+            <!--<artifactId>mapstruct-jdk8</artifactId>-->
+            <!--<version>${mapstruct.version}</version>-->
             <!--</dependency>-->
             <!--<dependency>-->
-                <!--<groupId>org.mapstruct</groupId>-->
-                <!--<artifactId>mapstruct-processor</artifactId>-->
-                <!--<version>${mapstruct.version}</version>-->
-                <!--<scope>provided</scope>-->
+            <!--<groupId>org.mapstruct</groupId>-->
+            <!--<artifactId>mapstruct-processor</artifactId>-->
+            <!--<version>${mapstruct.version}</version>-->
+            <!--<scope>provided</scope>-->
             <!--</dependency>-->
 
             <!--&lt;!&ndash; 热部署插件 &ndash;&gt;-->
             <!--<dependency>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--<artifactId>spring-boot-devtools</artifactId>-->
-                <!--<optional>true</optional>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-devtools</artifactId>-->
+            <!--<optional>true</optional>-->
             <!--</dependency>-->
         </dependencies>
     </dependencyManagement>

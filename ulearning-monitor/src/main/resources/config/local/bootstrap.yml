@@ -1,0 +1,13 @@
+#服务配置
+spring:
+  application:
+    name: ulearning-monitor
+  cloud:
+    config:
+      uri: http://localhost:14002
+      label: local
+#服务注册中心配置
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:14001/eureka/

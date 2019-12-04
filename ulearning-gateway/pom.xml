@@ -59,6 +59,13 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
         <!-- 数据源配置 End -->
+        <!-- U-Learning Begin -->
+        <dependency>
+            <groupId>com.ky.ulearning</groupId>
+            <artifactId>ulearning-common-core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- U-Learning End -->
     </dependencies>
 
     <build>

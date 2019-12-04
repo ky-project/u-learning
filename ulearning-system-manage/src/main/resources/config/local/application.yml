@@ -1,3 +1,10 @@
+info:
+  app:
+    name: ${spring.application.name}
+  build:
+    groupId: @project.groupId@
+    artifactId: @project.artifactId@
+    version: @project.version@
 #服务器配置
 server:
   port: 14003
@@ -65,10 +72,6 @@ spring:
         # 是否能够重置数据
         reset-enable: false
 
-      # 配置StatFilter
-      filter:
-        stat:
-          log-slow-sql: true
 # mybatis配置
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
