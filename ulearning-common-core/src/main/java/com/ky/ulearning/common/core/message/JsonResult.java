@@ -1,5 +1,6 @@
 package com.ky.ulearning.common.core.message;
 
+import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
 import com.ky.ulearning.common.core.exceptions.enums.BaseErrorCodeEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -44,9 +45,9 @@ public class JsonResult<T> implements Serializable {
         this.data = data;
     }
 
-    public JsonResult(BaseErrorCodeEnum baseErrorCodeEnum) {
-        this.code = baseErrorCodeEnum.getCode();
-        this.message = baseErrorCodeEnum.getMessage();
+    public JsonResult(BaseEnum baseEnum) {
+        this.code = baseEnum.getCode();
+        this.message = baseEnum.getMessage();
     }
 
     public JsonResult(Integer code, String message) {

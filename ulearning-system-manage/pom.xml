@@ -10,6 +10,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>U-Learning</name>
+    <description>基于泛在学习的教学管理系统</description>
     <artifactId>ulearning-system-manage</artifactId>
 
     <dependencies>
