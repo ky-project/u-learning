@@ -63,6 +63,17 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
         </dependency>
         <!-- 数据源配置 End -->
+
+        <!-- Plugins Begin -->
+        <!-- lombok Begin -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- lombok End -->
+        <!-- Plugins End -->
+
         <!-- U-Learning Begin -->
         <dependency>
             <groupId>com.ky.ulearning</groupId>

@@ -78,7 +78,7 @@ public class LogAspect {
      * 配置异常通知
      *
      * @param join join point for advice
-     * @param e    exception
+     * @param e    exceptions
      */
     @AfterThrowing(pointcut = "LogPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint join, Throwable e) {
