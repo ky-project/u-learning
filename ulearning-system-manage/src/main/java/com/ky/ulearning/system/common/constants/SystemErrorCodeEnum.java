@@ -1,4 +1,4 @@
-package com.ky.ulearning.system.common.enums;
+package com.ky.ulearning.system.common.constants;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
 import org.springframework.http.HttpStatus;
