@@ -96,6 +96,14 @@
                 <version>${hutool.version}</version>
             </dependency>
             <!-- hutool End-->
+
+            <!-- fastjson Begin -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <!-- fastjson End -->
             <!-- Plugins End -->
 
 
@@ -106,12 +114,6 @@
             <!--<version>${log4jdbc.version}</version>-->
             <!--</dependency>-->
 
-            <!-- fastjson -->
-            <!--<dependency>-->
-            <!--<groupId>com.alibaba</groupId>-->
-            <!--<artifactId>fastjson</artifactId>-->
-            <!--<version>${fastjson.version}</version>-->
-            <!--</dependency>-->
             <!--&lt;!&ndash;mapStruct依赖&ndash;&gt;-->
             <!--<dependency>-->
             <!--<groupId>org.mapstruct</groupId>-->

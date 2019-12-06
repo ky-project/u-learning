@@ -45,6 +45,12 @@ public class JsonResult<T> implements Serializable {
         this.data = data;
     }
 
+    public JsonResult(T data, String message) {
+        this.code = SUCCESS_CODE;
+        this.message = message;
+        this.data = data;
+    }
+
     public JsonResult(BaseEnum baseEnum) {
         this.code = baseEnum.getCode();
         this.message = baseEnum.getMessage();

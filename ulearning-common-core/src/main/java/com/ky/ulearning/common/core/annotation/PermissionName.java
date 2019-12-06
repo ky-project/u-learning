@@ -18,6 +18,11 @@ public @interface PermissionName {
     String source();
 
     /**
+     * 访问的url
+     */
+    String url() default "";
+
+    /**
      * 操作显示名
      */
     String name();
