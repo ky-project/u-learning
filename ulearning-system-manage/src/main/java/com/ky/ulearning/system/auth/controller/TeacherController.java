@@ -91,17 +91,16 @@ public class TeacherController {
 
     @Log("登录后台管理系统")
     @PostMapping("/login")
-    public ResponseEntity login(TeacherEntity teacherEntity) {
-        if (teacherEntity == null
-                || StringUtils.isEmpty(teacherEntity.getTeaNumber())
-                || StringUtils.isEmpty(teacherEntity.getTeaPassword())) {
+    public ResponseEntity login(String teaNumber, String teaPassword) {
+        if (StringUtils.isEmpty(teaNumber)
+                || StringUtils.isEmpty(teaPassword)) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
-        TeacherEntity exists = teacherService.findByTeaNumber(teacherEntity.getTeaNumber());
+        TeacherEntity exists = teacherService.findByTeaNumber(teaNumber);
         if (exists == null) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.TEACHER_NOT_EXISTS)));
         }
-        if (!exists.getTeaPassword().equals(EncryptUtil.encryptPassword(teacherEntity.getTeaPassword()))) {
+        if (!exists.getTeaPassword().equals(EncryptUtil.encryptPassword(teaPassword))) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PASSWORD_ERROR)));
         }
         return ResponseEntity.ok().body(new JsonResult<>(exists));

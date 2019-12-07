@@ -11,7 +11,8 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     /**
      * 路由网关系统错误状态码
      */
-    CREATE_VERIFY_CODE_FAILED(HttpStatus.BAD_REQUEST, "验证码生成失败!")
+    CREATE_VERIFY_CODE_FAILED(HttpStatus.BAD_REQUEST, "验证码生成失败!"),
+    LOGIN_TYPE_MISSING(HttpStatus.BAD_REQUEST, "登录类型不存在!")
     ;
 
     private Integer code;

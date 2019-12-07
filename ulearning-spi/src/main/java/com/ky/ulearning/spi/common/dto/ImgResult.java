@@ -1,4 +1,4 @@
-package com.ky.ulearning.gateway.common.security;
+package com.ky.ulearning.spi.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

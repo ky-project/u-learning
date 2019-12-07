@@ -21,6 +21,24 @@
             <optional>true</optional>
         </dependency>
         <!-- lombok End -->
+
+        <!-- swagger2 Begin -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+        <!-- swagger2 End -->
+
+        <!-- hibernate validator Begin -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+        <!-- hibernate validator End -->
         <!-- Plugins End -->
     </dependencies>
 </project>

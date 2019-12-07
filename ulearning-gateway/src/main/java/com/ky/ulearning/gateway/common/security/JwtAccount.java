@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.security;
 
+import com.ky.ulearning.spi.common.dto.UserContext;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,27 +16,7 @@ import java.util.Collection;
  */
 @Data
 @Accessors(chain = true)
-public class JwtAccount implements UserDetails {
-
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    /**
-     * 角色
-     */
-    private String role;
-
-    /**
-     * 是否是管理员 0:否；1:是
-     */
-    private Integer manage;
+public class JwtAccount extends UserContext implements UserDetails {
 
     /**
      * 权限集合
@@ -45,12 +26,12 @@ public class JwtAccount implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return super.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return super.getUsername();
     }
 
     @Override

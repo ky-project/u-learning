@@ -1,6 +1,5 @@
-package com.ky.ulearning.gateway.common.remoting;
+package com.ky.ulearning.gateway.remoting;
 
-import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +15,11 @@ public interface TeacherRemoting {
 
     /**
      * 教师登录接口
-     * @param teacherEntity 教师实体类
+     *
+     * @param teaNumber   工号
+     * @param teaPassword 密码
      * @return 返回响应实体类
      */
     @PostMapping("teacher/login")
-    ResponseEntity login(TeacherEntity teacherEntity);
+    ResponseEntity login(String teaNumber, String teaPassword);
 }
