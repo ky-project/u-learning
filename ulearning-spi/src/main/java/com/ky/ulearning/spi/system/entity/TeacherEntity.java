@@ -1,5 +1,6 @@
 package com.ky.ulearning.spi.system.entity;
 
+import com.ky.ulearning.spi.common.entity.BaseEntity;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,11 +14,7 @@ import java.util.Set;
  * @date 2019/12/05 01:42
  */
 @Data
-public class TeacherEntity implements Serializable {
-    /**
-	* 教师id
-	*/
-    private Long id;
+public class TeacherEntity extends BaseEntity {
 
     /**
 	* 工号

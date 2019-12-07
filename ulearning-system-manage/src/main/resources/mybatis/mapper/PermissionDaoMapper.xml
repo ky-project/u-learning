@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.system.auth.dao.PermissionDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.PermissionEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="permission_name" jdbcType="VARCHAR" property="permissionName"/>
+        <result column="permission_source" jdbcType="VARCHAR" property="permissionSource"/>
+        <result column="permission_group" jdbcType="VARCHAR" property="permissionGroup"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="allParams">
+            id,
+            permission_name,
+            permission_source,
+            permission_group,
+            valid,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!-- 查询所有权限source-->
+    <select id="findSources" resultType="java.lang.String">
+        select permission_source
+        from u_permission
+        where valid = 1
+    </select>
+    <!--插入权限记录-->
+    <insert id="insert">
+        insert into u_permission(permission_name, permission_source, permission_group, memo, create_by, update_by)
+        values (#{permissionName}, #{permissionSource}, #{permissionGroup}, #{memo}, #{createBy}, #{updateBy})
+    </insert>
+    <!--查询所有的权限信息-->
+    <select id="getList" resultMap="BaseResultMap">
+        select id,
+               permission_name,
+               permission_source,
+               permission_group,
+               valid,
+               memo,
+               create_time,
+               create_by,
+               update_time,
+               update_by
+        from u_permission
+        where valid = 1
+    </select>
+</mapper>

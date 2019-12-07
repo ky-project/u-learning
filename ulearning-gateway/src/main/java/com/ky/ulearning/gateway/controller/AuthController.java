@@ -71,8 +71,9 @@ public class AuthController {
         }
         //手动调用服务的login
         ResponseEntity responseEntity;
-
-        teacherRemoting.login(loginUser.getUsername(), loginUser.getPassword());
+        responseEntity = loginSwitch(loginUser);
+        //TODO 待处理登录结果
+        return responseEntity;
 
 //        final JwtTeacher jwtTeacher = (JwtTeacher) userDetailsService.loadUserByUsername(authorizationUser.getTeaNumber());
 
@@ -143,11 +144,16 @@ public class AuthController {
      * @return 返回接口响应
      */
     private ResponseEntity loginSwitch(LoginUser loginUser) {
+        ResponseEntity loginResponseEntity;
         switch (loginUser.getLoginType()) {
+            //登录后台系统
             case GatewayConstant.LOGIN_MANAGE_SYSTEM:
+                loginResponseEntity = teacherRemoting.login(loginUser.getUsername(), loginUser.getPassword());
                 break;
             default:
-                return ResponseEntity.badRequest().body(new JsonResult<>(GatewayErrorCodeEnum.LOGIN_TYPE_MISSING));
+                loginResponseEntity =  ResponseEntity.badRequest().body(new JsonResult<>(GatewayErrorCodeEnum.LOGIN_TYPE_MISSING));
+                break;
         }
+        return loginResponseEntity;
     }
 }

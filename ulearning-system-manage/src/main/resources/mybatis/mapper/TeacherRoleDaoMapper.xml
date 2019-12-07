@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.system.auth.dao.TeacherRoleDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.TeacherRoleEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tea_id" jdbcType="BIGINT" property="teaId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_source" jdbcType="VARCHAR" property="roleSource"/>
+        <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <resultMap id="PermissionResultMap" type="com.ky.ulearning.spi.system.dto.TeacherRoleDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tea_id" jdbcType="BIGINT" property="teaId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_source" jdbcType="VARCHAR" property="roleSource"/>
+        <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <collection property="permissionEntities"
+                    ofType="com.ky.ulearning.spi.system.entity.PermissionEntity"
+                    resultMap="com.ky.ulearning.system.auth.dao.PermissionDao.BaseResultMap"/>
+    </resultMap>
+    <sql id="All">
+            id,
+            tea_id,
+            role_name,
+            role_source,
+            is_admin,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--根据id查询记录-->
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="All"/>
+        from u_teacher_role
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.system.entity.TeacherRoleEntity" useGeneratedKeys="true">
+        insert into u_teacher_role (tea_id, role_name, role_source,
+                                    is_admin, `valid`, memo,
+                                    create_time, create_by, update_time,
+                                    update_by)
+        values (#{teaId,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleSource,jdbcType=VARCHAR},
+                #{isAdmin,jdbcType=BOOLEAN}, #{valid,jdbcType=BOOLEAN}, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateById" parameterType="com.ky.ulearning.spi.system.entity.TeacherRoleEntity">
+        update u_teacher_role
+        <set>
+            <if test="teaId != null">
+                tea_id = #{teaId,jdbcType=BIGINT},
+            </if>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleSource != null and roleSource != ''">
+                role_source = #{roleSource,jdbcType=VARCHAR},
+            </if>
+            <if test="isAdmin != null">
+                is_admin = #{isAdmin,jdbcType=BOOLEAN},
+            </if>
+            <if test="valid != null">
+                `valid` = #{valid,jdbcType=BOOLEAN},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
