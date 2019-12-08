@@ -14,7 +14,9 @@ public enum SystemErrorCodeEnum implements BaseEnum {
      */
     PARAMETER_EMPTY(HttpStatus.BAD_REQUEST, "参数不可为空!"),
     TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST,"教师不存在!"),
-    PASSWORD_ERROR(HttpStatus.BAD_REQUEST, "密码错误!");
+    PASSWORD_ERROR(HttpStatus.BAD_REQUEST, "密码错误!"),
+    TEACHER_HAS_NO_ROLE(HttpStatus.BAD_REQUEST, "请联系管理员，您当前身份不知!"),
+    ;
 
     private Integer code;
     private String message;

@@ -4,7 +4,10 @@ spring:
     name: ulearning-system-manage
   cloud:
     config:
-      uri: http://localhost:14002
+      discovery:
+        enabled: true
+        service-id: ulearning-config
+      name: ${spring.application.name}, ulearning-jdbc
       label: local
 #服务注册中心配置
 eureka:

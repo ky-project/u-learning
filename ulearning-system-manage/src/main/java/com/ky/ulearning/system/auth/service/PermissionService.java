@@ -1,22 +1,16 @@
-package com.ky.ulearning.system.auth.dao;
+package com.ky.ulearning.system.auth.service;
 
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
- * 权限dao
+ * 权限表service-接口类
  *
  * @author luyuhao
- * @date 19/12/08 03:48
+ * @date 19/12/08 14:21
  */
-@Mapper
-@Repository
-public interface PermissionDao {
-
+public interface PermissionService {
     /**
      * 查询所有权限source
      *
@@ -32,9 +26,8 @@ public interface PermissionDao {
     void insert(PermissionEntity permission);
 
     /**
-     * 查询所有的权限信息
-     *
-     * @return 返回权限list
+     * 查询所有权限
+     * @return 返回权限信息list
      */
     List<PermissionEntity> getList();
 }

@@ -16,5 +16,12 @@ public interface TeacherService {
      * @param teaNumber 教师工号
      * @return 返回教师对象
      */
-    TeacherEntity findByTeaNumber(String teaNumber);
+    TeacherEntity getByTeaNumber(String teaNumber);
+
+    /**
+     * 更新教师信息
+     *
+     * @param newTeacher 待更新的教师
+     */
+    void update(TeacherEntity newTeacher);
 }

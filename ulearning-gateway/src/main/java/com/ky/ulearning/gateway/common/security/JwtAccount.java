@@ -1,7 +1,9 @@
 package com.ky.ulearning.gateway.common.security;
 
 import com.ky.ulearning.spi.common.dto.UserContext;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +23,7 @@ public class JwtAccount extends UserContext implements UserDetails {
     /**
      * 权限集合
      */
-    private final Collection<GrantedAuthority> authorities;
-
+    private Collection<GrantedAuthority> authorities;
 
     @Override
     public String getPassword() {
@@ -53,4 +54,6 @@ public class JwtAccount extends UserContext implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

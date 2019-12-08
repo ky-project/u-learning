@@ -30,4 +30,9 @@ public class PermissionEntity extends BaseEntity {
      * 权限组
      */
     private String permissionGroup;
+
+    /**
+     * 权限url
+     */
+    private String permissionUrl;
 }

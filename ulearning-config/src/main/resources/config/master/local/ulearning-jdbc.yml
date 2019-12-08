@@ -47,9 +47,26 @@ spring:
         url-pattern: /druid/*
         # 是否能够重置数据
         reset-enable: false
+  #Json时区
+  jackson:
+    time-zone: GMT+8
+  # 无视redis警告
+  data:
+    redis:
+      repositories:
+        enabled: false
+  #redis配置
+  redis:
+    #数据库索引
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    #连接超时时间
+    timeout: 5000
 
 # mybatis配置
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
   config-location: classpath:/mybatis/mybatis-config.xml
-#  type-aliases-package: com.ky.zstu.domain.entity
+  type-aliases-package: com.ky.ulearning.spi

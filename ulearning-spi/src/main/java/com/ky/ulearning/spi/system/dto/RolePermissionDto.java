@@ -1,7 +1,7 @@
 package com.ky.ulearning.spi.system.dto;
 
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.entity.TeacherRoleEntity;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 import lombok.Data;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * @date 19/12/08 03:45
  */
 @Data
-public class TeacherRoleDto extends TeacherRoleEntity {
+public class RolePermissionDto extends RoleEntity {
     /**
      * 教师角色所拥有的所有权限
      */

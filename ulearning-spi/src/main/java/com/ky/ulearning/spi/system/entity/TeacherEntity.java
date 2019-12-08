@@ -62,42 +62,7 @@ public class TeacherEntity extends BaseEntity {
     private String teaPhoto;
 
     /**
-	* 是否是管理员
-	*/
-    private Short manage;
-
-    /**
      * 上次登陆时间
      */
     private Date lastLoginTime;
-
-    /**
-	* 是否有效
-	*/
-    private Boolean valid;
-
-    /**
-	* 备注
-	*/
-    private String memo;
-
-    /**
-	* 创建时间
-	*/
-    private Date createTime;
-
-    /**
-	* 创建者
-	*/
-    private String createBy;
-
-    /**
-	* 更新时间
-	*/
-    private Date updateTime;
-
-    /**
-	* 更新者
-	*/
-    private String updateBy;
 }

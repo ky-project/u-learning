@@ -17,18 +17,7 @@ public class TeacherRoleEntity extends BaseEntity {
     private Long teaId;
 
     /**
-	* 角色名称
-	*/
-    private String roleName;
-
-    /**
-	* 角色资源
-	*/
-    private String roleSource;
-
-    /**
-	* 是否管理员角色 0:否 1:是
-	*/
-    private Boolean isAdmin;
-
+     * 角色id
+     */
+    private Long roleId;
 }

@@ -3,16 +3,27 @@ package com.ky.ulearning.system.auth.controller;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
+import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.spi.system.dto.RolePermissionDto;
+import com.ky.ulearning.spi.system.entity.PermissionEntity;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import com.ky.ulearning.system.common.conversion.RolePermissionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 教师控制器
@@ -22,12 +33,17 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/teacher")
+@RequestMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TeacherController {
 
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    private TeacherRoleService teacherRoleService;
+
+    @Autowired
+    private RolePermissionMapper rolePermissionMapper;
 
 
 //    @Log("教师添加")
@@ -98,13 +114,47 @@ public class TeacherController {
                 || StringUtils.isEmpty(teaPassword)) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
-        TeacherEntity exists = teacherService.findByTeaNumber(teaNumber);
+        TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
         if (exists == null) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.TEACHER_NOT_EXISTS)));
         }
         if (!exists.getTeaPassword().equals(EncryptUtil.encryptPassword(teaPassword))) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PASSWORD_ERROR)));
         }
-        return ResponseEntity.ok().body(new JsonResult<>(exists));
+        //将其转换为userContext，并获取角色list和权限list
+        List<RolePermissionDto> rolePermissionDtoList = teacherRoleService.getRolePermissionByTeaId(exists.getId());
+        //初始化
+        UserContext userContext = new UserContext();
+        userContext.setId(exists.getId())
+                .setUsername(exists.getTeaNumber())
+                .setPassword(exists.getTeaPassword())
+                .setUpdateTime(exists.getUpdateTime());
+        //教师无任何角色
+        if(rolePermissionDtoList == null){
+            return ResponseEntity.badRequest().body(new JsonResult<>(SystemErrorCodeEnum.TEACHER_HAS_NO_ROLE));
+        }
+        //抽取角色和权限
+        List<RoleEntity> roleList = new ArrayList<>();
+        List<PermissionEntity> permissionList = new ArrayList<>();
+        //遍历获取到的角色权限集合
+        for (RolePermissionDto rolePermissionDto : rolePermissionDtoList) {
+            //抽取角色
+            roleList.add(rolePermissionMapper.toEntity(rolePermissionDto));
+            System.out.println(rolePermissionDto.getPermissionEntities());
+            //抽取权限
+            if(rolePermissionDto.getPermissionEntities() != null){
+                permissionList.addAll(rolePermissionDto.getPermissionEntities());
+            }
+        }
+        userContext.setRoles(roleList);
+        userContext.setPermissions(permissionList);
+
+        //更新教师登录时间
+        TeacherEntity newTeacher = new TeacherEntity();
+        newTeacher.setId(exists.getId());
+        newTeacher.setLastLoginTime(new Date());
+        teacherService.update(newTeacher);
+
+        return ResponseEntity.ok().body(new JsonResult<>(userContext));
     }
 }

@@ -14,6 +14,9 @@ server:
 
 
 eureka:
+  #关闭自我保护机制-开发环境开启
+  server:
+    enable-self-preservation: false
   instance:
     hostname: localhost
   client:

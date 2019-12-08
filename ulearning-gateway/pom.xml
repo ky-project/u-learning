@@ -99,6 +99,25 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
         <!-- hutool End-->
+
+        <!-- mapStruct Begin -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- mapStruct End -->
+
+        <!-- jwt Begin -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+        </dependency>
+        <!-- jwt End -->
         <!-- Plugins End -->
 
         <!-- 数据源配置 Begin -->

@@ -13,7 +13,6 @@
         <result column="tea_phone" jdbcType="VARCHAR" property="teaPhone"/>
         <result column="tea_email" jdbcType="VARCHAR" property="teaEmail"/>
         <result column="tea_photo" jdbcType="VARCHAR" property="teaPhoto"/>
-        <result column="manage" jdbcType="SMALLINT" property="manage"/>
         <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
         <result column="valid" jdbcType="BOOLEAN" property="valid"/>
         <result column="memo" jdbcType="VARCHAR" property="memo"/>
@@ -28,12 +27,21 @@
         tea_gender, tea_dept,
         tea_title, tea_phone,
         tea_email, tea_photo,
-        manage, last_login_time,
-        `valid`, memo,
-        create_time, create_by,
-        update_time, update_by
+        last_login_time, `valid`,
+        memo, create_time,
+        create_by, update_time,
+        update_by
     </sql>
 
+    <select id="getByTeaNumber" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_number = #{teaNumber,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <!--根据教师编号查询教师信息-->
     <select id="findByTeaNumber" resultMap="BaseResultMap">
         select
         <include refid="selectAll"/>
@@ -42,4 +50,55 @@
         and tea_number = #{teaNumber,jdbcType=VARCHAR}
         limit 1
     </select>
+    <!--根据教师邮箱查询教师信息-->
+    <select id="findByEmail" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_email = #{teaEmail}
+        limit 1
+    </select>
+    <!--更新教师信息-->
+    <update id="updateById">
+        update u_teacher
+        <set>
+            <if test="teaNumber != null and teaNumber != ''">
+                tea_number = #{teaNumber},
+            </if>
+            <if test="teaName != null and teaName != ''">
+                tea_name = #{teaName},
+            </if>
+            <if test="teaPassword != null and teaPassword != ''">
+                tea_password = #{teaPassword},
+            </if>
+            <if test="teaGender != null and teaGender != ''">
+                tea_gender = #{teaGender},
+            </if>
+            <if test="teaDept != null and teaDept != ''">
+                tea_dept = #{teaDept},
+            </if>
+            <if test="teaTitle != null and teaTitle != ''">
+                tea_title = #{teaTitle},
+            </if>
+            <if test="teaEmail != null and teaEmail != ''">
+                tea_email = #{teaEmail},
+            </if>
+            <if test="teaPhone != null and teaPhone != ''">
+                tea_phone = #{teaPhone},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            update_time = now()
+        </set>
+        where valid = 1
+        and id = #{id}
+    </update>
 </mapper>

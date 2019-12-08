@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ky.ulearning.system.auth.dao.TeacherRoleDao">
-    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.TeacherRoleEntity">
+<mapper namespace="com.ky.ulearning.system.auth.dao.RolePermissionDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.RolePermissionEntity">
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="tea_id" jdbcType="BIGINT" property="teaId"/>
+        <result column="permission_id" jdbcType="BIGINT" property="permissionId"/>
         <result column="role_id" jdbcType="BIGINT" property="roleId"/>
         <result column="valid" jdbcType="BOOLEAN" property="valid"/>
         <result column="memo" jdbcType="VARCHAR" property="memo"/>
@@ -14,7 +14,7 @@
     </resultMap>
     <sql id="All">
             id,
-            tea_id,
+            permission_id,
             role_id,
             `valid`,
             memo,
@@ -26,28 +26,28 @@
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="All"/>
-        from u_teacher_role
+        from u_role_permission
         where id = #{id,jdbcType=BIGINT}
     </select>
     <delete id="deleteById" parameterType="java.lang.Long">
         delete
-        from u_teacher_role
+        from u_role_permission
         where id = #{id,jdbcType=BIGINT}
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id"
-            parameterType="com.ky.ulearning.spi.system.entity.TeacherRoleEntity" useGeneratedKeys="true">
-        insert into u_teacher_role (tea_id, role_id, `valid`,
-                                    memo, create_time, create_by,
-                                    update_time, update_by)
-        values (#{teaId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{valid,jdbcType=BOOLEAN},
+            parameterType="com.ky.ulearning.spi.system.entity.RolePermissionEntity" useGeneratedKeys="true">
+        insert into u_role_permission (permission_id, role_id, `valid`,
+                                       memo, create_time, create_by,
+                                       update_time, update_by)
+        values (#{permissionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{valid,jdbcType=BOOLEAN},
                 #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
                 now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
-    <update id="updateById" parameterType="com.ky.ulearning.spi.system.entity.TeacherRoleEntity">
-        update u_teacher_role
+    <update id="updateById" parameterType="com.ky.ulearning.spi.system.entity.RolePermissionEntity">
+        update u_role_permission
         <set>
-            <if test="teaId != null">
-                tea_id = #{teaId,jdbcType=BIGINT},
+            <if test="permissionId != null">
+                permission_id = #{permissionId,jdbcType=BIGINT},
             </if>
             <if test="roleId != null">
                 role_id = #{roleId,jdbcType=BIGINT},
@@ -73,35 +73,4 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <!--根据教师id获取角色和角色权限-->
-    <select id="getRolePermissionByTeaId"
-            resultMap="com.ky.ulearning.system.auth.dao.RoleDao.RolePermissionResultMap">
-        SELECT ur.id,
-               ur.role_name,
-               ur.role_source,
-               ur.is_admin,
-               ur.valid,
-               ur.memo,
-               ur.create_time,
-               ur.create_by,
-               ur.update_time,
-               ur.update_by,
-               up.id,
-               up.permission_name,
-               up.permission_source,
-               up.permission_group,
-               up.permission_url,
-               up.valid,
-               up.memo,
-               up.create_time,
-               up.create_by,
-               up.update_time,
-               up.update_by
-        FROM u_teacher_role utr
-                 LEFT JOIN u_role ur ON ur.valid = 1 AND utr.role_id = ur.id
-                 LEFT JOIN u_role_permission urp ON urp.valid = 1 AND ur.id = urp.role_id
-                 LEFT JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
-        WHERE utr.valid = 1
-          AND utr.tea_id = #{teaId}
-    </select>
 </mapper>
