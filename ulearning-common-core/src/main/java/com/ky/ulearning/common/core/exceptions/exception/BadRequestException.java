@@ -1,5 +1,6 @@
 package com.ky.ulearning.common.core.exceptions.exception;
 
+import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -20,5 +21,10 @@ public class BadRequestException extends RuntimeException {
     public BadRequestException(HttpStatus status, String msg) {
         super(msg);
         this.status = status.value();
+    }
+
+    public BadRequestException(BaseEnum baseEnum) {
+        super(baseEnum.getMessage());
+        this.status = baseEnum.getCode();
     }
 }

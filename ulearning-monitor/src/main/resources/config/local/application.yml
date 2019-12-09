@@ -19,7 +19,7 @@ server:
       rotate: true
       suffix: .log
   servlet:
-    context-path: /${spring.application.name}
+    context-path: /monitor
 #日志配置
 logging:
   config: classpath:config/local/logback.xml

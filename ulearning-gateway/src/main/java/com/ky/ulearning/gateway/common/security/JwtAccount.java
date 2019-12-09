@@ -1,14 +1,15 @@
 package com.ky.ulearning.gateway.common.security;
 
-import com.ky.ulearning.spi.common.dto.UserContext;
-import lombok.AllArgsConstructor;
+import com.ky.ulearning.spi.system.entity.PermissionEntity;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 登录账号信息
@@ -18,7 +19,46 @@ import java.util.Collection;
  */
 @Data
 @Accessors(chain = true)
-public class JwtAccount extends UserContext implements UserDetails {
+public class JwtAccount implements UserDetails {
+
+    /**
+     * 用户id
+     */
+    private Long id;
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+    /**
+     * 系统角色：教师， 学生
+     */
+    private String sysRole;
+
+    /**
+     * 教师角色
+     */
+    private List<RoleEntity> roles;
+
+    /**
+     * 是否是管理员 0:否；1:是
+     */
+    private Integer manage;
+
+    /**
+     * 所拥有的权限
+     */
+    private List<PermissionEntity> permissions;
+
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
 
     /**
      * 权限集合
@@ -27,12 +67,12 @@ public class JwtAccount extends UserContext implements UserDetails {
 
     @Override
     public String getPassword() {
-        return super.getPassword();
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return super.getUsername();
+        return this.username;
     }
 
     @Override

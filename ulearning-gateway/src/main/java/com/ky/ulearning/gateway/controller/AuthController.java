@@ -9,15 +9,15 @@ import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfig;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
-import com.ky.ulearning.gateway.common.conversion.UserJwtAccountMapper;
 import com.ky.ulearning.gateway.common.redis.RedisService;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
+import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.util.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.util.JwtTokenUtil;
 import com.ky.ulearning.gateway.remoting.TeacherRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
-import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +35,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sun.net.www.protocol.http.AuthenticationInfo;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,9 +62,6 @@ public class AuthController {
     private TeacherRemoting teacherRemoting;
 
     @Autowired
-    private UserJwtAccountMapper userJwtAccountMapper;
-
-    @Autowired
     private JwtRefreshTokenUtil jwtRefreshTokenUtil;
 
     @Autowired
@@ -72,6 +69,9 @@ public class AuthController {
 
     @Autowired
     private GatewayConfig gatewayConfig;
+
+    @Autowired
+    private JwtAccountDetailsService jwtAccountDetailsService;
 
     /**
      * 登录授权
@@ -87,34 +87,24 @@ public class AuthController {
 
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
+        loginUser.setUsername(loginUser.getUsername().trim());
+        loginUser.setPassword(loginUser.getPassword().trim());
         // 清除验证码
         redisService.delete(loginUser.getUuid());
         if (StringUtils.isEmpty(code)) {
-            throw new BadRequestException("验证码已过期");
+            throw new BadRequestException(GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
         }
         if (StringUtils.isEmpty(loginUser.getCode()) || !loginUser.getCode().equalsIgnoreCase(code)) {
-            throw new BadRequestException("验证码错误");
+            throw new BadRequestException(GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
         }
-        //手动调用服务的login
-        ResponseEntity responseEntity;
-        responseEntity = loginSwitch(loginUser);
-        //判断是否请求成功
-        if (responseEntity.getStatusCode().equals(HttpStatus.BAD_REQUEST)) {
-            return responseEntity;
+
+        //手动获取登录用户信息
+        JwtAccount jwtAccount = (JwtAccount) jwtAccountDetailsService.loadUserByUsername(loginUser.getUsername());
+
+        if (!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword()))) {
+            throw new AccountExpiredException(GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR.getMessage());
         }
-        //获取登录用户信息
-        UserContext userContext = (UserContext) responseEntity.getBody();
-        if (userContext == null) {
-            throw new BadRequestException("用户不存在");
-        }
-        if (!userContext.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword()))) {
-            throw new AccountExpiredException("密码错误");
-        }
-        JwtAccount jwtAccount = userJwtAccountMapper.toDto(userContext);
-        jwtAccount.setAuthorities(userContext.getPermissions()
-                .stream()
-                .map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.getPermissionUrl()))
-                .collect(Collectors.toList()));
+
         //账号有效判断
         if (!jwtAccount.isEnabled()) {
             throw new AccountExpiredException("账号已停用，请联系管理员");
@@ -137,9 +127,19 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 返回 token
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(16);
         map.put("token", token);
         map.put("refreshToken", refreshToken);
+
+        //根据角色登录日期更新
+        if(GatewayConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())){
+            TeacherEntity teacherEntity = new TeacherEntity();
+            teacherEntity.setId(jwtAccount.getId());
+            teacherEntity.setLastLoginTime(new Date());
+            teacherRemoting.update(teacherEntity);
+        } else if(GatewayConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())){
+            //TODO 更新学生登录时间
+        }
         return ResponseEntity.ok(new JsonResult<>(map, "登录成功"));
     }
 
@@ -166,26 +166,6 @@ public class AuthController {
         } finally {
             stream.close();
         }
-    }
-
-    /**
-     * 根据登录类型进行选择调用哪个系统的登录接口
-     *
-     * @param loginUser 登录信息对象
-     * @return 返回接口响应
-     */
-    private ResponseEntity loginSwitch(LoginUser loginUser) {
-        ResponseEntity loginResponseEntity;
-        switch (loginUser.getLoginType()) {
-            //登录后台系统
-            case GatewayConstant.LOGIN_MANAGE_SYSTEM:
-                loginResponseEntity = teacherRemoting.login(loginUser.getUsername(), loginUser.getPassword());
-                break;
-            default:
-                loginResponseEntity = ResponseEntity.badRequest().body(new JsonResult<>(GatewayErrorCodeEnum.LOGIN_TYPE_MISSING));
-                break;
-        }
-        return loginResponseEntity;
     }
 
     private void setTokenCookie(HttpServletResponse response, String token, String refreshToken) {

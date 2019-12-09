@@ -2,27 +2,20 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.message.JsonResult;
-import com.ky.ulearning.common.core.utils.EncryptUtil;
-import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.RolePermissionDto;
-import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
-import com.ky.ulearning.system.common.conversion.RolePermissionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,9 +34,6 @@ public class TeacherController {
 
     @Autowired
     private TeacherRoleService teacherRoleService;
-
-    @Autowired
-    private RolePermissionMapper rolePermissionMapper;
 
 
 //    @Log("教师添加")
@@ -107,54 +97,35 @@ public class TeacherController {
 //        return ResponseEntity.ok(JsonResultUtil.success(pagingDTO, "查询成功"));
 //    }
 
-    @Log("登录后台管理系统")
-    @PostMapping("/login")
-    public ResponseEntity login(String teaNumber, String teaPassword) {
-        if (StringUtils.isEmpty(teaNumber)
-                || StringUtils.isEmpty(teaPassword)) {
+    @Log("根据工号查询教师")
+    @GetMapping("/getByTeaNumber")
+    public ResponseEntity getByTeaNumber(String teaNumber){
+        if (StringUtils.isEmpty(teaNumber)) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
         if (exists == null) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.TEACHER_NOT_EXISTS)));
         }
-        if (!exists.getTeaPassword().equals(EncryptUtil.encryptPassword(teaPassword))) {
-            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PASSWORD_ERROR)));
-        }
+        return ResponseEntity.ok((exists));
+    }
+
+    @Log("查询教师角色权限")
+    @GetMapping("/getRolePermissionById")
+    public ResponseEntity getRolePermissionById(Long id){
         //将其转换为userContext，并获取角色list和权限list
-        List<RolePermissionDto> rolePermissionDtoList = teacherRoleService.getRolePermissionByTeaId(exists.getId());
-        //初始化
-        UserContext userContext = new UserContext();
-        userContext.setId(exists.getId())
-                .setUsername(exists.getTeaNumber())
-                .setPassword(exists.getTeaPassword())
-                .setUpdateTime(exists.getUpdateTime());
-        //教师无任何角色
-        if(rolePermissionDtoList == null){
-            return ResponseEntity.badRequest().body(new JsonResult<>(SystemErrorCodeEnum.TEACHER_HAS_NO_ROLE));
-        }
-        //抽取角色和权限
-        List<RoleEntity> roleList = new ArrayList<>();
-        List<PermissionEntity> permissionList = new ArrayList<>();
-        //遍历获取到的角色权限集合
-        for (RolePermissionDto rolePermissionDto : rolePermissionDtoList) {
-            //抽取角色
-            roleList.add(rolePermissionMapper.toEntity(rolePermissionDto));
-            System.out.println(rolePermissionDto.getPermissionEntities());
-            //抽取权限
-            if(rolePermissionDto.getPermissionEntities() != null){
-                permissionList.addAll(rolePermissionDto.getPermissionEntities());
-            }
-        }
-        userContext.setRoles(roleList);
-        userContext.setPermissions(permissionList);
+        List<RolePermissionDto> rolePermissionDtoList = teacherRoleService.getRolePermissionByTeaId(id);
+        return ResponseEntity.ok((rolePermissionDtoList));
+    }
 
-        //更新教师登录时间
-        TeacherEntity newTeacher = new TeacherEntity();
-        newTeacher.setId(exists.getId());
-        newTeacher.setLastLoginTime(new Date());
-        teacherService.update(newTeacher);
 
-        return ResponseEntity.ok().body(new JsonResult<>(userContext));
+    @Log("更新教师信息")
+    @GetMapping("/update")
+    public ResponseEntity update(TeacherEntity teacherEntity){
+        if(teacherEntity.getId() == null){
+            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
+        }
+        teacherService.update(teacherEntity);
+        return ResponseEntity.ok((teacherEntity));
     }
 }

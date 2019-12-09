@@ -25,5 +25,8 @@ public class GatewayConstant {
      */
     public static final int LOGIN_STUDENT_SYSTEM = 2;
 
+    public static final String SYS_ROLE_STUDENT = "student";
+
+    public static final String SYS_ROLE_TEACHER = "teacher";
 
 }
