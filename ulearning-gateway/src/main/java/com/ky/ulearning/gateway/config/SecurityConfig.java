@@ -1,5 +1,9 @@
 package com.ky.ulearning.gateway.config;
 
+import com.ky.ulearning.gateway.common.filter.JwtAuthorizationTokenFilter;
+import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
+import com.ky.ulearning.gateway.common.security.JwtAuthenticationEntryPoint;
+import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,29 +30,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Autowired
-//    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-//
-//    @Autowired
-//    private JwtTeacherDetailsService jwtTeacherDetailsService;
-//
-//    @Autowired
-//    private JwtAuthorizationTokenFilter jwtAuthorizationTokenFilter;
-//
-//    @Autowired
-//    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Value("${jwt.auth.path}")
-    private String loginPath;
+    @Autowired
+    private JwtAccountDetailsService jwtAccountDetailsService;
+
+    @Autowired
+    private JwtAuthorizationTokenFilter jwtAuthorizationTokenFilter;
+
+    @Autowired
+    private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 
     /**
      * 加载全局认证配置
      */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .userDetailsService(jwtTeacherDetailsService)
-//                .passwordEncoder(passwordEncoder());
+        auth
+                .userDetailsService(jwtAccountDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 
     /**
@@ -79,8 +80,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //禁用CSRF
                 .csrf().disable()
                 //授权异常捕获
-//                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-//                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
                 // 不创建会话
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -101,10 +102,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js"
                 ).anonymous()
 
-//                .antMatchers(HttpMethod.POST, "/auth/" + loginPath).anonymous()
-//                .antMatchers("/auth/logout").anonymous()
-//                .antMatchers("/auth/logout/success").anonymous()
-//                .antMatchers("/auth/vCode").anonymous()
+                .antMatchers(HttpMethod.POST, "/auth/login").anonymous()
+                .antMatchers("/auth/logout").anonymous()
+                .antMatchers("/auth/logout/success").anonymous()
+                .antMatchers("/auth/vCode").anonymous()
 
                 // swagger start
 //                .antMatchers("/swagger-ui.html").anonymous()
@@ -121,7 +122,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .headers().frameOptions().disable();
 
-//        httpSecurity.addFilterBefore(jwtAuthorizationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-//                .formLogin().failureHandler(jwtAuthenticationFailureHandler);
+        httpSecurity.addFilterBefore(jwtAuthorizationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin().failureHandler(jwtAuthenticationFailureHandler);
     }
 }

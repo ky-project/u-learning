@@ -2,6 +2,7 @@ package com.ky.ulearning.gateway.controller;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
+import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
@@ -74,11 +75,23 @@ public class AuthController {
     private JwtAccountDetailsService jwtAccountDetailsService;
 
     /**
+     * 登出成功
+     *
+     * @return 返回用户信息和token
+     */
+    @ApiOperation(value = "", hidden = true)
+    @GetMapping(value = "/logout/success")
+    public ResponseEntity logoutSuccess() {
+        return ResponseEntity.ok(new JsonResult<>(null, "安全退出"));
+    }
+
+    /**
      * 登录授权
      *
      * @param loginUser 登陆用户信息
      * @return 返回用户信息和token
      */
+    @Log("登录系统-单点登录")
     @ApiOperation(value = "用户登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
     @PostMapping("/login")
     public ResponseEntity login(@Validated LoginUser loginUser,
@@ -169,11 +182,11 @@ public class AuthController {
     }
 
     private void setTokenCookie(HttpServletResponse response, String token, String refreshToken) {
-        Cookie tokenCookie = new Cookie("token", token);
+        Cookie tokenCookie = new Cookie(GatewayConstant.COOKIE_TOKEN, token);
         tokenCookie.setMaxAge((int) (gatewayConfig.getRefreshExpiration() / 1000));
         tokenCookie.setPath("/");
 
-        Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
+        Cookie refreshTokenCookie = new Cookie(GatewayConstant.COOKIE_REFRESH_TOKEN, refreshToken);
         refreshTokenCookie.setMaxAge((int) (gatewayConfig.getRefreshExpiration() / 1000));
         refreshTokenCookie.setPath("/");
 
