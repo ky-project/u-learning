@@ -3,10 +3,8 @@ package com.ky.ulearning.system.common.config;
 import com.ky.ulearning.common.core.exceptions.handler.GlobalExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.config.annotation.*;
 
 /**
  * WebMvc配置类
@@ -42,4 +40,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new GlobalExceptionHandler();
     }
 
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
+    }
 }

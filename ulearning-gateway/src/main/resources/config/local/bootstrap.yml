@@ -6,7 +6,7 @@ spring:
     config:
       discovery:
         enabled: true
-        service-id: config
+        service-id: ulearning-config
       name: ${spring.application.name}, ulearning-jdbc
       label: local
 #服务注册中心配置

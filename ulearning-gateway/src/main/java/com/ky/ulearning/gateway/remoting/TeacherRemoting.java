@@ -1,10 +1,14 @@
 package com.ky.ulearning.gateway.remoting;
 
+import com.ky.ulearning.spi.system.dto.RolePermissionDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 调用system-manage的TeacherController接口
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
  * @date 19/12/07 01:34
  */
 @FeignClient("ulearning-system-manage")
+@RequestMapping(value = "/system-manage/teacher")
 public interface TeacherRemoting {
 
     /**
@@ -21,8 +26,8 @@ public interface TeacherRemoting {
      * @param id 教师id
      * @return 返回响应实体类
      */
-    @GetMapping("teacher/getRolePermissionById")
-    ResponseEntity getRolePermissionById(Long id);
+    @GetMapping("/getRolePermissionById")
+    List<RolePermissionDto> getRolePermissionById(@RequestParam("id") Long id);
 
     /**
      * 根据工号查询教师
@@ -30,8 +35,8 @@ public interface TeacherRemoting {
      * @param teaNumber 教师工号
      * @return 返回响应实体类
      */
-    @GetMapping("teacher/getByTeaNumber")
-    ResponseEntity getByTeaNumber(String teaNumber);
+    @GetMapping("/getByTeaNumber")
+    TeacherEntity getByTeaNumber(@RequestParam("teaNumber") String teaNumber);
 
     /**
      * 更新教师信息
@@ -39,6 +44,6 @@ public interface TeacherRemoting {
      * @param teacherEntity 待更新的教师信息
      * @return 返回响应实体类
      */
-    @GetMapping("teacher/update")
-    public ResponseEntity update(TeacherEntity teacherEntity);
+    @GetMapping("/update")
+    TeacherEntity update(@RequestParam Map<String, Object> teacherEntity);
 }

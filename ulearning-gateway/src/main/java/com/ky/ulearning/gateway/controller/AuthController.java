@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfig;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
@@ -22,20 +23,15 @@ import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +41,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author luyuhao
@@ -53,7 +48,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/auth")
 public class AuthController {
 
     @Autowired
@@ -145,12 +140,12 @@ public class AuthController {
         map.put("refreshToken", refreshToken);
 
         //根据角色登录日期更新
-        if(GatewayConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())){
-            TeacherEntity teacherEntity = new TeacherEntity();
-            teacherEntity.setId(jwtAccount.getId());
-            teacherEntity.setLastLoginTime(new Date());
+        if (GatewayConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())) {
+            Map<String, Object> teacherEntity = new HashMap<>(16);
+            teacherEntity.put("id", jwtAccount.getId());
+            teacherEntity.put("lastLoginTime", new Date());
             teacherRemoting.update(teacherEntity);
-        } else if(GatewayConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())){
+        } else if (GatewayConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间
         }
         return ResponseEntity.ok(new JsonResult<>(map, "登录成功"));
@@ -171,7 +166,7 @@ public class AuthController {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         VerifyCodeUtil.outputImage(w, h, stream, verifyCode);
         try {
-            log.debug("生成验证码:" + verifyCode);
+            log.info("生成验证码:" + verifyCode);
             return ResponseEntity.ok(new JsonResult<>(new ImgResult("data:image/gif;base64," + Base64.encode(stream.toByteArray()), uuid), "验证码已生成"));
         } catch (Exception e) {
             e.printStackTrace();

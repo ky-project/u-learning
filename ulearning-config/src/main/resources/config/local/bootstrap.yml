@@ -1,7 +1,7 @@
 # 服务配置
 spring:
   application:
-    name: config
+    name: ulearning-config
   # config路径配置
   cloud:
     config:

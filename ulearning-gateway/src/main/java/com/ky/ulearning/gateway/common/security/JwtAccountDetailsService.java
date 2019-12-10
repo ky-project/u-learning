@@ -38,9 +38,19 @@ public class JwtAccountDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //教师账号
-        JwtAccount teacher = teacherLogin(username);
+        JwtAccount teacher;
+        try {
+            teacher = teacherLogin(username);
+        } catch (Exception e){
+            teacher = null;
+        }
         //TODO 学生账号
-        JwtAccount student = username.length() % 2 == 0 ? null : new JwtAccount();
+        JwtAccount student;
+        try {
+            student = username.length() % 2 == 0 ? null : new JwtAccount();
+        }catch (Exception e){
+            student = null;
+        }
         //账号都不存在时
         if(teacher == null && student == null){
             throw new BadRequestException(GatewayErrorCodeEnum.USER_NOT_EXISTS);
@@ -74,15 +84,12 @@ public class JwtAccountDetailsService implements UserDetailsService {
      * @param username 登录账号
      * @return 返回登录账号信息
      */
-    @SuppressWarnings("unchecked")
-    private JwtAccount teacherLogin(String username) {
+    private JwtAccount teacherLogin(String username){
         //获取教师信息
-        ResponseEntity responseEntity = teacherRemoting.getByTeaNumber(username);
-        if (responseEntity.getStatusCode().equals(HttpStatus.BAD_REQUEST)
-                || responseEntity.getBody() == null) {
+        TeacherEntity teacher = teacherRemoting.getByTeaNumber(username);
+        if(teacher == null){
             return null;
         }
-        TeacherEntity teacher = (TeacherEntity) responseEntity.getBody();
         JwtAccount jwtAccount = new JwtAccount()
                 .setId(teacher.getId())
                 .setSysRole(GatewayConstant.SYS_ROLE_TEACHER)
@@ -91,11 +98,9 @@ public class JwtAccountDetailsService implements UserDetailsService {
                 .setUpdateTime(teacher.getUpdateTime());
 
         //获取该教师的角色权限
-        ResponseEntity responseEntity1 = teacherRemoting.getRolePermissionById(teacher.getId());
+        List<RolePermissionDto> rolePermissionDtoList = teacherRemoting.getRolePermissionById(teacher.getId());
         //若有权限，则抽取赋值
-        if (!responseEntity1.getStatusCode().equals(HttpStatus.BAD_REQUEST)
-                && responseEntity.getBody() != null) {
-            List<RolePermissionDto> rolePermissionDtoList = (List<RolePermissionDto>) responseEntity.getBody();
+        if (rolePermissionDtoList != null) {
             //抽取角色和权限
             List<RoleEntity> roleList = new ArrayList<>();
             List<PermissionEntity> permissionList = new ArrayList<>();

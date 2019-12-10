@@ -1,9 +1,9 @@
 package com.ky.ulearning.common.core.exceptions.handler;
 
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         FieldError fieldError = ex.getBindingResult().getFieldError();
-        return ResponseEntity.badRequest().body(new JsonResult(HttpStatus.BAD_REQUEST.value(),fieldError == null ? null : fieldError.getDefaultMessage()));
+        return ResponseEntity.badRequest().body(new JsonResult(HttpStatus.BAD_REQUEST.value(), fieldError == null ? null : fieldError.getDefaultMessage()));
     }
 
     /**
@@ -45,6 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity handleException(Exception e) {
+        e.printStackTrace();
         return ResponseEntity.badRequest().body(new JsonResult(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 }

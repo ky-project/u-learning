@@ -104,15 +104,15 @@ public class TeacherController {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
-        if (exists == null) {
-            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.TEACHER_NOT_EXISTS)));
-        }
         return ResponseEntity.ok((exists));
     }
 
     @Log("查询教师角色权限")
     @GetMapping("/getRolePermissionById")
     public ResponseEntity getRolePermissionById(Long id){
+        if(id == null){
+            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
+        }
         //将其转换为userContext，并获取角色list和权限list
         List<RolePermissionDto> rolePermissionDtoList = teacherRoleService.getRolePermissionByTeaId(id);
         return ResponseEntity.ok((rolePermissionDtoList));

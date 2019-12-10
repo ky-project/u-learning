@@ -28,10 +28,6 @@ public class LoginUser {
     @NotBlank
     private String uuid = "";
 
-    @ApiModelProperty(value = "登录类型(后台:0 ;教师:1; 学生:2)", example = "0", required = true)
-    @NotNull
-    private Integer loginType;
-
     @Override
     public String toString() {
         return "{username=" + username + ", password= ******}";

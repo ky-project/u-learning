@@ -37,7 +37,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
     /**
      * 不需要过滤的url
      */
-    private final static String[] NOT_FILTER_URL = {"/auth/logout", "/auth/logout", "/auth/vCode"};
+    private final static String[] NOT_FILTER_URL = {"/auth/login", "/auth/logout", "/auth/vCode"};
 
     private final static String PREFIX = "Bearer ";
 
