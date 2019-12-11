@@ -1,0 +1,15 @@
+#路由配置
+zuul:
+  routes:
+    gateway:
+      path: /gateway/**
+      stripPrefix: true
+      serviceId: ulearning-gateway
+    monitor:
+      path: /monitor-manage/**
+      stripPrefix: false
+      serviceId: monitor-manage
+    system-manage:
+      path: /system-manage/**
+      stripPrefix: false
+      serviceId: system-manage

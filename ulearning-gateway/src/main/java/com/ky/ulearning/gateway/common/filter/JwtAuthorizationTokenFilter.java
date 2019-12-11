@@ -2,11 +2,12 @@ package com.ky.ulearning.gateway.common.filter;
 
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.exception.JwtTokenException;
-import com.ky.ulearning.gateway.common.constant.GatewayConfig;
+import com.ky.ulearning.gateway.config.GatewayConfig;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import com.ky.ulearning.gateway.common.util.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.util.JwtTokenUtil;
+import com.sun.xml.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
 
 /**
  * token校验过滤器
@@ -48,7 +50,6 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
     private final String tokenHeader;
     private final String refreshTokenHeader;
     private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
-    private final GatewayConfig gatewayConfig;
 
     public JwtAuthorizationTokenFilter(@Qualifier("jwtAccountDetailsService") UserDetailsService userDetailsService,
                                        JwtTokenUtil jwtTokenUtil,
@@ -63,7 +64,6 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         this.tokenHeader = tokenHeader;
         this.refreshTokenHeader = refreshTokenHeader;
         this.jwtAuthenticationFailureHandler = jwtAuthenticationFailureHandler;
-        this.gatewayConfig = gatewayConfig;
         this.refreshExpiration = gatewayConfig.getRefreshExpiration();
     }
 
@@ -73,23 +73,30 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         String uri = request.getRequestURI();
         for (String chainUri : NOT_FILTER_URL) {
-            if (uri.contains(chainUri)){
+            if (uri.contains(chainUri)) {
                 chain.doFilter(request, response);
                 return;
             }
         }
 
         //获取请求头
-        final String tokenHeader = request.getHeader(this.tokenHeader);
-        final String refreshTokenHeader = request.getHeader(this.refreshTokenHeader);
+        String tokenHeader = request.getHeader(this.tokenHeader);
+        String refreshTokenHeader = request.getHeader(this.refreshTokenHeader);
 
         String token;
         String refreshToken;
         String username;
         try {
             //token空值校验
-            if (tokenHeader == null || !tokenHeader.startsWith(PREFIX)
-                    || refreshTokenHeader == null || !refreshTokenHeader.startsWith(PREFIX)) {
+            if (tokenHeader == null || refreshTokenHeader == null) {
+                chain.doFilter(request, response);
+                return;
+            }
+            //字符转义
+            tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8);
+            refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8);
+            if (!tokenHeader.startsWith(PREFIX)
+                    || !refreshTokenHeader.startsWith(PREFIX)) {
                 chain.doFilter(request, response);
                 return;
             }
@@ -104,28 +111,29 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             //获取用户账号
             username = jwtTokenUtil.getUsernameFromToken(token);
             //通过用户编号获取用户
-            JwtAccount teacher = (JwtAccount) userDetailsService.loadUserByUsername(username);
+            JwtAccount account = (JwtAccount) userDetailsService.loadUserByUsername(username);
             //双token刷新
-            if (!jwtTokenUtil.validateToken(token, teacher) && jwtRefreshTokenUtil.validateRefreshToken(refreshToken, teacher)) {
+            if (!jwtTokenUtil.validateToken(token, account) && jwtRefreshTokenUtil.validateRefreshToken(refreshToken, account)) {
                 //token过期,refresh_token未过期 -> 刷新token
                 String newToken = jwtTokenUtil.refreshToken(token);
                 setTokenCookie(response, GatewayConstant.COOKIE_TOKEN, newToken);
-            } else if (jwtTokenUtil.validateToken(token, teacher) && !jwtRefreshTokenUtil.validateRefreshToken(refreshToken, teacher)) {
+            } else if (jwtTokenUtil.validateToken(token, account) && !jwtRefreshTokenUtil.validateRefreshToken(refreshToken, account)) {
                 //token未过期,refresh_token过期 -> 刷新refresh_token
                 String newRefreshToken = jwtRefreshTokenUtil.refreshRefreshToken(refreshToken);
                 setTokenCookie(response, GatewayConstant.COOKIE_REFRESH_TOKEN, newRefreshToken);
-            } else if (!jwtTokenUtil.validateToken(token, teacher) && !jwtRefreshTokenUtil.validateRefreshToken(refreshToken, teacher)) {
+            } else if (!jwtTokenUtil.validateToken(token, account) && !jwtRefreshTokenUtil.validateRefreshToken(refreshToken, account)) {
                 //token过期,refresh_token过期 -> 登录失效
                 deleteTokenCookie(request, GatewayConstant.COOKIE_TOKEN);
                 deleteTokenCookie(request, GatewayConstant.COOKIE_REFRESH_TOKEN);
                 throw new JwtTokenException("登录已失效，请重新登录");
             }
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(teacher, null, teacher.getAuthorities());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (AuthenticationException ae) {
+            ae.printStackTrace();
             //交给自定义的AuthenticationFailureHandler
             jwtAuthenticationFailureHandler.onAuthenticationFailure(request, response, ae);
             return;

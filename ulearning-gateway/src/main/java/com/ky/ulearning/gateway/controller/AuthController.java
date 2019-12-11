@@ -6,9 +6,8 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
-import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
-import com.ky.ulearning.gateway.common.constant.GatewayConfig;
+import com.ky.ulearning.gateway.config.GatewayConfig;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.redis.RedisService;
@@ -19,11 +18,10 @@ import com.ky.ulearning.gateway.common.util.JwtTokenUtil;
 import com.ky.ulearning.gateway.remoting.TeacherRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
-import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +47,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/auth")
+@Api(tags = "单点登录接口", description = "单点登录相关接口")
 public class AuthController {
 
     @Autowired
@@ -87,7 +86,7 @@ public class AuthController {
      * @return 返回用户信息和token
      */
     @Log("登录系统-单点登录")
-    @ApiOperation(value = "用户登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
+    @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
     @PostMapping("/login")
     public ResponseEntity login(@Validated LoginUser loginUser,
                                 HttpServletRequest request,
@@ -144,6 +143,7 @@ public class AuthController {
             Map<String, Object> teacherEntity = new HashMap<>(16);
             teacherEntity.put("id", jwtAccount.getId());
             teacherEntity.put("lastLoginTime", new Date());
+            teacherEntity.put("updateTime", jwtAccount.getUpdateTime());
             teacherRemoting.update(teacherEntity);
         } else if (GatewayConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间

@@ -16,7 +16,7 @@ import java.util.Map;
  * @author luyuhao
  * @date 19/12/07 01:34
  */
-@FeignClient("ulearning-system-manage")
+@FeignClient("system-manage")
 @RequestMapping(value = "/system-manage/teacher")
 public interface TeacherRemoting {
 

@@ -7,6 +7,10 @@ import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,6 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
+@Api(tags = "教师管理接口", description = "教师管理相关接口")
 @RequestMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TeacherController {
 
@@ -98,6 +103,7 @@ public class TeacherController {
 //    }
 
     @Log("根据工号查询教师")
+    @ApiOperation("根据工号查询教师")
     @GetMapping("/getByTeaNumber")
     public ResponseEntity getByTeaNumber(String teaNumber){
         if (StringUtils.isEmpty(teaNumber)) {
@@ -108,6 +114,7 @@ public class TeacherController {
     }
 
     @Log("查询教师角色权限")
+    @ApiOperation("查询教师角色权限")
     @GetMapping("/getRolePermissionById")
     public ResponseEntity getRolePermissionById(Long id){
         if(id == null){
@@ -120,6 +127,7 @@ public class TeacherController {
 
 
     @Log("更新教师信息")
+    @ApiOperation(value = "更新教师信息")
     @GetMapping("/update")
     public ResponseEntity update(TeacherEntity teacherEntity){
         if(teacherEntity.getId() == null){

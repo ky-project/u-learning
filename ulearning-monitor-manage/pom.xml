@@ -10,9 +10,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>ulearning-monitor</name>
+    <name>ulearning-monitor-manage</name>
     <description>基于泛在学习的教学管理系统</description>
-    <artifactId>ulearning-monitor</artifactId>
+    <artifactId>ulearning-monitor-manage</artifactId>
 
     <dependencies>
         <!-- Spring Boot Begin -->

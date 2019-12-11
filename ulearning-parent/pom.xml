@@ -35,6 +35,7 @@
         <lombok.version>1.18.10</lombok.version>
         <ip2region.version>1.7.2</ip2region.version>
         <jjwt.version>0.9.1</jjwt.version>
+        <swagger.bootstrap.ui.version>1.9.5</swagger.bootstrap.ui.version>
     </properties>
 
     <dependencyManagement>
@@ -73,6 +74,12 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>swagger-bootstrap-ui</artifactId>
+                <version>${swagger.bootstrap.ui.version}</version>
+            </dependency>
+
             <!-- Swagger2 End -->
 
             <!-- lombok Begin -->

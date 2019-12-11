@@ -12,5 +12,5 @@ import org.mapstruct.ReportingPolicy;
  */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RolePermissionMapper
-        extends BaseEntityConversion<RoleEntity, RolePermissionDto> {
+        extends BaseEntityConversion<RolePermissionDto, RoleEntity> {
 }

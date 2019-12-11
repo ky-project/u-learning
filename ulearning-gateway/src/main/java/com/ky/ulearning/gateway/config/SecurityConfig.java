@@ -108,10 +108,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/vCode").anonymous()
 
                 // swagger start
-//                .antMatchers("/swagger-ui.html").anonymous()
-//                .antMatchers("/swagger-resources/**").anonymous()
-//                .antMatchers("/webjars/**").anonymous()
-//                .antMatchers("/*/api-docs").anonymous()
+//                .antMatchers("/v2/api-docs?group=groupName").anonymous()
+                .antMatchers("/swagger-resources/**").anonymous()
+                .antMatchers("/webjars/**").anonymous()
+                .antMatchers("/*/v2/api-docs").anonymous()
+                .antMatchers("/v2/api-docs").anonymous()
                 // swagger end
 
                 //druid监控

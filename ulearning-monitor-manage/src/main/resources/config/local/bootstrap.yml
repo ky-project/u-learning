@@ -1,10 +1,13 @@
 #服务配置
 spring:
   application:
-    name: ulearning-monitor
+    name: monitor-manage
   cloud:
     config:
-      uri: http://localhost:14002
+      discovery:
+        enabled: true
+        service-id: config
+      name: ${spring.application.name}, ulearning-jdbc, ulearning-common
       label: local
 #服务注册中心配置
 eureka:

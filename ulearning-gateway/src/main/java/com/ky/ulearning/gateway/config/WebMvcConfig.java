@@ -26,7 +26,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedHeaders("*")
-                .allowedOrigins("http://ky.darren1112.com:8082")
+                .allowedOrigins("http://ky.darren1112.com:8081", "http://ky.darren1112.com:8082")
                 .allowedMethods("*");
 
     }

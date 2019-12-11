@@ -1,4 +1,4 @@
-package com.ky.ulearning.gateway.common.constant;
+package com.ky.ulearning.system.common.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author luyuhao
- * @date 19/12/09 03:03
+ * @date 19/12/11 23:19
  */
 @Component
 @Getter
-public class GatewayConfig {
-
+public class SystemManageConfig {
     @Value("${jwt.secret}")
     private String secret;
 
@@ -27,4 +26,6 @@ public class GatewayConfig {
     @Value("${jwt.header-token}")
     private String tokenHeader;
 
+    @Value("${swagger.enabled}")
+    private Boolean swaggerEnabled;
 }

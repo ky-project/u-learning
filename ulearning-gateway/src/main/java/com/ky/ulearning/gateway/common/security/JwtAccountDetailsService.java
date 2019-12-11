@@ -44,10 +44,10 @@ public class JwtAccountDetailsService implements UserDetailsService {
         } catch (Exception e){
             teacher = null;
         }
-        //TODO 学生账号
         JwtAccount student;
         try {
-            student = username.length() % 2 == 0 ? null : new JwtAccount();
+            //TODO 学生账号
+            student = null;
         }catch (Exception e){
             student = null;
         }

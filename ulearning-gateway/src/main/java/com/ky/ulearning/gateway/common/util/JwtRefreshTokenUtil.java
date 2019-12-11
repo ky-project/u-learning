@@ -1,6 +1,6 @@
 package com.ky.ulearning.gateway.common.util;
 
-import com.ky.ulearning.gateway.common.constant.GatewayConfig;
+import com.ky.ulearning.gateway.config.GatewayConfig;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
