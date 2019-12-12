@@ -46,11 +46,6 @@ public class JwtAccount implements UserDetails {
     private List<RoleEntity> roles;
 
     /**
-     * 是否是管理员 0:否；1:是
-     */
-    private Integer manage;
-
-    /**
      * 所拥有的权限
      */
     private List<PermissionEntity> permissions;

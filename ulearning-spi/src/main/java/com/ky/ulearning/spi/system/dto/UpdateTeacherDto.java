@@ -1,7 +1,11 @@
 package com.ky.ulearning.spi.system.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
@@ -11,88 +15,96 @@ import java.util.Date;
  * @date 19/12/12 00:15
  */
 @Data
-public class TeacherDto {
+public class UpdateTeacherDto{
     /**
      * 工号
      */
+    @ApiModelProperty(value = "教师工号")
     private String teaNumber;
 
     /**
      * 姓名
      */
+    @ApiModelProperty(value = "教师姓名")
     private String teaName;
 
     /**
      * 密码
      */
+    @ApiModelProperty(value = "教师密码", example = "12356")
     private String teaPassword;
 
     /**
      * 性别
      */
+    @ApiModelProperty(value = "性别", example = "男/女")
+    @Size(max = 2, message = "请填 '男/女'")
     private String teaGender;
 
     /**
      * 部门
      */
+    @ApiModelProperty(value = "部门")
     private String teaDept;
 
     /**
      * 职称
      */
+    @ApiModelProperty(value = "职称")
     private String teaTitle;
 
     /**
      * 联系电话
      */
+    @ApiModelProperty(value = "联系电话")
     private String teaPhone;
 
     /**
      * Email
      */
+    @ApiModelProperty(value = "Email")
+    @Email(message = "邮箱格式错误")
     private String teaEmail;
 
     /**
      * 照片URL
      */
+    @ApiModelProperty(hidden = true)
     private String teaPhoto;
 
     /**
      * 上次登陆时间
      */
+    @ApiModelProperty(hidden = true)
     private Date lastLoginTime;
 
     /**
      * id
      */
+    @ApiModelProperty(value = "教师id", example = "1", required = true)
+    @NotNull(message = "教师id不能为空")
     private Long id;
     /**
      * 是否有效
      */
+    @ApiModelProperty(hidden = true)
     private Boolean valid;
 
     /**
      * 备注
      */
+    @ApiModelProperty(value = "备注")
     private String memo;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 创建者
-     */
-    private String createBy;
 
     /**
      * 更新时间
      */
+    @ApiModelProperty(hidden = true)
     private Date updateTime;
 
     /**
      * 更新者
      */
+    @ApiModelProperty(hidden = true)
     private String updateBy;
 }

@@ -13,9 +13,9 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableZuulProxy
-public class MonitorApplication {
+public class MonitorManageApplication {
     public static void main(String[] args) {
         EnvironmentAwareUtil.adjust();
-        SpringApplication.run(MonitorApplication.class, args);
+        SpringApplication.run(MonitorManageApplication.class, args);
     }
 }

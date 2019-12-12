@@ -2,21 +2,23 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.spi.system.dto.RolePermissionDto;
+import com.ky.ulearning.spi.system.dto.UpdateTeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -106,6 +108,7 @@ public class TeacherController {
     @ApiOperation("根据工号查询教师")
     @GetMapping("/getByTeaNumber")
     public ResponseEntity getByTeaNumber(String teaNumber){
+        //TODO 缓存需修改
         if (StringUtils.isEmpty(teaNumber)) {
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
@@ -128,12 +131,15 @@ public class TeacherController {
 
     @Log("更新教师信息")
     @ApiOperation(value = "更新教师信息")
-    @GetMapping("/update")
-    public ResponseEntity update(TeacherEntity teacherEntity){
-        if(teacherEntity.getId() == null){
+    @PostMapping("/update")
+    public ResponseEntity update(@Validated UpdateTeacherDto teacherDto){
+        if(teacherDto.getId() == null){
             return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
         }
-        teacherService.update(teacherEntity);
-        return ResponseEntity.ok((teacherEntity));
+        if(!StringUtils.isEmpty(teacherDto.getTeaPassword())){
+            teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
+        }
+        teacherService.update(teacherDto);
+        return ResponseEntity.ok((teacherDto));
     }
 }

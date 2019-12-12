@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.service;
 
+import com.ky.ulearning.spi.system.dto.UpdateTeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 
 /**
@@ -23,5 +24,5 @@ public interface TeacherService {
      *
      * @param newTeacher 待更新的教师
      */
-    void update(TeacherEntity newTeacher);
+    void update(UpdateTeacherDto newTeacher);
 }

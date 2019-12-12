@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.dao;
 
+import com.ky.ulearning.spi.system.dto.UpdateTeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -43,5 +44,5 @@ public interface TeacherDao {
      *
      * @param teacher 待更新的教师
      */
-    void updateById(TeacherEntity teacher);
+    void updateById(UpdateTeacherDto teacher);
 }

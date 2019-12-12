@@ -1,10 +1,6 @@
-package com.ky.ulearning.gateway.config;
+package com.ky.ulearning.system.common.config;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.ParserConfig;
-import com.ky.ulearning.common.core.redis.FastJsonRedisSerializer;
 import com.ky.ulearning.common.core.redis.RedisConfigPrepare;
-import com.ky.ulearning.common.core.redis.StringRedisSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -19,9 +15,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-
-import java.time.Duration;
 
 /**
  * Redis配置类

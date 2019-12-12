@@ -127,11 +127,11 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                 deleteTokenCookie(request, GatewayConstant.COOKIE_REFRESH_TOKEN);
                 throw new JwtTokenException("登录已失效，请重新登录");
             }
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+
+            //每次请求重设用户信息
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (AuthenticationException ae) {
             ae.printStackTrace();
             //交给自定义的AuthenticationFailureHandler

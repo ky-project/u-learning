@@ -4,6 +4,9 @@ import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.system.auth.dao.PermissionDao;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import java.util.List;
  * @date 19/12/08 14:21
  */
 @Service
+@CacheConfig(cacheNames = "permission")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class PermissionServiceImpl implements PermissionService {
 
@@ -28,12 +32,14 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
     public void insert(PermissionEntity permission) {
         permissionDao.insert(permission);
     }
 
     @Override
+    @Cacheable(keyGenerator = "keyGenerator")
     public List<PermissionEntity> getList() {
         return permissionDao.getList();
     }

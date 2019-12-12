@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.system.dto.RolePermissionDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -44,6 +45,6 @@ public interface TeacherRemoting {
      * @param teacherEntity 待更新的教师信息
      * @return 返回响应实体类
      */
-    @GetMapping("/update")
+    @PutMapping("/update")
     TeacherEntity update(@RequestParam Map<String, Object> teacherEntity);
 }

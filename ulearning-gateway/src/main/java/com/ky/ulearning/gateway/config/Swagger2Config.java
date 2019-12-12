@@ -53,7 +53,7 @@ public class Swagger2Config {
                 .apiInfo(apiInfo())
                 .select()
                 //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("com.ky.ulearning.gateway"))
+                .apis(RequestHandlerSelectors.basePackage("com.ky.ulearning.gateway.controller"))
                 .paths(PathSelectors.any())
                 .build()
                 .globalOperationParameters(pars);
