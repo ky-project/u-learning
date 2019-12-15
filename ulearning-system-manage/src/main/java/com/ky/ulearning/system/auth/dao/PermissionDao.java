@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.dao;
 
+import com.ky.ulearning.spi.system.dto.PermissionInsertDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -27,9 +28,9 @@ public interface PermissionDao {
     /**
      * 插入权限记录
      *
-     * @param permission 待插入的权限数据
+     * @param permissionInsertDto 待插入的权限数据
      */
-    void insert(PermissionEntity permission);
+    void insert(PermissionInsertDto permissionInsertDto);
 
     /**
      * 查询所有的权限信息

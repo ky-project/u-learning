@@ -1,11 +1,10 @@
 package com.ky.ulearning.spi.system.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ky.ulearning.spi.common.entity.BaseEntity;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * 教师表实体类
@@ -64,5 +63,6 @@ public class TeacherEntity extends BaseEntity {
     /**
      * 上次登陆时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
 }

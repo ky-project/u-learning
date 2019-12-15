@@ -1,7 +1,13 @@
 package com.ky.ulearning.common.core.exceptions.handler;
 
+import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
+import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
+import feign.FeignException;
+import feign.RetryableException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,8 +22,19 @@ import java.nio.file.AccessDeniedException;
  * @author luyuhao
  * @date 2019/12/6 9:19
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * 服务异常处理
+     */
+    @ExceptionHandler(ServerErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity serverErrorException(ServerErrorException se) {
+        log.error(MicroErrorCodeEnum.SERVER_DOWN.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new JsonResult<>(MicroErrorCodeEnum.SERVER_DOWN));
+    }
 
     /**
      * 权限不足异常处理
@@ -25,7 +42,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity accessDeniedException(AccessDeniedException ae) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new JsonResult(HttpStatus.FORBIDDEN.value(), "权限不足"));
+        log.error(ae.getMessage(), ae);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new JsonResult(MicroErrorCodeEnum.HAS_NO_PERMISSION));
     }
 
     /**
@@ -34,8 +52,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.error(ex.getMessage(), ex);
         FieldError fieldError = ex.getBindingResult().getFieldError();
-        return ResponseEntity.badRequest().body(new JsonResult(HttpStatus.BAD_REQUEST.value(), fieldError == null ? null : fieldError.getDefaultMessage()));
+        String message = fieldError != null && StringUtil.isContainChinese(fieldError.getDefaultMessage()) ? fieldError.getDefaultMessage() : null;
+        return ResponseEntity.badRequest()
+                .body(message == null ? new JsonResult<>(MicroErrorCodeEnum.PARAMETER_ERROR) : new JsonResult<>(HttpStatus.BAD_REQUEST.value(), message));
     }
 
     /**
@@ -43,9 +64,11 @@ public class GlobalExceptionHandler {
      * - @ResponseStatus 表示设置状态码
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity handleException(Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().body(new JsonResult(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        log.error(e.getMessage(), e);
+        String message = StringUtil.isContainChinese(e.getMessage()) ? e.getMessage() : null;
+        return ResponseEntity.badRequest()
+                .body(message == null ? new JsonResult<>(MicroErrorCodeEnum.SYSTEM_ERROR) : new JsonResult<>(HttpStatus.BAD_REQUEST.value(), message));
     }
 }

@@ -3,23 +3,26 @@ package com.ky.ulearning.gateway.controller;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
 import com.ky.ulearning.common.core.annotation.Log;
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
-import com.ky.ulearning.gateway.config.GatewayConfig;
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.redis.RedisService;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
-import com.ky.ulearning.gateway.common.util.JwtRefreshTokenUtil;
-import com.ky.ulearning.gateway.common.util.JwtTokenUtil;
-import com.ky.ulearning.gateway.remoting.TeacherRemoting;
+import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
+import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
+import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +32,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -47,14 +53,14 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/auth")
-@Api(tags = "单点登录接口", description = "单点登录相关接口")
+@Api(tags = "系统认证相关接口")
 public class AuthController {
 
     @Autowired
     private RedisService redisService;
 
     @Autowired
-    private TeacherRemoting teacherRemoting;
+    private SystemManageRemoting systemManageRemoting;
 
     @Autowired
     private JwtRefreshTokenUtil jwtRefreshTokenUtil;
@@ -63,7 +69,7 @@ public class AuthController {
     private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private GatewayConfig gatewayConfig;
+    private GatewayConfigParameters gatewayConfigParameters;
 
     @Autowired
     private JwtAccountDetailsService jwtAccountDetailsService;
@@ -73,6 +79,7 @@ public class AuthController {
      *
      * @return 返回用户信息和token
      */
+    @Log("成功退出系统")
     @ApiOperation(value = "", hidden = true)
     @GetMapping(value = "/logout/success")
     public ResponseEntity logoutSuccess() {
@@ -87,6 +94,7 @@ public class AuthController {
      */
     @Log("登录系统-单点登录")
     @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
+    @ApiResponse(code = 200, message = "请求成功", response = LoginUser.class)
     @PostMapping("/login")
     public ResponseEntity login(@Validated LoginUser loginUser,
                                 HttpServletRequest request,
@@ -139,13 +147,13 @@ public class AuthController {
         map.put("refreshToken", refreshToken);
 
         //根据角色登录日期更新
-        if (GatewayConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())) {
+        if (MicroConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())) {
             Map<String, Object> teacherEntity = new HashMap<>(16);
             teacherEntity.put("id", jwtAccount.getId());
             teacherEntity.put("lastLoginTime", new Date());
             teacherEntity.put("updateTime", jwtAccount.getUpdateTime());
-            teacherRemoting.update(teacherEntity);
-        } else if (GatewayConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
+            systemManageRemoting.update(teacherEntity);
+        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间
         }
         return ResponseEntity.ok(new JsonResult<>(map, "登录成功"));
@@ -178,11 +186,11 @@ public class AuthController {
 
     private void setTokenCookie(HttpServletResponse response, String token, String refreshToken) {
         Cookie tokenCookie = new Cookie(GatewayConstant.COOKIE_TOKEN, token);
-        tokenCookie.setMaxAge((int) (gatewayConfig.getRefreshExpiration() / 1000));
+        tokenCookie.setMaxAge((int) (gatewayConfigParameters.getRefreshExpiration() / 1000));
         tokenCookie.setPath("/");
 
         Cookie refreshTokenCookie = new Cookie(GatewayConstant.COOKIE_REFRESH_TOKEN, refreshToken);
-        refreshTokenCookie.setMaxAge((int) (gatewayConfig.getRefreshExpiration() / 1000));
+        refreshTokenCookie.setMaxAge((int) (gatewayConfigParameters.getRefreshExpiration() / 1000));
         refreshTokenCookie.setPath("/");
 
         response.addCookie(tokenCookie);

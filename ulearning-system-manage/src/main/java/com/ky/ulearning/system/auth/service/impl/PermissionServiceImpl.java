@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.service.impl;
 
+import com.ky.ulearning.spi.system.dto.PermissionInsertDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.system.auth.dao.PermissionDao;
 import com.ky.ulearning.system.auth.service.PermissionService;
@@ -34,8 +35,8 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
-    public void insert(PermissionEntity permission) {
-        permissionDao.insert(permission);
+    public void insert(PermissionInsertDto permissionInsertDto) {
+        permissionDao.insert(permissionInsertDto);
     }
 
     @Override

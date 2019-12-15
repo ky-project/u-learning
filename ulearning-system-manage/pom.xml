@@ -96,11 +96,14 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>swagger-bootstrap-ui</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>io.springfox</groupId>-->
-            <!--<artifactId>springfox-swagger-ui</artifactId>-->
-        <!--</dependency>-->
-
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+        </dependency>
         <!-- swagger2 End -->
 
         <!-- fastjson Begin -->
@@ -134,14 +137,6 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!-- U-Learning End -->
-
-        <!-- Develop Tool Begin -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!-- Develop Tool End -->
     </dependencies>
     <build>
         <plugins>

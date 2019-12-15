@@ -1,8 +1,12 @@
 package com.ky.ulearning.system.auth.dao;
 
+import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RolePermissionEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 角色权限dao
@@ -41,4 +45,12 @@ public interface RolePermissionDao {
      * @param rolePermission 待更新的角色权限
      */
     void updateById(RolePermissionEntity rolePermission);
+
+    /**
+     * 根据角色id查询角色权限
+     *
+     * @param roleIdList 角色权限id集合
+     * @return 返回角色权限对象集合
+     */
+    List<PermissionEntity> getPermissionListByRoleId(@Param("roleIdList") List<Long> roleIdList);
 }

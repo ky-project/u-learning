@@ -1,6 +1,6 @@
 package com.ky.ulearning.system.auth.service;
 
-import com.ky.ulearning.spi.system.dto.RolePermissionDto;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 
 import java.util.List;
 
@@ -11,9 +11,10 @@ import java.util.List;
 public interface TeacherRoleService {
 
     /**
-     * 根据教师id获取角色和角色权限
+     * 根据教师id获取角色集合
+     *
      * @param teaId 教师id
-     * @return 返回角色权限集合
+     * @return 返回角色集合
      */
-    List<RolePermissionDto> getRolePermissionByTeaId(Long teaId);
+    List<RoleEntity> getRoleByTeaId(Long teaId);
 }

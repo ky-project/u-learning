@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @date 19/12/05 03:01
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
+@Transactional(readOnly = true, rollbackFor = Throwable.class)
 public class LogServiceImpl implements LogService {
 
     @Autowired

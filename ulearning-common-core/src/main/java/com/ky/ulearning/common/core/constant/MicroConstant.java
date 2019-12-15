@@ -8,6 +8,24 @@ package com.ky.ulearning.common.core.constant;
  */
 public class MicroConstant {
 
-    public static final String SYSTEM_MANAGE_URI_PREFIX = "/system-manage";
+    /**
+     * 系统教师角色名
+     */
+    public static final String SYS_ROLE_TEACHER = "teacher";
+
+    /**
+     * 系统学生角色名
+     */
+    public static final String SYS_ROLE_STUDENT = "student";
+
+    /**
+     * 用户ip
+     */
+    public static final String USER_REQUEST_IP = "userIp";
+
+    /**
+     * 用户账号
+     */
+    public static final String USERNAME = "username";
 
 }

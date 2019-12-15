@@ -24,7 +24,7 @@
             valid,
             memo,
             create_time,
-            create_by,W
+            create_by,
             update_time,
             update_by
     </sql>

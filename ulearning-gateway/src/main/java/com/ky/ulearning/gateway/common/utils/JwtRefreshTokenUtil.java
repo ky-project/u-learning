@@ -1,7 +1,7 @@
-package com.ky.ulearning.gateway.common.util;
+package com.ky.ulearning.gateway.common.utils;
 
-import com.ky.ulearning.gateway.config.GatewayConfig;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import io.jsonwebtoken.impl.TextCodec;
@@ -29,7 +29,7 @@ public class JwtRefreshTokenUtil {
     private Clock clock = DefaultClock.INSTANCE;
 
     @Autowired
-    private GatewayConfig gatewayConfig;
+    private GatewayConfigParameters gatewayConfigParameters;
 
     /**
      * 获取注册名
@@ -66,10 +66,10 @@ public class JwtRefreshTokenUtil {
     private Claims getAllClaimsFromRefreshToken(String refreshToken) {
         try {
             return Jwts.parser()
-                    .setSigningKey(gatewayConfig.getSecret())
+                    .setSigningKey(gatewayConfigParameters.getSecret())
                     .parseClaimsJws(refreshToken)
                     .getBody();
-        }catch (ExpiredJwtException eje){
+        } catch (ExpiredJwtException eje) {
             return eje.getClaims();
         }
     }
@@ -116,7 +116,7 @@ public class JwtRefreshTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS256, gatewayConfig.getSecret())
+                .signWith(SignatureAlgorithm.HS256, gatewayConfigParameters.getSecret())
                 .compact();
     }
 
@@ -143,7 +143,7 @@ public class JwtRefreshTokenUtil {
         return Jwts.builder()
                 .setHeaderParam("type", "jwt")
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, gatewayConfig.getSecret())
+                .signWith(SignatureAlgorithm.HS256, gatewayConfigParameters.getSecret())
                 .compact();
     }
 
@@ -163,12 +163,12 @@ public class JwtRefreshTokenUtil {
     /**
      * 防篡改校验
      */
-    public Boolean tamperProof(String token){
+    public Boolean tamperProof(String token) {
         //获取header.payload
         String headerAndPayload = token.substring(0, token.lastIndexOf("."));
         String signature = token.substring(token.lastIndexOf(".") + 1);
         //获取key的字节流
-        byte[] keyBytes = TextCodec.BASE64.decode(gatewayConfig.getSecret());
+        byte[] keyBytes = TextCodec.BASE64.decode(gatewayConfigParameters.getSecret());
         //生成key
         SecretKeySpec key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
         //定义算法和key
@@ -182,6 +182,6 @@ public class JwtRefreshTokenUtil {
      * 计算过期时间
      */
     private Date calculateExpirationDate(Date createdDate) {
-        return new Date(createdDate.getTime() + gatewayConfig.getRefreshExpiration());
+        return new Date(createdDate.getTime() + gatewayConfigParameters.getRefreshExpiration());
     }
 }

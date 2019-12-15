@@ -73,9 +73,9 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <!--根据教师id获取角色和角色权限-->
-    <select id="getRolePermissionByTeaId"
-            resultMap="com.ky.ulearning.system.auth.dao.RoleDao.RolePermissionResultMap">
+    <!--根据教师id获取角色集合-->
+    <select id="getRoleByTeaId"
+            resultMap="com.ky.ulearning.system.auth.dao.RoleDao.BaseResultMap">
         SELECT ur.id,
                ur.role_name,
                ur.role_source,
@@ -85,22 +85,9 @@
                ur.create_time,
                ur.create_by,
                ur.update_time,
-               ur.update_by,
-               up.id,
-               up.permission_name,
-               up.permission_source,
-               up.permission_group,
-               up.permission_url,
-               up.valid,
-               up.memo,
-               up.create_time,
-               up.create_by,
-               up.update_time,
-               up.update_by
+               ur.update_by
         FROM u_teacher_role utr
                  LEFT JOIN u_role ur ON ur.valid = 1 AND utr.role_id = ur.id
-                 LEFT JOIN u_role_permission urp ON urp.valid = 1 AND ur.id = urp.role_id
-                 LEFT JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
         WHERE utr.valid = 1
           AND utr.tea_id = #{teaId}
     </select>

@@ -1,12 +1,12 @@
 package com.ky.ulearning.gateway.common.filter;
 
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.exception.JwtTokenException;
-import com.ky.ulearning.gateway.config.GatewayConfig;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
-import com.ky.ulearning.gateway.common.util.JwtRefreshTokenUtil;
-import com.ky.ulearning.gateway.common.util.JwtTokenUtil;
+import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
+import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
 import com.sun.xml.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,14 +57,14 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                                        @Value("${jwt.header-token}") String tokenHeader,
                                        @Value("${jwt.header-refresh-token}") String refreshTokenHeader,
                                        JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler,
-                                       GatewayConfig gatewayConfig) {
+                                       GatewayConfigParameters gatewayConfigParameters) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.jwtRefreshTokenUtil = jwtRefreshTokenUtil;
         this.tokenHeader = tokenHeader;
         this.refreshTokenHeader = refreshTokenHeader;
         this.jwtAuthenticationFailureHandler = jwtAuthenticationFailureHandler;
-        this.refreshExpiration = gatewayConfig.getRefreshExpiration();
+        this.refreshExpiration = gatewayConfigParameters.getRefreshExpiration();
     }
 
     @Override
@@ -93,8 +93,8 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                 return;
             }
             //字符转义
-            tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8);
-            refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8);
+            tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8).trim();
+            refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8).trim();
             if (!tokenHeader.startsWith(PREFIX)
                     || !refreshTokenHeader.startsWith(PREFIX)) {
                 chain.doFilter(request, response);

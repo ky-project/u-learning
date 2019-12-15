@@ -31,6 +31,14 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+        </dependency>
         <!-- swagger2 End -->
 
         <!-- hibernate validator Begin -->
@@ -39,6 +47,13 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
         <!-- hibernate validator End -->
+
+        <!-- fastjson Begin -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+        </dependency>
+        <!-- fastjson End -->
         <!-- Plugins End -->
     </dependencies>
 </project>

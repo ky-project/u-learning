@@ -1,15 +1,14 @@
 package com.ky.ulearning.gateway.config;
 
 import com.ky.ulearning.common.core.exceptions.handler.GlobalExceptionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.config.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * WebMvc配置类
@@ -17,20 +16,10 @@ import javax.servlet.http.HttpServletResponse;
  * @author luyuhao
  * @date 2019/12/6 9:32
  */
+@Slf4j
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowCredentials(true)
-                .allowedHeaders("*")
-//                .allowedOrigins("http://ky.darren1112.com:8081", "http://ky.darren1112.com:8082")
-                .allowedOrigins("*")
-                .allowedMethods("*");
-
-    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

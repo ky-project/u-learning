@@ -1,5 +1,6 @@
 package com.ky.ulearning.spi.common.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
  * @date 2019/12/7 10:44
  */
 @Data
+@ApiModel("登录实体类")
 public class LoginUser {
     @ApiModelProperty(value = "账号:学号/工号", example = "admin", required = true)
     @NotBlank

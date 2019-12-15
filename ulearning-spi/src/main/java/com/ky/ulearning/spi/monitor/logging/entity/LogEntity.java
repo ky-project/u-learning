@@ -22,14 +22,9 @@ public class LogEntity {
     private Long id;
 
     /**
-     * 用户编号
+     * 用户账号
      */
-    private String logUserNumber;
-
-    /**
-     * 用户姓名
-     */
-    private String logUserName;
+    private String logUsername;
 
     /**
      * 操作

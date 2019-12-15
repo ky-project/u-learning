@@ -36,6 +36,13 @@
         </dependency>
         <!-- Spring Boot End -->
 
+        <!-- Spring Cloud End -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!-- Spring Cloud End -->
+
         <!-- Plugins Begin -->
         <!-- lombok Begin -->
         <dependency>
@@ -65,6 +72,12 @@
             <artifactId>fastjson</artifactId>
         </dependency>
         <!-- fastjson End -->
-        <!-- Plugins End -->
+
+        <!-- lang Begin -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <!-- lang End -->
     </dependencies>
 </project>

@@ -1,11 +1,13 @@
 package com.ky.ulearning.spi.system.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +17,7 @@ import java.util.Date;
  * @date 19/12/12 00:15
  */
 @Data
-public class UpdateTeacherDto{
+public class TeacherUpdateDto implements Serializable {
     /**
      * 工号
      */
@@ -76,6 +78,7 @@ public class UpdateTeacherDto{
      * 上次登陆时间
      */
     @ApiModelProperty(hidden = true)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
 
     /**
@@ -100,6 +103,7 @@ public class UpdateTeacherDto{
      * 更新时间
      */
     @ApiModelProperty(hidden = true)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     /**

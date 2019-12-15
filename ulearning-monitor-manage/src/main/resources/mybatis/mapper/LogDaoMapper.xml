@@ -4,8 +4,7 @@
 <mapper namespace="com.ky.ulearning.monitor.logging.dao.LogDao">
     <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.monitor.logging.entity.LogEntity">
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="log_user_number" jdbcType="VARCHAR" property="logUserNumber"/>
-        <result column="log_user_name" jdbcType="VARCHAR" property="logUserName"/>
+        <result column="log_username" jdbcType="VARCHAR" property="logUsername"/>
         <result column="log_description" jdbcType="VARCHAR" property="logDescription"/>
         <result column="log_module" jdbcType="VARCHAR" property="logModule"/>
         <result column="log_ip" jdbcType="VARCHAR" property="logIp"/>
@@ -20,8 +19,7 @@
         <result column="log_address" jdbcType="VARCHAR" property="logAddress"/>
     </resultMap>
     <sql id="insertSql">
-            log_user_number,
-            log_user_name,
+            log_username,
             log_description,
             log_module,
             log_ip,
@@ -37,12 +35,11 @@
     <!-- 插入记录 -->
     <insert id="insert" parameterType="logEntity">
         insert into u_log(<include refid="insertSql"/>)
-        values (#{logUserNumber}, #{logUserName},
-        #{logDescription}, #{logModule},
-        #{logIp}, #{logType},
-        #{logException}, #{logParams},
-        #{logTime}, #{logAddress},
-        #{memo}, #{createBy},
-        #{updateBy})
+        values (#{logUsername}, #{logDescription},
+        #{logModule}, #{logIp},
+        #{logType}, #{logException},
+        #{logParams}, #{logTime},
+        #{logAddress}, #{memo},
+        #{createBy}, #{updateBy})
     </insert>
 </mapper>

@@ -50,6 +50,7 @@ spring:
   #Json时区
   jackson:
     time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
   # 无视redis警告
   data:
     redis:

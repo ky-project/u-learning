@@ -96,7 +96,12 @@
             <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy},
             </if>
-            update_time = now()
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateTime == null">
+                update_time = now()
+            </if>
         </set>
         where valid = 1
         and id = #{id}

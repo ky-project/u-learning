@@ -1,5 +1,8 @@
 package com.ky.ulearning.gateway.config;
 
+import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrapUI;
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,22 +26,23 @@ import java.util.List;
  */
 @Configuration
 @EnableSwagger2
+@EnableSwaggerBootstrapUI
 public class Swagger2Config {
     @Autowired
-    private GatewayConfig gatewayConfig;
+    private GatewayConfigParameters gatewayConfigParameters;
 
     @Bean
     public Docket createRestApi() {
         ParameterBuilder ticketPar1 = new ParameterBuilder();
         ParameterBuilder ticketPar2 = new ParameterBuilder();
         List<Parameter> pars = new ArrayList<>();
-        ticketPar1.name(gatewayConfig.getTokenHeader()).description("token")
+        ticketPar1.name(gatewayConfigParameters.getTokenHeader()).description("token")
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
                 .defaultValue("Bearer ")
                 .required(true)
                 .build();
-        ticketPar2.name(gatewayConfig.getRefreshTokenHeader()).description("refresh_token")
+        ticketPar2.name(gatewayConfigParameters.getRefreshTokenHeader()).description("refresh_token")
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
                 .defaultValue("Bearer ")
@@ -48,12 +52,12 @@ public class Swagger2Config {
         pars.add(ticketPar1.build());
         pars.add(ticketPar2.build());
         return new Docket(DocumentationType.SWAGGER_2)
-                .enable(gatewayConfig.getSwaggerEnabled())
+                .enable(gatewayConfigParameters.getSwaggerEnabled())
                 .useDefaultResponseMessages(true)
                 .apiInfo(apiInfo())
                 .select()
-                //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("com.ky.ulearning.gateway.controller"))
+                //扫描指定注解
+                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 .paths(PathSelectors.any())
                 .build()
                 .globalOperationParameters(pars);
@@ -61,7 +65,7 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("uLearning-system-manage 接口文档")
+                .title("U-Learning 接口文档")
                 .version("0.1")
                 .build();
     }

@@ -1,6 +1,7 @@
 package com.ky.ulearning.system.common.config;
 
 import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrapUI;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,8 +59,8 @@ public class Swagger2Config {
                 .useDefaultResponseMessages(true)
                 .apiInfo(apiInfo())
                 .select()
-                //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("com.ky.ulearning.system"))
+                //扫描注解
+                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 .paths(PathSelectors.any())
                 .build()
                 .globalOperationParameters(pars);

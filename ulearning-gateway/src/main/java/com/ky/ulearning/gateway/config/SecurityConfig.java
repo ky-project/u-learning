@@ -5,7 +5,6 @@ import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationEntryPoint;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -106,9 +105,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/logout").anonymous()
                 .antMatchers("/auth/logout/success").anonymous()
                 .antMatchers("/auth/vCode").anonymous()
+                .antMatchers("/auth/test").anonymous()
 
                 // swagger start
-//                .antMatchers("/v2/api-docs?group=groupName").anonymous()
                 .antMatchers("/swagger-resources/**").anonymous()
                 .antMatchers("/webjars/**").anonymous()
                 .antMatchers("/*/v2/api-docs").anonymous()

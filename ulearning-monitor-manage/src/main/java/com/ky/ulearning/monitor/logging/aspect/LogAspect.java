@@ -1,9 +1,11 @@
 package com.ky.ulearning.monitor.logging.aspect;
 
 import com.ky.ulearning.common.core.annotation.Log;
+import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
 import com.ky.ulearning.common.core.utils.IpUtil;
 import com.ky.ulearning.monitor.logging.service.LogService;
-import com.ky.ulearning.monitor.logging.utils.RequestHolderUtil;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -38,7 +40,7 @@ public class LogAspect {
      * 配置切入点
      */
     @Pointcut("@annotation(com.ky.ulearning.common.core.annotation.Log)")
-    public void LogPointcut() {
+    public void logPointcut() {
         // 该方法无方法体,主要为了让同类中其他方法使用此切入点
     }
 
@@ -47,7 +49,7 @@ public class LogAspect {
      *
      * @param joinPoint join point for advice
      */
-    @Around("LogPointcut()")
+    @Around("logPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result;
         currentTime = System.currentTimeMillis();
@@ -55,12 +57,11 @@ public class LogAspect {
         result = joinPoint.proceed();
         //设置log属性
         LogEntity logEntity = new LogEntity();
-        //TODO 获取教师信息
-//        logEntity.setLogUserNumber(getTeaNumber());
-//        logEntity.setLogUserName(getTeaName());
+        //获取用户信息
+        logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
-        logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
+        logEntity.setLogIp(RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP));
         logEntity.setLogType("INFO");
         logEntity.setLogParams(getParams(joinPoint));
         logEntity.setLogTime(System.currentTimeMillis() - currentTime);
@@ -80,16 +81,16 @@ public class LogAspect {
      * @param join join point for advice
      * @param e    exceptions
      */
-    @AfterThrowing(pointcut = "LogPointcut()", throwing = "e")
+    @AfterThrowing(pointcut = "logPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint join, Throwable e) {
         ProceedingJoinPoint joinPoint = (ProceedingJoinPoint) join;
         //设置log属性
         LogEntity logEntity = new LogEntity();
-//        sysLog.setLogUserNumber(getTeaNumber());
-//        sysLog.setLogUserName(getTeaName());
+//        //获取用户信息
+        logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
-        logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
+        logEntity.setLogIp(RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP));
         logEntity.setLogType("ERROR");
         logEntity.setLogException(e.getMessage());
         logEntity.setLogParams(getParams(joinPoint));
@@ -145,26 +146,5 @@ public class LogAspect {
         return aopLog.value();
     }
 
-//    /**
-//     * 获取用户name
-//     */
-//    private String getTeaName() {
-//        try {
-//            return SecurityUtils.getTeaName();
-//        } catch (Exception e) {
-//            return "";
-//        }
-//    }
-//
-//    /**
-//     * 获取用户工号
-//     */
-//    private String getTeaNumber() {
-//        try {
-//            return SecurityUtils.getTeaNumber();
-//        } catch (Exception e) {
-//            return "";
-//        }
-//    }
 }
 

@@ -1,10 +1,8 @@
-package com.ky.ulearning.gateway.common.util;
+package com.ky.ulearning.gateway.common.utils;
 
-import cn.hutool.json.JSONObject;
-import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import org.springframework.http.HttpStatus;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Date;
@@ -76,6 +74,16 @@ public class JwtAccountUtil {
     public static List<PermissionEntity> getPermissions() {
         JwtAccount jwtAccount = getUserDetails();
         return jwtAccount == null ? null : jwtAccount.getPermissions();
+    }
+
+    /**
+     * 获取系统用户角色集合
+     *
+     * @return 系统用户角色集合
+     */
+    public static List<RoleEntity> getRoles() {
+        JwtAccount jwtAccount = getUserDetails();
+        return jwtAccount == null ? null : jwtAccount.getRoles();
     }
 
 }

@@ -11,16 +11,6 @@ public class GatewayConstant {
     public static final long LOGIN_CODE_EXPIRATION = 2L;
 
     /**
-     * 系统学生角色名
-     */
-    public static final String SYS_ROLE_STUDENT = "student";
-
-    /**
-     * 系统教师角色名
-     */
-    public static final String SYS_ROLE_TEACHER = "teacher";
-
-    /**
      * 存入cookie的token名
      */
     public static final String COOKIE_TOKEN = "token";

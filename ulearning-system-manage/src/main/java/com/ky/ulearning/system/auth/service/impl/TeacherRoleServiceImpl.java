@@ -1,6 +1,6 @@
 package com.ky.ulearning.system.auth.service.impl;
 
-import com.ky.ulearning.spi.system.dto.RolePermissionDto;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.system.auth.dao.TeacherRoleDao;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
  * @date 19/12/08 20:45
  */
 @Service
-@CacheConfig(cacheNames = "teacherRole")
+@CacheConfig(cacheNames = {"teacher", "role"})
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class TeacherRoleServiceImpl implements TeacherRoleService {
 
@@ -25,7 +25,7 @@ public class TeacherRoleServiceImpl implements TeacherRoleService {
 
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
-    public List<RolePermissionDto> getRolePermissionByTeaId(Long teaId) {
-        return teacherRoleDao.getRolePermissionByTeaId(teaId);
+    public List<RoleEntity> getRoleByTeaId(Long teaId) {
+        return teacherRoleDao.getRoleByTeaId(teaId);
     }
 }

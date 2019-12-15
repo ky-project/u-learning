@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
-    <property name="logback.logdir" value="./ulearning-logs/ulearning-config/sys" />
-    <property name="logback.appname" value="ulearning-config" />
+    <property name="logback.logdir" value="./ulearning-logs/config/sys" />
+    <property name="logback.appname" value="config" />
 
     <contextName>${appname}</contextName>
 

@@ -3,6 +3,7 @@ package com.ky.ulearning.spi.system.dto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * @date 19/12/08 03:45
  */
 @Data
-public class RolePermissionDto {
+public class RolePermissionDto implements Serializable {
 
     /**
      * id

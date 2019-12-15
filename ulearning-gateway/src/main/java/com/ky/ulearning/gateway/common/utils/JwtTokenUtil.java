@@ -1,7 +1,7 @@
-package com.ky.ulearning.gateway.common.util;
+package com.ky.ulearning.gateway.common.utils;
 
-import com.ky.ulearning.gateway.config.GatewayConfig;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import io.jsonwebtoken.impl.TextCodec;
@@ -30,7 +30,7 @@ public class JwtTokenUtil {
     private Clock clock = DefaultClock.INSTANCE;
 
     @Autowired
-    private GatewayConfig gatewayConfig;
+    private GatewayConfigParameters gatewayConfigParameters;
 
 
     public String getUsernameFromToken(String token) {
@@ -58,10 +58,10 @@ public class JwtTokenUtil {
     private Claims getAllClaimsFromToken(String token) {
         try {
             return Jwts.parser()
-                    .setSigningKey(gatewayConfig.getSecret())
+                    .setSigningKey(gatewayConfigParameters.getSecret())
                     .parseClaimsJws(token)
                     .getBody();
-        }catch (ExpiredJwtException eje){
+        } catch (ExpiredJwtException eje) {
             return eje.getClaims();
         }
     }
@@ -96,7 +96,7 @@ public class JwtTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS256, gatewayConfig.getSecret())
+                .signWith(SignatureAlgorithm.HS256, gatewayConfigParameters.getSecret())
                 .compact();
     }
 
@@ -117,7 +117,7 @@ public class JwtTokenUtil {
         return Jwts.builder()
                 .setHeaderParam("type", "jwt")
                 .setClaims(claims)
-                .signWith(SignatureAlgorithm.HS256, gatewayConfig.getSecret())
+                .signWith(SignatureAlgorithm.HS256, gatewayConfigParameters.getSecret())
                 .compact();
     }
 
@@ -140,7 +140,7 @@ public class JwtTokenUtil {
             String headerAndPayload = token.substring(0, token.lastIndexOf("."));
             String signature = token.substring(token.lastIndexOf(".") + 1);
             //获取key的字节流
-            byte[] keyBytes = TextCodec.BASE64.decode(gatewayConfig.getSecret());
+            byte[] keyBytes = TextCodec.BASE64.decode(gatewayConfigParameters.getSecret());
             //生成key
             SecretKeySpec key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
             //定义算法和key
@@ -148,13 +148,13 @@ public class JwtTokenUtil {
             //对jwt进行重新加密
             String base64UrlSignature = signer.sign(headerAndPayload);
             return signature.equals(base64UrlSignature);
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
     private Date calculateExpirationDate(Date createdDate) {
-        return new Date(createdDate.getTime() + gatewayConfig.getExpiration());
+        return new Date(createdDate.getTime() + gatewayConfigParameters.getExpiration());
     }
 
 }
