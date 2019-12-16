@@ -27,9 +27,6 @@ public class GatewayConfigParameters {
     @Value("${jwt.header-token}")
     private String tokenHeader;
 
-    @Value("${swagger.enabled}")
-    private Boolean swaggerEnabled;
-
     @Value("${ulearning.admin-patterns}")
     private String[] adminPatterns;
 

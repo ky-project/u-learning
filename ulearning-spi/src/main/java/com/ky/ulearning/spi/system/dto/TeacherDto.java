@@ -17,7 +17,7 @@ import java.util.Date;
  * @date 19/12/12 00:15
  */
 @Data
-public class TeacherUpdateDto implements Serializable {
+public class TeacherDto implements Serializable {
     /**
      * 工号
      */
@@ -84,7 +84,7 @@ public class TeacherUpdateDto implements Serializable {
     /**
      * id
      */
-    @ApiModelProperty(value = "教师id", example = "1", required = true)
+    @ApiModelProperty(value = "教师id", example = "1")
     @NotNull(message = "教师id不能为空")
     private Long id;
     /**

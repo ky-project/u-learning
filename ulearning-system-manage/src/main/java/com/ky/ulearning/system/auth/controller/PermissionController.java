@@ -4,7 +4,6 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.spi.system.dto.PermissionInsertDto;
-import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +31,7 @@ public class PermissionController {
     @Log("添加权限")
     @ApiOperation("添加权限")
     @PostMapping("/add")
-    public ResponseEntity add(@Validated PermissionInsertDto permissionInsertDto){
+    public ResponseEntity<JsonResult> add(@Validated PermissionInsertDto permissionInsertDto) {
         permissionService.insert(permissionInsertDto);
         return ResponseEntityUtil.ok(new JsonResult<>());
     }

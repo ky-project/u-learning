@@ -1,6 +1,5 @@
 package com.ky.ulearning.common.core.utils;
 
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -14,8 +13,8 @@ import java.util.Optional;
  * @date 19/12/05 02:36
  */
 public class RequestHolderUtil {
-    private static ServletRequestAttributes getRequestAttributes(){
-        return (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
+    private static ServletRequestAttributes getRequestAttributes() {
+        return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
     }
 
     public static HttpServletRequest getHttpServletRequest() {
@@ -24,7 +23,7 @@ public class RequestHolderUtil {
                 .orElse(null);
     }
 
-    public static String getHeaderByName(String name){
+    public static String getHeaderByName(String name) {
         return Optional.ofNullable(getHttpServletRequest())
                 .map(request -> request.getHeader(name))
                 .orElse(null);

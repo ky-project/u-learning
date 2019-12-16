@@ -1,7 +1,7 @@
 package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
-import com.ky.ulearning.spi.system.dto.TeacherUpdateDto;
+import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.dao.TeacherDao;
 import com.ky.ulearning.system.auth.service.TeacherService;
@@ -36,7 +36,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
-    public void update(TeacherUpdateDto newTeacher) {
+    public void update(TeacherDto newTeacher) {
         //判断teaNumber是否存在
         if (!StringUtils.isEmpty(newTeacher.getTeaNumber())
                 && teacherDao.findByTeaNumber(newTeacher.getTeaNumber()) != null) {

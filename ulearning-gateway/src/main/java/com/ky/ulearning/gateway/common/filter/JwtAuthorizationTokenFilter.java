@@ -10,7 +10,6 @@ import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
 import com.sun.xml.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,30 +42,25 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
 
     private final static String PREFIX = "Bearer ";
 
-    private Long refreshExpiration;
     private final UserDetailsService userDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtRefreshTokenUtil jwtRefreshTokenUtil;
-    private final String tokenHeader;
-    private final String refreshTokenHeader;
     private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
+    private final GatewayConfigParameters gatewayConfigParameters;
 
     public JwtAuthorizationTokenFilter(@Qualifier("jwtAccountDetailsService") UserDetailsService userDetailsService,
                                        JwtTokenUtil jwtTokenUtil,
                                        JwtRefreshTokenUtil jwtRefreshTokenUtil,
-                                       @Value("${jwt.header-token}") String tokenHeader,
-                                       @Value("${jwt.header-refresh-token}") String refreshTokenHeader,
                                        JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler,
                                        GatewayConfigParameters gatewayConfigParameters) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.jwtRefreshTokenUtil = jwtRefreshTokenUtil;
-        this.tokenHeader = tokenHeader;
-        this.refreshTokenHeader = refreshTokenHeader;
         this.jwtAuthenticationFailureHandler = jwtAuthenticationFailureHandler;
-        this.refreshExpiration = gatewayConfigParameters.getRefreshExpiration();
+        this.gatewayConfigParameters = gatewayConfigParameters;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -80,8 +74,8 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         }
 
         //获取请求头
-        String tokenHeader = request.getHeader(this.tokenHeader);
-        String refreshTokenHeader = request.getHeader(this.refreshTokenHeader);
+        String tokenHeader = request.getHeader(gatewayConfigParameters.getTokenHeader());
+        String refreshTokenHeader = request.getHeader(gatewayConfigParameters.getRefreshTokenHeader());
 
         String token;
         String refreshToken;
@@ -155,7 +149,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
 
     private void setTokenCookie(HttpServletResponse response, String tokenName, String tokenValue) {
         Cookie tokenCookie = new Cookie(tokenName, tokenValue);
-        tokenCookie.setMaxAge((int) (refreshExpiration / 1000));
+        tokenCookie.setMaxAge((int) (gatewayConfigParameters.getRefreshExpiration() / 1000));
         tokenCookie.setPath("/");
         response.addCookie(tokenCookie);
     }

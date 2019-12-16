@@ -1,15 +1,12 @@
 package com.ky.ulearning.gateway.common.security;
 
-import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.conversion.UserContextJwtAccountMapper;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
+import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.spi.common.dto.UserContext;
-import com.netflix.client.ClientException;
-import feign.FeignException;
-import feign.RetryableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -77,7 +75,10 @@ public class JwtAccountDetailsService implements UserDetailsService {
     private UserContext teacherLogin(String teaNumber) {
         //获取教师信息
         try {
-            return systemManageRemoting.login(teaNumber);
+            JsonResult<UserContext> userContextJsonResult = systemManageRemoting.login(teaNumber);
+            return Optional.ofNullable(userContextJsonResult)
+                    .map(JsonResult::getData)
+                    .orElse(null);
         }catch (Exception e) {
            throw new ServerErrorException();
         }

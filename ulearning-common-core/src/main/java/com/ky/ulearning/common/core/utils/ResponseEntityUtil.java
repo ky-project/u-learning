@@ -10,11 +10,11 @@ import org.springframework.http.ResponseEntity;
  */
 public class ResponseEntityUtil {
 
-    public static <T> ResponseEntity badRequest(T body){
+    public static <T> ResponseEntity<T> badRequest(T body){
         return ResponseEntity.badRequest().body(body);
     }
 
-    public static <T> ResponseEntity ok(T body){
+    public static <T> ResponseEntity<T> ok(T body){
         return ResponseEntity.ok(body);
     }
 }

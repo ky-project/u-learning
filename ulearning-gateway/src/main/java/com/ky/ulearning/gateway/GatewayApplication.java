@@ -10,7 +10,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * @author luyuhao
  * @date 19/11/29 02:13
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "com.ky.ulearning.gateway",
+        "com.ky.ulearning.common.core.component"})
 @EnableEurekaClient
 @EnableFeignClients
 public class GatewayApplication {

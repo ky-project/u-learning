@@ -11,7 +11,9 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
  * @author luyuhao
  * @date 19/12/04 01:17
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "com.ky.ulearning.system",
+        "com.ky.ulearning.common.core.component"})
 @EnableEurekaClient
 @EnableZuulProxy
 @EnableCaching

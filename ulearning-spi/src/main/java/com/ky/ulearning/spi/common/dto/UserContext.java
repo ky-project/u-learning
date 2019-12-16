@@ -2,6 +2,8 @@ package com.ky.ulearning.spi.common.dto;
 
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -1,14 +1,11 @@
 package com.ky.ulearning.gateway.remoting;
 
+import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.spi.common.dto.UserContext;
-import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.entity.RoleEntity;
-import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.system.dto.TeacherDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,7 +26,7 @@ public interface SystemManageRemoting {
      * @return 登录的账号信息
      */
     @PostMapping("/login")
-    UserContext login(@RequestParam("teaNumber") String teaNumber);
+    JsonResult<UserContext> login(@RequestParam("teaNumber") String teaNumber);
 
     /**
      * 更新教师信息
@@ -38,5 +35,5 @@ public interface SystemManageRemoting {
      * @return 教师信息
      */
     @PutMapping("/update")
-    TeacherEntity update(@RequestParam Map<String, Object> teacherEntity);
+    JsonResult<TeacherDto> update(@RequestParam Map<String, Object> teacherEntity);
 }

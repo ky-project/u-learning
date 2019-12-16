@@ -2,11 +2,11 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.constant.MicroConstant;
-import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.spi.common.dto.UserContext;
-import com.ky.ulearning.spi.system.dto.TeacherUpdateDto;
+import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.RolePermissionService;
@@ -15,10 +15,9 @@ import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -26,7 +25,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,7 +115,7 @@ public class TeacherController {
     @Log("教师登录")
     @ApiOperation(value = "", hidden = true)
     @PostMapping("/login")
-    public ResponseEntity login(String teaNumber){
+    public ResponseEntity<JsonResult<UserContext>> login(String teaNumber){
         if(StringUtils.isEmpty(teaNumber)){
             return ResponseEntityUtil.badRequest(new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY));
         }
@@ -145,45 +143,46 @@ public class TeacherController {
                     .collect(Collectors.toList());
             userContext.setPermissions(rolePermissionService.getPermissionListByRoleId(roleIdList));
         }
-        return ResponseEntityUtil.ok(userContext);
+        return ResponseEntityUtil.ok(new JsonResult<>(userContext));
     }
 
     @Log("根据工号查询教师")
     @ApiOperation("根据工号查询教师")
     @GetMapping("/getByTeaNumber")
-    public ResponseEntity getByTeaNumber(String teaNumber){
+    public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber){
         if (StringUtils.isEmpty(teaNumber)) {
-            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
+            return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
-        return ResponseEntityUtil.ok((exists));
+        return ResponseEntityUtil.ok((new JsonResult<>(exists)));
     }
 
-    @Log("查询教师角色权限")
-    @ApiOperation("查询教师角色权限")
+    @Log("查询教师角色")
+    @ApiOperation("查询教师角色")
     @GetMapping("/getRoleByTeaId")
-    public ResponseEntity getRoleByTeaId(Long id){
+    public ResponseEntity<JsonResult<List<RoleEntity>>> getRoleByTeaId(Long id){
         if(id == null){
-            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.PARAMETER_EMPTY)));
+            return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         //将其转换为userContext，并获取角色list和权限list
         List<RoleEntity> rolePermissionDtoList = teacherRoleService.getRoleByTeaId(id);
-        return ResponseEntity.ok((rolePermissionDtoList));
+        return ResponseEntity.ok(new JsonResult<>(rolePermissionDtoList));
     }
 
 
     @Log("更新教师信息")
     @ApiOperation(value = "更新教师信息")
+    @ApiOperationSupport(ignoreParameters = "id")
     @PutMapping("/update")
-    public ResponseEntity update(@Validated TeacherUpdateDto teacherDto){
+    public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto){
         if(teacherDto.getId() == null){
-            return ResponseEntity.badRequest().body((new JsonResult(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
+            return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
         }
         if(!StringUtils.isEmpty(teacherDto.getTeaPassword())){
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
         log.info("update lastLoginTime = {}, updateTime = {}", teacherDto.getLastLoginTime(), teacherDto.getUpdateTime());
         teacherService.update(teacherDto);
-        return ResponseEntity.ok((teacherDto));
+        return ResponseEntity.ok(new JsonResult<>(teacherDto));
     }
 }

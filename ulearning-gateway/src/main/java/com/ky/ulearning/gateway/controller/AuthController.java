@@ -7,6 +7,7 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
+import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
@@ -19,10 +20,8 @@ import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
-import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -94,12 +93,10 @@ public class AuthController {
      */
     @Log("登录系统-单点登录")
     @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
-    @ApiResponse(code = 200, message = "请求成功", response = LoginUser.class)
     @PostMapping("/login")
-    public ResponseEntity login(@Validated LoginUser loginUser,
+    public ResponseEntity<JsonResult> login(@Validated LoginUser loginUser,
                                 HttpServletRequest request,
                                 HttpServletResponse response) {
-
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
         loginUser.setUsername(loginUser.getUsername().trim());
@@ -156,7 +153,7 @@ public class AuthController {
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间
         }
-        return ResponseEntity.ok(new JsonResult<>(map, "登录成功"));
+        return ResponseEntityUtil.ok(new JsonResult<>(map, "登录成功"));
     }
 
     /**
@@ -164,7 +161,7 @@ public class AuthController {
      */
     @ApiOperation(value = "获取验证码", notes = "每次登录前必须先调用该api获取验证码，登录时需带上uuid和用户填写的验证码<br/>返回的img属性在img标签中使用，src=返回的img串")
     @GetMapping(value = "/vCode")
-    public ResponseEntity getCode() throws IOException {
+    public ResponseEntity<JsonResult<ImgResult>> getCode() throws IOException {
         //生成随机字串
         String verifyCode = VerifyCodeUtil.generateVerifyCode(4);
         String uuid = IdUtil.simpleUUID();
