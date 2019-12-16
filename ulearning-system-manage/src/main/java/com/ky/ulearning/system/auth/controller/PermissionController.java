@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@Api(tags = "权限管理接口", description = "权限管理相关接口")
+@Api(tags = "权限管理", description = "权限管理接口")
 @RequestMapping("/permission")
 public class PermissionController {
 

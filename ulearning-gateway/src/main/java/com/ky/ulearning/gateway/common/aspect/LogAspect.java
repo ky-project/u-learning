@@ -1,11 +1,15 @@
-package com.ky.ulearning.monitor.logging.aspect;
+package com.ky.ulearning.gateway.common.aspect;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.constant.MicroConstant;
-import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
+import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
 import com.ky.ulearning.common.core.utils.IpUtil;
-import com.ky.ulearning.monitor.logging.service.LogService;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
+import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
+import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -19,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * 日志aop切面类
@@ -32,7 +37,7 @@ import java.lang.reflect.Method;
 public class LogAspect {
 
     @Autowired
-    private LogService logService;
+    private MonitorManageRemoting monitorManageRemoting;
 
     private long currentTime = 0L;
 
@@ -58,19 +63,28 @@ public class LogAspect {
         //设置log属性
         LogEntity logEntity = new LogEntity();
         //获取用户信息
-        logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        logEntity.setLogUsername(JwtAccountUtil.getUsername());
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
-        logEntity.setLogIp(RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP));
+        logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
         logEntity.setLogType("INFO");
         logEntity.setLogParams(getParams(joinPoint));
         logEntity.setLogTime(System.currentTimeMillis() - currentTime);
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
-        //保存log信息
-        logService.insert(logEntity);
 
+        Map<String, Object> logMap =
+                JSONObject.parseObject(JSON.toJSONString(logEntity,
+                        SerializerFeature.WriteNullStringAsEmpty,
+                        SerializerFeature.WriteNullNumberAsZero,
+                        SerializerFeature.WriteMapNullValue));
+        try {
+            //保存log信息
+            monitorManageRemoting.add(logMap);
+        }catch (Exception e) {
+            throw new ServerErrorException();
+        }
         return result;
     }
 
@@ -87,10 +101,10 @@ public class LogAspect {
         //设置log属性
         LogEntity logEntity = new LogEntity();
 //        //获取用户信息
-        logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        logEntity.setLogUsername(JwtAccountUtil.getUsername());
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
-        logEntity.setLogIp(RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP));
+        logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
         logEntity.setLogType("ERROR");
         logEntity.setLogException(e.getMessage());
         logEntity.setLogParams(getParams(joinPoint));
@@ -98,8 +112,18 @@ public class LogAspect {
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
-        //保存log信息
-        logService.insert(logEntity);
+
+        Map<String, Object> logMap =
+                JSONObject.parseObject(JSON.toJSONString(logEntity,
+                        SerializerFeature.WriteNullStringAsEmpty,
+                        SerializerFeature.WriteNullNumberAsZero,
+                        SerializerFeature.WriteMapNullValue));
+        try {
+            //保存log信息
+            monitorManageRemoting.add(logMap);
+        }catch (Exception te) {
+            throw new ServerErrorException();
+        }
     }
 
     /**

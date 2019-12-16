@@ -63,6 +63,7 @@ public class IpUtil {
             int algorithm = DbSearcher.BTREE_ALGORITHM;
             DbConfig config = new DbConfig();
             File file = FileUtil.inputStreamToFile(new ClassPathResource(path).getStream(), name);
+            log.info(file.getAbsolutePath());
             DbSearcher searcher = new DbSearcher(config, file.getPath());
             Method method;
             switch (algorithm) {

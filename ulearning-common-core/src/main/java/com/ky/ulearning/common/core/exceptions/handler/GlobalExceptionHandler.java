@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
 import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler {
     /**
      * 服务异常处理
      */
-    @ExceptionHandler(ServerErrorException.class)
+    @ExceptionHandler({ServerErrorException.class, FeignException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity serverErrorException(ServerErrorException se) {
         log.error(MicroErrorCodeEnum.SERVER_DOWN.getMessage());

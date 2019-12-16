@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @RestController
-@Api(tags = "教师管理接口", description = "教师管理相关接口")
+@Api(tags = "教师管理", description = "教师管理接口")
 @RequestMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class TeacherController {
 
@@ -112,7 +112,6 @@ public class TeacherController {
 //    }
 
 
-    @Log("教师登录")
     @ApiOperation(value = "", hidden = true)
     @PostMapping("/login")
     public ResponseEntity<JsonResult<UserContext>> login(String teaNumber){

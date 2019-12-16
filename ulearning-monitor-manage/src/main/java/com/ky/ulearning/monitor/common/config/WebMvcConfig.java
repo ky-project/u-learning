@@ -1,9 +1,8 @@
-package com.ky.ulearning.system.common.config;
+package com.ky.ulearning.monitor.common.config;
 
 import com.ky.ulearning.common.core.exceptions.handler.GlobalExceptionHandler;
 import com.ky.ulearning.common.core.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,15 +17,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import javax.annotation.PostConstruct;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * WebMvc配置类
  *
  * @author luyuhao
- * @date 2019/12/6 9:32
+ * @date 19/12/17 02:45
  */
 @Slf4j
 @Configuration

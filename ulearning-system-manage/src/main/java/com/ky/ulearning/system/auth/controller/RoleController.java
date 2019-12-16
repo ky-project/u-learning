@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@Api(tags = "角色管理接口", description = "角色管理相关接口")
+@Api(tags = "角色管理", description = "角色管理接口")
 @RequestMapping("/role")
 public class RoleController {
 

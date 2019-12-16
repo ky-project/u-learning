@@ -21,7 +21,7 @@ import java.util.List;
 @Primary
 public class SwaggerResourceConfig implements SwaggerResourcesProvider {
 
-    private final static String[] IGNORED_ROUTE = {"monitor-manage", "config"};
+    private final static String[] IGNORED_ROUTE = {"config"};
 
     private final static String IGNORED_PREFIX = "gateway";
 
