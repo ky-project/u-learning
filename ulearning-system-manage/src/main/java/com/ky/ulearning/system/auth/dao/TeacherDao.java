@@ -1,10 +1,13 @@
 package com.ky.ulearning.system.auth.dao;
 
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 教师dao 接口类
@@ -45,4 +48,21 @@ public interface TeacherDao {
      * @param teacher 待更新的教师
      */
     void updateById(TeacherDto teacher);
+
+    /**
+     * 分页查询，计算总记录数
+     *
+     * @param teacherDto 查询条件
+     * @return 记录数
+     */
+    Integer countListPage(TeacherDto teacherDto);
+
+    /**
+     * 根据条件进行用户查询
+     *
+     * @param teacherDto 筛选条件
+     * @param pageParam  分页参数
+     * @return 返回教师记录集合
+     */
+    List<TeacherEntity> listPage(TeacherDto teacherDto, PageParam pageParam);
 }

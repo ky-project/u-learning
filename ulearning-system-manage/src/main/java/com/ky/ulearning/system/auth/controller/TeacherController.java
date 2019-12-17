@@ -1,10 +1,14 @@
 package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
+import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
@@ -99,17 +103,17 @@ public class TeacherController {
 //        return ResponseEntity.ok(JsonResultUtil.success("更新教师成功"));
 //    }
 //
-//    @Log("教师查询")
-//    @ApiOperation(value = "教师查询", notes = "分页查询，支持多条件筛选")
+    @Log("教师查询")
+    @ApiOperation(value = "教师查询", notes = "分页查询，支持多条件筛选")
 //    @PermissionName(source = "teacher:query", name = "教师查询", group = "教师管理")
-//    @GetMapping("/list")
-//    public ResponseEntity getUsers(@Validated SysTeacherQueryCriteriaDTO sysTeacherQueryCriteriaDTO) {
-//        if (sysTeacherQueryCriteriaDTO.getCurrentPage() != null && sysTeacherQueryCriteriaDTO.getPageSize() != null) {
-//            sysTeacherQueryCriteriaDTO.setStartIndex((sysTeacherQueryCriteriaDTO.getCurrentPage() - 1) * sysTeacherQueryCriteriaDTO.getPageSize());
-//        }
-//        PagingDTO<SysTeacherDTO> pagingDTO = sysTeacherService.findByQueryCriteria(sysTeacherQueryCriteriaDTO);
-//        return ResponseEntity.ok(JsonResultUtil.success(pagingDTO, "查询成功"));
-//    }
+    @GetMapping("/list")
+    public ResponseEntity getUsers(TeacherDto teacherDto, PageParam pageParam) {
+        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
+            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
+        }
+        PageBean<TeacherEntity> pagingDTO = teacherService.pageTeacherList(teacherDto, pageParam);
+        return ResponseEntity.ok(new JsonResult<>(pagingDTO, "查询成功"));
+    }
 
 
     @ApiOperation(value = "", hidden = true)
@@ -158,8 +162,8 @@ public class TeacherController {
 
     @Log("查询教师角色")
     @ApiOperation("查询教师角色")
-    @GetMapping("/getRoleByTeaId")
-    public ResponseEntity<JsonResult<List<RoleEntity>>> getRoleByTeaId(Long id){
+    @GetMapping("/getAssignedRole")
+    public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id){
         if(id == null){
             return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
@@ -180,7 +184,7 @@ public class TeacherController {
         if(!StringUtils.isEmpty(teacherDto.getTeaPassword())){
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
-        log.info("update lastLoginTime = {}, updateTime = {}", teacherDto.getLastLoginTime(), teacherDto.getUpdateTime());
+        teacherDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         teacherService.update(teacherDto);
         return ResponseEntity.ok(new JsonResult<>(teacherDto));
     }

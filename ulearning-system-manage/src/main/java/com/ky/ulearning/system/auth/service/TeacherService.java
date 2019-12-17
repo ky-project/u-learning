@@ -1,5 +1,7 @@
 package com.ky.ulearning.system.auth.service;
 
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 
@@ -25,4 +27,13 @@ public interface TeacherService {
      * @param newTeacher 待更新的教师
      */
     void update(TeacherDto newTeacher);
+
+    /**
+     * 分页查询教师信息
+     *
+     * @param teacherDto 教师信息筛选条件
+     * @param pageParam  分页参数
+     * @return 返回分页教师类
+     */
+    PageBean<TeacherEntity> pageTeacherList(TeacherDto teacherDto, PageParam pageParam);
 }
