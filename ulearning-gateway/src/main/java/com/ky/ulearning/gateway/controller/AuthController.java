@@ -52,7 +52,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/auth")
-@Api(tags = "系统认证相关接口")
+@Api(tags = "系统认证接口")
 public class AuthController {
 
     @Autowired

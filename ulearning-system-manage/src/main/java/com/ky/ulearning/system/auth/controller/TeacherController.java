@@ -54,7 +54,7 @@ public class TeacherController {
     private RolePermissionService rolePermissionService;
 
 
-//    @Log("教师添加")
+    //    @Log("教师添加")
 //    @ApiOperation(value = "教师添加", notes = "密码默认123456")
 //    @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
 //    @PostMapping("/save")
@@ -106,20 +106,21 @@ public class TeacherController {
     @Log("教师查询")
     @ApiOperation(value = "教师查询", notes = "分页查询，支持多条件筛选")
 //    @PermissionName(source = "teacher:query", name = "教师查询", group = "教师管理")
-    @GetMapping("/list")
-    public ResponseEntity getUsers(TeacherDto teacherDto, PageParam pageParam) {
+    @GetMapping("/pageList")
+    public ResponseEntity<JsonResult<PageBean<TeacherEntity>>> pageList(TeacherDto teacherDto,
+                                                                        PageParam pageParam) {
         if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
             pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
         }
-        PageBean<TeacherEntity> pagingDTO = teacherService.pageTeacherList(teacherDto, pageParam);
-        return ResponseEntity.ok(new JsonResult<>(pagingDTO, "查询成功"));
+        PageBean<TeacherEntity> pageBean = teacherService.pageTeacherList(teacherDto, pageParam);
+        return ResponseEntity.ok(new JsonResult<>(pageBean, "查询成功"));
     }
 
 
     @ApiOperation(value = "", hidden = true)
     @PostMapping("/login")
-    public ResponseEntity<JsonResult<UserContext>> login(String teaNumber){
-        if(StringUtils.isEmpty(teaNumber)){
+    public ResponseEntity<JsonResult<UserContext>> login(String teaNumber) {
+        if (StringUtils.isEmpty(teaNumber)) {
             return ResponseEntityUtil.badRequest(new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY));
         }
         //获取教师信息
@@ -152,7 +153,7 @@ public class TeacherController {
     @Log("根据工号查询教师")
     @ApiOperation("根据工号查询教师")
     @GetMapping("/getByTeaNumber")
-    public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber){
+    public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber) {
         if (StringUtils.isEmpty(teaNumber)) {
             return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
@@ -163,8 +164,8 @@ public class TeacherController {
     @Log("查询教师角色")
     @ApiOperation("查询教师角色")
     @GetMapping("/getAssignedRole")
-    public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id){
-        if(id == null){
+    public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
+        if (id == null) {
             return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         //将其转换为userContext，并获取角色list和权限list
@@ -177,11 +178,11 @@ public class TeacherController {
     @ApiOperation(value = "更新教师信息")
     @ApiOperationSupport(ignoreParameters = "id")
     @PutMapping("/update")
-    public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto){
-        if(teacherDto.getId() == null){
+    public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto) {
+        if (teacherDto.getId() == null) {
             return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
         }
-        if(!StringUtils.isEmpty(teacherDto.getTeaPassword())){
+        if (!StringUtils.isEmpty(teacherDto.getTeaPassword())) {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
         teacherDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));

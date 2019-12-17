@@ -106,4 +106,70 @@
         where valid = 1
         and id = #{id}
     </update>
+    <!--根据条件进行用户查询-->
+    <select id="listPage" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        <if test="teacherDto.id != null">
+            and id = #{teacherDto.id}
+        </if>
+        <if test="teacherDto.teaNumber != null and teacherDto.teaNumber != ''">
+            and tea_number like concat('%', #{teacherDto.teaNumber}, '%')
+        </if>
+        <if test="teacherDto.teaName != null and teacherDto.teaName != ''">
+            and tea_name like concat('%', #{teacherDto.teaName}, '%')
+        </if>
+        <if test="teacherDto.teaGender != null and teacherDto.teaGender != ''">
+            and tea_gender = #{teacherDto.teaGender}
+        </if>
+        <if test="teacherDto.teaDept != null and teacherDto.teaDept != ''">
+            and tea_dept like concat('%', #{teacherDto.teaDept}, '%')
+        </if>
+        <if test="teacherDto.teaTitle != null and teacherDto.teaTitle != ''">
+            and tea_title like concat('%', #{teacherDto.teaTitle}, '%')
+        </if>
+        <if test="teacherDto.teaPhone != null and teacherDto.teaPhone != ''">
+            and tea_phone like concat('%', #{teacherDto.teaPhone}, '%')
+        </if>
+        <if test="teacherDto.teaEmail != null and teacherDto.teaEmail != ''">
+            and tea_email like concat('%', #{teacherDto.teaEmail}, '%')
+        </if>
+        order by update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询，计算总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        select
+        COUNT(1)
+        from u_teacher
+        where valid = 1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="teaNumber != null and teaNumber != ''">
+            and tea_number like concat('%', #{teaNumber}, '%')
+        </if>
+        <if test="teaName != null and teaName != ''">
+            and tea_name like concat('%', #{teaName}, '%')
+        </if>
+        <if test="teaGender != null and teaGender != ''">
+            and tea_gender = #{teaGender}
+        </if>
+        <if test="teaDept != null and teaDept != ''">
+            and tea_dept like concat('%', #{teaDept}, '%')
+        </if>
+        <if test="teaTitle != null and teaTitle != ''">
+            and tea_title like concat('%', #{teaTitle}, '%')
+        </if>
+        <if test="teaPhone != null and teaPhone != ''">
+            and tea_phone like concat('%', #{teaPhone}, '%')
+        </if>
+        <if test="teaEmail != null and teaEmail != ''">
+            and tea_email like concat('%', #{teaEmail}, '%')
+        </if>
+    </select>
 </mapper>

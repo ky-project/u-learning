@@ -64,5 +64,5 @@ public interface TeacherDao {
      * @param pageParam  分页参数
      * @return 返回教师记录集合
      */
-    List<TeacherEntity> listPage(TeacherDto teacherDto, PageParam pageParam);
+    List<TeacherEntity> listPage(@Param("teacherDto") TeacherDto teacherDto, @Param("pageParam") PageParam pageParam);
 }
