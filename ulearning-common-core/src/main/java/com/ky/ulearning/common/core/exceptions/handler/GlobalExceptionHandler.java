@@ -32,8 +32,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity serverErrorException(ServerErrorException se) {
 //        log.error(MicroErrorCodeEnum.SERVER_DOWN.getMessage());
-        return ResponseEntityUtil.custom(HttpStatus.INTERNAL_SERVER_ERROR,
-                new JsonResult<>(MicroErrorCodeEnum.SERVER_DOWN));
+        return ResponseEntityUtil.internalServerError(new JsonResult<>(StringUtil.isEmpty(se.getMessage()) ? MicroErrorCodeEnum.SERVER_DOWN : se.getMessage()));
     }
 
     /**
@@ -43,8 +42,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity accessDeniedException(AccessDeniedException ae) {
 //        log.error(ae.getMessage(), ae);
-        return ResponseEntityUtil.custom(HttpStatus.FORBIDDEN,
-                new JsonResult(MicroErrorCodeEnum.HAS_NO_PERMISSION));
+        return ResponseEntityUtil.forbidden(new JsonResult(MicroErrorCodeEnum.HAS_NO_PERMISSION));
     }
 
     /**

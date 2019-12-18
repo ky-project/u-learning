@@ -80,7 +80,7 @@ public class JwtAccountDetailsService implements UserDetailsService {
                     .map(JsonResult::getData)
                     .orElse(null);
         }catch (Exception e) {
-           throw new ServerErrorException();
+           return null;
         }
     }
 }

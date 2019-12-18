@@ -122,7 +122,7 @@ public class LogAspect {
             //保存log信息
             monitorManageRemoting.add(logMap);
         }catch (Exception te) {
-            throw new ServerErrorException();
+            log.error(te.getMessage());
         }
     }
 

@@ -127,7 +127,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (AuthenticationException ae) {
-            ae.printStackTrace();
+            log.error(ae.getMessage());
             //交给自定义的AuthenticationFailureHandler
             jwtAuthenticationFailureHandler.onAuthenticationFailure(request, response, ae);
             return;
