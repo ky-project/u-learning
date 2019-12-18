@@ -85,7 +85,8 @@ public class LogAspect {
             //保存log信息
             monitorManageRemoting.add(logMap);
         }catch (Exception e) {
-            throw new ServerErrorException();
+//            throw new ServerErrorException();
+            log.error(e.getMessage(), e);
         }
         return result;
     }

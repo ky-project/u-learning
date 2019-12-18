@@ -105,7 +105,7 @@ public class TeacherController {
 //
     @Log("教师查询")
     @ApiOperation(value = "教师查询", notes = "分页查询，支持多条件筛选")
-//    @PermissionName(source = "teacher:query", name = "教师查询", group = "教师管理")
+    @PermissionName(source = "teacher:pageList", name = "教师查询", group = "教师管理")
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<TeacherEntity>>> pageList(TeacherDto teacherDto,
                                                                         PageParam pageParam) {
@@ -152,6 +152,7 @@ public class TeacherController {
 
     @Log("根据工号查询教师")
     @ApiOperation("根据工号查询教师")
+    @PermissionName(source = "teacher:getByTeaNumber", name = "根据工号查询教师", group = "教师管理")
     @GetMapping("/getByTeaNumber")
     public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber) {
         if (StringUtils.isEmpty(teaNumber)) {
@@ -163,6 +164,7 @@ public class TeacherController {
 
     @Log("查询教师角色")
     @ApiOperation("查询教师角色")
+    @PermissionName(source = "teacher:getAssignedRole", name = "查询教师角色", group = "教师管理")
     @GetMapping("/getAssignedRole")
     public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
         if (id == null) {
@@ -177,6 +179,7 @@ public class TeacherController {
     @Log("更新教师信息")
     @ApiOperation(value = "更新教师信息")
     @ApiOperationSupport(ignoreParameters = "id")
+    @PermissionName(source = "teacher:update", name = "更新教师信息", group = "教师管理")
     @PutMapping("/update")
     public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto) {
         if (teacherDto.getId() == null) {

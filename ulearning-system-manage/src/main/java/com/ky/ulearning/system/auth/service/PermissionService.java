@@ -1,6 +1,6 @@
 package com.ky.ulearning.system.auth.service;
 
-import com.ky.ulearning.spi.system.dto.PermissionInsertDto;
+import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 
 import java.util.List;
@@ -22,13 +22,16 @@ public interface PermissionService {
     /**
      * 插入权限记录
      *
-     * @param permissionInsertDto 待插入的权限数据
+     * @param permissionDto 待插入的权限数据
      */
-    void insert(PermissionInsertDto permissionInsertDto);
+    void insert(PermissionDto permissionDto);
 
     /**
      * 查询所有权限
+     *
      * @return 返回权限信息list
      */
     List<PermissionEntity> getList();
+
+
 }

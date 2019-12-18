@@ -58,9 +58,13 @@ public class IpUtil {
      */
     public static String getCityInfo(String ip) {
         try {
+            if(StringUtil.isEmpty(ip)){
+                return "";
+            }
             String path = "ip2region/ip2region.db";
             String name = "ip2region.db";
             int algorithm = DbSearcher.BTREE_ALGORITHM;
+            String absolutePath = new ClassPathResource(path).getAbsolutePath();
             DbConfig config = new DbConfig();
             File file = FileUtil.inputStreamToFile(new ClassPathResource(path).getStream(), name);
             log.info(file.getAbsolutePath());

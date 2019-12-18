@@ -1,6 +1,7 @@
 package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
+import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
@@ -36,6 +37,7 @@ public class RoleController {
     @Log("获取角色权限集合")
     @ApiOperation(value = "获取角色权限集合")
     @ApiImplicitParam(name = "roleIdArr", value = "角色id字符串，逗号分隔")
+    @PermissionName(source = "role:getPermissionListByRoleId", name = "获取角色权限集合", group = "角色管理")
     @GetMapping("/getPermissionListByRoleId")
     public ResponseEntity<JsonResult<List<PermissionEntity>>> getPermissionListByRoleId(String roleIdArr) {
         if (StringUtil.isEmpty(roleIdArr)) {
