@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -72,37 +73,15 @@ public class TeacherController {
 //        return ResponseEntity.ok(JsonResultUtil.success("添加教师成功"));
 //    }
 //
-//    @Log("教师删除")
-//    @ApiOperation(value = "教师删除")
-//    @PermissionName(source = "teacher:delete", name = "教师删除", group = "教师管理")
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity delete(@PathVariable(value = "id") Long id) {
-//        sysTeacherService.delete(id);
-//        return ResponseEntity.ok(JsonResultUtil.success("教师删除成功"));
-//    }
-//
-//    @Log("教师更新")
-//    @ApiOperation(value = "教师更新")
-//    @PermissionName(source = "teacher:update", name = "教师更新", group = "教师管理")
-//    @PutMapping("/update")
-//    public ResponseEntity update(@Validated @RequestBody SysTeacherUpdateDTO teacher) {
-//        //获取操作者的编号
-//        String teaNumber = SecurityUtils.getTeaNumber();
-//        Long teaId = SecurityUtils.getTeaId();
-//        //如果更新的是自身，则更新时间不变，防止token失效被弹出系统
-//        if (teacher.getTeaId().equals(teaId)) {
-//            teacher.setUpdateTime(SecurityUtils.getUpdateTime());
-//        }
-//        //设置更新者编号
-//        teacher.setUpdateBy(teaNumber);
-//        //若更新密码，需给密码加密
-//        if (!StringUtils.isEmpty(teacher.getTeaPassword())) {
-//            teacher.setTeaPassword(EncryptUtils.encryptPassword(teacher.getTeaPassword()));
-//        }
-//        sysTeacherService.update(teacher);
-//        return ResponseEntity.ok(JsonResultUtil.success("更新教师成功"));
-//    }
-//
+    @Log("教师删除")
+    @ApiOperation(value = "教师删除")
+    @PermissionName(source = "teacher:delete", name = "教师删除", group = "教师管理")
+    @DeleteMapping("/delete")
+    public ResponseEntity<JsonResult> delete(Long id) {
+        teacherService.delete(id);
+        return ResponseEntity.ok(JsonResult.buildMessage("教师删除成功"));
+    }
+
     @Log("教师查询")
     @ApiOperation(value = "教师查询", notes = "分页查询，支持多条件筛选")
     @PermissionName(source = "teacher:pageList", name = "教师查询", group = "教师管理")
@@ -113,9 +92,8 @@ public class TeacherController {
             pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
         }
         PageBean<TeacherEntity> pageBean = teacherService.pageTeacherList(teacherDto, pageParam);
-        return ResponseEntity.ok(new JsonResult<>(pageBean, "查询成功"));
+        return ResponseEntity.ok(JsonResult.build(HttpStatus.OK.value(), "查询成功", pageBean));
     }
-
 
     @ApiOperation(value = "", hidden = true)
     @PostMapping("/login")

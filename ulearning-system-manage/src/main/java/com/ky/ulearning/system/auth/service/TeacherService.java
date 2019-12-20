@@ -36,4 +36,11 @@ public interface TeacherService {
      * @return 返回分页教师类
      */
     PageBean<TeacherEntity> pageTeacherList(TeacherDto teacherDto, PageParam pageParam);
+
+    /**
+     * 删除教师
+     *
+     * @param id 删除id
+     */
+    void delete(Long id);
 }

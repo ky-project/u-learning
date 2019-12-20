@@ -65,4 +65,12 @@ public interface TeacherDao {
      * @return 返回教师记录集合
      */
     List<TeacherEntity> listPage(@Param("teacherDto") TeacherDto teacherDto, @Param("pageParam") PageParam pageParam);
+
+    /**
+     * 根据id更新有效值
+     *
+     * @param id    id
+     * @param valid 有效值
+     */
+    void updateValidByTeaId(Long id, int valid);
 }

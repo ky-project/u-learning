@@ -50,12 +50,6 @@ public class JsonResult<T> implements Serializable {
         this.data = data;
     }
 
-    public JsonResult(T data, String message) {
-        this.code = SUCCESS_CODE;
-        this.message = message;
-        this.data = data;
-    }
-
     public JsonResult(BaseEnum baseEnum) {
         this.code = baseEnum.getCode();
         this.message = baseEnum.getMessage();
@@ -70,5 +64,13 @@ public class JsonResult<T> implements Serializable {
         this.code = code;
         this.message = message;
         this.data = data;
+    }
+
+    public static <C> JsonResult<C> build(Integer code, String message, C data){
+        return new JsonResult<>(code, message, data);
+    }
+
+    public static <C> JsonResult<C> buildMessage(String message){
+        return build(null, message, null);
     }
 }

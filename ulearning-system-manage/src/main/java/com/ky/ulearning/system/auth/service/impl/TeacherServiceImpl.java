@@ -78,4 +78,11 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return pageBean;
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id) {
+        teacherDao.updateValidByTeaId(id, 0);
+    }
 }
