@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ServerErrorException.class, FeignException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity serverErrorException(ServerErrorException se) {
-//        log.error(MicroErrorCodeEnum.SERVER_DOWN.getMessage());
+        log.error(MicroErrorCodeEnum.SERVER_DOWN.getMessage());
         return ResponseEntityUtil.internalServerError(new JsonResult<>(StringUtil.isEmpty(se.getMessage()) ? MicroErrorCodeEnum.SERVER_DOWN : se.getMessage()));
     }
 
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity accessDeniedException(AccessDeniedException ae) {
-//        log.error(ae.getMessage(), ae);
+        log.error(ae.getMessage(), ae);
         return ResponseEntityUtil.forbidden(new JsonResult(MicroErrorCodeEnum.HAS_NO_PERMISSION));
     }
 
@@ -51,11 +51,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-//        log.error(ex.getMessage(), ex);
+        log.error(ex.getMessage(), ex);
         FieldError fieldError = ex.getBindingResult().getFieldError();
         String message = fieldError != null && StringUtil.isContainChinese(fieldError.getDefaultMessage()) ? fieldError.getDefaultMessage() : null;
         return ResponseEntityUtil.badRequest((message == null ?
-                new JsonResult<>(MicroErrorCodeEnum.PARAMETER_ERROR) : new JsonResult<>(HttpStatus.BAD_REQUEST.value(), message)));
+                new JsonResult<>(MicroErrorCodeEnum.PARAMETER_ERROR) : JsonResult.buildErrorMsg(HttpStatus.BAD_REQUEST.value(), message)));
     }
 
     /**
@@ -65,9 +65,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity handleException(Exception e) {
-//        log.error(e.getMessage(), e);
+        log.error(e.getMessage(), e);
         String message = StringUtil.isContainChinese(e.getMessage()) ? e.getMessage() : null;
         return ResponseEntityUtil.badRequest(message == null ?
-                new JsonResult<>(MicroErrorCodeEnum.SYSTEM_ERROR) : new JsonResult<>(HttpStatus.BAD_REQUEST.value(), message));
+                new JsonResult<>(MicroErrorCodeEnum.SYSTEM_ERROR) : JsonResult.buildErrorMsg(HttpStatus.BAD_REQUEST.value(), message));
     }
 }

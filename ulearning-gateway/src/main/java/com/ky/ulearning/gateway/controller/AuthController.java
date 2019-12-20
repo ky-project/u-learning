@@ -82,7 +82,7 @@ public class AuthController {
     @ApiOperation(value = "", hidden = true)
     @GetMapping(value = "/logout/success")
     public ResponseEntity logoutSuccess() {
-        return ResponseEntity.ok(new JsonResult<>(null, "安全退出"));
+        return ResponseEntityUtil.ok(JsonResult.buildDateMsg(null, "安全退出"));
     }
 
     /**
@@ -95,8 +95,8 @@ public class AuthController {
     @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
     @PostMapping("/login")
     public ResponseEntity<JsonResult> login(@Validated LoginUser loginUser,
-                                HttpServletRequest request,
-                                HttpServletResponse response) {
+                                            HttpServletRequest request,
+                                            HttpServletResponse response) {
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
         loginUser.setUsername(loginUser.getUsername().trim());
@@ -153,7 +153,7 @@ public class AuthController {
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间
         }
-        return ResponseEntityUtil.ok(new JsonResult<>(map, "登录成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDateMsg(map, "登录成功"));
     }
 
     /**
@@ -172,10 +172,10 @@ public class AuthController {
         VerifyCodeUtil.outputImage(w, h, stream, verifyCode);
         try {
             log.info("生成验证码:" + verifyCode);
-            return ResponseEntity.ok(new JsonResult<>(new ImgResult("data:image/gif;base64," + Base64.encode(stream.toByteArray()), uuid), "验证码已生成"));
+            return ResponseEntityUtil.ok(JsonResult.buildDateMsg(new ImgResult("data:image/gif;base64," + Base64.encode(stream.toByteArray()), uuid), "验证码已生成"));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body(new JsonResult<>(GatewayErrorCodeEnum.CREATE_VERIFY_CODE_FAILED));
+            return ResponseEntityUtil.badRequest(new JsonResult<>(GatewayErrorCodeEnum.CREATE_VERIFY_CODE_FAILED));
         } finally {
             stream.close();
         }

@@ -153,4 +153,11 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         tokenCookie.setPath("/");
         response.addCookie(tokenCookie);
     }
+
+//    private String getTokenCookie(HttpServletRequest request, String tokenName) {
+//        Cookie[] cookies = request.getCookies();
+//        for (Cookie cookie : cookies) {
+//
+//        }
+//    }
 }

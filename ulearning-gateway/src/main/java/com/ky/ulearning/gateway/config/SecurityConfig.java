@@ -114,8 +114,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/api-docs").anonymous()
                 // swagger end
 
-                //druid监控
+                //监控
 //                .antMatchers("/druid/**").anonymous()
+                .antMatchers("/actuator/**").anonymous()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 // 防止iframe 造成跨域

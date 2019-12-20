@@ -55,22 +55,25 @@ public class JsonResult<T> implements Serializable {
         this.message = baseEnum.getMessage();
     }
 
-    public JsonResult(Integer code, String message) {
-        this.code = code;
-        this.message = message;
-    }
-
     public JsonResult(Integer code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    public static <C> JsonResult<C> build(Integer code, String message, C data){
+    public static <C> JsonResult<C> build(Integer code, String message, C data) {
         return new JsonResult<>(code, message, data);
     }
 
-    public static <C> JsonResult<C> buildMessage(String message){
+    public static <C> JsonResult<C> buildMsg(String message) {
         return build(null, message, null);
+    }
+
+    public static <C> JsonResult<C> buildDateMsg(C data, String message) {
+        return build(null, message, data);
+    }
+
+    public static <C> JsonResult<C> buildErrorMsg(Integer code, String message) {
+        return build(code, message, null);
     }
 }

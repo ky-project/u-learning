@@ -99,6 +99,6 @@ public class PermissionController {
             }
         }
         log.debug("重新加载系统权限...完毕");
-        return ResponseEntityUtil.ok(JsonResult.buildMessage("权限加载完成"));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("权限加载完成"));
     }
 }

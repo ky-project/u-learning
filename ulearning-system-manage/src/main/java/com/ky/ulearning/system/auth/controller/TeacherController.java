@@ -79,7 +79,7 @@ public class TeacherController {
     @DeleteMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
         teacherService.delete(id);
-        return ResponseEntity.ok(JsonResult.buildMessage("教师删除成功"));
+        return ResponseEntity.ok(JsonResult.buildMsg("教师删除成功"));
     }
 
     @Log("教师查询")

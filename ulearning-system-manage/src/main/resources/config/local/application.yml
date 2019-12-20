@@ -27,9 +27,8 @@ logging:
 management:
   endpoints:
     web:
-      base-path: /actuator-path
       exposure:
-        include: *
+        include: "*"
   endpoint:
     health:
       show-details: always

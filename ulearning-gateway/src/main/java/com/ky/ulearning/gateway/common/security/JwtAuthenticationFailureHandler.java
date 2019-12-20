@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        JsonResult jsonResult = new JsonResult<>(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
+        JsonResult jsonResult = JsonResult.buildErrorMsg(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
         String jsonString = JsonUtil.toJsonString(jsonResult);
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
