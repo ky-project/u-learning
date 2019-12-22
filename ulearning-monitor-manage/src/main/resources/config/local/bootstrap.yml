@@ -9,6 +9,10 @@ spring:
         service-id: config
       name: ${spring.application.name}, ulearning-jdbc, ulearning-common
       label: local
+  boot:
+    admin:
+      ui:
+        title: U-Learning 服务监控
 #服务注册中心配置
 eureka:
   instance:
