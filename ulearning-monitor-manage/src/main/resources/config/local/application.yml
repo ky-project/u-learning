@@ -7,23 +7,17 @@ info:
 #服务器配置
 server:
   port: 14004
-  jetty:
+  tomcat:
+    basedir: ./ulearning-logs/${spring.application.name}/tomcat
     accesslog:
       enabled: true
-      filename: ./ulearning-logs/${spring.application.name}/jetty/access/${spring.application.name}.yyyy-MM-dd.log
+      directory: ./access
+      buffered: false
       file-date-format: .yyyy-MM-dd
-      retention-period: 20
-      append: true
-      extended-format: true
-      locale: zh_CN
-      time-zone: GMT+8
-      log-cookies: false
-      log-server: true
-      log-latency: true
-
-    max-http-form-post-size: 4MB
-    acceptors: 16
-    selectors: 16
+      pattern: common
+      prefix: ${spring.application.name}
+      rotate: true
+      suffix: .log
 
   servlet:
     context-path: /${spring.application.name}
@@ -36,6 +30,7 @@ management:
     web:
       exposure:
         include: "*"
+        exclude: shutdown, httptrace
   endpoint:
     health:
       show-details: always

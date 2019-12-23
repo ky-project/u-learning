@@ -27,6 +27,7 @@ management:
     web:
       exposure:
         include: "*"
+        exclude: shutdown, httptrace
   endpoint:
     health:
       show-details: always

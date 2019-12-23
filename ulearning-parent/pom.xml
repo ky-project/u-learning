@@ -182,6 +182,44 @@
             </dependency>
             <!-- lang End -->
             <!-- Plugins End -->
+
+            <!-- ulearning Begin -->
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-common-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-gateway</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-monitor-manage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-register</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ky.ulearning</groupId>
+                <artifactId>ulearning-system-manage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- ulearning End -->
         </dependencies>
     </dependencyManagement>
 

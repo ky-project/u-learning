@@ -7,7 +7,7 @@ import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
-import com.sun.xml.fastinfoset.Encoder;
+import com.sun.xml.internal.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
