@@ -1,0 +1,16 @@
+#服务配置
+spring:
+  application:
+    name: gateway
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config
+      name: ${spring.application.name}, ulearning-jdbc, ulearning-common
+      label: local
+#服务注册中心配置
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:14001/eureka/

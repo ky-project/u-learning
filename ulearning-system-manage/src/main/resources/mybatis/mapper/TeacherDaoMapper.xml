@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.system.auth.dao.TeacherDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.TeacherEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
+        <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
+        <result column="tea_password" jdbcType="VARCHAR" property="teaPassword"/>
+        <result column="tea_gender" jdbcType="VARCHAR" property="teaGender"/>
+        <result column="tea_dept" jdbcType="VARCHAR" property="teaDept"/>
+        <result column="tea_title" jdbcType="VARCHAR" property="teaTitle"/>
+        <result column="tea_phone" jdbcType="VARCHAR" property="teaPhone"/>
+        <result column="tea_email" jdbcType="VARCHAR" property="teaEmail"/>
+        <result column="tea_photo" jdbcType="VARCHAR" property="teaPhoto"/>
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="selectAll">
+        id, tea_number,
+        tea_name, tea_password,
+        tea_gender, tea_dept,
+        tea_title, tea_phone,
+        tea_email, tea_photo,
+        last_login_time, `valid`,
+        memo, create_time,
+        create_by, update_time,
+        update_by
+    </sql>
+
+    <select id="getByTeaNumber" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_number = #{teaNumber,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <!--根据教师编号查询教师信息-->
+    <select id="findByTeaNumber" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_number = #{teaNumber,jdbcType=VARCHAR}
+        limit 1
+    </select>
+    <!--根据教师邮箱查询教师信息-->
+    <select id="findByEmail" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_email = #{teaEmail}
+        limit 1
+    </select>
+    <!--更新教师信息-->
+    <update id="updateById">
+        update u_teacher
+        <set>
+            <if test="teaNumber != null and teaNumber != ''">
+                tea_number = #{teaNumber},
+            </if>
+            <if test="teaName != null and teaName != ''">
+                tea_name = #{teaName},
+            </if>
+            <if test="teaPassword != null and teaPassword != ''">
+                tea_password = #{teaPassword},
+            </if>
+            <if test="teaGender != null and teaGender != ''">
+                tea_gender = #{teaGender},
+            </if>
+            <if test="teaDept != null and teaDept != ''">
+                tea_dept = #{teaDept},
+            </if>
+            <if test="teaTitle != null and teaTitle != ''">
+                tea_title = #{teaTitle},
+            </if>
+            <if test="teaEmail != null and teaEmail != ''">
+                tea_email = #{teaEmail},
+            </if>
+            <if test="teaPhone != null and teaPhone != ''">
+                tea_phone = #{teaPhone},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateTime == null">
+                update_time = now()
+            </if>
+        </set>
+        where valid = 1
+        and id = #{id}
+    </update>
+    <!--根据条件进行用户查询-->
+    <select id="listPage" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        <if test="teacherDto.id != null">
+            and id = #{teacherDto.id}
+        </if>
+        <if test="teacherDto.teaNumber != null and teacherDto.teaNumber != ''">
+            and tea_number like concat('%', #{teacherDto.teaNumber}, '%')
+        </if>
+        <if test="teacherDto.teaName != null and teacherDto.teaName != ''">
+            and tea_name like concat('%', #{teacherDto.teaName}, '%')
+        </if>
+        <if test="teacherDto.teaGender != null and teacherDto.teaGender != ''">
+            and tea_gender = #{teacherDto.teaGender}
+        </if>
+        <if test="teacherDto.teaDept != null and teacherDto.teaDept != ''">
+            and tea_dept like concat('%', #{teacherDto.teaDept}, '%')
+        </if>
+        <if test="teacherDto.teaTitle != null and teacherDto.teaTitle != ''">
+            and tea_title like concat('%', #{teacherDto.teaTitle}, '%')
+        </if>
+        <if test="teacherDto.teaPhone != null and teacherDto.teaPhone != ''">
+            and tea_phone like concat('%', #{teacherDto.teaPhone}, '%')
+        </if>
+        <if test="teacherDto.teaEmail != null and teacherDto.teaEmail != ''">
+            and tea_email like concat('%', #{teacherDto.teaEmail}, '%')
+        </if>
+        order by update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询，计算总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        select
+        COUNT(1)
+        from u_teacher
+        where valid = 1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="teaNumber != null and teaNumber != ''">
+            and tea_number like concat('%', #{teaNumber}, '%')
+        </if>
+        <if test="teaName != null and teaName != ''">
+            and tea_name like concat('%', #{teaName}, '%')
+        </if>
+        <if test="teaGender != null and teaGender != ''">
+            and tea_gender = #{teaGender}
+        </if>
+        <if test="teaDept != null and teaDept != ''">
+            and tea_dept like concat('%', #{teaDept}, '%')
+        </if>
+        <if test="teaTitle != null and teaTitle != ''">
+            and tea_title like concat('%', #{teaTitle}, '%')
+        </if>
+        <if test="teaPhone != null and teaPhone != ''">
+            and tea_phone like concat('%', #{teaPhone}, '%')
+        </if>
+        <if test="teaEmail != null and teaEmail != ''">
+            and tea_email like concat('%', #{teaEmail}, '%')
+        </if>
+    </select>
+    <update id="updateValidByTeaId">
+        UPDATE u_teacher
+            SET valid = #{valid}
+        WHERE id = #{id}
+    </update>
+</mapper>

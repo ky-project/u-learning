@@ -1,0 +1,38 @@
+#路由配置
+zuul:
+  routes:
+    gateway:
+      path: /gateway/**
+      stripPrefix: true
+      serviceId: ulearning-gateway
+    monitor-manage:
+      path: /monitor-manage/**
+      stripPrefix: false
+      serviceId: monitor-manage
+    system-manage:
+      path: /system-manage/**
+      stripPrefix: false
+      serviceId: system-manage
+
+#hystrix的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
+
+# 系统的各个端的匹配路径
+ulearning:
+  admin-patterns: ${zuul.routes.monitor-manage.path}, ${zuul.routes.system-manage.path}
+  teacher-patterns:
+  student-patterns:
+  # 放行uri
+  release-paths: /*/v2/api-docs

@@ -1,0 +1,24 @@
+package com.ky.ulearning.common.core.component.constant;
+
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+/**
+ * @author luyuhao
+ * @date 19/12/17 00:24
+ */
+@Component
+@Getter
+public class DefaultConfigParameters {
+
+
+    @Value("${jwt.header-refresh-token}")
+    private String refreshTokenHeader;
+
+    @Value("${jwt.header-token}")
+    private String tokenHeader;
+
+    @Value("${swagger.enabled}")
+    private Boolean swaggerEnabled;
+}

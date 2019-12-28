@@ -1,0 +1,29 @@
+server:
+  port: 14001
+  tomcat:
+    basedir: ./ulearning-logs/${spring.application.name}/tomcat
+    accesslog:
+      enabled: true
+      directory: ./access
+      buffered: false
+      file-date-format: .yyyy-MM-dd
+      pattern: common
+      prefix: ${spring.application.name}
+      rotate: true
+      suffix: .log
+
+
+eureka:
+  #关闭自我保护机制-开发环境开启
+  server:
+    enable-self-preservation: false
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+logging:
+  config: classpath:config/local/logback.xml

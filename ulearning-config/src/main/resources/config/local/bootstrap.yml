@@ -1,0 +1,17 @@
+# 服务配置
+spring:
+  application:
+    name: config
+  # config路径配置
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config/master/
+  profiles:
+    active: native
+# 注册中心配置
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:14001/eureka/

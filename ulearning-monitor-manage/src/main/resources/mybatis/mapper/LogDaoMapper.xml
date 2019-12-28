@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.monitor.logging.dao.LogDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.monitor.logging.entity.LogEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="log_username" jdbcType="VARCHAR" property="logUsername"/>
+        <result column="log_description" jdbcType="VARCHAR" property="logDescription"/>
+        <result column="log_module" jdbcType="VARCHAR" property="logModule"/>
+        <result column="log_ip" jdbcType="VARCHAR" property="logIp"/>
+        <result column="log_type" jdbcType="VARCHAR" property="logType"/>
+        <result column="log_exception" jdbcType="VARCHAR" property="logException"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="log_params" jdbcType="VARCHAR" property="logParams"/>
+        <result column="log_time" jdbcType="BIGINT" property="logTime"/>
+        <result column="log_address" jdbcType="VARCHAR" property="logAddress"/>
+    </resultMap>
+    <sql id="insertSql">
+            log_username,
+            log_description,
+            log_module,
+            log_ip,
+            log_type,
+            log_exception,
+            log_params,
+            log_time,
+            log_address,
+            memo,
+            create_by,
+            update_by
+    </sql>
+    <!-- 插入记录 -->
+    <insert id="insert" parameterType="logEntity">
+        insert into u_log(<include refid="insertSql"/>)
+        values (#{logUsername}, #{logDescription},
+        #{logModule}, #{logIp},
+        #{logType}, #{logException},
+        #{logParams}, #{logTime},
+        #{logAddress}, #{memo},
+        #{createBy}, #{updateBy})
+    </insert>
+</mapper>

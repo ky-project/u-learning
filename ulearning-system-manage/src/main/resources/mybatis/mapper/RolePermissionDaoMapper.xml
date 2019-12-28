@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.system.auth.dao.RolePermissionDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.RolePermissionEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="permission_id" jdbcType="BIGINT" property="permissionId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="All">
+            id,
+            permission_id,
+            role_id,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="All"/>
+        from u_role_permission
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete
+        from u_role_permission
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.system.entity.RolePermissionEntity" useGeneratedKeys="true">
+        insert into u_role_permission (permission_id, role_id, `valid`,
+                                       memo, create_time, create_by,
+                                       update_time, update_by)
+        values (#{permissionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{valid,jdbcType=BOOLEAN},
+                #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+                now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateById" parameterType="com.ky.ulearning.spi.system.entity.RolePermissionEntity">
+        update u_role_permission
+        <set>
+            <if test="permissionId != null">
+                permission_id = #{permissionId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="valid != null">
+                `valid` = #{valid,jdbcType=BOOLEAN},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--根据角色id查询角色权限-->
+    <select id="getPermissionListByRoleId"
+            resultMap="com.ky.ulearning.system.auth.dao.PermissionDao.BaseResultMap"
+            parameterType="list">
+        SELECT up.id, up.permission_name, up.permission_source, up.permission_group, up.permission_url, up.valid,
+        up.memo, up.create_time, up.create_by, up.update_time, up.update_by
+        FROM u_role_permission urp
+        LEFT JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
+        WHERE urp.valid = 1
+        AND urp.role_id IN
+        <foreach collection="roleIdList" item="roleId" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </select>
+</mapper>
