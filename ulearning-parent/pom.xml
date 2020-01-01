@@ -50,6 +50,8 @@
         <swagger.version>1.5.21</swagger.version>
         <spring-boot-admin.version>2.1.6</spring-boot-admin.version>
         <fastinfoset.version>1.2.16</fastinfoset.version>
+
+        <target.dir>D:\Mydata\Major\java\develop\u-learning\shell</target.dir>
     </properties>
 
     <dependencyManagement>
