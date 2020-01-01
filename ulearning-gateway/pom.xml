@@ -144,6 +144,13 @@
             <artifactId>jjwt</artifactId>
         </dependency>
         <!-- jwt End -->
+
+        <!-- FastInfoset Begin -->
+        <dependency>
+            <groupId>com.sun.xml.fastinfoset</groupId>
+            <artifactId>FastInfoset</artifactId>
+        </dependency>
+        <!-- FastInfoset End -->
         <!-- Plugins End -->
 
         <!-- 数据源配置 Begin -->
@@ -182,13 +189,36 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.ky.ulearning.gateway.GatewayApplication</mainClass>
+                    <!--<skip>true</skip>-->
                 </configuration>
+            </plugin>
+
+            <!--指定打包路径-->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${target.dir}/"/>
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                      tofile="${target.dir}/${project.build.finalName}.jar" overwrite="true"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

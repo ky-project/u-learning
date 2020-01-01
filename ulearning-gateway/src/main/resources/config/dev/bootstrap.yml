@@ -8,11 +8,13 @@ spring:
         enabled: true
         service-id: config
       name: ${spring.application.name}, ulearning-jdbc, ulearning-common
-      label: local
+      label: dev
 #服务注册中心配置
 eureka:
   instance:
-    hostname: localhost
+    # 所部署服务器域名
+    hostname: ky.darren1112.com
   client:
     serviceUrl:
-      defaultZone: http://www.darren1112.com:14001/eureka/
+      # 注册中心url
+      defaultZone: http://wyf.darren1112.com:14001/eureka/

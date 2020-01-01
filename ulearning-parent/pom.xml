@@ -4,6 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <modules>
+        <module>../ulearning-common-core</module>
+        <module>../ulearning-config</module>
+        <module>../ulearning-gateway</module>
+        <module>../ulearning-monitor-manage</module>
+        <module>../ulearning-register</module>
+        <module>../ulearning-spi</module>
+        <module>../ulearning-system-manage</module>
+    </modules>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -39,6 +49,9 @@
         <springfox.version>2.9.2</springfox.version>
         <swagger.version>1.5.21</swagger.version>
         <spring-boot-admin.version>2.1.6</spring-boot-admin.version>
+        <fastinfoset.version>1.2.16</fastinfoset.version>
+
+        <target.dir>D:\Mydata\Major\java\develop\u-learning\shell</target.dir>
     </properties>
 
     <dependencyManagement>
@@ -181,6 +194,15 @@
                 <version>${commons-lang.version}</version>
             </dependency>
             <!-- lang End -->
+
+            <!-- FastInfoset Begin -->
+            <dependency>
+                <groupId>com.sun.xml.fastinfoset</groupId>
+                <artifactId>FastInfoset</artifactId>
+                <version>${fastinfoset.version}</version>
+            </dependency>
+            <!-- FastInfoset End -->
+
             <!-- Plugins End -->
 
             <!-- ulearning Begin -->

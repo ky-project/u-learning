@@ -1,0 +1,33 @@
+info:
+  build:
+    name: @project.name@
+    description: @project.description@
+    artifactId: @project.artifactId@
+    version: @project.version@
+
+server:
+  port: 14002
+  tomcat:
+    basedir: ./ulearning-logs/${spring.application.name}/tomcat
+    accesslog:
+      enabled: true
+      directory: ./access
+      buffered: false
+      file-date-format: .yyyy-MM-dd
+      pattern: common
+      prefix: ${spring.application.name}
+      rotate: true
+      suffix: .log
+
+logging:
+  config: classpath:config/local/logback.xml
+#监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: shutdown, httptrace
+  endpoint:
+    health:
+      show-details: always
