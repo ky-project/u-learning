@@ -73,4 +73,11 @@ public interface TeacherDao {
      * @param valid 有效值
      */
     void updateValidByTeaId(Long id, int valid);
+
+    /**
+     * 新增教师
+     *
+     * @param teacher 待添加的教师信息
+     */
+    void save(TeacherDto teacher);
 }

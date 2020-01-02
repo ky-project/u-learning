@@ -14,7 +14,10 @@ public enum SystemErrorCodeEnum implements BaseEnum {
      */
     PARAMETER_EMPTY(HttpStatus.BAD_REQUEST, "参数不可为空!"),
     TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST,"教师不存在!"),
-    ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不可为空!")
+    ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不可为空!"),
+    EMAIL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "邮箱不可为空!"),
+    TEA_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "工号不可为空!"),
+    NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名不可为空!"),
     ;
 
     private Integer code;

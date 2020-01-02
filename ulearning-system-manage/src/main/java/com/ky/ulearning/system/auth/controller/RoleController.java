@@ -47,4 +47,6 @@ public class RoleController {
         List<PermissionEntity> permissionList = rolePermissionService.getPermissionListByRoleId(roleIdList);
         return ResponseEntityUtil.ok(new JsonResult<>(permissionList));
     }
+
+
 }
