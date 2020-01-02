@@ -43,4 +43,10 @@ public interface TeacherService {
      * @param id 删除id
      */
     void delete(Long id);
+
+    /**
+     * 新增教师
+     * @param teacher 待添加的教师信息
+     */
+    void save(TeacherDto teacher);
 }

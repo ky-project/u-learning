@@ -7,6 +7,7 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.UserContext;
@@ -55,31 +56,41 @@ public class TeacherController {
     private RolePermissionService rolePermissionService;
 
 
-    //    @Log("教师添加")
-//    @ApiOperation(value = "教师添加", notes = "密码默认123456")
-//    @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
-//    @PostMapping("/save")
-//    public ResponseEntity save(@Validated @RequestBody SysTeacherCreateDTO teacher) {
-//        //获取操作者的编号
-//        String userNumber = SecurityUtils.getTeaNumber();
-//        //设置操作者编号
-//        teacher.setCreateBy(userNumber);
-//        //设置更新者编号
-//        teacher.setUpdateBy(userNumber);
-//        //密码加密
-//        teacher.setTeaPassword(EncryptUtils.encryptPassword("123456"));
-//        //TODO 设置初始头像url
-//        sysTeacherService.save(teacher);
-//        return ResponseEntity.ok(JsonResultUtil.success("添加教师成功"));
-//    }
-//
+    @Log("教师添加")
+    @ApiOperationSupport(ignoreParameters = {"id", "teaPassword"})
+    @ApiOperation(value = "教师添加", notes = "密码默认123456")
+    @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
+    @PostMapping("/save")
+    public ResponseEntity<JsonResult> save(@Validated TeacherDto teacher) {
+        if (StringUtil.isEmpty(teacher.getTeaName())) {
+            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)));
+        }
+        if (StringUtil.isEmpty(teacher.getTeaNumber())) {
+            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)));
+        }
+        if (StringUtil.isEmpty(teacher.getTeaEmail())) {
+            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL)));
+        }
+        //获取操作者的编号
+        String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        //设置操作者编号
+        teacher.setCreateBy(userNumber);
+        //设置更新者编号
+        teacher.setUpdateBy(userNumber);
+        //密码加密
+        teacher.setTeaPassword(EncryptUtil.encryptPassword("123456"));
+        //TODO 设置初始头像url
+        teacherService.save(teacher);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加教师成功"));
+    }
+
     @Log("教师删除")
     @ApiOperation(value = "教师删除")
     @PermissionName(source = "teacher:delete", name = "教师删除", group = "教师管理")
     @DeleteMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
         teacherService.delete(id);
-        return ResponseEntity.ok(JsonResult.buildMsg("教师删除成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("教师删除成功"));
     }
 
     @Log("教师查询")
@@ -92,7 +103,7 @@ public class TeacherController {
             pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
         }
         PageBean<TeacherEntity> pageBean = teacherService.pageTeacherList(teacherDto, pageParam);
-        return ResponseEntity.ok(JsonResult.build(HttpStatus.OK.value(), "查询成功", pageBean));
+        return ResponseEntityUtil.ok(JsonResult.build(HttpStatus.OK.value(), "查询成功", pageBean));
     }
 
     @ApiOperation(value = "", hidden = true)
@@ -134,7 +145,7 @@ public class TeacherController {
     @GetMapping("/getByTeaNumber")
     public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber) {
         if (StringUtils.isEmpty(teaNumber)) {
-            return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
+            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
         return ResponseEntityUtil.ok((new JsonResult<>(exists)));
@@ -146,28 +157,27 @@ public class TeacherController {
     @GetMapping("/getAssignedRole")
     public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
         if (id == null) {
-            return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
+            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
         }
         //将其转换为userContext，并获取角色list和权限list
         List<RoleEntity> rolePermissionDtoList = teacherRoleService.getRoleByTeaId(id);
-        return ResponseEntity.ok(new JsonResult<>(rolePermissionDtoList));
+        return ResponseEntityUtil.ok(new JsonResult<>(rolePermissionDtoList));
     }
 
 
     @Log("更新教师信息")
     @ApiOperation(value = "更新教师信息")
-    @ApiOperationSupport(ignoreParameters = "id")
     @PermissionName(source = "teacher:update", name = "更新教师信息", group = "教师管理")
     @PutMapping("/update")
     public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto) {
         if (teacherDto.getId() == null) {
-            return ResponseEntity.badRequest().body((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
+            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
         }
         if (!StringUtils.isEmpty(teacherDto.getTeaPassword())) {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
         teacherDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         teacherService.update(teacherDto);
-        return ResponseEntity.ok(new JsonResult<>(teacherDto));
+        return ResponseEntityUtil.ok(new JsonResult<>(teacherDto));
     }
 }

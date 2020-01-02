@@ -42,13 +42,17 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(rollbackFor = Throwable.class)
     public void update(TeacherDto newTeacher) {
         //判断teaNumber是否存在
+        TeacherEntity teaNumberExists = teacherDao.findByTeaNumber(newTeacher.getTeaNumber());
         if (!StringUtils.isEmpty(newTeacher.getTeaNumber())
-                && teacherDao.findByTeaNumber(newTeacher.getTeaNumber()) != null) {
+                && teaNumberExists != null
+                && !teaNumberExists.getId().equals(newTeacher.getId())) {
             throw new EntityExistException("教师编号");
         }
         //判断邮箱是否存在
+        TeacherEntity emailExists = teacherDao.findByEmail(newTeacher.getTeaEmail());
         if (!StringUtils.isEmpty(newTeacher.getTeaEmail())
-                && teacherDao.findByEmail(newTeacher.getTeaEmail()) != null) {
+                && emailExists != null
+                && !emailExists.getId().equals(newTeacher.getId())) {
             throw new EntityExistException("教师邮箱");
         }
         //更新记录
@@ -84,5 +88,22 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id) {
         teacherDao.updateValidByTeaId(id, 0);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void save(TeacherDto teacher) {
+        //判断teaNumber是否存在
+        if (!StringUtils.isEmpty(teacher.getTeaNumber())
+                && teacherDao.findByTeaNumber(teacher.getTeaNumber()) != null) {
+            throw new EntityExistException("教师编号");
+        }
+        //判断邮箱是否存在
+        if (!StringUtils.isEmpty(teacher.getTeaEmail())
+                && teacherDao.findByEmail(teacher.getTeaEmail()) != null) {
+            throw new EntityExistException("教师邮箱");
+        }
+        teacherDao.save(teacher);
     }
 }

@@ -174,7 +174,14 @@
     </select>
     <update id="updateValidByTeaId">
         UPDATE u_teacher
-            SET valid = #{valid}
+        SET valid = #{valid}
         WHERE id = #{id}
     </update>
+    <!--新增教师-->
+    <insert id="save" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto">
+        INSERT INTO u_teacher(tea_number, tea_name, tea_password, tea_gender, tea_dept, tea_title, tea_phone, tea_email,
+                              tea_photo, valid, memo, create_time, create_by, update_time, update_by)
+        VALUES (#{teaNumber}, #{teaName}, #{teaPassword}, #{teaGender}, #{teaDept}, #{teaTitle}, #{teaPhone},
+                #{teaEmail}, #{teaPhoto}, 1, #{memo}, now(), #{createBy}, now(), #{updateBy})
+    </insert>
 </mapper>
