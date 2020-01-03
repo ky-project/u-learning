@@ -2,8 +2,11 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import com.ky.ulearning.system.common.constants.SystemManageConfigParameters;
@@ -21,9 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.ky.ulearning.system.common.constants.SystemErrorCodeEnum.*;
 
 /**
  * @author luyuhao
@@ -46,12 +52,57 @@ public class PermissionController {
 
     @Log("添加权限")
     @ApiOperation("添加权限")
-    @ApiOperationSupport(ignoreParameters = {"id", "valid", "createTime", "createBy", "updateTime", "updateBy"})
-    @PermissionName(source = "permission:add", name = "添加权限", group = "权限管理")
-    @PostMapping("/add")
-    public ResponseEntity<JsonResult> add(@Validated PermissionDto permissionDto) {
+    @ApiOperationSupport(ignoreParameters = {"id"})
+    @PermissionName(source = "permission:save", name = "添加权限", group = "权限管理")
+    @PostMapping("/save")
+    public ResponseEntity<JsonResult> save(PermissionDto permissionDto) {
+        if(StringUtil.isEmpty(permissionDto.getPermissionUrl())){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_URL_CANNOT_BE_NULL));
+        }
+        if(StringUtil.isEmpty(permissionDto.getPermissionGroup())){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_GROUP_CANNOT_BE_NULL));
+        }
+        if(StringUtil.isEmpty(permissionDto.getPermissionName())){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_NAME_CANNOT_BE_NULL));
+        }
+        if(StringUtil.isEmpty(permissionDto.getPermissionSource())){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_SOURCE_CANNOT_BE_NULL));
+        }
+        //设置创建者和更新者
+        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        permissionDto.setCreateBy(username);
+        permissionDto.setUpdateBy(username);
         permissionService.insert(permissionDto);
-        return ResponseEntityUtil.ok(new JsonResult<>());
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+    }
+
+    @Log("删除权限")
+    @ApiOperation("删除权限")
+    @PermissionName(source = "permission:delete", name = "删除权限", group = "权限管理")
+    @GetMapping("/delete")
+    public ResponseEntity<JsonResult> delete(Long id){
+        if(StringUtil.isEmpty(id)){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(ID_CANNOT_BE_NULL));
+        }
+        //获取更新者
+        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        permissionService.delete(id, username);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("更新权限")
+    @ApiOperation("更新权限")
+    @PermissionName(source = "permission:update", name = "更新权限", group = "权限管理")
+    @GetMapping("/update")
+    public ResponseEntity<JsonResult> update(PermissionDto permissionDto){
+        if(StringUtil.isEmpty(permissionDto.getId())){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(ID_CANNOT_BE_NULL));
+        }
+        //获取更新者
+        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        permissionDto.setUpdateBy(username);
+        permissionService.update(permissionDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
     /**

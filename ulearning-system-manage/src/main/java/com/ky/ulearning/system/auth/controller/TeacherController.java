@@ -61,7 +61,7 @@ public class TeacherController {
     @ApiOperation(value = "教师添加", notes = "密码默认123456")
     @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
     @PostMapping("/save")
-    public ResponseEntity<JsonResult> save(@Validated TeacherDto teacher) {
+    public ResponseEntity<JsonResult> save(TeacherDto teacher) {
         if (StringUtil.isEmpty(teacher.getTeaName())) {
             return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)));
         }

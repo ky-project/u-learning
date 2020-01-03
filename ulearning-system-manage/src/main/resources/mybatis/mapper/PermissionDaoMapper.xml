@@ -48,4 +48,52 @@
         from u_permission
         where valid = 1
     </select>
+    <!--根据权限码查询权限信息-->
+    <select id="getByPermissionSource" resultMap="BaseResultMap">
+        select
+        <include refid="allParams"/>
+        from u_permission
+        where valid = 1
+        AND permission_source = #{permissionSource}
+    </select>
+    <!--根据权限url查询权限信息-->
+    <select id="getByPermissionUrl" resultMap="BaseResultMap">
+        select
+        <include refid="allParams"/>
+        from u_permission
+        where valid = 1
+        AND permission_url = #{permissionUrl}
+    </select>
+    <!--更新有效位-->
+    <update id="updateValidById">
+        UPDATE u_permission
+        SET valid     = #{valid},
+            update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+    <!--更新权限-->
+    <update id="update" parameterType="com.ky.ulearning.spi.system.dto.PermissionDto">
+        UPDATE u_permission
+        SET update_time = now()
+        <if test="permissionName != null and permissionName != ''">
+            , permission_name = #{permissionName}
+        </if>
+        <if test="permissionSource != null and permissionSource != ''">
+            , permission_source = #{permissionSource}
+        </if>
+        <if test="permissionGroup != null and permissionGroup != ''">
+            , permission_group = #{permissionGroup}
+        </if>
+        <if test="permissionUrl != null and permissionUrl != ''">
+            , permission_url = #{permissionUrl}
+        </if>
+        <if test="memo != null and memo != ''">
+            , memo = #{memo}
+        </if>
+        <if test="updateBy != null and updateBy != ''">
+            , update_by = #{updateBy}
+        </if>
+        WHERE valid = 1
+        AND id = #{id}
+    </update>
 </mapper>

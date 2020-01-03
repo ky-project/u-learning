@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.service.impl;
 
+import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.system.auth.dao.PermissionDao;
@@ -36,6 +37,16 @@ public class PermissionServiceImpl implements PermissionService {
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void insert(PermissionDto permissionDto) {
+        //判断权限码是否已经存在
+        PermissionEntity permissionSourceExists = permissionDao.getByPermissionSource(permissionDto.getPermissionSource());
+        if(permissionSourceExists != null){
+            throw new EntityExistException("权限码");
+        }
+        //判断权限url是否已经存在
+        PermissionEntity permissionUrlExists = permissionDao.getByPermissionUrl(permissionDto.getPermissionUrl());
+        if(permissionUrlExists != null){
+            throw new EntityExistException("权限url");
+        }
         permissionDao.insert(permissionDto);
     }
 
@@ -45,4 +56,17 @@ public class PermissionServiceImpl implements PermissionService {
         return permissionDao.getList();
     }
 
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, String username) {
+        permissionDao.updateValidById(id, 0, username);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void update(PermissionDto permissionDto) {
+        permissionDao.update(permissionDto);
+    }
 }

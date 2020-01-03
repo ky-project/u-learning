@@ -3,6 +3,7 @@ package com.ky.ulearning.system.auth.dao;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,4 +39,35 @@ public interface PermissionDao {
      */
     List<PermissionEntity> getList();
 
+    /**
+     * 根据权限码查询权限信息
+     *
+     * @param permissionSource 权限码
+     * @return 返回权限对象
+     */
+    PermissionEntity getByPermissionSource(String permissionSource);
+
+    /**
+     * 根据权限url查询权限信息
+     *
+     * @param permissionUrl 权限url
+     * @return 返回权限对象
+     */
+    PermissionEntity getByPermissionUrl(String permissionUrl);
+
+    /**
+     * 更新有效位
+     *
+     * @param id       权限id
+     * @param valid    有效位的值
+     * @param updateBy 更新者
+     */
+    void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
+
+    /**
+     * 更新权限
+     *
+     * @param permissionDto 待更新的权限dto
+     */
+    void update(PermissionDto permissionDto);
 }

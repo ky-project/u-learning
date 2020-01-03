@@ -34,4 +34,18 @@ public interface PermissionService {
     List<PermissionEntity> getList();
 
 
+    /**
+     * 删除权限
+     *
+     * @param id       待删除的权限id
+     * @param username 更新者
+     */
+    void delete(Long id, String username);
+
+    /**
+     * 更新权限
+     *
+     * @param permissionDto 待更新的权限dto对象
+     */
+    void update(PermissionDto permissionDto);
 }

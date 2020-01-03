@@ -18,6 +18,11 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     EMAIL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "邮箱不可为空!"),
     TEA_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "工号不可为空!"),
     NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名不可为空!"),
+    PERMISSION_URL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "权限url不可为空!"),
+    PERMISSION_GROUP_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "权限组不可为空!"),
+    PERMISSION_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "权限名不可为空!"),
+    PERMISSION_SOURCE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "权限码不可为空!"),
+
     ;
 
     private Integer code;
