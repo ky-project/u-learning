@@ -61,7 +61,7 @@ public class TeacherController {
     @ApiOperation(value = "教师添加", notes = "密码默认123456")
     @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
     @PostMapping("/save")
-    public ResponseEntity<JsonResult> save(@Validated TeacherDto teacher) {
+    public ResponseEntity<JsonResult> save(TeacherDto teacher) {
         if (StringUtil.isEmpty(teacher.getTeaName())) {
             return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)));
         }
@@ -87,7 +87,7 @@ public class TeacherController {
     @Log("教师删除")
     @ApiOperation(value = "教师删除")
     @PermissionName(source = "teacher:delete", name = "教师删除", group = "教师管理")
-    @DeleteMapping("/delete")
+    @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
         teacherService.delete(id);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("教师删除成功"));
@@ -168,7 +168,7 @@ public class TeacherController {
     @Log("更新教师信息")
     @ApiOperation(value = "更新教师信息")
     @PermissionName(source = "teacher:update", name = "更新教师信息", group = "教师管理")
-    @PutMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto) {
         if (teacherDto.getId() == null) {
             return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));

@@ -21,7 +21,7 @@ public class TeacherEntity extends BaseEntity {
     /**
 	* 工号
 	*/
-    @ApiModelProperty("工号")
+    @ApiModelProperty("教师工号")
     private String teaNumber;
 
     /**
