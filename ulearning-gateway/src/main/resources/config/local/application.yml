@@ -21,6 +21,7 @@ server:
 # 日志配置
 logging:
   config: classpath:config/local/logback.xml
+  file: ./ulearning-logs/gateway/sys/info.gateway.log
 #监控配置
 management:
   endpoints:

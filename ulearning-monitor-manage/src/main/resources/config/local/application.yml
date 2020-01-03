@@ -24,6 +24,7 @@ server:
 #日志配置
 logging:
   config: classpath:config/local/logback.xml
+  file: ./ulearning-logs/monitor-manage/sys/info.monitor-manage.log
 #监控配置
 management:
   endpoints:
