@@ -34,6 +34,6 @@ public interface SystemManageRemoting {
      * @param teacherEntity 待更新的教师信息
      * @return 教师信息
      */
-    @PutMapping("/update")
+    @PostMapping("/update")
     JsonResult<TeacherDto> update(@RequestParam Map<String, Object> teacherEntity);
 }
