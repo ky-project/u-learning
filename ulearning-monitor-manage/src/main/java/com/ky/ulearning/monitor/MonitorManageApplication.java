@@ -5,7 +5,6 @@ import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
@@ -16,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
         "com.ky.ulearning.monitor",
         "com.ky.ulearning.common.core.component"})
 @EnableEurekaClient
-@EnableZuulProxy
 @EnableAsync
 @EnableAdminServer
 public class MonitorManageApplication {

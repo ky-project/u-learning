@@ -8,11 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.GenericConversionService;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
-import org.springframework.web.context.request.async.TimeoutCallableProcessingInterceptor;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +24,6 @@ import java.util.Date;
  */
 @Slf4j
 @Configuration
-@EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
@@ -46,11 +43,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return new GlobalExceptionHandler();
     }
 
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
-        configurer.mediaType("js", MediaType.valueOf("text/javascript"));
-    }
 
     /**
      * 规定SpringContext在String和Date时的用的转化器
@@ -74,25 +66,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         }
     }
 
-    @Override
-    public void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
-        configurer.setDefaultTimeout(60 * 1000L);
-        configurer.registerCallableInterceptors(timeoutInterceptor());
-        configurer.setTaskExecutor(threadPoolTaskExecutor());
-    }
-
-    @Bean
-    public TimeoutCallableProcessingInterceptor timeoutInterceptor() {
-        return new TimeoutCallableProcessingInterceptor();
-    }
-
-    @Bean
-    public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
-        ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
-        t.setCorePoolSize(10);
-        t.setMaxPoolSize(100);
-        t.setQueueCapacity(20);
-        t.setThreadNamePrefix("WYF-Thread-");
-        return t;
-    }
+//    @Override
+//    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+//        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
+//        configurer.mediaType("js", MediaType.valueOf("text/javascript"));
+//    }
 }

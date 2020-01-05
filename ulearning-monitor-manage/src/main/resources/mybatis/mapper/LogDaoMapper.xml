@@ -33,7 +33,7 @@
             update_by
     </sql>
     <!-- 插入记录 -->
-    <insert id="insert" parameterType="logEntity">
+    <insert id="insert" parameterType="com.ky.ulearning.spi.monitor.logging.entity.LogEntity">
         insert into u_log(<include refid="insertSql"/>)
         values (#{logUsername}, #{logDescription},
         #{logModule}, #{logIp},

@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -17,7 +16,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
         "com.ky.ulearning.system",
         "com.ky.ulearning.common.core.component"})
 @EnableEurekaClient
-@EnableZuulProxy
 @EnableCaching
 @EnableAsync
 @EnableFeignClients
