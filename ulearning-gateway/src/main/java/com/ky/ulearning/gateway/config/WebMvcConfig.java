@@ -18,7 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Slf4j
 @Configuration
-@EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
@@ -34,10 +33,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public GlobalExceptionHandler defaultGlobalExceptionHandler() {
         return new GlobalExceptionHandler();
     }
-
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
-    }
+//
+//    @Override
+//    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+//        configurer.defaultContentType(MediaType.APPLICATION_JSON_UTF8);
+//    }
 
 }

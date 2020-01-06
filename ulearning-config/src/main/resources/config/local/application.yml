@@ -24,11 +24,14 @@ logging:
   file: ./ulearning-logs/config/sys/info.config.log
 #监控配置
 management:
+  health:
+    # 关闭redis检测
+    redis:
+      enabled: false
   endpoints:
     web:
       exposure:
         include: "*"
-        exclude: shutdown, httptrace
   endpoint:
     health:
       show-details: always

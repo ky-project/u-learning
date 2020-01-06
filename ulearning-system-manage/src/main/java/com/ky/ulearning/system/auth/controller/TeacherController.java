@@ -8,6 +8,8 @@ import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.UserContext;
@@ -62,14 +64,13 @@ public class TeacherController {
     @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(TeacherDto teacher) {
-        if (StringUtil.isEmpty(teacher.getTeaName())) {
-            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)));
-        }
-        if (StringUtil.isEmpty(teacher.getTeaNumber())) {
-            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)));
-        }
-        if (StringUtil.isEmpty(teacher.getTeaEmail())) {
-            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL)));
+        ValidatorHolder validatorHolder = ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(teacher.getTeaName()), SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teacher.getTeaNumber()), SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teacher.getTeaEmail()), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL)
+                .doValidate();
+        if(!validatorHolder.getResult()){
+            return ResponseEntityUtil.badRequest((new JsonResult<>(validatorHolder.getBaseEnum())));
         }
         //获取操作者的编号
         String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
@@ -169,7 +170,7 @@ public class TeacherController {
     @ApiOperation(value = "更新教师信息")
     @PermissionName(source = "teacher:update", name = "更新教师信息", group = "教师管理")
     @PostMapping("/update")
-    public ResponseEntity<JsonResult<TeacherDto>> update(@Validated TeacherDto teacherDto) {
+    public ResponseEntity<JsonResult<TeacherDto>> update(TeacherDto teacherDto) {
         if (teacherDto.getId() == null) {
             return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
         }

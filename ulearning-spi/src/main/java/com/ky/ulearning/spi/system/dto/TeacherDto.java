@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -40,7 +37,6 @@ public class TeacherDto implements Serializable {
      * 性别
      */
     @ApiModelProperty(value = "性别", example = "男/女")
-    @Size(max = 2, message = "请填 '男/女'")
     private String teaGender;
 
     /**
@@ -65,7 +61,6 @@ public class TeacherDto implements Serializable {
      * Email
      */
     @ApiModelProperty(value = "Email")
-    @Email(message = "邮箱格式错误")
     private String teaEmail;
 
     /**

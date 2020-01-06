@@ -7,6 +7,8 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import com.ky.ulearning.system.common.constants.SystemManageConfigParameters;
@@ -56,17 +58,14 @@ public class PermissionController {
     @PermissionName(source = "permission:save", name = "添加权限", group = "权限管理")
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(PermissionDto permissionDto) {
-        if(StringUtil.isEmpty(permissionDto.getPermissionUrl())){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_URL_CANNOT_BE_NULL));
-        }
-        if(StringUtil.isEmpty(permissionDto.getPermissionGroup())){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_GROUP_CANNOT_BE_NULL));
-        }
-        if(StringUtil.isEmpty(permissionDto.getPermissionName())){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_NAME_CANNOT_BE_NULL));
-        }
-        if(StringUtil.isEmpty(permissionDto.getPermissionSource())){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(PERMISSION_SOURCE_CANNOT_BE_NULL));
+        ValidatorHolder validatorHolder = ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(permissionDto.getPermissionUrl()), PERMISSION_URL_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(permissionDto.getPermissionGroup()), PERMISSION_GROUP_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(permissionDto.getPermissionName()), PERMISSION_NAME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(permissionDto.getPermissionSource()), PERMISSION_SOURCE_CANNOT_BE_NULL)
+                .doValidate();
+        if(validatorHolder.getResult()){
+            return ResponseEntityUtil.badRequest(new JsonResult<>(validatorHolder.getBaseEnum()));
         }
         //设置创建者和更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);

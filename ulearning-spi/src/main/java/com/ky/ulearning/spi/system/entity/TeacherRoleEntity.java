@@ -14,6 +14,7 @@ public class TeacherRoleEntity extends BaseEntity {
     /**
 	* 教师id
 	*/
+
     private Long teaId;
 
     /**
