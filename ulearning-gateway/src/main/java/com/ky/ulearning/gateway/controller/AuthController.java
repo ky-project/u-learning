@@ -94,7 +94,7 @@ public class AuthController {
     @Log("登录系统-单点登录")
     @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
     @PostMapping("/login")
-    public ResponseEntity<JsonResult> login(@Validated LoginUser loginUser,
+    public ResponseEntity<JsonResult> login(LoginUser loginUser,
                                             HttpServletRequest request,
                                             HttpServletResponse response) {
         // 查询验证码

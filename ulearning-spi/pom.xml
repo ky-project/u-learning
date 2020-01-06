@@ -51,12 +51,12 @@
         </dependency>
         <!-- swagger2 End -->
 
-        <!-- hibernate validator Begin -->
+        <!-- hibernate validate Begin -->
         <!--<dependency>-->
-            <!--<groupId>org.hibernate.validator</groupId>-->
-            <!--<artifactId>hibernate-validator</artifactId>-->
+            <!--<groupId>org.hibernate.validate</groupId>-->
+            <!--<artifactId>hibernate-validate</artifactId>-->
         <!--</dependency>-->
-        <!-- hibernate validator End -->
+        <!-- hibernate validate End -->
 
         <!-- fastjson Begin -->
         <dependency>
