@@ -9,6 +9,8 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
@@ -103,29 +105,24 @@ public class AuthController {
         loginUser.setPassword(loginUser.getPassword().trim());
         // 清除验证码
         redisService.delete(loginUser.getUuid());
-        if (StringUtils.isEmpty(code)) {
-            throw new BadRequestException(GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
-        }
-        if (StringUtils.isEmpty(loginUser.getCode()) || !loginUser.getCode().equalsIgnoreCase(code)) {
-            throw new BadRequestException(GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
-        }
+        ValidateHandler.checkParameter(StringUtils.isEmpty(code), GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
+        ValidateHandler.checkParameter(StringUtils.isEmpty(loginUser.getCode())
+                || !loginUser.getCode().equalsIgnoreCase(code), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
 
         //手动获取登录用户信息
         JwtAccount jwtAccount = (JwtAccount) jwtAccountDetailsService.loadUserByUsername(loginUser.getUsername());
 
-        if (!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword()))) {
-            throw new AccountExpiredException(GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR.getMessage());
-        }
+        ValidateHandler.checkParameter(!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword())), GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR);
 
         //账号有效判断
         if (!jwtAccount.isEnabled()) {
-            throw new AccountExpiredException("账号已停用，请联系管理员");
+            throw new BadRequestException("账号已停用，请联系管理员");
         } else if (!jwtAccount.isCredentialsNonExpired()) {
-            throw new AccountExpiredException("凭证已过期，请联系管理员");
+            throw new BadRequestException("凭证已过期，请联系管理员");
         } else if (!jwtAccount.isAccountNonExpired()) {
-            throw new AccountExpiredException("账户已过期，请联系管理员");
+            throw new BadRequestException("账户已过期，请联系管理员");
         } else if (!jwtAccount.isAccountNonLocked()) {
-            throw new AccountExpiredException("账户已被锁定，请联系管理员");
+            throw new BadRequestException("账户已被锁定，请联系管理员");
         }
         // 生成令牌
         final String token = jwtTokenUtil.generateToken(jwtAccount);
@@ -159,6 +156,7 @@ public class AuthController {
     /**
      * 获取验证码
      */
+    @Log("获取验证码")
     @ApiOperation(value = "获取验证码", notes = "每次登录前必须先调用该api获取验证码，登录时需带上uuid和用户填写的验证码<br/>返回的img属性在img标签中使用，src=返回的img串")
     @GetMapping(value = "/vCode")
     public ResponseEntity<JsonResult<ImgResult>> getCode() throws IOException {

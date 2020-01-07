@@ -7,14 +7,14 @@ import org.springframework.http.HttpStatus;
  * @author luyuhao
  * @date 19/12/15 14:54
  */
-public enum  MicroErrorCodeEnum implements BaseEnum {
+public enum MicroErrorCodeEnum implements BaseEnum {
     /**
      * 服务统一错误状态码
      */
-    PARAMETER_ERROR(HttpStatus.BAD_REQUEST, "参数格式不规范"),
+    OPERATE_ERROR(HttpStatus.BAD_REQUEST, "非法操作!"),
     SYSTEM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "业务处理异常!"),
     HAS_NO_PERMISSION(HttpStatus.FORBIDDEN, "权限不足!"),
-    SERVER_DOWN(HttpStatus.INTERNAL_SERVER_ERROR, "服务正在重启或正在维护，请稍后再试")
+    SERVER_DOWN(HttpStatus.INTERNAL_SERVER_ERROR, "服务正在重启或正在维护，请稍后再试!")
     ;
 
     private Integer code;

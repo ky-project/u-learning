@@ -84,9 +84,8 @@ public class LogAspect {
         try {
             //保存log信息
             monitorManageRemoting.add(logMap);
-        }catch (Exception e) {
-//            throw new ServerErrorException();
-            log.error(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("监控系统未启动");
         }
         return result;
     }
@@ -103,7 +102,7 @@ public class LogAspect {
         ProceedingJoinPoint joinPoint = (ProceedingJoinPoint) join;
         //设置log属性
         LogEntity logEntity = new LogEntity();
-//        //获取用户信息
+        //获取用户信息
         logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
@@ -124,8 +123,8 @@ public class LogAspect {
         try {
             //保存log信息
             monitorManageRemoting.add(logMap);
-        }catch (Exception te) {
-            throw new ServerErrorException();
+        } catch (Exception te) {
+            log.error("监控系统未启动");
         }
     }
 

@@ -5,6 +5,7 @@ import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
         //当用户尝试访问安全的REST资源而不提供任何凭据时，将调用此方法发送401 响应
         JsonResult jsonResult = new JsonResult<>(GatewayErrorCodeEnum.NOT_LOGGED_IN);
         String jsonString = JsonUtil.toJsonString(jsonResult);
-        response.setContentType("application/json;charset=utf-8");
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         PrintWriter out = response.getWriter();
         out.write(jsonString);

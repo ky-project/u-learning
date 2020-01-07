@@ -7,6 +7,7 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
@@ -18,7 +19,6 @@ import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
 import java.util.Map;
@@ -64,9 +63,8 @@ public class PermissionController {
                 .on(StringUtil.isEmpty(permissionDto.getPermissionName()), PERMISSION_NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(permissionDto.getPermissionSource()), PERMISSION_SOURCE_CANNOT_BE_NULL)
                 .doValidate();
-        if(validatorHolder.getResult()){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(validatorHolder.getBaseEnum()));
-        }
+        //结果校验
+        ValidateHandler.checkValidator(validatorHolder);
         //设置创建者和更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionDto.setCreateBy(username);
@@ -80,9 +78,7 @@ public class PermissionController {
     @PermissionName(source = "permission:delete", name = "删除权限", group = "权限管理")
     @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id){
-        if(StringUtil.isEmpty(id)){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(ID_CANNOT_BE_NULL));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), ID_CANNOT_BE_NULL);
         //获取更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionService.delete(id, username);
@@ -94,9 +90,7 @@ public class PermissionController {
     @PermissionName(source = "permission:update", name = "更新权限", group = "权限管理")
     @GetMapping("/update")
     public ResponseEntity<JsonResult> update(PermissionDto permissionDto){
-        if(StringUtil.isEmpty(permissionDto.getId())){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(ID_CANNOT_BE_NULL));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(permissionDto.getId()), ID_CANNOT_BE_NULL);
         //获取更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionDto.setUpdateBy(username);
