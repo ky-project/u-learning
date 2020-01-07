@@ -30,7 +30,7 @@ import java.util.Optional;
 public class JwtAuthenticationFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        log.error("系统捕捉AuthenticationException异常并处理 ==> " + exception.getMessage(), exception);
+        log.error("系统捕捉AuthenticationException异常并处理 ==> " + exception.getMessage());
         String message = StringUtil.isContainChinese(exception.getMessage()) ? exception.getMessage() : null;
         JsonResult jsonResult = JsonResult.buildErrorMsg(HttpStatus.UNAUTHORIZED.value(),
                 Optional.ofNullable(message).orElse(GatewayErrorCodeEnum.AUTHORIZED_FAILURE.getMessage()));

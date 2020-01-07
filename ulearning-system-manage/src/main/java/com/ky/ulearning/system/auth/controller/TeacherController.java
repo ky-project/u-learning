@@ -8,6 +8,7 @@ import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -30,8 +31,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,9 +72,7 @@ public class TeacherController {
                 .on(StringUtil.isEmpty(teacher.getTeaNumber()), SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teacher.getTeaEmail()), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL)
                 .doValidate();
-        if(!validatorHolder.getResult()){
-            return ResponseEntityUtil.badRequest((new JsonResult<>(validatorHolder.getBaseEnum())));
-        }
+        ValidateHandler.checkValidator(validatorHolder);
         //获取操作者的编号
         String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         //设置操作者编号
@@ -90,6 +91,7 @@ public class TeacherController {
     @PermissionName(source = "teacher:delete", name = "教师删除", group = "教师管理")
     @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
         teacherService.delete(id);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("教师删除成功"));
     }
@@ -110,14 +112,10 @@ public class TeacherController {
     @ApiOperation(value = "", hidden = true)
     @PostMapping("/login")
     public ResponseEntity<JsonResult<UserContext>> login(String teaNumber) {
-        if (StringUtils.isEmpty(teaNumber)) {
-            return ResponseEntityUtil.badRequest(new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY));
-        }
+        ValidateHandler.checkParameter(StringUtils.isEmpty(teaNumber), SystemErrorCodeEnum.PARAMETER_EMPTY);
         //获取教师信息
         TeacherEntity teacher = teacherService.getByTeaNumber(teaNumber);
-        if (teacher == null) {
-            return ResponseEntityUtil.badRequest(new JsonResult<>(SystemErrorCodeEnum.TEACHER_NOT_EXISTS));
-        }
+        ValidateHandler.checkParameter(teacher == null, SystemErrorCodeEnum.TEACHER_NOT_EXISTS);
         UserContext userContext = new UserContext()
                 .setId(teacher.getId())
                 .setSysRole(MicroConstant.SYS_ROLE_TEACHER)
@@ -145,9 +143,7 @@ public class TeacherController {
     @PermissionName(source = "teacher:getByTeaNumber", name = "根据工号查询教师", group = "教师管理")
     @GetMapping("/getByTeaNumber")
     public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber) {
-        if (StringUtils.isEmpty(teaNumber)) {
-            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
-        }
+        ValidateHandler.checkParameter(StringUtils.isEmpty(teaNumber), SystemErrorCodeEnum.PARAMETER_EMPTY);
         TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
         return ResponseEntityUtil.ok((new JsonResult<>(exists)));
     }
@@ -157,9 +153,7 @@ public class TeacherController {
     @PermissionName(source = "teacher:getAssignedRole", name = "查询教师角色", group = "教师管理")
     @GetMapping("/getAssignedRole")
     public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
-        if (id == null) {
-            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY)));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.PARAMETER_EMPTY);
         //将其转换为userContext，并获取角色list和权限list
         List<RoleEntity> rolePermissionDtoList = teacherRoleService.getRoleByTeaId(id);
         return ResponseEntityUtil.ok(new JsonResult<>(rolePermissionDtoList));
@@ -171,9 +165,7 @@ public class TeacherController {
     @PermissionName(source = "teacher:update", name = "更新教师信息", group = "教师管理")
     @PostMapping("/update")
     public ResponseEntity<JsonResult<TeacherDto>> update(TeacherDto teacherDto) {
-        if (teacherDto.getId() == null) {
-            return ResponseEntityUtil.badRequest((new JsonResult<>(SystemErrorCodeEnum.ID_CANNOT_BE_NULL)));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
         if (!StringUtils.isEmpty(teacherDto.getTeaPassword())) {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }

@@ -9,6 +9,8 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
@@ -103,19 +105,14 @@ public class AuthController {
         loginUser.setPassword(loginUser.getPassword().trim());
         // 清除验证码
         redisService.delete(loginUser.getUuid());
-        if (StringUtils.isEmpty(code)) {
-            throw new BadRequestException(GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
-        }
-        if (StringUtils.isEmpty(loginUser.getCode()) || !loginUser.getCode().equalsIgnoreCase(code)) {
-            throw new BadRequestException(GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
-        }
+        ValidateHandler.checkParameter(StringUtils.isEmpty(code), GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
+        ValidateHandler.checkParameter(StringUtils.isEmpty(loginUser.getCode())
+                || !loginUser.getCode().equalsIgnoreCase(code), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
 
         //手动获取登录用户信息
         JwtAccount jwtAccount = (JwtAccount) jwtAccountDetailsService.loadUserByUsername(loginUser.getUsername());
 
-        if (!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword()))) {
-            throw new BadRequestException(GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR.getMessage());
-        }
+        ValidateHandler.checkParameter(!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword())), GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR);
 
         //账号有效判断
         if (!jwtAccount.isEnabled()) {

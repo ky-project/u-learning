@@ -5,6 +5,7 @@ import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.system.auth.service.RolePermissionService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
@@ -40,9 +41,7 @@ public class RoleController {
     @PermissionName(source = "role:getPermissionListByRoleId", name = "获取角色权限集合", group = "角色管理")
     @GetMapping("/getPermissionListByRoleId")
     public ResponseEntity<JsonResult<List<PermissionEntity>>> getPermissionListByRoleId(String roleIdArr) {
-        if (StringUtil.isEmpty(roleIdArr)) {
-            return ResponseEntityUtil.badRequest(new JsonResult<>(SystemErrorCodeEnum.PARAMETER_EMPTY));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(roleIdArr), SystemErrorCodeEnum.PARAMETER_EMPTY);
         List<Long> roleIdList = StringUtil.strArrToLongList(roleIdArr.split(","));
         List<PermissionEntity> permissionList = rolePermissionService.getPermissionListByRoleId(roleIdList);
         return ResponseEntityUtil.ok(new JsonResult<>(permissionList));

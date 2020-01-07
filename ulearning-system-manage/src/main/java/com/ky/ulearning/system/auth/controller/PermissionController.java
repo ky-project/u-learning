@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
 import java.util.Map;
@@ -80,9 +78,7 @@ public class PermissionController {
     @PermissionName(source = "permission:delete", name = "删除权限", group = "权限管理")
     @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id){
-        if(StringUtil.isEmpty(id)){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(ID_CANNOT_BE_NULL));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), ID_CANNOT_BE_NULL);
         //获取更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionService.delete(id, username);
@@ -94,9 +90,7 @@ public class PermissionController {
     @PermissionName(source = "permission:update", name = "更新权限", group = "权限管理")
     @GetMapping("/update")
     public ResponseEntity<JsonResult> update(PermissionDto permissionDto){
-        if(StringUtil.isEmpty(permissionDto.getId())){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(ID_CANNOT_BE_NULL));
-        }
+        ValidateHandler.checkParameter(StringUtil.isEmpty(permissionDto.getId()), ID_CANNOT_BE_NULL);
         //获取更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionDto.setUpdateBy(username);

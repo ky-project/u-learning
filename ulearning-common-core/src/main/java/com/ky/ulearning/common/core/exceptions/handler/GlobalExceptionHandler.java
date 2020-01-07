@@ -55,9 +55,8 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity handleBaseException(BaseException e) {
-        log.error("系统捕捉BaseException异常并处理 ==> " + e.getMessage(), e);
         String message = StringUtil.isContainChinese(e.getMessage()) ? e.getMessage() : null;
-        return ResponseEntityUtil.internalServerError(JsonResult.buildErrorMsg(e.getStatus(),
+        return ResponseEntityUtil.badRequest(JsonResult.buildErrorMsg(e.getStatus(),
                 Optional.ofNullable(message).orElse(MicroErrorCodeEnum.OPERATE_ERROR.getMessage())));
     }
 
