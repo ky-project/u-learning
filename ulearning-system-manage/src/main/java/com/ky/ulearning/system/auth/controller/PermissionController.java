@@ -7,6 +7,7 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
@@ -64,9 +65,8 @@ public class PermissionController {
                 .on(StringUtil.isEmpty(permissionDto.getPermissionName()), PERMISSION_NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(permissionDto.getPermissionSource()), PERMISSION_SOURCE_CANNOT_BE_NULL)
                 .doValidate();
-        if(validatorHolder.getResult()){
-            return ResponseEntityUtil.badRequest(new JsonResult<>(validatorHolder.getBaseEnum()));
-        }
+        //结果校验
+        ValidateHandler.checkValidator(validatorHolder);
         //设置创建者和更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionDto.setCreateBy(username);
