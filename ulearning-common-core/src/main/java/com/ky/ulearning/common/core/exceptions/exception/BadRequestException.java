@@ -11,20 +11,13 @@ import org.springframework.http.HttpStatus;
  * @date 2019/12/7 10:52
  */
 @Getter
-public class BadRequestException extends RuntimeException {
-    private Integer status = HttpStatus.BAD_REQUEST.value();
+public class BadRequestException extends BaseException {
 
     public BadRequestException(String msg) {
         super(msg);
     }
 
-    public BadRequestException(HttpStatus status, String msg) {
-        super(msg);
-        this.status = status.value();
-    }
-
     public BadRequestException(BaseEnum baseEnum) {
-        super(baseEnum.getMessage());
-        this.status = baseEnum.getCode();
+        super(baseEnum);
     }
 }

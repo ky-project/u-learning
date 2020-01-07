@@ -82,7 +82,6 @@ public class PermissionZuulFilter extends ZuulFilter {
         if (StringUtils.isEmpty(sysRole)
                 || !sysRole.equals(MicroConstant.SYS_ROLE_STUDENT)) {
             warnInfo(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION);
-            return;
         }
     }
 
@@ -94,7 +93,6 @@ public class PermissionZuulFilter extends ZuulFilter {
         if (StringUtils.isEmpty(sysRole)
                 || !sysRole.equals(MicroConstant.SYS_ROLE_TEACHER)) {
             warnInfo(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION);
-            return;
         }
     }
 
@@ -127,7 +125,6 @@ public class PermissionZuulFilter extends ZuulFilter {
                 .collect(Collectors.toList())
                 .contains(getUri())) {
             warnInfo(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION);
-            return;
         }
     }
 

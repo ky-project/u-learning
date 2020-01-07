@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.filter;
 
+import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.exception.JwtTokenException;
@@ -127,7 +128,6 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (AuthenticationException ae) {
-            log.error(ae.getMessage());
             //交给自定义的AuthenticationFailureHandler
             jwtAuthenticationFailureHandler.onAuthenticationFailure(request, response, ae);
             return;

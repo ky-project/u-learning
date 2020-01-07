@@ -83,7 +83,7 @@ public class LogAspect {
             //保存log信息
             monitorManageRemoting.add(logMap);
         }catch (Exception e) {
-            throw new ServerErrorException();
+            log.error("监控系统未启动");
         }
         return result;
     }
@@ -122,7 +122,7 @@ public class LogAspect {
             //保存log信息
             monitorManageRemoting.add(logMap);
         }catch (Exception te) {
-            log.error(te.getMessage());
+            log.error("监控系统未启动");
         }
     }
 

@@ -1,6 +1,6 @@
 package com.ky.ulearning.gateway.common.exception;
 
-import javax.security.sasl.AuthenticationException;
+import org.springframework.security.core.AuthenticationException;
 
 /**
  * token校验异常

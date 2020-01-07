@@ -6,7 +6,7 @@ package com.ky.ulearning.common.core.exceptions.exception;
  * @author luyuhao
  * @date 19/12/09 03:48
  */
-public class EntityExistException extends RuntimeException {
+public class EntityExistException extends BaseException {
     public EntityExistException(String message) {
         super(message + "已存在");
     }

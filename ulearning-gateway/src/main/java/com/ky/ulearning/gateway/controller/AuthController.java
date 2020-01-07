@@ -114,18 +114,18 @@ public class AuthController {
         JwtAccount jwtAccount = (JwtAccount) jwtAccountDetailsService.loadUserByUsername(loginUser.getUsername());
 
         if (!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword()))) {
-            throw new AccountExpiredException(GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR.getMessage());
+            throw new BadRequestException(GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR.getMessage());
         }
 
         //账号有效判断
         if (!jwtAccount.isEnabled()) {
-            throw new AccountExpiredException("账号已停用，请联系管理员");
+            throw new BadRequestException("账号已停用，请联系管理员");
         } else if (!jwtAccount.isCredentialsNonExpired()) {
-            throw new AccountExpiredException("凭证已过期，请联系管理员");
+            throw new BadRequestException("凭证已过期，请联系管理员");
         } else if (!jwtAccount.isAccountNonExpired()) {
-            throw new AccountExpiredException("账户已过期，请联系管理员");
+            throw new BadRequestException("账户已过期，请联系管理员");
         } else if (!jwtAccount.isAccountNonLocked()) {
-            throw new AccountExpiredException("账户已被锁定，请联系管理员");
+            throw new BadRequestException("账户已被锁定，请联系管理员");
         }
         // 生成令牌
         final String token = jwtTokenUtil.generateToken(jwtAccount);
@@ -159,6 +159,7 @@ public class AuthController {
     /**
      * 获取验证码
      */
+    @Log("获取验证码")
     @ApiOperation(value = "获取验证码", notes = "每次登录前必须先调用该api获取验证码，登录时需带上uuid和用户填写的验证码<br/>返回的img属性在img标签中使用，src=返回的img串")
     @GetMapping(value = "/vCode")
     public ResponseEntity<JsonResult<ImgResult>> getCode() throws IOException {
