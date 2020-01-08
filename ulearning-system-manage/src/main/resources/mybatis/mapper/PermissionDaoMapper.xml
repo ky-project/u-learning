@@ -96,4 +96,65 @@
         WHERE valid = 1
         AND id = #{id}
     </update>
+    <!--分页查询权限-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="allParams"/>
+        FROM u_permission
+        WHERE valid = 1
+        <if test="permission.permissionName != null and permission.permissionName != ''">
+            AND permission_name LIKE concat('%', #{permission.permissionName} ,'%')
+        </if>
+        <if test="permission.permissionSource != null and permission.permissionSource != ''">
+            AND permission_source LIKE concat('%', #{permission.permissionSource}, '%')
+        </if>
+        <if test="permission.permissionGroup != null and permission.permissionGroup != ''">
+            AND permission_group = #{permission.permissionGroup}
+        </if>
+        <if test="permission.permissionUrl != null and permission.permissionUrl != ''">
+            AND permission_url LIKE concat('%', #{permission.permissionUrl}, '%')
+        </if>
+        <if test="permission.id != null">
+            AND id = #{permission.id}
+        </if>
+        ORDER BY update_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--根据查询条件查询总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer" parameterType="com.ky.ulearning.spi.system.dto.PermissionDto">
+        SELECT
+        COUNT(1)
+        FROM u_permission
+        WHERE valid = 1
+        <if test="permission.permissionName != null and permission.permissionName != ''">
+            AND permission_name LIKE concat('%', #{permission.permissionName} ,'%')
+        </if>
+        <if test="permission.permissionSource != null and permission.permissionSource != ''">
+            AND permission_source LIKE concat('%', #{permission.permissionSource}, '%')
+        </if>
+        <if test="permission.permissionGroup != null and permission.permissionGroup != ''">
+            AND permission_group = #{permission.permissionGroup}
+        </if>
+        <if test="permission.permissionUrl != null and permission.permissionUrl != ''">
+            AND permission_url LIKE concat('%', #{permission.permissionUrl}, '%')
+        </if>
+        <if test="permission.id != null">
+            AND id = #{permission.id}
+        </if>
+    </select>
+    <!--查询所有权限组-->
+    <select id="getAllGroup" resultType="java.lang.String">
+        select permission_group
+        from u_permission
+        where valid = 1
+        GROUP BY permission_group
+    </select>
+    <!--查询所有权限url-->
+    <select id="getAllUrl" resultType="java.lang.String">
+        select permission_url
+        from u_permission
+        where valid = 1
+    </select>
 </mapper>

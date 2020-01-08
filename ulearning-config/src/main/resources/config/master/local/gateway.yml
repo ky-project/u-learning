@@ -23,11 +23,11 @@ hystrix:
           enabled: true
         isolation:
           thread:
-            timeoutInMilliseconds: 30000
+            timeoutInMilliseconds: 90000
 #ribbon的超时时间
 ribbon:
-  ReadTimeout: 30000
-  ConnectTimeout: 30000
+  ReadTimeout: 20000
+  ConnectTimeout: 20000
 
 # 系统的各个端的匹配路径
 ulearning:

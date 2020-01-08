@@ -10,7 +10,10 @@ import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
+import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import com.ky.ulearning.system.common.constants.SystemManageConfigParameters;
 import io.swagger.annotations.Api;
@@ -51,6 +54,27 @@ public class PermissionController {
     @Autowired
     private SystemManageConfigParameters systemManageConfigParameters;
 
+    @Log("查询所有权限组")
+    @ApiOperation("查询所有权限组")
+    @PermissionName(source = "permission:getAllGroup", name = "查询所有权限组", group = "权限管理")
+    @GetMapping("/getAllGroup")
+    public ResponseEntity<JsonResult<List<String>>> getAllGroup(){
+        List<String> allGroup = permissionService.getAllGroup();
+        return ResponseEntityUtil.ok(new JsonResult<>(allGroup));
+    }
+
+    @Log("查询权限")
+    @ApiOperation("查询权限")
+    @PermissionName(source = "permission:pageList", name = "查询权限", group = "权限管理")
+    @GetMapping("/pageList")
+    public ResponseEntity<JsonResult<PageBean<PermissionEntity>>> pageList(PageParam pageParam, PermissionDto permission) {
+        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
+            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
+        }
+        PageBean<PermissionEntity> pageBean = permissionService.pagePermissionList(permission, pageParam);
+        return ResponseEntityUtil.ok(JsonResult.buildSuccessDateMsg(pageBean, "查询成功"));
+    }
+
     @Log("添加权限")
     @ApiOperation("添加权限")
     @ApiOperationSupport(ignoreParameters = {"id"})
@@ -77,7 +101,7 @@ public class PermissionController {
     @ApiOperation("删除权限")
     @PermissionName(source = "permission:delete", name = "删除权限", group = "权限管理")
     @GetMapping("/delete")
-    public ResponseEntity<JsonResult> delete(Long id){
+    public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), ID_CANNOT_BE_NULL);
         //获取更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
@@ -89,7 +113,7 @@ public class PermissionController {
     @ApiOperation("更新权限")
     @PermissionName(source = "permission:update", name = "更新权限", group = "权限管理")
     @GetMapping("/update")
-    public ResponseEntity<JsonResult> update(PermissionDto permissionDto){
+    public ResponseEntity<JsonResult> update(PermissionDto permissionDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(permissionDto.getId()), ID_CANNOT_BE_NULL);
         //获取更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
@@ -109,8 +133,9 @@ public class PermissionController {
     @GetMapping(value = "/reload")
     public ResponseEntity<JsonResult> reloadPermission() {
         log.debug("重新加载系统权限ing...");
-        //0.查询出所有的权限表达式，然后对比，如果已经存在，跳过，不存在添加
+        //0.查询出所有的权限表达式和url，然后对比，如果已经存在，跳过，不存在添加
         List<String> sources = permissionService.getSources();
+        List<String> urls = permissionService.getAllUrl();
         //1. 获取Controller中所有待遇@requestMapper标签的方法
         Map<RequestMappingInfo, HandlerMethod> handlerMethodMap = requestMappingHandlerMapping.getHandlerMethods();
         for (Map.Entry<RequestMappingInfo, HandlerMethod> methodEntry : handlerMethodMap.entrySet()) {
@@ -126,6 +151,9 @@ public class PermissionController {
                 }
                 String path = methodEntry.getKey().getPatternsCondition().toString();
                 path = path.substring(1, path.length() - 1);
+                if(urls.contains(systemManageConfigParameters.getContextPath() + path)){
+                    continue;
+                }
                 log.info(systemManageConfigParameters.getContextPath() + path);
                 PermissionDto permission = new PermissionDto();
                 //设置权限名称、权限组和资源名

@@ -1,9 +1,12 @@
 package com.ky.ulearning.system.auth.service;
 
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 权限表service-接口类
@@ -48,4 +51,27 @@ public interface PermissionService {
      * @param permissionDto 待更新的权限dto对象
      */
     void update(PermissionDto permissionDto);
+
+    /**
+     * 分页查询权限
+     *
+     * @param permission 筛选条件
+     * @param pageParam  分页条件
+     * @return 权限记录分页
+     */
+    PageBean<PermissionEntity> pagePermissionList(PermissionDto permission, PageParam pageParam);
+
+    /**
+     * 查询所有权限组
+     *
+     * @return 权限组集合
+     */
+    List<String> getAllGroup();
+
+    /**
+     * 查询所有权限url
+     *
+     * @return 权限url集合
+     */
+    List<String> getAllUrl();
 }
