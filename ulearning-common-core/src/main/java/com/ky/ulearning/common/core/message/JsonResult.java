@@ -73,6 +73,10 @@ public class JsonResult<T> implements Serializable {
         return build(null, message, data);
     }
 
+    public static <C> JsonResult<C> buildSuccessDateMsg(C data, String message) {
+        return build(SUCCESS_CODE, message, data);
+    }
+
     public static <C> JsonResult<C> buildErrorMsg(Integer code, String message) {
         return build(code, message, null);
     }
