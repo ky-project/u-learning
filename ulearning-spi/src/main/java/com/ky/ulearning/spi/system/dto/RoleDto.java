@@ -1,22 +1,39 @@
 package com.ky.ulearning.spi.system.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 教师角色dto
+ * {@link com.ky.ulearning.spi.system.entity.RoleEntity}
+ * 角色dto
  *
  * @author luyuhao
- * @since 19/12/08 03:45
+ * @since 20/01/10 01:25
  */
 @Data
-public class RolePermissionDto implements Serializable {
+public class RoleDto implements Serializable {
+
+    /**
+     * 角色名称
+     */
+    @ApiModelProperty("角色名称")
+    private String roleName;
+
+    /**
+     * 角色资源
+     */
+    @ApiModelProperty("角色资源")
+    private String roleSource;
+
+    /**
+     * 是否管理员角色
+     */
+    @ApiModelProperty("是否管理员角色")
+    private Boolean isAdmin;
 
     /**
      * id
@@ -61,28 +78,4 @@ public class RolePermissionDto implements Serializable {
      */
     @ApiModelProperty(hidden = true)
     private String updateBy;
-
-    /**
-     * 角色名称
-     */
-    @ApiModelProperty(value = "角色名称")
-    private String roleName;
-
-    /**
-     * 角色资源
-     */
-    @ApiModelProperty(value = "角色资源")
-    private String roleSource;
-
-    /**
-     * 是否管理员角色
-     */
-    @ApiModelProperty(value = "是否管理员角色")
-    private Boolean isAdmin;
-
-    /**
-     * 教师角色所拥有的所有权限
-     */
-    @ApiModelProperty(value = "教师角色所拥有的所有权限")
-    List<PermissionEntity> permissionEntities;
 }
