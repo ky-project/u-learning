@@ -6,8 +6,14 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.system.dto.RoleDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.RolePermissionService;
+import com.ky.ulearning.system.auth.service.RoleService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -15,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +31,7 @@ import java.util.List;
 
 /**
  * @author luyuhao
- * @date 19/12/14 16:24
+ * @since 19/12/14 16:24
  */
 @Slf4j
 @RestController
@@ -34,6 +41,21 @@ public class RoleController {
 
     @Autowired
     private RolePermissionService rolePermissionService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Log("角色查询")
+    @ApiOperation(value = "角色查询")
+    @PermissionName(source = "role:pageList", name = "角色查询", group = "角色管理")
+    @GetMapping("/pageList")
+    public ResponseEntity<JsonResult<PageBean<RoleEntity>>> pageList(PageParam pageParam, RoleDto roleDto) {
+        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
+            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
+        }
+        PageBean<RoleEntity> pageBean = roleService.pageRoleList(roleDto, pageParam);
+        return ResponseEntityUtil.ok(JsonResult.buildSuccessDateMsg(pageBean, "查询成功"));
+    }
 
     @Log("获取角色权限集合")
     @ApiOperation(value = "获取角色权限集合")

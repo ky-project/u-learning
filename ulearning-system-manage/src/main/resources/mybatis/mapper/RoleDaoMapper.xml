@@ -88,4 +88,46 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+    <!--分页查询角色列表-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="All"/>
+        FROM u_role
+        WHERE valid = 1
+        <if test="roleDto.roleName != null and roleDto.roleName != ''">
+            AND role_name LIKE concat('%', #{roleDto.roleName}, '%')
+        </if>
+        <if test="roleDto.roleSource != null and roleDto.roleSource != ''">
+            AND role_source LIKE concat('%', #{roleDto.roleSource}, '%')
+        </if>
+        <if test="roleDto.isAdmin != null">
+            AND is_admin = #{roleDto.isAdmin}
+        </if>
+        <if test="roleDto.id != null">
+            AND id = #{roleDto.id}
+        </if>
+        ORDER BY update_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM u_role
+        WHERE valid = 1
+        <if test="roleDto.roleName != null and roleDto.roleName != ''">
+            AND role_name LIKE concat('%', #{roleDto.roleName}, '%')
+        </if>
+        <if test="roleDto.roleSource != null and roleDto.roleSource != ''">
+            AND role_source LIKE concat('%', #{roleDto.roleSource}, '%')
+        </if>
+        <if test="roleDto.isAdmin != null">
+            AND is_admin = #{roleDto.isAdmin}
+        </if>
+        <if test="roleDto.id != null">
+            AND id = #{roleDto.id}
+        </if>
+    </select>
 </mapper>
