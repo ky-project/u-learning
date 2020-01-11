@@ -174,7 +174,8 @@
     </select>
     <update id="updateValidByTeaId">
         UPDATE u_teacher
-        SET valid = #{valid}
+        SET valid = #{valid},
+            update_by = #{updateBy}
         WHERE id = #{id}
     </update>
     <!--新增教师-->

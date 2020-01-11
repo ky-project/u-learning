@@ -1,6 +1,7 @@
 package com.ky.ulearning.common.core.validate.validator;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
+import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,10 @@ public class ValidatorHolder {
             }
         }
         return this;
+    }
+
+    public void checkResult(){
+        ValidateHandler.checkValidator(this);
     }
 
     public Boolean getResult() {

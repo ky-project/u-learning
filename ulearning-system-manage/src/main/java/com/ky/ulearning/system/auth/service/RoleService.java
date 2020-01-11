@@ -21,4 +21,26 @@ public interface RoleService {
      * @return 封装角色实体类的分页对象
      */
     PageBean<RoleEntity> pageRoleList(RoleDto roleDto, PageParam pageParam);
+
+    /**
+     * 添加角色
+     *
+     * @param roleDto 待添加的角色信息
+     */
+    void insert(RoleDto roleDto);
+
+    /**
+     * 删除角色
+     *
+     * @param id       待删除的角色id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
+
+    /**
+     * 更新角色
+     *
+     * @param roleDto 待更新的角色对象
+     */
+    void update(RoleDto roleDto);
 }

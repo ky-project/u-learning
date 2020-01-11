@@ -27,7 +27,8 @@
         select
         <include refid="All"/>
         from u_role_permission
-        where id = #{id,jdbcType=BIGINT}
+        where valid = 1
+              AND id = #{id,jdbcType=BIGINT}
     </select>
     <delete id="deleteById" parameterType="java.lang.Long">
         delete
@@ -39,33 +40,22 @@
         insert into u_role_permission (permission_id, role_id, `valid`,
                                        memo, create_time, create_by,
                                        update_time, update_by)
-        values (#{permissionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{valid,jdbcType=BOOLEAN},
+        values (#{permissionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 1,
                 #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
                 now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
     <update id="updateById" parameterType="com.ky.ulearning.spi.system.entity.RolePermissionEntity">
         update u_role_permission
         <set>
+            update_time = now(),
             <if test="permissionId != null">
                 permission_id = #{permissionId,jdbcType=BIGINT},
             </if>
             <if test="roleId != null">
                 role_id = #{roleId,jdbcType=BIGINT},
             </if>
-            <if test="valid != null">
-                `valid` = #{valid,jdbcType=BOOLEAN},
-            </if>
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null and createBy != ''">
-                create_by = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},

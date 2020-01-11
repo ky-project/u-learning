@@ -44,20 +44,22 @@
         select
         <include refid="All"/>
         from u_role
-        where id = #{id,jdbcType=BIGINT}
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
     </select>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.entity.RoleEntity"
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.dto.RoleDto"
             useGeneratedKeys="true">
         insert into u_role (role_name, role_source, is_admin,
                             `valid`, memo, create_time,
                             create_by, update_time, update_by)
         values (#{roleName,jdbcType=VARCHAR}, #{roleSource,jdbcType=VARCHAR}, #{isAdmin,jdbcType=BOOLEAN},
-                #{valid,jdbcType=BOOLEAN}, #{memo,jdbcType=VARCHAR}, now(),
+                1, #{memo,jdbcType=VARCHAR}, now(),
                 #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
-    <update id="updateById" parameterType="com.ky.ulearning.spi.system.entity.RoleEntity">
+    <update id="updateById" parameterType="com.ky.ulearning.spi.system.dto.RoleDto">
         update u_role
         <set>
+            update_time = now(),
             <if test="roleName != null and roleName != ''">
                 role_name = #{roleName,jdbcType=VARCHAR},
             </if>
@@ -67,26 +69,15 @@
             <if test="isAdmin != null">
                 is_admin = #{isAdmin,jdbcType=BOOLEAN},
             </if>
-            <if test="valid != null">
-                `valid` = #{valid,jdbcType=BOOLEAN},
-            </if>
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null and createBy != ''">
-                create_by = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
     </update>
     <!--分页查询角色列表-->
     <select id="listPage" resultMap="BaseResultMap">
@@ -130,4 +121,28 @@
             AND id = #{roleDto.id}
         </if>
     </select>
+    <!--根据roleName查询-->
+    <select id="getByRoleName" resultMap="BaseResultMap">
+        select
+        <include refid="All"/>
+        from u_role
+        where valid = 1
+        AND role_name = #{roleName}
+    </select>
+    <!--根据roleSource查询-->
+    <select id="getByRoleSource" resultMap="BaseResultMap">
+        select
+        <include refid="All"/>
+        from u_role
+        where valid = 1
+        AND role_source = #{roleSource}
+    </select>
+    <!--更新记录的有效位-->
+    <update id="updateValidById">
+        UPDATE u_role
+        SET valid       = #{valid},
+            update_by   = #{updateBy},
+            update_time = now()
+        WHERE id = #{id}
+    </update>
 </mapper>

@@ -2,16 +2,22 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.validator.ValidatorHolder;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.RoleDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.system.auth.dao.RoleDao;
 import com.ky.ulearning.system.auth.service.RolePermissionService;
 import com.ky.ulearning.system.auth.service.RoleService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
@@ -24,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -69,5 +76,43 @@ public class RoleController {
         return ResponseEntityUtil.ok(new JsonResult<>(permissionList));
     }
 
+    @Log("添加角色")
+    @ApiOperation(value = "添加角色")
+    @ApiOperationSupport(ignoreParameters = "id")
+    @PermissionName(source = "role:add", name = "添加角色", group = "角色管理")
+    @PostMapping("/add")
+    public ResponseEntity<JsonResult> add(RoleDto roleDto) {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(roleDto.getRoleName()), SystemErrorCodeEnum.ROLE_NAME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(roleDto.getRoleSource()), SystemErrorCodeEnum.ROLE_SOURCE_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(roleDto.getIsAdmin()), SystemErrorCodeEnum.IS_ADMIN_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        roleDto.setCreateBy(username);
+        roleDto.setUpdateBy(username);
+        roleService.insert(roleDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+    }
 
+    @Log("删除角色")
+    @ApiOperation(value = "删除角色")
+    @PermissionName(source = "role:delete", name = "删除角色", group = "角色管理")
+    @GetMapping("/delete")
+    public ResponseEntity<JsonResult> delete(Long id) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+        roleService.delete(id, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("更新角色")
+    @ApiOperation(value = "更新角色")
+    @PermissionName(source = "role:update", name = "更新角色", group = "角色管理")
+    @PostMapping("/update")
+    public ResponseEntity<JsonResult> update(RoleDto roleDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(roleDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+
+        roleDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        roleService.update(roleDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
 }

@@ -81,14 +81,12 @@ public class PermissionController {
     @PermissionName(source = "permission:save", name = "添加权限", group = "权限管理")
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(PermissionDto permissionDto) {
-        ValidatorHolder validatorHolder = ValidatorBuilder.build()
+        ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(permissionDto.getPermissionUrl()), PERMISSION_URL_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(permissionDto.getPermissionGroup()), PERMISSION_GROUP_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(permissionDto.getPermissionName()), PERMISSION_NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(permissionDto.getPermissionSource()), PERMISSION_SOURCE_CANNOT_BE_NULL)
-                .doValidate();
-        //结果校验
-        ValidateHandler.checkValidator(validatorHolder);
+                .doValidate().checkResult();
         //设置创建者和更新者
         String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         permissionDto.setCreateBy(username);
@@ -112,7 +110,7 @@ public class PermissionController {
     @Log("更新权限")
     @ApiOperation("更新权限")
     @PermissionName(source = "permission:update", name = "更新权限", group = "权限管理")
-    @GetMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<JsonResult> update(PermissionDto permissionDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(permissionDto.getId()), ID_CANNOT_BE_NULL);
         //获取更新者

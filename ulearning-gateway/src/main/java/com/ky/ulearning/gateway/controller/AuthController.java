@@ -184,7 +184,7 @@ public class AuthController {
             log.info("生成验证码:" + verifyCode);
             return ResponseEntityUtil.ok(JsonResult.buildDateMsg(new ImgResult("data:image/gif;base64," + Base64.encode(stream.toByteArray()), uuid), "验证码已生成"));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             return ResponseEntityUtil.badRequest(new JsonResult<>(GatewayErrorCodeEnum.CREATE_VERIFY_CODE_FAILED));
         } finally {
             stream.close();

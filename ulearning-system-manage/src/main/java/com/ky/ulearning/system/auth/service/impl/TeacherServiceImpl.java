@@ -1,6 +1,7 @@
 package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
@@ -42,18 +43,18 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(rollbackFor = Throwable.class)
     public void update(TeacherDto newTeacher) {
         //判断teaNumber是否存在
-        TeacherEntity teaNumberExists = teacherDao.findByTeaNumber(newTeacher.getTeaNumber());
-        if (!StringUtils.isEmpty(newTeacher.getTeaNumber())
-                && teaNumberExists != null
-                && !teaNumberExists.getId().equals(newTeacher.getId())) {
-            throw new EntityExistException("教师编号");
+        if(!StringUtil.isEmpty(newTeacher.getTeaNumber())) {
+            TeacherEntity teaNumberExists = teacherDao.findByTeaNumber(newTeacher.getTeaNumber());
+            if (teaNumberExists != null && !teaNumberExists.getId().equals(newTeacher.getId())) {
+                throw new EntityExistException("教师编号");
+            }
         }
         //判断邮箱是否存在
-        TeacherEntity emailExists = teacherDao.findByEmail(newTeacher.getTeaEmail());
-        if (!StringUtils.isEmpty(newTeacher.getTeaEmail())
-                && emailExists != null
-                && !emailExists.getId().equals(newTeacher.getId())) {
-            throw new EntityExistException("教师邮箱");
+        if(!StringUtil.isEmpty(newTeacher.getTeaEmail())) {
+            TeacherEntity emailExists = teacherDao.findByEmail(newTeacher.getTeaEmail());
+            if (emailExists != null && !emailExists.getId().equals(newTeacher.getId())) {
+                throw new EntityExistException("教师邮箱");
+            }
         }
         //更新记录
         teacherDao.updateById(newTeacher);
@@ -86,8 +87,8 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
-    public void delete(Long id) {
-        teacherDao.updateValidByTeaId(id, 0);
+    public void delete(Long id, String updateBy) {
+        teacherDao.updateValidByTeaId(id, 0, updateBy);
     }
 
     @Override
