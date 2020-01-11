@@ -1,7 +1,7 @@
 package com.ky.ulearning.common.core.validate.validator;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
-import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 
 import java.util.ArrayList;
 import java.util.List;

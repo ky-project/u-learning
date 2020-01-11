@@ -1,4 +1,4 @@
-package com.ky.ulearning.common.core.validate.Handler;
+package com.ky.ulearning.common.core.validate.handler;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
