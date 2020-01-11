@@ -10,7 +10,7 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
-import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
