@@ -67,12 +67,11 @@ public class TeacherController {
     @PermissionName(source = "teacher:save", name = "教师添加", group = "教师管理")
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(TeacherDto teacher) {
-        ValidatorHolder validatorHolder = ValidatorBuilder.build()
+        ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(teacher.getTeaName()), SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teacher.getTeaNumber()), SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teacher.getTeaEmail()), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL)
-                .doValidate();
-        ValidateHandler.checkValidator(validatorHolder);
+                .doValidate().checkResult();
         //获取操作者的编号
         String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         //设置操作者编号
@@ -92,7 +91,7 @@ public class TeacherController {
     @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        teacherService.delete(id);
+        teacherService.delete(id, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("教师删除成功"));
     }
 

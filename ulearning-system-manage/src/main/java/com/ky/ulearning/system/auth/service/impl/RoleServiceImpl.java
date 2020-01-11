@@ -1,5 +1,7 @@
 package com.ky.ulearning.system.auth.service.impl;
 
+import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.RoleDto;
@@ -8,6 +10,7 @@ import com.ky.ulearning.system.auth.dao.RoleDao;
 import com.ky.ulearning.system.auth.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,5 +52,47 @@ public class RoleServiceImpl implements RoleService {
                     .setHasPre(pageBean.getCurrentPage() > 1);
         }
         return pageBean;
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void insert(RoleDto roleDto) {
+        RoleEntity roleNameExists = roleDao.getByRoleName(roleDto.getRoleName());
+        if(roleNameExists != null){
+            throw new EntityExistException("角色名");
+        }
+        RoleEntity roleSourceExists = roleDao.getByRoleSource(roleDto.getRoleSource());
+        if(roleSourceExists != null){
+            throw new EntityExistException("角色资源名");
+        }
+        roleDao.insert(roleDto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    @CacheEvict(allEntries = true)
+    public void delete(Long id, String updateBy) {
+        roleDao.updateValidById(id, 0, updateBy);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    @CacheEvict(allEntries = true)
+    public void update(RoleDto roleDto) {
+        if(!StringUtil.isEmpty(roleDto.getRoleName())) {
+            RoleEntity roleNameExists = roleDao.getByRoleName(roleDto.getRoleName());
+            if (roleNameExists != null && !roleDto.getId().equals(roleNameExists.getId())) {
+                throw new EntityExistException("角色名");
+            }
+        }
+        if(!StringUtil.isEmpty(roleDto.getRoleSource())) {
+            RoleEntity roleSourceExists = roleDao.getByRoleSource(roleDto.getRoleSource());
+            if (roleSourceExists != null && !roleDto.getId().equals(roleSourceExists.getId())) {
+                throw new EntityExistException("角色资源名");
+            }
+        }
+
+        roleDao.updateById(roleDto);
     }
 }

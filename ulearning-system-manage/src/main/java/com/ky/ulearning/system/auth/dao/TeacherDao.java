@@ -69,10 +69,11 @@ public interface TeacherDao {
     /**
      * 根据id更新有效值
      *
-     * @param id    id
-     * @param valid 有效值
+     * @param id       id
+     * @param valid    有效值
+     * @param updateBy 更新者
      */
-    void updateValidByTeaId(Long id, int valid);
+    void updateValidByTeaId(@Param("id") Long id, @Param("valid") int valid, @Param("updateBy") String updateBy);
 
     /**
      * 新增教师

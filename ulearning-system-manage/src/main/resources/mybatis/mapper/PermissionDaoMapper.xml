@@ -67,8 +67,9 @@
     <!--更新有效位-->
     <update id="updateValidById">
         UPDATE u_permission
-        SET valid     = #{valid},
-            update_by = #{updateBy}
+        SET valid       = #{valid},
+            update_by   = #{updateBy},
+            update_time = now()
         WHERE id = #{id}
     </update>
     <!--更新权限-->
@@ -123,7 +124,8 @@
         </if>
     </select>
     <!--根据查询条件查询总记录数-->
-    <select id="countListPage" resultType="java.lang.Integer" parameterType="com.ky.ulearning.spi.system.dto.PermissionDto">
+    <select id="countListPage" resultType="java.lang.Integer"
+            parameterType="com.ky.ulearning.spi.system.dto.PermissionDto">
         SELECT
         COUNT(1)
         FROM u_permission

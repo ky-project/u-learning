@@ -41,8 +41,9 @@ public interface TeacherService {
      * 删除教师
      *
      * @param id 删除id
+     * @param updateBy 更新者
      */
-    void delete(Long id);
+    void delete(Long id, String updateBy);
 
     /**
      * 新增教师

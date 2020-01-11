@@ -23,7 +23,7 @@ public interface RoleDao {
      *
      * @param role 待插入的角色
      */
-    void insert(RoleEntity role);
+    void insert(RoleDto role);
 
     /**
      * 根据id查询角色
@@ -38,7 +38,7 @@ public interface RoleDao {
      *
      * @param role 待更新的角色
      */
-    void updateById(RoleEntity role);
+    void updateById(RoleDto role);
 
     /**
      * 分页查询角色列表
@@ -56,4 +56,29 @@ public interface RoleDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("roleDto") RoleDto roleDto);
+
+    /**
+     * 根据roleName查询
+     *
+     * @param roleName 角色名
+     * @return 返回角色信息
+     */
+    RoleEntity getByRoleName(String roleName);
+
+    /**
+     * 根据roleSource查询
+     *
+     * @param roleSource 角色资源名
+     * @return 返回角色信息
+     */
+    RoleEntity getByRoleSource(String roleSource);
+
+    /**
+     * 更新记录的有效位
+     *
+     * @param id       角色id
+     * @param valid    有效位
+     * @param updateBy 更新者
+     */
+    void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
 }
