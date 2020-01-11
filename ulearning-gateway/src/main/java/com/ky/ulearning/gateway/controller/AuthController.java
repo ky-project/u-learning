@@ -2,37 +2,38 @@ package com.ky.ulearning.gateway.controller;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
-import com.ky.ulearning.common.core.utils.EncryptUtil;
-import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
-import com.ky.ulearning.common.core.utils.VerifyCodeUtil;
+import com.ky.ulearning.common.core.utils.*;
 import com.ky.ulearning.common.core.validate.Handler.ValidateHandler;
-import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.redis.RedisService;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
+import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
+import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
+import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,6 +76,9 @@ public class AuthController {
     @Autowired
     private JwtAccountDetailsService jwtAccountDetailsService;
 
+    @Autowired
+    private MonitorManageRemoting monitorManageRemoting;
+
     /**
      * 登出成功
      *
@@ -93,12 +97,12 @@ public class AuthController {
      * @param loginUser 登陆用户信息
      * @return 返回用户信息和token
      */
-    @Log("登录系统-单点登录")
     @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
     @PostMapping("/login")
     public ResponseEntity<JsonResult> login(LoginUser loginUser,
                                             HttpServletRequest request,
                                             HttpServletResponse response) {
+        long currentTime = System.currentTimeMillis();
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
         loginUser.setUsername(loginUser.getUsername().trim());
@@ -150,6 +154,14 @@ public class AuthController {
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间
         }
+
+        //登录日志
+        try {
+            //保存log信息
+            logRecord(loginUser, currentTime);
+        } catch (Exception e) {
+            log.error("监控系统未启动");
+        }
         return ResponseEntityUtil.ok(JsonResult.buildDateMsg(map, "登录成功"));
     }
 
@@ -190,5 +202,29 @@ public class AuthController {
 
         response.addCookie(tokenCookie);
         response.addCookie(refreshTokenCookie);
+    }
+
+    private void logRecord(LoginUser loginUser, long currentTime) {
+        //设置log属性
+        LogEntity logEntity = new LogEntity();
+        //获取用户信息
+        logEntity.setLogUsername(JwtAccountUtil.getUsername());
+        logEntity.setLogDescription("登录系统");
+        logEntity.setLogModule("com.ky.ulearning.gateway.controller.AuthController.login()");
+        logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
+        logEntity.setLogType("INFO");
+        logEntity.setLogParams(loginUser.toString());
+        logEntity.setLogTime(System.currentTimeMillis() - currentTime);
+        logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
+        logEntity.setCreateBy("system");
+        logEntity.setUpdateBy("system");
+
+        Map<String, Object> logMap =
+                JSONObject.parseObject(JSON.toJSONString(logEntity,
+                        SerializerFeature.WriteNullStringAsEmpty,
+                        SerializerFeature.WriteNullNumberAsZero,
+                        SerializerFeature.WriteMapNullValue));
+
+        monitorManageRemoting.add(logMap);
     }
 }
