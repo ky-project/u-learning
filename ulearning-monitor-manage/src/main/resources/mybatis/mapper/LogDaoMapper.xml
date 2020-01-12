@@ -32,6 +32,24 @@
             create_by,
             update_by
     </sql>
+    <sql id="All">
+            id,
+            log_username,
+            log_description,
+            log_module,
+            log_ip,
+            log_type,
+            log_exception,
+            log_params,
+            log_time,
+            log_address,
+            valid,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
     <!-- 插入记录 -->
     <insert id="insert" parameterType="com.ky.ulearning.spi.monitor.logging.entity.LogEntity">
         insert into u_log(<include refid="insertSql"/>)
@@ -42,4 +60,70 @@
         #{logAddress}, #{memo},
         #{createBy}, #{updateBy})
     </insert>
+    <!--分页查询日志信息-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="All"/>
+        FROM u_log
+        WHERE valid = 1
+        <if test="logDto.logUsername != null and logDto.logUsername != ''">
+            AND log_username LIKE CONCAT('%', #{logDto.logUsername}, '%')
+        </if>
+        <if test="logDto.logDescription != null and logDto.logDescription != ''">
+            AND log_description LIKE CONCAT('%', #{logDto.logDescription}, '%')
+        </if>
+        <if test="logDto.logModule != null and logDto.logModule != ''">
+            AND log_module LIKE CONCAT('%', #{logDto.logModule}, '%')
+        </if>
+        <if test="logDto.logIp != null and logDto.logIp != ''">
+            AND log_ip LIKE CONCAT('%', #{logDto.logIp}, '%')
+        </if>
+        <if test="logDto.logType != null and logDto.logType != ''">
+            AND log_type LIKE CONCAT('%', #{logDto.logType}, '%')
+        </if>
+        <if test="logDto.logException != null and logDto.logException != ''">
+            AND log_exception LIKE CONCAT('%', #{logDto.logException}, '%')
+        </if>
+        <if test="logDto.logParams != null and logDto.logParams != ''">
+            AND log_params LIKE CONCAT('%', #{logDto.logParams}, '%')
+        </if>
+        <if test="logDto.logAddress != null and logDto.logAddress != ''">
+            AND log_address LIKE CONCAT('%', #{logDto.logAddress}, '%')
+        </if>
+        order by update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--根据筛选条件查询总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM u_log
+        WHERE valid = 1
+        <if test="logDto.logUsername != null and logDto.logUsername != ''">
+            AND log_username LIKE CONCAT('%', #{logDto.logUsername}, '%')
+        </if>
+        <if test="logDto.logDescription != null and logDto.logDescription != ''">
+            AND log_description LIKE CONCAT('%', #{logDto.logDescription}, '%')
+        </if>
+        <if test="logDto.logModule != null and logDto.logModule != ''">
+            AND log_module LIKE CONCAT('%', #{logDto.logModule}, '%')
+        </if>
+        <if test="logDto.logIp != null and logDto.logIp != ''">
+            AND log_ip LIKE CONCAT('%', #{logDto.logIp}, '%')
+        </if>
+        <if test="logDto.logType != null and logDto.logType != ''">
+            AND log_type LIKE CONCAT('%', #{logDto.logType}, '%')
+        </if>
+        <if test="logDto.logException != null and logDto.logException != ''">
+            AND log_exception LIKE CONCAT('%', #{logDto.logException}, '%')
+        </if>
+        <if test="logDto.logParams != null and logDto.logParams != ''">
+            AND log_params LIKE CONCAT('%', #{logDto.logParams}, '%')
+        </if>
+        <if test="logDto.logAddress != null and logDto.logAddress != ''">
+            AND log_address LIKE CONCAT('%', #{logDto.logAddress}, '%')
+        </if>
+    </select>
 </mapper>
