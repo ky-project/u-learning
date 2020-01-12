@@ -57,7 +57,7 @@ public class PermissionController {
     @ApiOperation("查询所有权限组")
     @PermissionName(source = "permission:getAllGroup", name = "查询所有权限组", group = "权限管理")
     @GetMapping("/getAllGroup")
-    public ResponseEntity<JsonResult<List<String>>> getAllGroup(){
+    public ResponseEntity<JsonResult<List<String>>> getAllGroup() {
         List<String> allGroup = permissionService.getAllGroup();
         return ResponseEntityUtil.ok(new JsonResult<>(allGroup));
     }
@@ -148,7 +148,7 @@ public class PermissionController {
                 }
                 String path = methodEntry.getKey().getPatternsCondition().toString();
                 path = path.substring(1, path.length() - 1);
-                if(urls.contains(systemManageConfigParameters.getContextPath() + path)){
+                if (urls.contains(systemManageConfigParameters.getContextPath() + path)) {
                     continue;
                 }
                 log.info(systemManageConfigParameters.getContextPath() + path);
@@ -167,5 +167,18 @@ public class PermissionController {
         }
         log.debug("重新加载系统权限...完毕");
         return ResponseEntityUtil.ok(JsonResult.buildMsg("权限加载完成"));
+    }
+
+    /**
+     * 以树的形式查询所有权限
+     */
+    @Log("分组查询所有权限")
+    @ApiOperation(value = "分组查询所有权限", notes = "以组为单位查询所有权限")
+    @PermissionName(source = "permission:groupList", name = "权限重载", group = "权限管理")
+    @GetMapping(value = "/groupList")
+    public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> groupList() {
+        Map<String, List<PermissionEntity>> groupList = permissionService.groupList();
+
+        return ResponseEntityUtil.ok(new JsonResult<>(groupList));
     }
 }

@@ -12,6 +12,22 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <resultMap id="RolePermissionResultMap" type="com.ky.ulearning.spi.system.dto.RolePermissionDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_source" jdbcType="VARCHAR" property="roleSource"/>
+        <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <collection property="permissionEntities"
+                    ofType="com.ky.ulearning.spi.system.entity.PermissionEntity"
+                    resultMap="com.ky.ulearning.system.auth.dao.PermissionDao.BaseResultMap"/>
+    </resultMap>
+
     <sql id="All">
             id,
             permission_id,
@@ -28,7 +44,7 @@
         <include refid="All"/>
         from u_role_permission
         where valid = 1
-              AND id = #{id,jdbcType=BIGINT}
+        AND id = #{id,jdbcType=BIGINT}
     </select>
     <delete id="deleteById" parameterType="java.lang.Long">
         delete
@@ -75,6 +91,41 @@
         AND urp.role_id IN
         <foreach collection="roleIdList" item="roleId" open="(" close=")" separator=",">
             #{roleId}
+        </foreach>
+    </select>
+    <!--根据角色id查询角色权限-->
+    <select id="getAssignedPermissionByRoleId" resultMap="com.ky.ulearning.system.auth.dao.PermissionDao.BaseResultMap">
+        SELECT up.id,
+               up.permission_name,
+               up.permission_source,
+               up.permission_group,
+               up.permission_url,
+               up.valid,
+               up.memo,
+               up.create_time,
+               up.create_by,
+               up.update_time,
+               up.update_by
+        FROM u_role_permission urp
+                 LEFT JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
+        WHERE urp.valid = 1
+          AND urp.role_id = #{roleId}
+    </select>
+    <!--根据角色id删除关联记录-->
+    <delete id="deleteByRoleId">
+        DELETE
+        FROM u_role_permission
+        WHERE valid = 1
+          AND role_id = #{roleId}
+    </delete>
+    <!--批量插入角色权限关联记录-->
+    <select id="batchInsert">
+        INSERT INTO u_role_permission(permission_id, role_id, valid, memo, create_time, create_by, update_time,
+        update_by)
+        VALUES
+        <foreach collection="permissionList" item="permission" separator=",">
+            (#{permission.permissionId}, #{permission.roleId}, 1, #{permission.memo}, now(), #{permission.createBy},
+            now(), #{permission.updateBy})
         </foreach>
     </select>
 </mapper>

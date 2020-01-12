@@ -28,8 +28,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author luyuhao
@@ -109,5 +111,26 @@ public class RoleController {
         roleDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         roleService.update(roleDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("查询角色已分配权限")
+    @ApiOperation(value = "查询角色已分配权限", notes = "根据角色id分组查询所拥有的所有权限")
+    @PermissionName(source = "role:getAssignedPermission", name = "查询角色已分配权限", group = "角色管理")
+    @GetMapping("/getAssignedPermission")
+    public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> getAssignedPermission(Long roleId){
+        Map<String, List<PermissionEntity>> permissionGroupList = rolePermissionService.getAssignedPermission(roleId);
+
+        return ResponseEntityUtil.ok(new JsonResult<>(permissionGroupList));
+    }
+
+    @Log("角色分配权限")
+    @ApiOperation(value = "角色分配权限")
+    @ApiImplicitParam(name = "permissionIds", value = "权限id字符串，逗号分隔")
+    @PermissionName(source = "role:saveAssignedPermission", name = "角色分配权限", group = "角色管理")
+    @PostMapping("/saveAssignedPermission")
+    public ResponseEntity<JsonResult> saveAssignedPermission(Long roleId, String permissionIds){
+        ValidateHandler.checkParameter(StringUtil.isEmpty(roleId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+        rolePermissionService.saveAssignedPermission(roleId, permissionIds, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("权限分配成功"));
     }
 }

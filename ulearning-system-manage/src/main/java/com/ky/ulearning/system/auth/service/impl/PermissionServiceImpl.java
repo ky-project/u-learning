@@ -15,7 +15,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 权限表service-实现类
@@ -123,5 +123,25 @@ public class PermissionServiceImpl implements PermissionService {
     @Cacheable(keyGenerator = "keyGenerator")
     public List<String> getAllUrl() {
         return permissionDao.getAllUrl();
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public Map<String, List<PermissionEntity>> groupList() {
+        List<PermissionEntity> permissionList = permissionDao.getList();
+        //空值判断
+        if (null == permissionList) {
+            return Collections.emptyMap();
+        }
+        Map<String, List<PermissionEntity>> groupList = new HashMap<>();
+        //遍历权限集合
+        for (PermissionEntity permission : permissionList) {
+            //判断是否需要new集合
+            if (!groupList.containsKey(permission.getPermissionGroup())) {
+                groupList.put(permission.getPermissionGroup(), new ArrayList<>());
+            }
+            groupList.get(permission.getPermissionGroup()).add(permission);
+        }
+        return groupList;
     }
 }
