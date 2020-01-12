@@ -174,7 +174,7 @@ public class PermissionController {
      */
     @Log("分组查询所有权限")
     @ApiOperation(value = "分组查询所有权限", notes = "以组为单位查询所有权限")
-    @PermissionName(source = "permission:groupList", name = "权限重载", group = "权限管理")
+    @PermissionName(source = "permission:groupList", name = "分组查询所有权限", group = "权限管理")
     @GetMapping(value = "/groupList")
     public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> groupList() {
         Map<String, List<PermissionEntity>> groupList = permissionService.groupList();
