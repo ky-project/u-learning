@@ -13,21 +13,6 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
-    <resultMap id="RolePermissionResultMap" type="com.ky.ulearning.spi.system.dto.RolePermissionDto">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
-        <result column="role_source" jdbcType="VARCHAR" property="roleSource"/>
-        <result column="is_admin" jdbcType="BOOLEAN" property="isAdmin"/>
-        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
-        <result column="memo" jdbcType="VARCHAR" property="memo"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-        <collection property="permissionEntities"
-                    ofType="com.ky.ulearning.spi.system.entity.PermissionEntity"
-                    resultMap="com.ky.ulearning.system.auth.dao.PermissionDao.BaseResultMap"/>
-    </resultMap>
     <sql id="All">
             id,
             role_name,
@@ -145,4 +130,11 @@
             update_time = now()
         WHERE id = #{id}
     </update>
+    <!--查询所有角色集合-->
+    <select id="list" resultMap="BaseResultMap">
+        SELECT
+        <include refid="All"/>
+        FROM u_role
+        WHERE valid = 1
+    </select>
 </mapper>

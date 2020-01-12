@@ -8,8 +8,8 @@ import com.ky.ulearning.common.core.utils.EncryptUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.UserContext;
@@ -21,6 +21,7 @@ import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -152,11 +153,9 @@ public class TeacherController {
     @GetMapping("/getAssignedRole")
     public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.PARAMETER_EMPTY);
-        //将其转换为userContext，并获取角色list和权限list
-        List<RoleEntity> rolePermissionDtoList = teacherRoleService.getRoleByTeaId(id);
-        return ResponseEntityUtil.ok(new JsonResult<>(rolePermissionDtoList));
+        List<RoleEntity> roleList = teacherRoleService.getRoleByTeaId(id);
+        return ResponseEntityUtil.ok(new JsonResult<>(roleList));
     }
-
 
     @Log("更新教师信息")
     @ApiOperation(value = "更新教师信息")
@@ -170,5 +169,17 @@ public class TeacherController {
         teacherDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(new JsonResult<>(teacherDto));
+    }
+
+    @Log("分配教师角色")
+    @ApiOperation("分配教师角色")
+    @ApiImplicitParam(name = "roleIds", value = "角色ids字符串，逗号分隔")
+    @PermissionName(source = "teacher:saveAssignedRole", name = "分配教师角色", group = "教师管理")
+    @PostMapping("/saveAssignedRole")
+    public ResponseEntity<JsonResult> saveAssignedRole(Long teaId, String roleIds){
+        ValidateHandler.checkParameter(StringUtil.isEmpty(teaId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+
+        teacherRoleService.saveAssignedRole(teaId, roleIds, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("分配成功"));
     }
 }

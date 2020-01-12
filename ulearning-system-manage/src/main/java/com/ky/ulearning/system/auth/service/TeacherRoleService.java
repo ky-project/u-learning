@@ -17,4 +17,13 @@ public interface TeacherRoleService {
      * @return 返回角色集合
      */
     List<RoleEntity> getRoleByTeaId(Long teaId);
+
+    /**
+     * 分配教师角色
+     *
+     * @param teaId    教师id
+     * @param roleIds  角色id，逗号分隔
+     * @param username 更新者&创建者名
+     */
+    void saveAssignedRole(Long teaId, String roleIds, String username);
 }

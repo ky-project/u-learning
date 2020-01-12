@@ -84,4 +84,20 @@
         WHERE utr.valid = 1
           AND utr.tea_id = #{teaId}
     </select>
+    <!--根据教师id删除关联记录-->
+    <delete id="deleteByTeaId">
+        DELETE
+        FROM u_teacher_role
+        WHERE valid = 1
+          AND tea_id = #{teaId}
+    </delete>
+    <!--批量添加教师角色关联记录-->
+    <select id="batchInsert">
+        INSERT INTO u_teacher_role(tea_id, role_id, valid, memo, create_time, create_by, update_time, update_by)
+        VALUES
+        <foreach collection="teacherRoleList" item="teacherRole" separator=",">
+            (#{teacherRole.teaId}, #{teacherRole.roleId}, 1, #{teacherRole.memo}, now(), #{teacherRole.createBy}, now(),
+            #{teacherRole.updateBy})
+        </foreach>
+    </select>
 </mapper>

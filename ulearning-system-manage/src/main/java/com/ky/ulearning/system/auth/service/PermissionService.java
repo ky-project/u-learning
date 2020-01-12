@@ -74,4 +74,11 @@ public interface PermissionService {
      * @return 权限url集合
      */
     List<String> getAllUrl();
+
+    /**
+     * 分组查询所有权限
+     *
+     * @return 返回 组名:组权限list
+     */
+    Map<String, List<PermissionEntity>> groupList();
 }

@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 教师角色dto
+ * 角色权限dto
  *
  * @author luyuhao
  * @since 19/12/08 03:45
@@ -81,8 +81,8 @@ public class RolePermissionDto implements Serializable {
     private Boolean isAdmin;
 
     /**
-     * 教师角色所拥有的所有权限
+     * 角色所拥有的所有权限
      */
-    @ApiModelProperty(value = "教师角色所拥有的所有权限")
+    @ApiModelProperty(value = "角色所拥有的所有权限")
     List<PermissionEntity> permissionEntities;
 }

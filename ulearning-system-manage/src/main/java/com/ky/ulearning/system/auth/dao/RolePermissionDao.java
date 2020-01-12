@@ -49,8 +49,31 @@ public interface RolePermissionDao {
     /**
      * 根据角色id查询角色权限
      *
-     * @param roleIdList 角色权限id集合
+     * @param roleIdList 角色id集合
      * @return 返回角色权限对象集合
      */
     List<PermissionEntity> getPermissionListByRoleId(@Param("roleIdList") List<Long> roleIdList);
+
+
+    /**
+     * 根据角色id查询角色权限
+     *
+     * @param roleId 角色id
+     * @return 返回角色权限对象集合
+     */
+    List<PermissionEntity> getAssignedPermissionByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 根据角色id删除关联记录
+     *
+     * @param roleId 角色id
+     */
+    void deleteByRoleId(Long roleId);
+
+    /**
+     * 批量插入角色权限关联记录
+     *
+     * @param permissionList 关联对象集合
+     */
+    void batchInsert(@Param("permissionList") List<RolePermissionEntity> permissionList);
 }
