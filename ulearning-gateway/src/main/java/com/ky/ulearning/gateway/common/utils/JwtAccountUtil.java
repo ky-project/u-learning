@@ -5,8 +5,10 @@ import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 操作当前登录的用户信息
@@ -16,7 +18,7 @@ import java.util.List;
  */
 public class JwtAccountUtil {
 
-    private static JwtAccount getUserDetails() {
+    public static JwtAccount getUserDetails() {
         UserDetails userDetails;
         try {
             userDetails = (UserDetails) org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -33,7 +35,9 @@ public class JwtAccountUtil {
      */
     public static String getUsername() {
         JwtAccount jwtAccount = getUserDetails();
-        return jwtAccount == null ? null : jwtAccount.getUsername();
+        return Optional.ofNullable(jwtAccount)
+                .map(JwtAccount::getUsername)
+                .orElse(null);
     }
 
     /**
@@ -43,7 +47,9 @@ public class JwtAccountUtil {
      */
     public static Long getId() {
         JwtAccount jwtAccount = getUserDetails();
-        return jwtAccount == null ? null : jwtAccount.getId();
+        return Optional.ofNullable(jwtAccount)
+                .map(JwtAccount::getId)
+                .orElse(null);
     }
 
     /**
@@ -53,7 +59,9 @@ public class JwtAccountUtil {
      */
     public static String getSysRole() {
         JwtAccount jwtAccount = getUserDetails();
-        return jwtAccount == null ? null : jwtAccount.getSysRole();
+        return Optional.ofNullable(jwtAccount)
+                .map(JwtAccount::getSysRole)
+                .orElse(null);
     }
 
     /**
@@ -63,7 +71,9 @@ public class JwtAccountUtil {
      */
     public static Date getUpdateTime() {
         JwtAccount jwtAccount = getUserDetails();
-        return jwtAccount == null ? null : jwtAccount.getUpdateTime();
+        return Optional.ofNullable(jwtAccount)
+                .map(JwtAccount::getUpdateTime)
+                .orElse(null);
     }
 
     /**
@@ -73,7 +83,9 @@ public class JwtAccountUtil {
      */
     public static List<PermissionEntity> getPermissions() {
         JwtAccount jwtAccount = getUserDetails();
-        return jwtAccount == null ? null : jwtAccount.getPermissions();
+        return Optional.ofNullable(jwtAccount)
+                .map(JwtAccount::getPermissions)
+                .orElse(Collections.emptyList());
     }
 
     /**
@@ -83,7 +95,9 @@ public class JwtAccountUtil {
      */
     public static List<RoleEntity> getRoles() {
         JwtAccount jwtAccount = getUserDetails();
-        return jwtAccount == null ? null : jwtAccount.getRoles();
+        return Optional.ofNullable(jwtAccount)
+                .map(JwtAccount::getRoles)
+                .orElse(Collections.emptyList());
     }
 
 }

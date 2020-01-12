@@ -134,7 +134,7 @@ public class TeacherController {
                     .collect(Collectors.toList());
             userContext.setPermissions(rolePermissionService.getPermissionListByRoleId(roleIdList));
         }
-        return ResponseEntityUtil.ok(new JsonResult<>(userContext));
+        return ResponseEntityUtil.ok(JsonResult.buildData(userContext));
     }
 
     @Log("根据工号查询教师")
@@ -144,7 +144,7 @@ public class TeacherController {
     public ResponseEntity<JsonResult<TeacherEntity>> getByTeaNumber(String teaNumber) {
         ValidateHandler.checkParameter(StringUtils.isEmpty(teaNumber), SystemErrorCodeEnum.PARAMETER_EMPTY);
         TeacherEntity exists = teacherService.getByTeaNumber(teaNumber);
-        return ResponseEntityUtil.ok((new JsonResult<>(exists)));
+        return ResponseEntityUtil.ok(JsonResult.buildData(exists));
     }
 
     @Log("查询教师角色")
@@ -154,7 +154,7 @@ public class TeacherController {
     public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.PARAMETER_EMPTY);
         List<RoleEntity> roleList = teacherRoleService.getRoleByTeaId(id);
-        return ResponseEntityUtil.ok(new JsonResult<>(roleList));
+        return ResponseEntityUtil.ok(JsonResult.buildData(roleList));
     }
 
     @Log("更新教师信息")
@@ -168,7 +168,7 @@ public class TeacherController {
         }
         teacherDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         teacherService.update(teacherDto);
-        return ResponseEntityUtil.ok(new JsonResult<>(teacherDto));
+        return ResponseEntityUtil.ok(JsonResult.buildData(teacherDto));
     }
 
     @Log("分配教师角色")
@@ -176,10 +176,20 @@ public class TeacherController {
     @ApiImplicitParam(name = "roleIds", value = "角色ids字符串，逗号分隔")
     @PermissionName(source = "teacher:saveAssignedRole", name = "分配教师角色", group = "教师管理")
     @PostMapping("/saveAssignedRole")
-    public ResponseEntity<JsonResult> saveAssignedRole(Long teaId, String roleIds){
+    public ResponseEntity<JsonResult> saveAssignedRole(Long teaId, String roleIds) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teaId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
         teacherRoleService.saveAssignedRole(teaId, roleIds, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分配成功"));
+    }
+
+    @Log("根据id查询教师")
+    @ApiOperation("根据id查询教师")
+    @PermissionName(source = "teacher:getById", name = "根据id查询教师", group = "教师管理")
+    @GetMapping("/getById")
+    public ResponseEntity<JsonResult<TeacherEntity>> getById(Long id) {
+        ValidateHandler.checkParameter(StringUtils.isEmpty(id), SystemErrorCodeEnum.PARAMETER_EMPTY);
+        TeacherEntity teacherEntity = teacherService.getById(id);
+        return ResponseEntityUtil.ok(JsonResult.buildData(teacherEntity));
     }
 }

@@ -1,6 +1,7 @@
 package com.ky.ulearning.spi.system.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ky.ulearning.spi.common.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,6 +35,7 @@ public class TeacherEntity extends BaseEntity {
 	* 密码
 	*/
     @ApiModelProperty("密码")
+    @JsonIgnore
     private String teaPassword;
 
     /**

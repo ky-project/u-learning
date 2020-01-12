@@ -25,10 +25,15 @@ import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.system.entity.PermissionEntity;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,6 +51,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -79,6 +85,68 @@ public class AuthController {
     @Autowired
     private MonitorManageRemoting monitorManageRemoting;
 
+    @Log("获取个人权限信息")
+    @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
+    @GetMapping(value = "/permissionInfo")
+    public ResponseEntity<JsonResult<List<PermissionEntity>>> getPermissionInfo() {
+        JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
+        ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
+
+        String sysRole = jwtAccount.getSysRole();
+        //根据不同系统角色调用不同接口
+        if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+            //教师身份
+            return ResponseEntityUtil.ok(JsonResult.buildData(jwtAccount.getPermissions()));
+        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+            //TODO 学生身份
+            return ResponseEntityUtil.ok(JsonResult.buildMsg("学生无权限信息"));
+        } else {
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+        }
+    }
+
+    @Log("获取个人角色信息")
+    @ApiOperation(value = "获取个人角色信息", notes = "若为学生，则无角色信息")
+    @GetMapping(value = "/roleInfo")
+    public ResponseEntity<JsonResult<List<RoleEntity>>> getRoleInfo() {
+        JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
+        ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
+
+        String sysRole = jwtAccount.getSysRole();
+        //根据不同系统角色调用不同接口
+        if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+            //教师身份
+            return ResponseEntityUtil.ok(JsonResult.buildData(jwtAccount.getRoles()));
+        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+            //TODO 学生身份
+            return ResponseEntityUtil.ok(JsonResult.buildMsg("学生无角色信息"));
+        } else {
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+        }
+    }
+
+    @Log("获取个人信息")
+    @ApiOperation(value = "获取个人信息")
+    @GetMapping(value = "/info")
+    public ResponseEntity getUserInfo() {
+        JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
+        ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
+
+        String sysRole = jwtAccount.getSysRole();
+
+        //根据不同系统角色调用不同接口
+        if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+            //教师身份
+            TeacherEntity teacher = systemManageRemoting.getById(jwtAccount.getId()).getData();
+            return ResponseEntityUtil.ok(JsonResult.buildData(teacher));
+        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+            //TODO 学生身份
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+        } else {
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum((GatewayErrorCodeEnum.ACCOUNT_ERROR)));
+        }
+    }
+
     /**
      * 登出成功
      *
@@ -88,7 +156,7 @@ public class AuthController {
     @ApiOperation(value = "", hidden = true)
     @GetMapping(value = "/logout/success")
     public ResponseEntity logoutSuccess() {
-        return ResponseEntityUtil.ok(JsonResult.buildDateMsg(null, "安全退出"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(null, "安全退出"));
     }
 
     /**
@@ -162,7 +230,7 @@ public class AuthController {
         } catch (Exception e) {
             log.error("监控系统未启动");
         }
-        return ResponseEntityUtil.ok(JsonResult.buildDateMsg(map, "登录成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(map, "登录成功"));
     }
 
     /**
@@ -182,10 +250,10 @@ public class AuthController {
         VerifyCodeUtil.outputImage(w, h, stream, verifyCode);
         try {
             log.info("生成验证码:" + verifyCode);
-            return ResponseEntityUtil.ok(JsonResult.buildDateMsg(new ImgResult("data:image/gif;base64," + Base64.encode(stream.toByteArray()), uuid), "验证码已生成"));
+            return ResponseEntityUtil.ok(JsonResult.buildDataMsg(new ImgResult("data:image/gif;base64," + Base64.encode(stream.toByteArray()), uuid), "验证码已生成"));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            return ResponseEntityUtil.badRequest(new JsonResult<>(GatewayErrorCodeEnum.CREATE_VERIFY_CODE_FAILED));
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum((GatewayErrorCodeEnum.CREATE_VERIFY_CODE_FAILED)));
         } finally {
             stream.close();
         }

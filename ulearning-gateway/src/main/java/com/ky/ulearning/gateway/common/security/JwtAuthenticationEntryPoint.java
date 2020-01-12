@@ -20,7 +20,7 @@ import java.io.Serializable;
  * 用户没有权限访问某个资源的时候，可以在这里自定义返回内容
  *
  * @author luyuhao
- * @date 2019/12/10 9:43
+ * @since 2019/12/10 9:43
  */
 @Slf4j
 @Component
@@ -33,7 +33,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         //当用户尝试访问安全的REST资源而不提供任何凭据时，将调用此方法发送401 响应
-        JsonResult jsonResult = new JsonResult<>(GatewayErrorCodeEnum.NOT_LOGGED_IN);
+        JsonResult jsonResult = JsonResult.buildErrorEnum(GatewayErrorCodeEnum.NOT_LOGGED_IN);
         String jsonString = JsonUtil.toJsonString(jsonResult);
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());

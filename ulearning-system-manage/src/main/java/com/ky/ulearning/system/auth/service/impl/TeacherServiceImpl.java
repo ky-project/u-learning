@@ -107,4 +107,10 @@ public class TeacherServiceImpl implements TeacherService {
         }
         teacherDao.save(teacher);
     }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public TeacherEntity getById(Long id) {
+        return teacherDao.getById(id);
+    }
 }

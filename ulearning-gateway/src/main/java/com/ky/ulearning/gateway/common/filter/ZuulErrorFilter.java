@@ -1,13 +1,11 @@
 package com.ky.ulearning.gateway.common.filter;
 
 import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
-import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.netflix.zuul.filters.post.SendErrorFilter;
-import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -22,7 +20,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
  * 网关异常拦截处理
  *
  * @author luyuhao
- * @date 2019/12/19 9:35
+ * @since 2019/12/19 9:35
  */
 @Slf4j
 @Component
@@ -45,7 +43,7 @@ public class ZuulErrorFilter extends SendErrorFilter {
     @Override
     public Object run() {
         RequestContext ctx = getRequestContext();
-        if(ctx.getThrowable() != null){
+        if (ctx.getThrowable() != null) {
             Throwable throwable = ctx.getThrowable();
             log.error(throwable.getMessage() + "已被拦截处理", throwable);
 
@@ -65,7 +63,7 @@ public class ZuulErrorFilter extends SendErrorFilter {
         ctx.setSendZuulResponse(false);
         ctx.setResponseStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         ctx.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        ctx.setResponseBody(JsonUtil.toJsonString(new JsonResult<>(MicroErrorCodeEnum.SERVER_DOWN)));
+        ctx.setResponseBody(JsonUtil.toJsonString(JsonResult.buildErrorEnum(MicroErrorCodeEnum.SERVER_DOWN)));
     }
 
     private RequestContext getRequestContext() {
