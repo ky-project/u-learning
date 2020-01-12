@@ -40,14 +40,23 @@ public interface TeacherService {
     /**
      * 删除教师
      *
-     * @param id 删除id
+     * @param id       删除id
      * @param updateBy 更新者
      */
     void delete(Long id, String updateBy);
 
     /**
      * 新增教师
+     *
      * @param teacher 待添加的教师信息
      */
     void save(TeacherDto teacher);
+
+    /**
+     * 根据id查询教师信息
+     *
+     * @param id 教师id
+     * @return 返回教师对象
+     */
+    TeacherEntity getById(Long id);
 }

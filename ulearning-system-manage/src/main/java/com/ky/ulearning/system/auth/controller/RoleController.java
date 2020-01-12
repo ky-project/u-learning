@@ -58,7 +58,7 @@ public class RoleController {
             pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
         }
         PageBean<RoleEntity> pageBean = roleService.pageRoleList(roleDto, pageParam);
-        return ResponseEntityUtil.ok(JsonResult.buildSuccessDateMsg(pageBean, "查询成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 
     @Log("获取角色权限集合")
@@ -70,7 +70,7 @@ public class RoleController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(roleIdArr), SystemErrorCodeEnum.PARAMETER_EMPTY);
         List<Long> roleIdList = StringUtil.strArrToLongList(roleIdArr.split(","));
         List<PermissionEntity> permissionList = rolePermissionService.getPermissionListByRoleId(roleIdList);
-        return ResponseEntityUtil.ok(new JsonResult<>(permissionList));
+        return ResponseEntityUtil.ok(JsonResult.buildData(permissionList));
     }
 
     @Log("添加角色")
@@ -120,7 +120,7 @@ public class RoleController {
     public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> getAssignedPermission(Long roleId){
         Map<String, List<PermissionEntity>> permissionGroupList = rolePermissionService.getAssignedPermission(roleId);
 
-        return ResponseEntityUtil.ok(new JsonResult<>(permissionGroupList));
+        return ResponseEntityUtil.ok(JsonResult.buildData(permissionGroupList));
     }
 
     @Log("角色分配权限")

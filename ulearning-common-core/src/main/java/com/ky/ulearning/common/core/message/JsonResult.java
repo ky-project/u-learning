@@ -39,22 +39,6 @@ public class JsonResult<T> implements Serializable {
     @ApiModelProperty("返回数据")
     private T data;
 
-    public JsonResult() {
-        this.code = SUCCESS_CODE;
-        this.message = SUCCESS_MESSAGE;
-    }
-
-    public JsonResult(T data) {
-        this.code = SUCCESS_CODE;
-        this.message = SUCCESS_MESSAGE;
-        this.data = data;
-    }
-
-    public JsonResult(BaseEnum baseEnum) {
-        this.code = baseEnum.getCode();
-        this.message = baseEnum.getMessage();
-    }
-
     public JsonResult(Integer code, String message, T data) {
         this.code = code;
         this.message = message;
@@ -65,19 +49,23 @@ public class JsonResult<T> implements Serializable {
         return new JsonResult<>(code, message, data);
     }
 
+    public static <C> JsonResult<C> buildData(C data) {
+        return build(SUCCESS_CODE, SUCCESS_MESSAGE, data);
+    }
+
     public static <C> JsonResult<C> buildMsg(String message) {
-        return build(null, message, null);
+        return build(SUCCESS_CODE, message, null);
     }
 
-    public static <C> JsonResult<C> buildDateMsg(C data, String message) {
-        return build(null, message, data);
-    }
-
-    public static <C> JsonResult<C> buildSuccessDateMsg(C data, String message) {
+    public static <C> JsonResult<C> buildDataMsg(C data, String message) {
         return build(SUCCESS_CODE, message, data);
     }
 
     public static <C> JsonResult<C> buildErrorMsg(Integer code, String message) {
         return build(code, message, null);
+    }
+
+    public static <C> JsonResult<C> buildErrorEnum(BaseEnum baseEnum) {
+        return build(baseEnum.getCode(), baseEnum.getMessage(), null);
     }
 }

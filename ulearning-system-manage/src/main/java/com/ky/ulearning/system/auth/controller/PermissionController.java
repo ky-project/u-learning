@@ -7,8 +7,8 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
@@ -59,7 +59,7 @@ public class PermissionController {
     @GetMapping("/getAllGroup")
     public ResponseEntity<JsonResult<List<String>>> getAllGroup() {
         List<String> allGroup = permissionService.getAllGroup();
-        return ResponseEntityUtil.ok(new JsonResult<>(allGroup));
+        return ResponseEntityUtil.ok(JsonResult.buildData(allGroup));
     }
 
     @Log("查询权限")
@@ -71,7 +71,7 @@ public class PermissionController {
             pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
         }
         PageBean<PermissionEntity> pageBean = permissionService.pagePermissionList(permission, pageParam);
-        return ResponseEntityUtil.ok(JsonResult.buildSuccessDateMsg(pageBean, "查询成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 
     @Log("添加权限")
@@ -179,6 +179,6 @@ public class PermissionController {
     public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> groupList() {
         Map<String, List<PermissionEntity>> groupList = permissionService.groupList();
 
-        return ResponseEntityUtil.ok(new JsonResult<>(groupList));
+        return ResponseEntityUtil.ok(JsonResult.buildData(groupList));
     }
 }

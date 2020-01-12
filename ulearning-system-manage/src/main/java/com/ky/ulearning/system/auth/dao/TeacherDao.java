@@ -81,4 +81,12 @@ public interface TeacherDao {
      * @param teacher 待添加的教师信息
      */
     void save(TeacherDto teacher);
+
+    /**
+     * 根据id查询教师信息
+     *
+     * @param id 教师id
+     * @return 教师对象
+     */
+    TeacherEntity getById(Long id);
 }

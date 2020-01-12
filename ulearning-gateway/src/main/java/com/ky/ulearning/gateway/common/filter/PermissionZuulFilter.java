@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author luyuhao
- * @date 19/12/12 23:27
+ * @since 19/12/12 23:27
  */
 @Slf4j
 @Component
@@ -136,7 +136,7 @@ public class PermissionZuulFilter extends ZuulFilter {
         ctx.setSendZuulResponse(false);
         ctx.setResponseStatusCode(HttpStatus.FORBIDDEN.value());
         ctx.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        ctx.setResponseBody(JsonUtil.toJsonString(new JsonResult<>(baseEnum)));
+        ctx.setResponseBody(JsonUtil.toJsonString(JsonResult.buildErrorEnum(baseEnum)));
     }
 
     private RequestContext getRequestContext() {

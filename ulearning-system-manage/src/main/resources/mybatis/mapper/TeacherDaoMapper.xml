@@ -174,7 +174,7 @@
     </select>
     <update id="updateValidByTeaId">
         UPDATE u_teacher
-        SET valid = #{valid},
+        SET valid     = #{valid},
             update_by = #{updateBy}
         WHERE id = #{id}
     </update>
@@ -185,4 +185,13 @@
         VALUES (#{teaNumber}, #{teaName}, #{teaPassword}, #{teaGender}, #{teaDept}, #{teaTitle}, #{teaPhone},
                 #{teaEmail}, #{teaPhoto}, 1, #{memo}, now(), #{createBy}, now(), #{updateBy})
     </insert>
+    <!--根据id查询教师信息-->
+    <select id="getById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="selectAll"/>
+        FROM u_teacher
+        WHERE valid = 1
+        AND id = #{id}
+        LIMIT 1
+    </select>
 </mapper>
