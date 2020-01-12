@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.system.dto.RolePermissionDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherRoleEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -54,4 +55,17 @@ public interface TeacherRoleDao {
      */
     List<RoleEntity> getRoleByTeaId(Long teaId);
 
+    /**
+     * 根据教师id删除关联记录
+     *
+     * @param teaId 教师id
+     */
+    void deleteByTeaId(Long teaId);
+
+    /**
+     * 批量添加教师角色关联记录
+     *
+     * @param teacherRoleList 教师角色对象集合
+     */
+    void batchInsert(@Param("teacherRoleList") List<TeacherRoleEntity> teacherRoleList);
 }

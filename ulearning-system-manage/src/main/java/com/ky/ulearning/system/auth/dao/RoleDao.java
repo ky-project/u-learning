@@ -81,4 +81,11 @@ public interface RoleDao {
      * @param updateBy 更新者
      */
     void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
+
+    /**
+     * 查询所有角色集合
+     *
+     * @return 角色对象集合
+     */
+    List<RoleEntity> list();
 }
