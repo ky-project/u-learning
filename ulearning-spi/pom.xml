@@ -51,13 +51,6 @@
         </dependency>
         <!-- swagger2 End -->
 
-        <!-- hibernate validate Begin -->
-        <!--<dependency>-->
-            <!--<groupId>org.hibernate.validate</groupId>-->
-            <!--<artifactId>hibernate-validate</artifactId>-->
-        <!--</dependency>-->
-        <!-- hibernate validate End -->
-
         <!-- fastjson Begin -->
         <dependency>
             <groupId>com.alibaba</groupId>

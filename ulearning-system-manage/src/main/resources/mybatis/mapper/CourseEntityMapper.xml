@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.system.sys.dao.CourseDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.CourseEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            course_number,
+            course_name,
+            course_credit,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_course
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.entity.CourseEntity"
+            useGeneratedKeys="true">
+        insert into u_course (course_number, course_name, course_credit,
+                              `valid`, memo, create_time,
+                              create_by, update_time, update_by)
+        values (#{courseNumber,jdbcType=VARCHAR}, #{courseName,jdbcType=VARCHAR}, #{courseCredit,jdbcType=SMALLINT},
+                1, #{memo,jdbcType=VARCHAR}, now(),
+                #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="update" parameterType="com.ky.ulearning.spi.system.entity.CourseEntity">
+        update u_course
+        <set>
+            update_time = now(),
+            <if test="courseNumber != null">
+                course_number = #{courseNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="courseName != null">
+                course_name = #{courseName,jdbcType=VARCHAR},
+            </if>
+            <if test="courseCredit != null">
+                course_credit = #{courseCredit,jdbcType=SMALLINT},
+            </if>
+            <if test="memo != null">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--分页查询课程信息-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_course
+        WHERE valid = 1
+        <if test="courseDto.courseNumber != null and courseDto.courseNumber != ''">
+            AND course_number LIKE CONCAT('%', #{courseDto.courseNumber}, '%')
+        </if>
+        <if test="courseDto.courseName != null and courseDto.courseName != ''">
+            AND course_name LIKE CONCAT('%', #{courseDto.courseName}, '%')
+        </if>
+        <if test="courseDto.courseCredit != null">
+            AND course_credit = #{courseDto.courseCredit}
+        </if>
+        <if test="courseDto.id != null">
+            AND id = #{courseDto.id}
+        </if>
+        ORDER BY update_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--根据筛选条件查询总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM u_course
+        WHERE valid = 1
+        <if test="courseDto.courseNumber != null and courseDto.courseNumber != ''">
+            AND course_number LIKE CONCAT('%', #{courseDto.courseNumber}, '%')
+        </if>
+        <if test="courseDto.courseName != null and courseDto.courseName != ''">
+            AND course_name LIKE CONCAT('%', #{courseDto.courseName}, '%')
+        </if>
+        <if test="courseDto.courseCredit != null">
+            AND course_credit = #{courseDto.courseCredit}
+        </if>
+        <if test="courseDto.id != null">
+            AND id = #{courseDto.id}
+        </if>
+    </select>
+</mapper>

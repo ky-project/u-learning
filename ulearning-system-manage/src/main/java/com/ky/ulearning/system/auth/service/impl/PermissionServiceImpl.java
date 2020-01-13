@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.service.impl;
 
+import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -26,7 +27,7 @@ import java.util.*;
 @Service
 @CacheConfig(cacheNames = "permission")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
-public class PermissionServiceImpl implements PermissionService {
+public class PermissionServiceImpl extends BaseService implements PermissionService {
 
     @Autowired
     private PermissionDao permissionDao;
@@ -98,19 +99,7 @@ public class PermissionServiceImpl implements PermissionService {
         pageBean.setTotal(permissionDao.countListPage(permission))
                 //设置查询结果
                 .setContent(permissionList);
-        if (pageParam.getPageSize() != null && pageParam.getCurrentPage() != null) {
-            //设置当前页
-            pageBean.setCurrentPage(pageParam.getCurrentPage())
-                    //设置页大小
-                    .setPageSize(pageParam.getPageSize())
-                    //设置总页数 {(总记录数 + 页大小 - 1) / 页大小}
-                    .setTotalPage((pageBean.getTotal() + pageBean.getPageSize() - 1) / pageBean.getPageSize())
-                    //设置是否有后一页
-                    .setHasNext(pageBean.getCurrentPage() < pageBean.getTotalPage())
-                    //设置是否有前一页
-                    .setHasPre(pageBean.getCurrentPage() > 1);
-        }
-        return pageBean;
+        return setPageBeanProperties(pageBean, pageParam);
     }
 
     @Override

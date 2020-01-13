@@ -101,6 +101,15 @@
         </dependency>
         <!-- swagger2 End -->
         <!-- Plugins End -->
+
+        <!-- U-Learning Begin -->
+        <dependency>
+            <groupId>com.ky.ulearning</groupId>
+            <artifactId>ulearning-spi</artifactId>
+        </dependency>
+        <!-- U-Learning End -->
+
+        <!-- Develop Tool Begin -->
     </dependencies>
 
 </project>
