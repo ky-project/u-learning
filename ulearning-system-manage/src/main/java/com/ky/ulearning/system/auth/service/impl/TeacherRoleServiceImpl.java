@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.service.impl;
 
+import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherRoleEntity;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @CacheConfig(cacheNames = {"teacher", "role"})
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
-public class TeacherRoleServiceImpl implements TeacherRoleService {
+public class TeacherRoleServiceImpl extends BaseService implements TeacherRoleService {
 
     @Autowired
     private TeacherRoleDao teacherRoleDao;

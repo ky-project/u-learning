@@ -1,5 +1,6 @@
 package com.ky.ulearning.monitor.logging.service.impl;
 
+import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.monitor.logging.dao.LogDao;
 import com.ky.ulearning.monitor.logging.service.LogService;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Service
 @Transactional(readOnly = true, rollbackFor = Throwable.class)
-public class LogServiceImpl implements LogService {
+public class LogServiceImpl extends BaseService implements LogService {
 
     @Autowired
     private LogDao logDao;
@@ -40,18 +41,6 @@ public class LogServiceImpl implements LogService {
         pageBean.setTotal(logDao.countListPage(logDto))
                 //设置查询结果
                 .setContent(logList);
-        if (pageParam.getPageSize() != null && pageParam.getCurrentPage() != null) {
-            //设置当前页
-            pageBean.setCurrentPage(pageParam.getCurrentPage())
-                    //设置页大小
-                    .setPageSize(pageParam.getPageSize())
-                    //设置总页数 {(总记录数 + 页大小 - 1) / 页大小}
-                    .setTotalPage((pageBean.getTotal() + pageBean.getPageSize() - 1) / pageBean.getPageSize())
-                    //设置是否有后一页
-                    .setHasNext(pageBean.getCurrentPage() < pageBean.getTotalPage())
-                    //设置是否有前一页
-                    .setHasPre(pageBean.getCurrentPage() > 1);
-        }
-        return pageBean;
+        return setPageBeanProperties(pageBean, pageParam);
     }
 }

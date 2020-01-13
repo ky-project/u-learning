@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.entity.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @date 19/12/05 02:30
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class LogEntity extends BaseEntity {
 
     /**

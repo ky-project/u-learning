@@ -6,17 +6,19 @@ import com.ky.ulearning.spi.common.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
 /**
  * 教师表实体类
  *
- * @author Darren
+ * @author luyuhao
  * @date 2019/12/05 01:42
  */
 @ApiModel("教师对象")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TeacherEntity extends BaseEntity {
 
     /**

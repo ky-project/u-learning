@@ -5,6 +5,7 @@ import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * {@link PermissionEntity}
@@ -14,6 +15,7 @@ import lombok.Data;
  */
 @ApiModel("权限dto对象")
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class PermissionDto extends BaseDto {
 
     /**

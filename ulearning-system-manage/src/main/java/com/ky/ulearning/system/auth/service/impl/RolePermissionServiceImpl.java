@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.service.impl;
 
+import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.system.dto.RolePermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @CacheConfig(cacheNames = {"role", "permission"})
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
-public class RolePermissionServiceImpl implements RolePermissionService {
+public class RolePermissionServiceImpl extends BaseService implements RolePermissionService {
 
     @Autowired
     private RolePermissionDao rolePermissionDao;

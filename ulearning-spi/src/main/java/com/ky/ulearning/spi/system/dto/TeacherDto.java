@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import java.util.Date;
  * @date 19/12/12 00:15
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class TeacherDto extends BaseDto {
     /**
      * 工号

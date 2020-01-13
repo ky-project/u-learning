@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.dto.BaseDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @since 19/12/08 03:45
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class RolePermissionDto extends BaseDto {
 
     /**

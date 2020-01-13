@@ -3,6 +3,7 @@ package com.ky.ulearning.spi.system.dto;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * {@link com.ky.ulearning.spi.system.entity.RoleEntity}
@@ -12,6 +13,7 @@ import lombok.Data;
  * @since 20/01/10 01:25
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class RoleDto extends BaseDto {
 
     /**

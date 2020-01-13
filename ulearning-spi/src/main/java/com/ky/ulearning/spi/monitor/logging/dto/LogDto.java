@@ -3,6 +3,7 @@ package com.ky.ulearning.spi.monitor.logging.dto;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * {@link com.ky.ulearning.spi.monitor.logging.entity.LogEntity}
@@ -12,6 +13,7 @@ import lombok.Data;
  * @since 20/01/13 00:44
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class LogDto extends BaseDto {
     /**
      * 用户账号
