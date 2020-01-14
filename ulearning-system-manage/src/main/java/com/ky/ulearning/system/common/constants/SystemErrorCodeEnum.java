@@ -25,6 +25,9 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     ROLE_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "角色名不可为空!"),
     ROLE_SOURCE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "角色资源名不可为空!"),
     IS_ADMIN_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "未指定是否是管理员角色"),
+    COURSE_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程号不能为空"),
+    COURSE_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程名不能为空"),
+    COURSE_CREDIT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程学分不能为空"),
 
     ;
 

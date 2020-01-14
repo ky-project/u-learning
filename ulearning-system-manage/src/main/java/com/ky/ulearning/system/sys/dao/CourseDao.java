@@ -24,7 +24,7 @@ public interface CourseDao {
      *
      * @param course 课程对象
      */
-    void insert(CourseEntity course);
+    void insert(CourseDto course);
 
     /**
      * 根据id获取课程对象
@@ -39,7 +39,7 @@ public interface CourseDao {
      *
      * @param course 课程对象
      */
-    void update(CourseEntity course);
+    void update(CourseDto course);
 
     /**
      * 分页查询课程信息
@@ -56,5 +56,22 @@ public interface CourseDao {
      * @param courseDto 筛选参数
      * @return 总记录数
      */
-    Integer countListPage(@Param("courseDto")CourseDto courseDto);
+    Integer countListPage(@Param("courseDto") CourseDto courseDto);
+
+    /**
+     * 根据课程编号查询课程信息
+     *
+     * @param courseNumber 课程编号
+     * @return 课程信息
+     */
+    CourseEntity getByCourseNumber(String courseNumber);
+
+    /**
+     * 根据id更新有效位
+     *
+     * @param id        id
+     * @param valid     有效位的值
+     * @param updaterBy 更新者
+     */
+    void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updaterBy);
 }

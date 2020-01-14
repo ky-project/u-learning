@@ -21,4 +21,34 @@ public interface CourseService {
      * @return 封装课程的分页对象
      */
     PageBean<CourseEntity> pageCourseList(CourseDto courseDto, PageParam pageParam);
+
+    /**
+     * 添加课程信息
+     *
+     * @param courseDto 课程信息
+     */
+    void insert(CourseDto courseDto);
+
+    /**
+     * 根据id查询课程信息
+     *
+     * @param id 课程id
+     * @return 课程信息
+     */
+    CourseEntity getById(Long id);
+
+    /**
+     * 更新课程信息
+     *
+     * @param courseDto 待更新的课程信息
+     */
+    void update(CourseDto courseDto);
+
+    /**
+     * 删除课程
+     *
+     * @param id        课程id
+     * @param updaterBy 更新者
+     */
+    void delete(Long id, String updaterBy);
 }
