@@ -32,7 +32,7 @@
         where valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </select>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.entity.CourseEntity"
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.dto.CourseDto"
             useGeneratedKeys="true">
         insert into u_course (course_number, course_name, course_credit,
                               `valid`, memo, create_time,
@@ -41,7 +41,7 @@
                 1, #{memo,jdbcType=VARCHAR}, now(),
                 #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
-    <update id="update" parameterType="com.ky.ulearning.spi.system.entity.CourseEntity">
+    <update id="update" parameterType="com.ky.ulearning.spi.system.dto.CourseDto">
         update u_course
         <set>
             update_time = now(),
@@ -61,7 +61,8 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
     </update>
     <!--分页查询课程信息-->
     <select id="listPage" resultMap="BaseResultMap">
@@ -105,4 +106,20 @@
             AND id = #{courseDto.id}
         </if>
     </select>
+    <!--根据课程编号查询课程信息-->
+    <select id="getByCourseNumber" resultMap="BaseResultMap" parameterType="string">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_course
+        WHERE valid = 1
+        AND course_number = #{courseNumber}
+    </select>
+    <!--根据id更新有效位-->
+    <update id="updateValidById">
+        UPDATE u_course
+        SET update_time = now(),
+            update_by   = #{updateBy},
+            valid       = #{valid}
+        WHERE id = #{id}
+    </update>
 </mapper>

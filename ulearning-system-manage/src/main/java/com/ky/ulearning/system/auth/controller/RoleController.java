@@ -76,9 +76,9 @@ public class RoleController {
     @Log("添加角色")
     @ApiOperation(value = "添加角色")
     @ApiOperationSupport(ignoreParameters = "id")
-    @PermissionName(source = "role:add", name = "添加角色", group = "角色管理")
-    @PostMapping("/add")
-    public ResponseEntity<JsonResult> add(RoleDto roleDto) {
+    @PermissionName(source = "role:save", name = "添加角色", group = "角色管理")
+    @PostMapping("/save")
+    public ResponseEntity<JsonResult> save(RoleDto roleDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(roleDto.getRoleName()), SystemErrorCodeEnum.ROLE_NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(roleDto.getRoleSource()), SystemErrorCodeEnum.ROLE_SOURCE_CANNOT_BE_NULL)
