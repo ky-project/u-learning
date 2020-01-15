@@ -1,6 +1,7 @@
 package com.ky.ulearning.spi.system.entity;
 
 import com.ky.ulearning.spi.common.entity.BaseEntity;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
  * @since 2020/01/13 23:39
  */
 @Data
+@ApiModel("课程实体类")
 @EqualsAndHashCode(callSuper = true)
 public class CourseEntity extends BaseEntity {
 
