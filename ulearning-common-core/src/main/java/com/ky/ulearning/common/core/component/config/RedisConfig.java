@@ -59,10 +59,14 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisTemplate.setHashValueSerializer(fastJsonRedisSerializer);
 
         // 建议使用这种方式，小范围指定白名单
-        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.common");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.common.dto");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.common.entity");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.common.vo");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.monitor.logging.entity");
-        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.dto");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.monitor.logging.dto");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.entity");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.dto");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.vo");
 
         //使用StringRedisSerializer来序列化和反序列化redis的key
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -87,6 +91,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         return (target, method, params) -> {
             StringBuilder sb = new StringBuilder();
             sb.append(target.getClass().getName());
+            sb.append(".");
             sb.append(method.getName());
             for (Object obj : params) {
                 sb.append("-");

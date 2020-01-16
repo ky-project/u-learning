@@ -4,6 +4,9 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.CourseDto;
 import com.ky.ulearning.spi.system.entity.CourseEntity;
+import com.ky.ulearning.spi.system.vo.CourseVo;
+
+import java.util.List;
 
 /**
  * 课程service - 接口类
@@ -51,4 +54,11 @@ public interface CourseService {
      * @param updaterBy 更新者
      */
     void delete(Long id, String updaterBy);
+
+    /**
+     * 查询所有课程信息
+     *
+     * @return 课程vo对象集合
+     */
+    List<CourseVo> getAll();
 }

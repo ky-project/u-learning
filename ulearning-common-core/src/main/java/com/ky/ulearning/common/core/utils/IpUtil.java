@@ -64,10 +64,8 @@ public class IpUtil {
             String path = "ip2region/ip2region.db";
             String name = "ip2region.db";
             int algorithm = DbSearcher.BTREE_ALGORITHM;
-            String absolutePath = new ClassPathResource(path).getAbsolutePath();
             DbConfig config = new DbConfig();
             File file = FileUtil.inputStreamToFile(new ClassPathResource(path).getStream(), name);
-            log.info(file.getAbsolutePath());
             DbSearcher searcher = new DbSearcher(config, file.getPath());
             Method method;
             switch (algorithm) {

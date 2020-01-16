@@ -14,4 +14,10 @@ public class SystemManageConfigParameters {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
+    @Value("${ulearning.term.preyears}")
+    private Integer preYears;
+
+    @Value("${ulearning.term.nextyears}")
+    private Integer nextYears;
 }

@@ -16,6 +16,7 @@ import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.system.vo.TeacherVo;
 import com.ky.ulearning.system.auth.service.RolePermissionService;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
@@ -191,5 +192,14 @@ public class TeacherController {
         ValidateHandler.checkParameter(StringUtils.isEmpty(id), SystemErrorCodeEnum.PARAMETER_EMPTY);
         TeacherEntity teacherEntity = teacherService.getById(id);
         return ResponseEntityUtil.ok(JsonResult.buildData(teacherEntity));
+    }
+
+    @Log("获取所有教师信息")
+    @ApiOperation("获取所有教师信息")
+    @PermissionName(source = "teacher:getAll", name = "获取所有教师信息", group = "教师管理")
+    @GetMapping("/getAll")
+    public ResponseEntity<JsonResult<List<TeacherVo>>> getAll(){
+        List<TeacherVo> teacherVoList = teacherService.getAll();
+        return ResponseEntityUtil.ok(JsonResult.buildData(teacherVoList));
     }
 }

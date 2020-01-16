@@ -3,6 +3,7 @@ package com.ky.ulearning.system.auth.dao;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.system.vo.TeacherVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -89,4 +90,11 @@ public interface TeacherDao {
      * @return 教师对象
      */
     TeacherEntity getById(Long id);
+
+    /**
+     * 查询所有教师信息
+     *
+     * @return Vo对象集合
+     */
+    List<TeacherVo> getAllVo();
 }

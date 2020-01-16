@@ -14,7 +14,7 @@ import java.util.Locale;
  * @date 19/12/15 21:32
  */
 @Slf4j
-public class DateUtil {
+public class DateUtil extends cn.hutool.core.date.DateUtil {
 
     /**
      * 把String解析格式的时间转化为date

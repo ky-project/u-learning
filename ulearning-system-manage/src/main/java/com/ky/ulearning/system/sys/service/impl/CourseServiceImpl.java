@@ -7,6 +7,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.CourseDto;
 import com.ky.ulearning.spi.system.entity.CourseEntity;
+import com.ky.ulearning.spi.system.vo.CourseVo;
 import com.ky.ulearning.system.sys.dao.CourseDao;
 import com.ky.ulearning.system.sys.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,11 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id, String updaterBy) {
         courseDao.updateValidById(id, 0, updaterBy);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<CourseVo> getAll() {
+        return courseDao.getAllVo();
     }
 }

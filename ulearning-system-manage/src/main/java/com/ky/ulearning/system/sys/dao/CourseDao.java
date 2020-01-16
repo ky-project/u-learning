@@ -3,6 +3,7 @@ package com.ky.ulearning.system.sys.dao;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.CourseDto;
 import com.ky.ulearning.spi.system.entity.CourseEntity;
+import com.ky.ulearning.spi.system.vo.CourseVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -74,4 +75,11 @@ public interface CourseDao {
      * @param updaterBy 更新者
      */
     void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updaterBy);
+
+    /**
+     * 查询所有课程信息
+     *
+     * @return 课程vo对象集合
+     */
+    List<CourseVo> getAllVo();
 }

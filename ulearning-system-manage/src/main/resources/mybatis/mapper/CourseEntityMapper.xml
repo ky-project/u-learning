@@ -13,6 +13,12 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <resultMap id="CourseVoResultMap" type="com.ky.ulearning.spi.system.vo.CourseVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             course_number,
@@ -24,6 +30,12 @@
             create_by,
             update_time,
             update_by
+    </sql>
+    <sql id="vo">
+            id,
+            course_number,
+            course_name,
+            course_credit
     </sql>
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -122,4 +134,11 @@
             valid       = #{valid}
         WHERE id = #{id}
     </update>
+    <!--查询所有课程信息-->
+    <select id="getAllVo" resultMap="CourseVoResultMap">
+        SELECT
+        <include refid="vo"/>
+        FROM u_course
+        WHERE valid = 1
+    </select>
 </mapper>
