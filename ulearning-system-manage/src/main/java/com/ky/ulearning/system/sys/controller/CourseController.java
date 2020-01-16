@@ -13,6 +13,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.CourseDto;
 import com.ky.ulearning.spi.system.entity.CourseEntity;
+import com.ky.ulearning.spi.system.vo.CourseVo;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import com.ky.ulearning.system.sys.service.CourseService;
 import io.swagger.annotations.Api;
@@ -20,12 +21,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author luyuhao
@@ -68,7 +70,7 @@ public class CourseController {
     @ApiOperationSupport(ignoreParameters = "id")
     @PermissionName(source = "course:save", name = "课程添加", group = "课程管理")
     @PostMapping("/save")
-    public ResponseEntity<JsonResult> save(CourseDto courseDto){
+    public ResponseEntity<JsonResult> save(CourseDto courseDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(courseDto.getCourseNumber()), SystemErrorCodeEnum.COURSE_NUMBER_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(courseDto.getCourseName()), SystemErrorCodeEnum.COURSE_NAME_CANNOT_BE_NULL)
@@ -87,7 +89,7 @@ public class CourseController {
     @ApiOperation(value = "更新课程信息")
     @PermissionName(source = "course:update", name = "更新课程信息", group = "课程管理")
     @PostMapping("/update")
-    public ResponseEntity<JsonResult> update(CourseDto courseDto){
+    public ResponseEntity<JsonResult> update(CourseDto courseDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(courseDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
         courseDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
@@ -100,12 +102,21 @@ public class CourseController {
     @ApiOperation(value = "删除课程")
     @PermissionName(source = "course:delete", name = "删除课程", group = "课程管理")
     @GetMapping("/delete")
-    public ResponseEntity<JsonResult> delete(Long id){
+    public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
         String updaterBy = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
         courseService.delete(id, updaterBy);
 
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("获取所有课程信息")
+    @ApiOperation(value = "获取所有课程信息")
+    @PermissionName(source = "course:getAll", name = "获取所有课程信息", group = "课程管理")
+    @GetMapping("/getAll")
+    public ResponseEntity<JsonResult<List<CourseVo>>> getAll() {
+        List<CourseVo> courseVoList = courseService.getAll();
+        return ResponseEntityUtil.ok(JsonResult.buildData(courseVoList));
     }
 }

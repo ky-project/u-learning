@@ -21,6 +21,11 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <resultMap id="TeacherVoResultMap" type="com.ky.ulearning.spi.system.vo.TeacherVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
+        <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
+    </resultMap>
     <sql id="selectAll">
         id, tea_number,
         tea_name, tea_password,
@@ -32,7 +37,11 @@
         create_by, update_time,
         update_by
     </sql>
-
+    <sql id="vo">
+            id,
+            tea_number,
+            tea_name
+    </sql>
     <select id="getByTeaNumber" resultMap="BaseResultMap">
         select
         <include refid="selectAll"/>
@@ -193,5 +202,12 @@
         WHERE valid = 1
         AND id = #{id}
         LIMIT 1
+    </select>
+    <!--查询所有教师信息-->
+    <select id="getAllVo" resultMap="TeacherVoResultMap">
+        SELECT
+        <include refid="vo"/>
+        FROM u_teacher
+        WHERE valid = 1
     </select>
 </mapper>

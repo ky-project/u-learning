@@ -4,6 +4,9 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.system.vo.TeacherVo;
+
+import java.util.List;
 
 /**
  * 教师service 接口类
@@ -59,4 +62,10 @@ public interface TeacherService {
      * @return 返回教师对象
      */
     TeacherEntity getById(Long id);
+
+    /**
+     * 查询所有教师信息
+     * @return 教师vo对象
+     */
+    List<TeacherVo> getAll();
 }

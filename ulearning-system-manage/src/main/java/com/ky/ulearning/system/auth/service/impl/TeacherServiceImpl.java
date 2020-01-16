@@ -7,6 +7,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.system.vo.TeacherVo;
 import com.ky.ulearning.system.auth.dao.TeacherDao;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,5 +102,11 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
     @Cacheable(keyGenerator = "keyGenerator")
     public TeacherEntity getById(Long id) {
         return teacherDao.getById(id);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<TeacherVo> getAll() {
+        return teacherDao.getAllVo();
     }
 }
