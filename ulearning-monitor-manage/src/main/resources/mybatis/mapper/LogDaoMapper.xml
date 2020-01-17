@@ -66,6 +66,9 @@
         <include refid="All"/>
         FROM u_log
         WHERE valid = 1
+        <if test="logDto.id != null">
+            AND id = #{logDto.id}
+        </if>
         <if test="logDto.logUsername != null and logDto.logUsername != ''">
             AND log_username LIKE CONCAT('%', #{logDto.logUsername}, '%')
         </if>
