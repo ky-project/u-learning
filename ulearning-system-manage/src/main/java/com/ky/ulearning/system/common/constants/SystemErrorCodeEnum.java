@@ -28,7 +28,12 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     COURSE_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程号不能为空"),
     COURSE_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程名不能为空"),
     COURSE_CREDIT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程学分不能为空"),
-
+    TEA_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教师id不能为空"),
+    COURSE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程id不能为空"),
+    TEACHING_TASK_ALIAS_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学任务别称不能为空"),
+    TERM_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学期不能为空"),
+    TEA_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师id不存在"),
+    COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
     ;
 
     private Integer code;

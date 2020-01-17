@@ -57,19 +57,19 @@
         update u_course
         <set>
             update_time = now(),
-            <if test="courseNumber != null">
+            <if test="courseNumber != null and courseNumber != ''">
                 course_number = #{courseNumber,jdbcType=VARCHAR},
             </if>
-            <if test="courseName != null">
+            <if test="courseName != null and courseName != ''">
                 course_name = #{courseName,jdbcType=VARCHAR},
             </if>
             <if test="courseCredit != null">
                 course_credit = #{courseCredit,jdbcType=SMALLINT},
             </if>
-            <if test="memo != null">
+            <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
+            <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
