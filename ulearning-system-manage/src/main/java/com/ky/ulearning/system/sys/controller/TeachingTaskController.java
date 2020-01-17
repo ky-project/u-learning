@@ -7,10 +7,13 @@ import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.utils.TermUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.vo.TermVo;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
+import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import com.ky.ulearning.system.common.constants.SystemManageConfigParameters;
+import com.ky.ulearning.system.sys.service.CourseService;
 import com.ky.ulearning.system.sys.service.TeachingTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,9 +46,15 @@ public class TeachingTaskController {
     @Autowired
     private SystemManageConfigParameters systemManageConfigParameters;
 
+    @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
+    private CourseService courseService;
+
     @Log("获取学期集合")
     @ApiOperation(value = "获取学期集合")
-    @PermissionName(source = "course:getTermList", name = "获取学期集合", group = "课程管理")
+    @PermissionName(source = "teachingTask:getTermList", name = "获取学期集合", group = "课程管理")
     @GetMapping("/getTermList")
     public ResponseEntity<JsonResult<List<TermVo>>> getTermList() {
         //获取系统配置前preYears后nextYears的学期信息
@@ -59,16 +68,21 @@ public class TeachingTaskController {
     @Log("添加教学任务")
     @ApiOperation(value = "添加教学任务")
     @ApiOperationSupport(ignoreParameters = {"id"})
-    @PermissionName(source = "course:save", name = "添加教学任务", group = "课程管理")
+    @PermissionName(source = "teachingTask:save", name = "添加教学任务", group = "课程管理")
     @PostMapping("/save")
-    public ResponseEntity save(TeachingTaskDto teachingTaskDto) {
+    public ResponseEntity<JsonResult> save(TeachingTaskDto teachingTaskDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(teachingTaskDto.getTeaId()), SystemErrorCodeEnum.TEA_ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teachingTaskDto.getCourseId()), SystemErrorCodeEnum.COURSE_ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teachingTaskDto.getTeachingTaskAlias()), SystemErrorCodeEnum.TEACHING_TASK_ALIAS_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teachingTaskDto.getTerm()), SystemErrorCodeEnum.TERM_CANNOT_BE_NULL)
                 .doValidate().checkResult();
-
+        //教师id是否存在
+        ValidateHandler.checkParameter(teacherService.getById(teachingTaskDto.getTeaId()) == null, SystemErrorCodeEnum.TEA_ID_NOT_EXISTS);
+        //课程id是否存在
+        ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, SystemErrorCodeEnum.COURSE_ID_NOT_EXISTS);
+        //插入记录
+        teachingTaskService.insert(teachingTaskDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 }

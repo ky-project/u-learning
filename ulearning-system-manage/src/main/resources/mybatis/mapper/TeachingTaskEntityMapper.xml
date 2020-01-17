@@ -64,4 +64,24 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+    <!--根据教学任务别称查询教学任务信息-->
+    <select id="getByAlias" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND teaching_task_alias = #{teachingTaskAlias}
+    </select>
+    <!--根据教师id、课程id、学期和别称查询教学任务信息-->
+    <select id="getByTeaIdAndCourseIdAndTermAndAlias" resultMap="BaseResultMap"
+            parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND tea_id = #{teaId}
+        AND course_id = #{courseId}
+        AND teaching_task_alias = #{teachingTaskAlias}
+        AND teaching_task_alias = #{teachingTaskAlias}
+    </select>
 </mapper>
