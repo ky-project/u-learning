@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.system.auth.dao.StudentDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.StudentEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stu_number" jdbcType="VARCHAR" property="stuNumber"/>
+        <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
+        <result column="stu_password" jdbcType="VARCHAR" property="stuPassword"/>
+        <result column="stu_gender" jdbcType="VARCHAR" property="stuGender"/>
+        <result column="stu_dept" jdbcType="VARCHAR" property="stuDept"/>
+        <result column="stu_class" jdbcType="VARCHAR" property="stuClass"/>
+        <result column="stu_phone" jdbcType="VARCHAR" property="stuPhone"/>
+        <result column="stu_email" jdbcType="VARCHAR" property="stuEmail"/>
+        <result column="stu_photo" jdbcType="VARCHAR" property="stuPhoto"/>
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            stu_number,
+            stu_name,
+            stu_password,
+            stu_gender,
+            stu_dept,
+            stu_class,
+            stu_phone,
+            stu_email,
+            stu_photo,
+            last_login_time,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--根据id获取学生信息-->
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_student
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <!--插入学生信息-->
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.entity.StudentEntity"
+            useGeneratedKeys="true">
+        insert into u_student (stu_number, stu_name, stu_password,
+                               stu_gender, stu_dept, stu_class,
+                               stu_phone, stu_email, stu_photo,
+                               last_login_time, `valid`, memo,
+                               create_time, create_by, update_time,
+                               update_by)
+        values (#{stuNumber,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{stuPassword,jdbcType=VARCHAR},
+                #{stuGender,jdbcType=VARCHAR}, #{stuDept,jdbcType=VARCHAR}, #{stuClass,jdbcType=VARCHAR},
+                #{stuPhone,jdbcType=VARCHAR}, #{stuEmail,jdbcType=VARCHAR}, #{stuPhoto,jdbcType=VARCHAR},
+                #{lastLoginTime,jdbcType=TIMESTAMP}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <!--更新学生信息-->
+    <update id="update" parameterType="com.ky.ulearning.spi.system.dto.StudentDto">
+        update u_student
+        <set>
+            update_time = now(),
+            <if test="stuNumber != null and stuNumber != ''">
+                stu_number = #{stuNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="stuName != null and stuName != ''">
+                stu_name = #{stuName,jdbcType=VARCHAR},
+            </if>
+            <if test="stuPassword != null and stuPassword != ''">
+                stu_password = #{stuPassword,jdbcType=VARCHAR},
+            </if>
+            <if test="stuGender != null and stuGender != ''">
+                stu_gender = #{stuGender,jdbcType=VARCHAR},
+            </if>
+            <if test="stuDept != null and stuDept != ''">
+                stu_dept = #{stuDept,jdbcType=VARCHAR},
+            </if>
+            <if test="stuClass != null and stuClass != ''">
+                stu_class = #{stuClass,jdbcType=VARCHAR},
+            </if>
+            <if test="stuPhone != null and stuPhone != ''">
+                stu_phone = #{stuPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="stuEmail != null and stuEmail != ''">
+                stu_email = #{stuEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="memo != null">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

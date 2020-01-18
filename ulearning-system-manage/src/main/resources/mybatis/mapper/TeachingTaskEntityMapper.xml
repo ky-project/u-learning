@@ -13,6 +13,23 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <collection property="teacher" resultMap="com.ky.ulearning.system.auth.dao.TeacherDao.BaseResultMap"
+                    ofType="com.ky.ulearning.spi.system.entity.TeacherEntity"/>
+        <collection property="course" resultMap="com.ky.ulearning.system.sys.dao.CourseDao.BaseResultMap"
+                    ofType="com.ky.ulearning.spi.system.entity.CourseEntity"/>
+    </resultMap>
+    <resultMap id="TeachingTaskDtoResultMap" type="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="tea_id" jdbcType="BIGINT" property="teaId"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -49,16 +66,16 @@
             <if test="teaId != null">
                 tea_id = #{teaId,jdbcType=BIGINT},
             </if>
-            <if test="teachingTaskAlias != null">
+            <if test="teachingTaskAlias != null and teachingTaskAlias != ''">
                 teaching_task_alias = #{teachingTaskAlias,jdbcType=VARCHAR},
             </if>
-            <if test="term != null">
+            <if test="term != null and term != ''">
                 term = #{term,jdbcType=VARCHAR},
             </if>
-            <if test="memo != null">
+            <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
+            <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
@@ -82,6 +99,112 @@
         AND tea_id = #{teaId}
         AND course_id = #{courseId}
         AND teaching_task_alias = #{teachingTaskAlias}
-        AND teaching_task_alias = #{teachingTaskAlias}
+        AND term = #{term}
     </select>
+    <!--分页查询教学任务信息-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT utt.id,
+        utt.course_id,
+        utt.tea_id,
+        utt.teaching_task_alias,
+        utt.term,
+        utt.valid,
+        utt.memo,
+        utt.create_time,
+        utt.create_by,
+        utt.update_time,
+        utt.update_by,
+        uc.id,
+        uc.course_number,
+        uc.course_name,
+        uc.course_credit,
+        ut.valid,
+        ut.memo,
+        ut.create_time,
+        ut.create_by,
+        ut.update_time,
+        ut.update_by,
+        ut.id,
+        ut.tea_number,
+        ut.tea_name,
+        ut.tea_password,
+        ut.tea_gender,
+        ut.tea_dept,
+        ut.tea_title,
+        ut.tea_phone,
+        ut.tea_email,
+        ut.tea_photo,
+        ut.last_login_time,
+        ut.valid,
+        ut.memo,
+        ut.create_time,
+        ut.create_by,
+        ut.update_time,
+        ut.update_by
+        FROM (
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        <if test="teachingTaskDto.courseId != null">
+            AND course_id = #{teachingTaskDto.courseId}
+        </if>
+        <if test="teachingTaskDto.id != null">
+            AND tea_id = #{teachingTaskDto.teaId}
+        </if>
+        <if test="teachingTaskDto.teachingTaskAlias != null and teachingTaskDto.teachingTaskAlias != ''">
+            AND teaching_task_alias LIKE CONCAT('%', #{teachingTaskDto.teachingTaskAlias}, '%')
+        </if>
+        <if test="teachingTaskDto.term != null and teachingTaskDto.term != ''">
+            AND term = #{teachingTaskDto.term}
+        </if>
+        ) utt
+        LEFT JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
+        LEFT JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
+        ORDER BY utt.update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--计算分页查询总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer"
+            parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+        SELECT COUNT(1)
+        FROM (
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        <if test="teachingTaskDto.courseId != null">
+            AND course_id = #{teachingTaskDto.courseId}
+        </if>
+        <if test="teachingTaskDto.id != null">
+            AND tea_id = #{teachingTaskDto.teaId}
+        </if>
+        <if test="teachingTaskDto.teachingTaskAlias != null and teachingTaskDto.teachingTaskAlias != ''">
+            AND teaching_task_alias LIKE CONCAT('%', #{teachingTaskDto.teachingTaskAlias}, '%')
+        </if>
+        <if test="teachingTaskDto.term != null and teachingTaskDto.term != ''">
+            AND term = #{teachingTaskDto.term}
+        </if>
+        ) utt
+        LEFT JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
+        LEFT JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
+    </select>
+    <!--根据id查询教学任务信息-->
+    <select id="getById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND id = #{id}
+    </select>
+    <!--根据id更新有效位的值-->
+    <update id="updateValidById">
+        UPDATE u_teaching_task
+        SET valid     = #{valid},
+            update_by = #{updateBy}
+        WHERE valid = 1
+        AND id = #{id}
+    </update>
 </mapper>

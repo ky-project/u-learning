@@ -40,4 +40,16 @@ public class TeachingTaskEntity extends BaseEntity {
      */
     @ApiModelProperty("开课学期")
     private String term;
+
+    /**
+     * 教师信息
+     */
+    @ApiModelProperty("教师信息")
+    private TeacherEntity teacher;
+
+    /**
+     * 课程信息
+     */
+    @ApiModelProperty("课程信息")
+    private CourseEntity course;
 }
