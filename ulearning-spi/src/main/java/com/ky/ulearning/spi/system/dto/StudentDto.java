@@ -1,5 +1,6 @@
 package com.ky.ulearning.spi.system.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -68,12 +69,13 @@ public class StudentDto extends BaseDto {
     /**
      * 照片URL
      */
-    @ApiModelProperty("照片URL")
+    @ApiModelProperty(hidden = true)
     private String stuPhoto;
 
     /**
      * 上次登录时间
      */
-    @ApiModelProperty("上次登录时间")
+    @ApiModelProperty(hidden = true)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
 }

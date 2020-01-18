@@ -13,8 +13,6 @@ public enum SystemErrorCodeEnum implements BaseEnum {
      * 后台管理系统错误状态码
      */
     PARAMETER_EMPTY(HttpStatus.BAD_REQUEST, "参数不可为空!"),
-    TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师不存在!"),
-    ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不可为空!"),
     EMAIL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "邮箱不可为空!"),
     TEA_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "工号不可为空!"),
     NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名不可为空!"),
@@ -32,8 +30,14 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     COURSE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程id不能为空"),
     TEACHING_TASK_ALIAS_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学任务别称不能为空"),
     TERM_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学期不能为空"),
-    TEA_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师id不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
+    STU_NUMBER_CONNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学号不能为空"),
+    STU_NAME_CONNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名"),
+
+    TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师不存在!"),
+    ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不可为空!"),
+    TEA_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师id不存在"),
+
     ;
 
     private Integer code;

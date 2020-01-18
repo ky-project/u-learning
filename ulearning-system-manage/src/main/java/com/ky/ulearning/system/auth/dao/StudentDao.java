@@ -37,4 +37,20 @@ public interface StudentDao {
      * @param studentDto 待更新的学生信息
      */
     void update(StudentDto studentDto);
+
+    /**
+     * 根据学号查询
+     *
+     * @param stuNumber 学生学号
+     * @return 返回学生信息
+     */
+    StudentEntity getByStuNumber(String stuNumber);
+
+    /**
+     * 根据邮箱查询
+     *
+     * @param stuEmail 邮箱
+     * @return 返回学生信息
+     */
+    StudentEntity getByStuEmail(String stuEmail);
 }
