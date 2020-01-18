@@ -16,7 +16,7 @@ import java.util.Date;
  * @author luyuhao
  * @date 2019/12/05 01:42
  */
-@ApiModel("教师对象")
+@ApiModel("教师实体类")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TeacherEntity extends BaseEntity {
