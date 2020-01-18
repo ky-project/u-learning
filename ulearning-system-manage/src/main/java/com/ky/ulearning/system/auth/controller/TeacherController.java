@@ -71,7 +71,6 @@ public class TeacherController {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(teacher.getTeaName()), SystemErrorCodeEnum.NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teacher.getTeaNumber()), SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(teacher.getTeaEmail()), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         //获取操作者的编号
         String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
