@@ -11,6 +11,7 @@ import com.ky.ulearning.system.sys.service.TeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,5 +53,30 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
                 //设置查询结果
                 .setContent(teacherList);
         return setPageBeanProperties(pageBean, pageParam);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void update(TeachingTaskDto teachingTaskDto) {
+        //判断是否存在相同记录
+        TeachingTaskEntity teachingTaskEntity = teachingTaskDao.getByTeaIdAndCourseIdAndTermAndAlias(teachingTaskDto);
+        if (teachingTaskEntity != null && !teachingTaskEntity.getId().equals(teachingTaskDto.getId())) {
+            throw new EntityExistException("教学任务");
+        }
+        teachingTaskDao.update(teachingTaskDto);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public TeachingTaskEntity getById(Long id) {
+        return teachingTaskDao.getById(id);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, String updateBy) {
+        teachingTaskDao.updateValidById(id, 0, updateBy);
     }
 }

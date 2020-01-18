@@ -28,4 +28,27 @@ public interface TeachingTaskService {
      * @return 封装教学任务信息的分页对象
      */
     PageBean<TeachingTaskEntity> pageTeachingTaskList(TeachingTaskDto teachingTaskDto, PageParam pageParam);
+
+    /**
+     * 更新教学任务信息
+     *
+     * @param teachingTaskDto 教学任务对象
+     */
+    void update(TeachingTaskDto teachingTaskDto);
+
+    /**
+     * 根据id查询教学任务信息
+     *
+     * @param id 教学任务id
+     * @return 教学任务对象
+     */
+    TeachingTaskEntity getById(Long id);
+
+    /**
+     * 删除教学任务
+     *
+     * @param id       待删除的教学任务id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
 }

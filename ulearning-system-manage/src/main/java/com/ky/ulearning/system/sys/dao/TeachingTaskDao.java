@@ -26,6 +26,11 @@ public interface TeachingTaskDao {
      */
     void insert(TeachingTaskDto teachingTaskDto);
 
+    /**
+     * 更新教学任务信息
+     *
+     * @param teachingTaskDto 教学任务对象
+     */
     void update(TeachingTaskDto teachingTaskDto);
 
     /**
@@ -60,4 +65,21 @@ public interface TeachingTaskDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("teachingTaskDto") TeachingTaskDto teachingTaskDto);
+
+    /**
+     * 根据id查询教学任务信息
+     *
+     * @param id 教学任务id
+     * @return 教学任务信息对象
+     */
+    TeachingTaskEntity getById(Long id);
+
+    /**
+     * 根据id更新有效位的值
+     *
+     * @param id       教学任务id
+     * @param valid    有效位
+     * @param updateBy 更新者
+     */
+    void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
 }

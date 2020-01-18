@@ -66,16 +66,16 @@
             <if test="teaId != null">
                 tea_id = #{teaId,jdbcType=BIGINT},
             </if>
-            <if test="teachingTaskAlias != null">
+            <if test="teachingTaskAlias != null and teachingTaskAlias != ''">
                 teaching_task_alias = #{teachingTaskAlias,jdbcType=VARCHAR},
             </if>
-            <if test="term != null">
+            <if test="term != null and term != ''">
                 term = #{term,jdbcType=VARCHAR},
             </if>
-            <if test="memo != null">
+            <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
+            <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
@@ -99,7 +99,7 @@
         AND tea_id = #{teaId}
         AND course_id = #{courseId}
         AND teaching_task_alias = #{teachingTaskAlias}
-        AND teaching_task_alias = #{teachingTaskAlias}
+        AND term = #{term}
     </select>
     <!--分页查询教学任务信息-->
     <select id="listPage" resultMap="BaseResultMap">
@@ -167,7 +167,8 @@
         </if>
     </select>
     <!--计算分页查询总记录数-->
-    <select id="countListPage" resultType="java.lang.Integer" parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+    <select id="countListPage" resultType="java.lang.Integer"
+            parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
         SELECT COUNT(1)
         FROM (
         SELECT
@@ -190,4 +191,20 @@
         LEFT JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
         LEFT JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
     </select>
+    <!--根据id查询教学任务信息-->
+    <select id="getById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND id = #{id}
+    </select>
+    <!--根据id更新有效位的值-->
+    <update id="updateValidById">
+        UPDATE u_teaching_task
+        SET valid     = #{valid},
+            update_by = #{updateBy}
+        WHERE valid = 1
+        AND id = #{id}
+    </update>
 </mapper>

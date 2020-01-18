@@ -1,5 +1,6 @@
 package com.ky.ulearning.common.core.utils;
 
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -43,5 +44,15 @@ public class StringUtil extends StringUtils {
             res.add(Long.parseLong(str));
         }
         return res;
+    }
+
+    /**
+     * 判断对象是否不为空
+     *
+     * @param str 带判断的对象
+     * @return true:不为空;false:为空
+     */
+    public static boolean isNotEmpty(@Nullable Object str) {
+        return !isEmpty(str);
     }
 }
