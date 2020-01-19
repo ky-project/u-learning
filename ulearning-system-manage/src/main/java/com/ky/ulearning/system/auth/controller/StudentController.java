@@ -46,7 +46,7 @@ public class StudentController {
                 .on(StringUtil.isEmpty(studentDto.getStuName()), SystemErrorCodeEnum.STU_NAME_CONNOT_BE_NULL)
                 .doValidate().checkResult();
         //获取操作者的编号
-        String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String userNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //设置操作者编号
         studentDto.setCreateBy(userNumber);
         //设置更新者编号

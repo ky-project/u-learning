@@ -31,7 +31,7 @@ import java.net.URLDecoder;
  * token校验过滤器
  *
  * @author luyuhao
- * @date 2019/12/10 9:23
+ * @since 2019/12/10 9:23
  */
 @Slf4j
 @Component
@@ -154,10 +154,13 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         response.addCookie(tokenCookie);
     }
 
-//    private String getTokenCookie(HttpServletRequest request, String tokenName) {
-//        Cookie[] cookies = request.getCookies();
-//        for (Cookie cookie : cookies) {
-//
-//        }
-//    }
+    private String getTokenCookie(HttpServletRequest request, String tokenName) {
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(tokenName)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
 }

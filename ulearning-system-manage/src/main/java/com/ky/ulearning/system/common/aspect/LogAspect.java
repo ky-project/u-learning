@@ -65,7 +65,7 @@ public class LogAspect {
         //设置log属性
         LogEntity logEntity = new LogEntity();
         //获取用户信息
-        logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        logEntity.setLogUsername(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
         logEntity.setLogIp(RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP));
@@ -103,7 +103,7 @@ public class LogAspect {
         //设置log属性
         LogEntity logEntity = new LogEntity();
         //获取用户信息
-        logEntity.setLogUsername(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        logEntity.setLogUsername(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         logEntity.setLogDescription(getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
         logEntity.setLogIp(RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP));

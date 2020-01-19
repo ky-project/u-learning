@@ -84,7 +84,7 @@ public class RoleController {
                 .on(StringUtil.isEmpty(roleDto.getRoleSource()), SystemErrorCodeEnum.ROLE_SOURCE_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(roleDto.getIsAdmin()), SystemErrorCodeEnum.IS_ADMIN_CANNOT_BE_NULL)
                 .doValidate().checkResult();
-        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         roleDto.setCreateBy(username);
         roleDto.setUpdateBy(username);
         roleService.insert(roleDto);
@@ -97,7 +97,7 @@ public class RoleController {
     @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        roleService.delete(id, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        roleService.delete(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
 
@@ -108,7 +108,7 @@ public class RoleController {
     public ResponseEntity<JsonResult> update(RoleDto roleDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(roleDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
-        roleDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        roleDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         roleService.update(roleDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
@@ -130,7 +130,7 @@ public class RoleController {
     @PostMapping("/saveAssignedPermission")
     public ResponseEntity<JsonResult> saveAssignedPermission(Long roleId, String permissionIds){
         ValidateHandler.checkParameter(StringUtil.isEmpty(roleId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        rolePermissionService.saveAssignedPermission(roleId, permissionIds, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        rolePermissionService.saveAssignedPermission(roleId, permissionIds, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("权限分配成功"));
     }
 }

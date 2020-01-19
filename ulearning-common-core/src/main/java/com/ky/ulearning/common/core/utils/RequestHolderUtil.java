@@ -1,5 +1,6 @@
 package com.ky.ulearning.common.core.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -10,23 +11,44 @@ import java.util.Optional;
  * Request 相关操作
  *
  * @author luyuhao
- * @date 19/12/05 02:36
+ * @since 19/12/05 02:36
  */
 public class RequestHolderUtil {
+    /**
+     * 获取请求上下文
+     */
     private static ServletRequestAttributes getRequestAttributes() {
         return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
     }
 
+    /**
+     * 获取请求域
+     */
     public static HttpServletRequest getHttpServletRequest() {
         return Optional.ofNullable(getRequestAttributes())
                 .map(ServletRequestAttributes::getRequest)
                 .orElse(null);
     }
 
+    /**
+     * 获取请求头
+     */
     public static String getHeaderByName(String name) {
         return Optional.ofNullable(getHttpServletRequest())
                 .map(request -> request.getHeader(name))
                 .orElse(null);
     }
 
+    /**
+     * 获取请求属性
+     */
+    public static <T> T getAttribute(String name, Class<T> clazz) {
+        try {
+            return Optional.ofNullable(getHttpServletRequest())
+                    .map(request -> JSONObject.parseObject(JsonUtil.toJsonString(request.getAttribute(name)), clazz))
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
