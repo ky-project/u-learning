@@ -73,7 +73,7 @@ public class TeacherController {
                 .on(StringUtil.isEmpty(teacher.getTeaNumber()), SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         //获取操作者的编号
-        String userNumber = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String userNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //设置操作者编号
         teacher.setCreateBy(userNumber);
         //设置更新者编号
@@ -91,7 +91,7 @@ public class TeacherController {
     @GetMapping("/delete")
     public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        teacherService.delete(id, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        teacherService.delete(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("教师删除成功"));
     }
 
@@ -166,7 +166,7 @@ public class TeacherController {
         if (!StringUtils.isEmpty(teacherDto.getTeaPassword())) {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
-        teacherDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(teacherDto));
     }
@@ -179,7 +179,7 @@ public class TeacherController {
     public ResponseEntity<JsonResult> saveAssignedRole(Long teaId, String roleIds) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teaId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
-        teacherRoleService.saveAssignedRole(teaId, roleIds, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        teacherRoleService.saveAssignedRole(teaId, roleIds, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分配成功"));
     }
 

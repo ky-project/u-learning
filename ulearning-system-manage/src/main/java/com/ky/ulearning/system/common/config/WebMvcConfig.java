@@ -1,9 +1,11 @@
 package com.ky.ulearning.system.common.config;
 
+import com.ky.ulearning.common.core.component.interceptor.AccessInterceptor;
 import com.ky.ulearning.common.core.exceptions.handler.GlobalExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,6 +26,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .setCachePeriod(0);
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AccessInterceptor()).addPathPatterns("/**");
     }
 
     @Bean

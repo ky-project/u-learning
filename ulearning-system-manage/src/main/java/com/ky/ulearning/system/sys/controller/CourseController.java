@@ -76,7 +76,7 @@ public class CourseController {
                 .on(StringUtil.isEmpty(courseDto.getCourseName()), SystemErrorCodeEnum.COURSE_NAME_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(courseDto.getCourseCredit()), SystemErrorCodeEnum.COURSE_CREDIT_CANNOT_BE_NULL)
                 .doValidate().checkResult();
-        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         courseDto.setUpdateBy(username);
         courseDto.setCreateBy(username);
 
@@ -92,7 +92,7 @@ public class CourseController {
     public ResponseEntity<JsonResult> update(CourseDto courseDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(courseDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
-        courseDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        courseDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         courseService.update(courseDto);
 
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
@@ -105,7 +105,7 @@ public class CourseController {
     public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
-        String updaterBy = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String updaterBy = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         courseService.delete(id, updaterBy);
 
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));

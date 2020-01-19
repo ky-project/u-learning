@@ -120,7 +120,7 @@ public class TeachingTaskController {
             ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, SystemErrorCodeEnum.COURSE_ID_NOT_EXISTS);
         }
 
-        teachingTaskDto.setUpdateBy(RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        teachingTaskDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teachingTaskService.update(teachingTaskDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
@@ -143,7 +143,7 @@ public class TeachingTaskController {
     public ResponseEntity<JsonResult> delete(Long id){
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
-        teachingTaskService.delete(id, RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME));
+        teachingTaskService.delete(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
 

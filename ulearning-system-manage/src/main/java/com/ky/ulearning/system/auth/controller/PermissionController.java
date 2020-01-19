@@ -87,7 +87,7 @@ public class PermissionController {
                 .on(StringUtil.isEmpty(permissionDto.getPermissionSource()), PERMISSION_SOURCE_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         //设置创建者和更新者
-        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         permissionDto.setCreateBy(username);
         permissionDto.setUpdateBy(username);
         permissionService.insert(permissionDto);
@@ -101,7 +101,7 @@ public class PermissionController {
     public ResponseEntity<JsonResult> delete(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), ID_CANNOT_BE_NULL);
         //获取更新者
-        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         permissionService.delete(id, username);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
@@ -113,7 +113,7 @@ public class PermissionController {
     public ResponseEntity<JsonResult> update(PermissionDto permissionDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(permissionDto.getId()), ID_CANNOT_BE_NULL);
         //获取更新者
-        String username = RequestHolderUtil.getHeaderByName(MicroConstant.USERNAME);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         permissionDto.setUpdateBy(username);
         permissionService.update(permissionDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
