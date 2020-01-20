@@ -21,23 +21,23 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
     <sql id="Base_Column_List">
-            id,
-            stu_number,
-            stu_name,
-            stu_password,
-            stu_gender,
-            stu_dept,
-            stu_class,
-            stu_phone,
-            stu_email,
-            stu_photo,
-            last_login_time,
-            `valid`,
-            memo,
-            create_time,
-            create_by,
-            update_time,
-            update_by
+        id,
+        stu_number,
+        stu_name,
+        stu_password,
+        stu_gender,
+        stu_dept,
+        stu_class,
+        stu_phone,
+        stu_email,
+        stu_photo,
+        last_login_time,
+        `valid`,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by
     </sql>
     <!--根据id获取学生信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -119,5 +119,65 @@
         FROM u_student
         WHERE valid = 1
         AND stu_email = #{stuEmail}
+    </select>
+    <!--分页查询学生信息-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_student
+        WHERE valid = 1
+        <if test="studentDto.stuNumber != null and studentDto.stuNumber != ''">
+            AND stu_number LIKE CONCAT('%', #{studentDto.stuNumber}, '%')
+        </if>
+        <if test="studentDto.stuName != null and studentDto.stuName != ''">
+            AND stu_name LIKE CONCAT('%', #{studentDto.stuName}, '%')
+        </if>
+        <if test="studentDto.stuGender != null and studentDto.stuGender != ''">
+            AND stu_gender = #{studentDto.stuGender}
+        </if>
+        <if test="studentDto.stuDept != null and studentDto.stuDept != ''">
+            AND stu_dept = #{studentDto.stuDept}
+        </if>
+        <if test="studentDto.stuClass != null and studentDto.stuClass != ''">
+            AND stu_class = #{studentDto.stuClass}
+        </if>
+        <if test="studentDto.stuPhone != null and studentDto.stuPhone != ''">
+            AND stu_phone LIKE CONCAT('%', #{studentDto.stuPhone}, '%')
+        </if>
+        <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
+            AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
+        </if>
+        order by update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--根据分页查询条件查询总记录数-->
+    <select id="countListPage">
+        SELECT
+        COUNT(1)
+        FROM u_student
+        WHERE valid = 1
+        <if test="studentDto.stuNumber != null and studentDto.stuNumber != ''">
+            AND stu_number LIKE CONCAT('%', #{studentDto.stuNumber}, '%')
+        </if>
+        <if test="studentDto.stuName != null and studentDto.stuName != ''">
+            AND stu_name LIKE CONCAT('%', #{studentDto.stuName}, '%')
+        </if>
+        <if test="studentDto.stuGender != null and studentDto.stuGender != ''">
+            AND stu_gender = #{studentDto.stuGender}
+        </if>
+        <if test="studentDto.stuDept != null and studentDto.stuDept != ''">
+            AND stu_dept = #{studentDto.stuDept}
+        </if>
+        <if test="studentDto.stuClass != null and studentDto.stuClass != ''">
+            AND stu_class = #{studentDto.stuClass}
+        </if>
+        <if test="studentDto.stuPhone != null and studentDto.stuPhone != ''">
+            AND stu_phone LIKE CONCAT('%', #{studentDto.stuPhone}, '%')
+        </if>
+        <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
+            AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
+        </if>
     </select>
 </mapper>

@@ -1,6 +1,5 @@
 package com.ky.ulearning.common.core.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -44,8 +43,11 @@ public class RequestHolderUtil {
      */
     public static <T> T getAttribute(String name, Class<T> clazz) {
         try {
-            return Optional.ofNullable(getHttpServletRequest())
-                    .map(request -> JSONObject.parseObject(JsonUtil.toJsonString(request.getAttribute(name)), clazz))
+            Object object = Optional.ofNullable(getHttpServletRequest())
+                    .map(request -> request.getAttribute(name))
+                    .orElse(null);
+            return Optional.ofNullable(object)
+                    .map(o -> JsonUtil.parseObjectByObject(object, clazz))
                     .orElse(null);
         } catch (Exception e) {
             return null;

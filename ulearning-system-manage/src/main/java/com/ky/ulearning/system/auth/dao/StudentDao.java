@@ -1,10 +1,14 @@
 package com.ky.ulearning.system.auth.dao;
 
 
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 学生dao
@@ -53,4 +57,21 @@ public interface StudentDao {
      * @return 返回学生信息
      */
     StudentEntity getByStuEmail(String stuEmail);
+
+    /**
+     * 分页查询学生信息
+     *
+     * @param studentDto 筛选条件
+     * @param pageParam  分页参数
+     * @return 封装学生信息的分页对象
+     */
+    List<StudentEntity> listPage(@Param("studentDto") StudentDto studentDto, @Param("pageParam") PageParam pageParam);
+
+    /**
+     * 根据分页查询条件查询总记录数
+     *
+     * @param studentDto 筛选条件
+     * @return 总记录数
+     */
+    Integer countListPage(@Param("studentDto") StudentDto studentDto);
 }
