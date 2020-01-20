@@ -1,6 +1,5 @@
 package com.ky.ulearning.gateway.common.filter;
 
-import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.exception.JwtTokenException;
@@ -31,6 +30,7 @@ import java.net.URLDecoder;
  * token校验过滤器
  *
  * @author luyuhao
+ * @date 2019/12/10 9:23
  * @since 2019/12/10 9:23
  */
 @Slf4j
