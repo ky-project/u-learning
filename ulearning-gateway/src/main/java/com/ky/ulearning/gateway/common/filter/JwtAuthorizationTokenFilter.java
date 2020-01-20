@@ -1,6 +1,6 @@
 package com.ky.ulearning.gateway.common.filter;
 
-import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.exception.JwtTokenException;
@@ -78,27 +78,29 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         String tokenHeader = request.getHeader(gatewayConfigParameters.getTokenHeader());
         String refreshTokenHeader = request.getHeader(gatewayConfigParameters.getRefreshTokenHeader());
 
-        String token;
-        String refreshToken;
+        String token = getTokenCookie(request, GatewayConstant.COOKIE_TOKEN);
+        String refreshToken = getTokenCookie(request, GatewayConstant.COOKIE_REFRESH_TOKEN);
         String username;
         try {
             //token空值校验
-            if (tokenHeader == null || refreshTokenHeader == null) {
+            if (StringUtil.isNotEmpty(tokenHeader) && StringUtil.isNotEmpty(refreshTokenHeader)) {
+                //字符转义
+                tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8).trim();
+                refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8).trim();
+                if (!tokenHeader.startsWith(PREFIX)
+                        || !refreshTokenHeader.startsWith(PREFIX)) {
+                    chain.doFilter(request, response);
+                    return;
+                }
+                //提取token
+                token = tokenHeader.substring(PREFIX.length());
+                refreshToken = refreshTokenHeader.substring(PREFIX.length());
+            }
+            //判断token是否为空
+            if (StringUtil.isEmpty(token) || StringUtil.isEmpty(refreshToken)) {
                 chain.doFilter(request, response);
                 return;
             }
-            //字符转义
-            tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8).trim();
-            refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8).trim();
-            if (!tokenHeader.startsWith(PREFIX)
-                    || !refreshTokenHeader.startsWith(PREFIX)) {
-                chain.doFilter(request, response);
-                return;
-            }
-            //提取token
-            token = tokenHeader.substring(PREFIX.length());
-            refreshToken = refreshTokenHeader.substring(PREFIX.length());
-
             //防止token被篡改
             if (!jwtTokenUtil.tamperProof(token) || !jwtRefreshTokenUtil.tamperProof(refreshToken)) {
                 throw new JwtTokenException("token被篡改，请重新登录");
