@@ -87,4 +87,32 @@ public class StudentController {
         PageBean<StudentEntity> pageBean = studentService.pageStudentList(studentDto, pageParam);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
+
+    @Log("删除学生")
+    @ApiOperation(value = "删除学生")
+    @PermissionName(source = "student:delete", name = "删除学生", group = "学生管理")
+    @GetMapping("/delete")
+    public ResponseEntity<JsonResult> delete(Long id) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+        studentService.delete(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除学生成功"));
+    }
+
+    @Log("学生更新")
+    @ApiOperation(value = "学生更新")
+    @PermissionName(source = "student:update", name = "学生更新", group = "学生管理")
+    @PostMapping("/update")
+    public ResponseEntity<JsonResult> update(StudentDto studentDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+        //获取操作者的编号
+        String userNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //设置更新者编号
+        studentDto.setUpdateBy(userNumber);
+
+        //密码加密
+        studentDto.setStuPassword(EncryptUtil.encryptPassword("123456"));
+        //TODO 设置初始头像url
+        studentService.save(studentDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加学生成功"));
+    }
 }

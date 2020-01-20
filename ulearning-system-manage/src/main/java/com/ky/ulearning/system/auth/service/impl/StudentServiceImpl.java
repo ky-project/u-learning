@@ -66,4 +66,10 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                 .setContent(studentList);
         return setPageBeanProperties(pageBean, pageParam);
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    public void delete(Long id, String updateBy) {
+        studentDao.updateValidById(id, 0, updateBy);
+    }
 }

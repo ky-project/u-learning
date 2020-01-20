@@ -36,4 +36,12 @@ public interface StudentService {
      * @return 封装学生信息的分页对象
      */
     PageBean<StudentEntity> pageStudentList(StudentDto studentDto, PageParam pageParam);
+
+    /**
+     * 根据id删除学生信息
+     *
+     * @param id       学生id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
 }

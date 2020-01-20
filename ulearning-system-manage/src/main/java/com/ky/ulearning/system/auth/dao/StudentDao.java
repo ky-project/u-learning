@@ -74,4 +74,13 @@ public interface StudentDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("studentDto") StudentDto studentDto);
+
+    /**
+     * 根据id更新valid
+     *
+     * @param id       id
+     * @param valid    有效位
+     * @param updateBy 更新者
+     */
+    void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
 }

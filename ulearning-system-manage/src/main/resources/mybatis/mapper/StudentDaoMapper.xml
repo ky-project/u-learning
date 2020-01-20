@@ -153,7 +153,7 @@
         </if>
     </select>
     <!--根据分页查询条件查询总记录数-->
-    <select id="countListPage">
+    <select id="countListPage" resultType="java.lang.Integer">
         SELECT
         COUNT(1)
         FROM u_student
@@ -180,4 +180,12 @@
             AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
         </if>
     </select>
+    <!--根据id更新valid-->
+    <update id="updateValidById">
+        UPDATE u_student
+        SET valid       = #{valid},
+            update_time = now(),
+            update_by   = #{updateBy}
+        WHERE id = #{id}
+    </update>
 </mapper>
