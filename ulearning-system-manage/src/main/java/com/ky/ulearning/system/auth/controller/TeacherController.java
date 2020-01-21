@@ -168,7 +168,6 @@ public class TeacherController {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
-        teacherDto.setUpdateTime(new Date());
         teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(teacherDto));
     }
