@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.config;
 
+import com.ky.ulearning.gateway.common.filter.AccessFilter;
 import com.ky.ulearning.gateway.common.filter.JwtAuthorizationTokenFilter;
 import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationEntryPoint;
@@ -40,6 +41,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
+
+    @Autowired
+    private AccessFilter accessFilter;
 
     /**
      * 加载全局认证配置
@@ -96,9 +100,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         HttpMethod.GET,
                         "/*.html",
+                        "/*.ico",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js"
+                        "/**/*.js",
+                        "/**/*.ico",
+                        "/**/*.png",
+                        "/**/*.svg"
                 ).anonymous()
 
                 .antMatchers(HttpMethod.POST, "/auth/login").anonymous()
@@ -124,6 +132,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable();
 
         httpSecurity.addFilterBefore(jwtAuthorizationTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(accessFilter, JwtAuthorizationTokenFilter.class)
                 .formLogin().failureHandler(jwtAuthenticationFailureHandler);
     }
 }

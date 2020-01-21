@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
+import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
@@ -57,14 +58,22 @@ public class PermissionZuulFilter extends ZuulFilter {
 
     @Override
     public Object run() throws ZuulException {
+        String uri = getUri();
 
-        if (UrlUtil.matchUri(getUri(), gatewayConfigParameters.getAdminPatterns())) {
+        //放行静态文件
+        for (String staticSuffix : GatewayConstant.STATIC_SUFFIX) {
+            if (uri.endsWith(staticSuffix)) {
+                return null;
+            }
+        }
+
+        if (UrlUtil.matchUri(uri, gatewayConfigParameters.getAdminPatterns())) {
             //1. 访问后台端服务
             adminPermissionCheck();
-        } else if (UrlUtil.matchUri(getUri(), gatewayConfigParameters.getTeacherPatterns())) {
+        } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getTeacherPatterns())) {
             //2. 访问教师端服务
             teacherPermissionCheck();
-        } else if (UrlUtil.matchUri(getUri(), gatewayConfigParameters.getStudentPatterns())) {
+        } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getStudentPatterns())) {
             //3. 访问学生端服务
             studentPermissionCheck();
         } else {
@@ -120,10 +129,10 @@ public class PermissionZuulFilter extends ZuulFilter {
             return;
         }
         //3. 有访问该uri的权限
-        if (!permissions.stream()
+        if (permissions.stream()
                 .map(PermissionEntity::getPermissionUrl)
                 .collect(Collectors.toList())
-                .contains(getUri())) {
+                .stream().noneMatch(s -> UrlUtil.matchUri(getUri(), s))) {
             warnInfo(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION);
         }
     }

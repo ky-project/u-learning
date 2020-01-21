@@ -20,4 +20,13 @@ public class GatewayConstant {
      */
     public static final String COOKIE_REFRESH_TOKEN = "refresh_token";
 
+    /**
+     * 请求头中的token前缀
+     */
+    public static final String TOKEN_PREFIX = "Bearer ";
+
+    /**
+     * 静态文件
+     */
+    public static final String[] STATIC_SUFFIX = {".css", ".js", ".html", ".ico", ".svg", ".png"};
 }

@@ -41,7 +41,6 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
      */
     private final static String[] NOT_FILTER_URL = {"/auth/login", "/auth/logout", "/auth/vCode"};
 
-    private final static String PREFIX = "Bearer ";
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -90,14 +89,14 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             //字符转义
             tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8).trim();
             refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8).trim();
-            if (!tokenHeader.startsWith(PREFIX)
-                    || !refreshTokenHeader.startsWith(PREFIX)) {
+            if (!tokenHeader.startsWith(GatewayConstant.TOKEN_PREFIX)
+                    || !refreshTokenHeader.startsWith(GatewayConstant.TOKEN_PREFIX)) {
                 chain.doFilter(request, response);
                 return;
             }
             //提取token
-            token = tokenHeader.substring(PREFIX.length());
-            refreshToken = refreshTokenHeader.substring(PREFIX.length());
+            token = tokenHeader.substring(GatewayConstant.TOKEN_PREFIX.length());
+            refreshToken = refreshTokenHeader.substring(GatewayConstant.TOKEN_PREFIX.length());
 
             //防止token被篡改
             if (!jwtTokenUtil.tamperProof(token) || !jwtRefreshTokenUtil.tamperProof(refreshToken)) {
@@ -152,15 +151,5 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         tokenCookie.setMaxAge((int) (gatewayConfigParameters.getRefreshExpiration() / 1000));
         tokenCookie.setPath("/");
         response.addCookie(tokenCookie);
-    }
-
-    private String getTokenCookie(HttpServletRequest request, String tokenName) {
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(tokenName)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 }
