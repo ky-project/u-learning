@@ -86,7 +86,7 @@
         SELECT up.id, up.permission_name, up.permission_source, up.permission_group, up.permission_url, up.valid,
         up.memo, up.create_time, up.create_by, up.update_time, up.update_by
         FROM u_role_permission urp
-        LEFT JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
+        INNER JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
         WHERE urp.valid = 1
         AND urp.role_id IN
         <foreach collection="roleIdList" item="roleId" open="(" close=")" separator=",">

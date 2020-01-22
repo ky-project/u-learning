@@ -1,11 +1,10 @@
 package com.ky.ulearning.gateway.common.security;
 
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
-import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
+import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.conversion.UserContextJwtAccountMapper;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
-import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author luyuhao
- * @date 19/12/10 00:40
+ * @since 19/12/10 00:40
  */
 @Service
 public class JwtAccountDetailsService implements UserDetailsService {
@@ -79,8 +78,8 @@ public class JwtAccountDetailsService implements UserDetailsService {
             return Optional.ofNullable(userContextJsonResult)
                     .map(JsonResult::getData)
                     .orElse(null);
-        }catch (Exception e) {
-           return null;
+        } catch (Exception e) {
+            return null;
         }
     }
 }
