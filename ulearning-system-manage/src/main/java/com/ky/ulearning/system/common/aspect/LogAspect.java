@@ -1,15 +1,12 @@
 package com.ky.ulearning.system.common.aspect;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.constant.MicroConstant;
-import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
-import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.IpUtil;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
-import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * 日志aop切面类
@@ -76,11 +72,14 @@ public class LogAspect {
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
 
+        //若ip和username都为null，默许为内部调用，不记录操作表
+        if (StringUtil.isEmpty(logEntity.getLogUsername())
+                && StringUtil.isEmpty(logEntity.getLogIp())) {
+            return result;
+        }
+
         Map<String, Object> logMap =
-                JSONObject.parseObject(JSON.toJSONString(logEntity,
-                        SerializerFeature.WriteNullStringAsEmpty,
-                        SerializerFeature.WriteNullNumberAsZero,
-                        SerializerFeature.WriteMapNullValue));
+                JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
         try {
             //保存log信息
             monitorManageRemoting.add(logMap);
@@ -115,11 +114,14 @@ public class LogAspect {
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
 
+        //若ip和username都为null，默许为内部调用，不记录操作表
+        if (StringUtil.isEmpty(logEntity.getLogUsername())
+                && StringUtil.isEmpty(logEntity.getLogIp())) {
+            return;
+        }
+
         Map<String, Object> logMap =
-                JSONObject.parseObject(JSON.toJSONString(logEntity,
-                        SerializerFeature.WriteNullStringAsEmpty,
-                        SerializerFeature.WriteNullNumberAsZero,
-                        SerializerFeature.WriteMapNullValue));
+                JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
         try {
             //保存log信息
             monitorManageRemoting.add(logMap);
