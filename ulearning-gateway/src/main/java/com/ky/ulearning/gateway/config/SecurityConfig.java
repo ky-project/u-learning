@@ -113,7 +113,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/logout").anonymous()
                 .antMatchers("/auth/logout/success").anonymous()
                 .antMatchers("/auth/vCode").anonymous()
-                .antMatchers("/auth/test").anonymous()
 
                 // swagger start
                 .antMatchers("/swagger-resources/**").anonymous()

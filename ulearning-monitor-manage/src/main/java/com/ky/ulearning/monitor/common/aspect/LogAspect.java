@@ -3,8 +3,9 @@ package com.ky.ulearning.monitor.common.aspect;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.IpUtil;
-import com.ky.ulearning.monitor.logging.service.LogService;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.monitor.logging.service.LogService;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -67,6 +68,13 @@ public class LogAspect {
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
+
+        //若ip和username都为null，默许为内部调用，不记录操作表
+        if (StringUtil.isEmpty(logEntity.getLogUsername())
+                && StringUtil.isEmpty(logEntity.getLogIp())) {
+            return result;
+        }
+
         //保存log信息
         logService.insert(logEntity);
 
@@ -97,6 +105,13 @@ public class LogAspect {
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
+
+        //若ip和username都为null，默许为内部调用，不记录操作表
+        if (StringUtil.isEmpty(logEntity.getLogUsername())
+                && StringUtil.isEmpty(logEntity.getLogIp())) {
+            return;
+        }
+
         //保存log信息
         logService.insert(logEntity);
     }

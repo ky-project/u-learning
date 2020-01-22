@@ -7,7 +7,9 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.ServerErrorException;
 import com.ky.ulearning.common.core.utils.IpUtil;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
@@ -29,7 +31,7 @@ import java.util.Map;
  * 日志aop切面类
  *
  * @author luyuhao
- * @date 19/12/05 02:26
+ * @since 19/12/05 02:26
  */
 @Aspect
 @Component
@@ -74,15 +76,18 @@ public class LogAspect {
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
 
+        //若ip和username都为null，默许为内部调用，不记录操作表
+        if (StringUtil.isEmpty(logEntity.getLogUsername())
+                && StringUtil.isEmpty(logEntity.getLogIp())) {
+            return result;
+        }
+
         Map<String, Object> logMap =
-                JSONObject.parseObject(JSON.toJSONString(logEntity,
-                        SerializerFeature.WriteNullStringAsEmpty,
-                        SerializerFeature.WriteNullNumberAsZero,
-                        SerializerFeature.WriteMapNullValue));
+                JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
         try {
             //保存log信息
             monitorManageRemoting.add(logMap);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("监控系统未启动");
         }
         return result;
@@ -113,15 +118,18 @@ public class LogAspect {
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
 
+        //若ip和username都为null，默许为内部调用，不记录操作表
+        if (StringUtil.isEmpty(logEntity.getLogUsername())
+                && StringUtil.isEmpty(logEntity.getLogIp())) {
+            return ;
+        }
+
         Map<String, Object> logMap =
-                JSONObject.parseObject(JSON.toJSONString(logEntity,
-                        SerializerFeature.WriteNullStringAsEmpty,
-                        SerializerFeature.WriteNullNumberAsZero,
-                        SerializerFeature.WriteMapNullValue));
+                JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
         try {
             //保存log信息
             monitorManageRemoting.add(logMap);
-        }catch (Exception te) {
+        } catch (Exception te) {
             log.error("监控系统未启动");
         }
     }
