@@ -1,1 +1,0 @@
-alter table u_course modify column course_number varchar(20)
