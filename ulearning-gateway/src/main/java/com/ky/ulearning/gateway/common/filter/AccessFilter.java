@@ -30,8 +30,6 @@ import java.net.URLEncoder;
 @Component
 public class AccessFilter extends OncePerRequestFilter {
 
-    private static final String[] RELEASE_URI = {"/monitor-manage/", "/monitor-manage/applications", "/monitor-manage/instances/**"};
-
     private final GatewayConfigParameters gatewayConfigParameters;
 
     public AccessFilter(GatewayConfigParameters gatewayConfigParameters) {
@@ -39,18 +37,27 @@ public class AccessFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 默认对所有静态文件资源的获取进行自动获取cookie操作
+     * 默认对非静态资源的获取进行自动获取cookie操作
      */
     @SuppressWarnings("NullableProblems")
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String uri = request.getRequestURI();
-        //指定路径
-        if(UrlUtil.matchUri(uri, RELEASE_URI)){
-            request = addHeader(request);
+        //判断是否已有请求头
+        String tokenHeader = request.getHeader(gatewayConfigParameters.getTokenHeader());
+        String refreshTokenHeader = request.getHeader(gatewayConfigParameters.getRefreshTokenHeader());
+        if (StringUtil.isNotEmpty(tokenHeader) && StringUtil.isNotEmpty(refreshTokenHeader)) {
+            return;
         }
+        String uri = request.getRequestURI();
+        //如果为指定的静态资源后缀，放行
+        for (String staticSuffix : GatewayConstant.STATIC_SUFFIX) {
+            if (uri.endsWith(staticSuffix)) {
+                return;
+            }
+        }
+        request = addHeader(request);
         chain.doFilter(request, response);
     }
 
