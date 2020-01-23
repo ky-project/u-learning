@@ -19,7 +19,7 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     VERIFY_CODE_TIMEOUT(HttpStatus.BAD_REQUEST,"验证码已过期"),
     LOGIN_PASSWORD_ERROR(HttpStatus.BAD_REQUEST,"密码错误"),
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED,"请先登录"),
-    INSUFFICIENT_PERMISSION(HttpStatus.FORBIDDEN,"权限不足"),
+    INSUFFICIENT_PERMISSION(HttpStatus.FORBIDDEN,"权限不足!"),
     REQUEST_PATH_NOT_REGISTER(HttpStatus.BAD_REQUEST, "访问路径非法!"),
     AUTHORIZED_FAILURE(HttpStatus.UNAUTHORIZED,"认证失败")
     ;

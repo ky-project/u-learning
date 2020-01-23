@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.filter;
 
+import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.ky.ulearning.gateway.common.exception.JwtTokenException;
@@ -7,6 +8,7 @@ import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
+import com.ky.ulearning.gateway.config.SecurityConfig;
 import com.sun.xml.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,11 +38,6 @@ import java.net.URLDecoder;
 @Slf4j
 @Component
 public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
-    /**
-     * 不需要过滤的url
-     */
-    private final static String[] NOT_FILTER_URL = {"/auth/login", "/auth/logout", "/auth/vCode"};
-
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -66,11 +63,10 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        for (String chainUri : NOT_FILTER_URL) {
-            if (uri.contains(chainUri)) {
-                chain.doFilter(request, response);
-                return;
-            }
+        //根据security配置类放行patterns来放行uri
+        if (UrlUtil.matchUri(uri, SecurityConfig.RELEASE_PATTERNS)) {
+            chain.doFilter(request, response);
+            return;
         }
 
         //获取请求头

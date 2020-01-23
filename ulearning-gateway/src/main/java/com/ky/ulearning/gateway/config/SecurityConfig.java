@@ -30,6 +30,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String[] RELEASE_PATTERNS = {
+            //静态资源
+            "/*.html", "/*.ico", "/**/*.html", "/**/*.css", "/**/*.js", "/**/*.ico", "/**/*.png", "/**/*.svg",
+            //认证相关接口
+            "/auth/login", "/auth/logout", "/auth/logout/success", "/auth/vCode",
+            //swagger接口
+            "/swagger-resources/**", "/webjars/**", "/*/v2/api-docs", "/v2/api-docs",
+            //监控接口
+            "/actuator/**"
+    };
+
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -97,33 +108,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // 过滤请求
                 .authorizeRequests()
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/*.html",
-                        "/*.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/**/*.ico",
-                        "/**/*.png",
-                        "/**/*.svg"
-                ).anonymous()
-
-                .antMatchers(HttpMethod.POST, "/auth/login").anonymous()
-                .antMatchers("/auth/logout").anonymous()
-                .antMatchers("/auth/logout/success").anonymous()
-                .antMatchers("/auth/vCode").anonymous()
-
-                // swagger start
-                .antMatchers("/swagger-resources/**").anonymous()
-                .antMatchers("/webjars/**").anonymous()
-                .antMatchers("/*/v2/api-docs").anonymous()
-                .antMatchers("/v2/api-docs").anonymous()
-                // swagger end
-
-                //监控
+                //放行patterns
+                .antMatchers(RELEASE_PATTERNS).anonymous()
 //                .antMatchers("/druid/**").anonymous()
-                .antMatchers("/actuator/**").anonymous()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 // 防止iframe 造成跨域

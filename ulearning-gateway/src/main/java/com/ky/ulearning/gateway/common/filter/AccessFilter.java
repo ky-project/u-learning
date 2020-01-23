@@ -51,14 +51,6 @@ public class AccessFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        String uri = request.getRequestURI();
-        //如果为指定的静态资源后缀，放行
-        for (String staticSuffix : GatewayConstant.STATIC_SUFFIX) {
-            if (uri.endsWith(staticSuffix)) {
-                chain.doFilter(request, response);
-                return;
-            }
-        }
         request = addHeader(request);
         chain.doFilter(request, response);
     }
