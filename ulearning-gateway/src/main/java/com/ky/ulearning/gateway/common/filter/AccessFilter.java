@@ -48,12 +48,14 @@ public class AccessFilter extends OncePerRequestFilter {
         String tokenHeader = request.getHeader(gatewayConfigParameters.getTokenHeader());
         String refreshTokenHeader = request.getHeader(gatewayConfigParameters.getRefreshTokenHeader());
         if (StringUtil.isNotEmpty(tokenHeader) && StringUtil.isNotEmpty(refreshTokenHeader)) {
+            chain.doFilter(request, response);
             return;
         }
         String uri = request.getRequestURI();
         //如果为指定的静态资源后缀，放行
         for (String staticSuffix : GatewayConstant.STATIC_SUFFIX) {
             if (uri.endsWith(staticSuffix)) {
+                chain.doFilter(request, response);
                 return;
             }
         }
