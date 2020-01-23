@@ -21,3 +21,4 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://www.darren1112.com:14001/eureka/
+    registry-fetch-interval-seconds: 5
