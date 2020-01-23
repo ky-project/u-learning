@@ -1,14 +1,15 @@
 package com.ky.ulearning.gateway.config;
 
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.filter.AccessFilter;
 import com.ky.ulearning.gateway.common.filter.JwtAuthorizationTokenFilter;
+import com.ky.ulearning.gateway.common.filter.PermissionFilter;
 import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationEntryPoint;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -30,17 +31,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    public static final String[] RELEASE_PATTERNS = {
-            //静态资源
-            "/*.html", "/*.ico", "/**/*.html", "/**/*.css", "/**/*.js", "/**/*.ico", "/**/*.png", "/**/*.svg",
-            //认证相关接口
-            "/auth/login", "/auth/logout", "/auth/logout/success", "/auth/vCode",
-            //swagger接口
-            "/swagger-resources/**", "/webjars/**", "/*/v2/api-docs", "/v2/api-docs",
-            //监控接口
-            "/actuator/**"
-    };
-
     @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -55,6 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AccessFilter accessFilter;
+
+    @Autowired
+    private PermissionFilter permissionFilter;
+
+    @Autowired
+    private GatewayConfigParameters gatewayConfigParameters;
 
     /**
      * 加载全局认证配置
@@ -109,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 过滤请求
                 .authorizeRequests()
                 //放行patterns
-                .antMatchers(RELEASE_PATTERNS).anonymous()
+                .antMatchers(gatewayConfigParameters.getAuthenticateReleasePatterns()).anonymous()
 //                .antMatchers("/druid/**").anonymous()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
@@ -119,6 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.addFilterBefore(jwtAuthorizationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(accessFilter, JwtAuthorizationTokenFilter.class)
+                .addFilterAfter(permissionFilter, JwtAuthorizationTokenFilter.class)
                 .formLogin().failureHandler(jwtAuthenticationFailureHandler);
     }
 }

@@ -32,11 +32,21 @@ public class JwtAuthenticationFailureHandler implements AuthenticationFailureHan
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         log.error("系统捕捉AuthenticationException异常并处理 ==> " + exception.getMessage());
         String message = StringUtil.isContainChinese(exception.getMessage()) ? exception.getMessage() : null;
-        JsonResult jsonResult = JsonResult.buildErrorMsg(HttpStatus.UNAUTHORIZED.value(),
-                Optional.ofNullable(message).orElse(GatewayErrorCodeEnum.AUTHORIZED_FAILURE.getMessage()));
+        JsonResult jsonResult;
+        //错误类型
+        if (StringUtil.isNotEmpty(message) && message.equals(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION.getMessage())) {
+            //权限不足
+            jsonResult = JsonResult.buildErrorMsg(HttpStatus.FORBIDDEN.value(),
+                    GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION.getMessage());
+            response.setStatus(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION.getCode());
+        } else {
+            //未登录
+            jsonResult = JsonResult.buildErrorMsg(HttpStatus.UNAUTHORIZED.value(),
+                    Optional.ofNullable(message).orElse(GatewayErrorCodeEnum.AUTHORIZED_FAILURE.getMessage()));
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        }
         String jsonString = JsonUtil.toJsonString(jsonResult);
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         PrintWriter out = response.getWriter();
         out.write(jsonString);
         out.close();

@@ -64,7 +64,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         String uri = request.getRequestURI();
         //根据security配置类放行patterns来放行uri
-        if (UrlUtil.matchUri(uri, SecurityConfig.RELEASE_PATTERNS)) {
+        if (UrlUtil.matchUri(uri, gatewayConfigParameters.getAuthenticateReleasePatterns())) {
             chain.doFilter(request, response);
             return;
         }

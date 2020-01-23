@@ -2,12 +2,10 @@ package com.ky.ulearning.gateway.common.filter;
 
 import com.ky.ulearning.common.core.utils.MutableHttpServletRequest;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.sun.xml.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 

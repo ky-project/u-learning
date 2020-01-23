@@ -21,7 +21,7 @@ import java.util.Optional;
 
 /**
  * @author luyuhao
- * @date 2019/12/6 9:19
+ * @since 2019/12/6 9:19
  */
 @Slf4j
 @RestControllerAdvice
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity handleBaseException(BaseException e) {
         String message = StringUtil.isContainChinese(e.getMessage()) ? e.getMessage() : null;
-        return ResponseEntityUtil.badRequest(JsonResult.buildErrorMsg(e.getStatus(),
+        return ResponseEntityUtil.custom(HttpStatus.resolve(e.getStatus()), JsonResult.buildErrorMsg(e.getStatus(),
                 Optional.ofNullable(message).orElse(MicroErrorCodeEnum.OPERATE_ERROR.getMessage())));
     }
 
