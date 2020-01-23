@@ -1,14 +1,15 @@
 package com.ky.ulearning.gateway.config;
 
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.filter.AccessFilter;
 import com.ky.ulearning.gateway.common.filter.JwtAuthorizationTokenFilter;
+import com.ky.ulearning.gateway.common.filter.PermissionFilter;
 import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationEntryPoint;
 import com.ky.ulearning.gateway.common.security.JwtAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -44,6 +45,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AccessFilter accessFilter;
+
+    @Autowired
+    private PermissionFilter permissionFilter;
+
+    @Autowired
+    private GatewayConfigParameters gatewayConfigParameters;
 
     /**
      * 加载全局认证配置
@@ -97,33 +104,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // 过滤请求
                 .authorizeRequests()
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/*.html",
-                        "/*.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/**/*.ico",
-                        "/**/*.png",
-                        "/**/*.svg"
-                ).anonymous()
-
-                .antMatchers(HttpMethod.POST, "/auth/login").anonymous()
-                .antMatchers("/auth/logout").anonymous()
-                .antMatchers("/auth/logout/success").anonymous()
-                .antMatchers("/auth/vCode").anonymous()
-
-                // swagger start
-                .antMatchers("/swagger-resources/**").anonymous()
-                .antMatchers("/webjars/**").anonymous()
-                .antMatchers("/*/v2/api-docs").anonymous()
-                .antMatchers("/v2/api-docs").anonymous()
-                // swagger end
-
-                //监控
+                //放行patterns
+                .antMatchers(gatewayConfigParameters.getAuthenticateReleasePatterns()).anonymous()
 //                .antMatchers("/druid/**").anonymous()
-                .antMatchers("/actuator/**").anonymous()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 // 防止iframe 造成跨域
@@ -132,6 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         httpSecurity.addFilterBefore(jwtAuthorizationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(accessFilter, JwtAuthorizationTokenFilter.class)
+                .addFilterAfter(permissionFilter, JwtAuthorizationTokenFilter.class)
                 .formLogin().failureHandler(jwtAuthenticationFailureHandler);
     }
 }

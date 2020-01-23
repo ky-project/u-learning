@@ -2,6 +2,7 @@ package com.ky.ulearning.gateway.common.constant;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Getter
+@RefreshScope
 public class GatewayConfigParameters {
 
     @Value("${jwt.secret}")
@@ -36,6 +38,11 @@ public class GatewayConfigParameters {
     @Value("${ulearning.student-patterns}")
     private String[] studentPatterns;
 
-    @Value("${ulearning.release-paths}")
-    private String[] releasePaths;
+    /** 无需进行权限校验的路径 */
+    @Value("${ulearning.permission-release-patterns}")
+    private String[] permissionReleasePatterns;
+
+    /** 无需登录验证的路径 */
+    @Value("${ulearning.authenticate-release-patterns}")
+    private String[] authenticateReleasePatterns;
 }

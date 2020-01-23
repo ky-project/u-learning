@@ -50,7 +50,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("U-Learning 接口文档")
-                .version("0.1")
+                .version("1.0.0")
                 .build();
     }
 

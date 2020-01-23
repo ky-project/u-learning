@@ -2,12 +2,10 @@ package com.ky.ulearning.gateway.common.filter;
 
 import com.ky.ulearning.common.core.utils.MutableHttpServletRequest;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import com.sun.xml.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -48,14 +46,8 @@ public class AccessFilter extends OncePerRequestFilter {
         String tokenHeader = request.getHeader(gatewayConfigParameters.getTokenHeader());
         String refreshTokenHeader = request.getHeader(gatewayConfigParameters.getRefreshTokenHeader());
         if (StringUtil.isNotEmpty(tokenHeader) && StringUtil.isNotEmpty(refreshTokenHeader)) {
+            chain.doFilter(request, response);
             return;
-        }
-        String uri = request.getRequestURI();
-        //如果为指定的静态资源后缀，放行
-        for (String staticSuffix : GatewayConstant.STATIC_SUFFIX) {
-            if (uri.endsWith(staticSuffix)) {
-                return;
-            }
         }
         request = addHeader(request);
         chain.doFilter(request, response);

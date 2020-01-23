@@ -34,5 +34,7 @@ ulearning:
   admin-patterns: ${zuul.routes.monitor-manage.path}, ${zuul.routes.system-manage.path}
   teacher-patterns:
   student-patterns:
-  # 放行uri
-  release-paths: /*/v2/api-docs
+  # 无需进行权限校验的路径
+  permission-release-patterns: /auth/**
+  # 无需登录验证的路径
+  authenticate-release-patterns: /*.html, /webjars/**, /**/*.html, /**/*.css, /**/*.js, /**/*.ico, /**/*.png, /**/*.svg, /swagger-resources, /v2/api-docs, /auth/login, /auth/logout, /auth/logout/success, /auth/vCode, /actuator/**
