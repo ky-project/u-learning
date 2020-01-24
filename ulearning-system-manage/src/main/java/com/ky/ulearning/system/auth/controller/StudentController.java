@@ -48,8 +48,8 @@ public class StudentController {
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(StudentDto studentDto) {
         ValidatorBuilder.build()
-                .on(StringUtil.isEmpty(studentDto.getStuNumber()), SystemErrorCodeEnum.STU_NUMBER_CONNOT_BE_NULL)
-                .on(StringUtil.isEmpty(studentDto.getStuName()), SystemErrorCodeEnum.STU_NAME_CONNOT_BE_NULL)
+                .on(StringUtil.isEmpty(studentDto.getStuNumber()), SystemErrorCodeEnum.STU_NUMBER_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(studentDto.getStuName()), SystemErrorCodeEnum.STU_NAME_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         //获取操作者的编号
         String userNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);

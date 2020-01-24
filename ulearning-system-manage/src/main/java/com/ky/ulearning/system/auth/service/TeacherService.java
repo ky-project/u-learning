@@ -65,7 +65,15 @@ public interface TeacherService {
 
     /**
      * 查询所有教师信息
+     *
      * @return 教师vo对象
      */
     List<TeacherVo> getAll();
+
+    /**
+     * 更新登录，不更新更新时间
+     *
+     * @param teacherDto 待更新的教师对象
+     */
+    void updateLastLoginTime(TeacherDto teacherDto);
 }

@@ -138,6 +138,21 @@ public class TeacherController {
         return ResponseEntityUtil.ok(JsonResult.buildData(userContext));
     }
 
+    /**
+     * 登录成功更新登录时间但不更新更新日期
+     */
+    @ApiOperation(value = "", hidden = true)
+    @PostMapping("/loginUpdate")
+    public ResponseEntity<JsonResult> updateLoginTime(TeacherDto teacherDto){
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teacherDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teacherDto.getUpdateTime()), SystemErrorCodeEnum.UPATE_TIME_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        teacherService.updateLastLoginTime(teacherDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
     @Log("根据工号查询教师")
     @ApiOperation("根据工号查询教师")
     @PermissionName(source = "teacher:getByTeaNumber", name = "根据工号查询教师", group = "教师管理")

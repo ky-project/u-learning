@@ -97,4 +97,11 @@ public interface TeacherDao {
      * @return Vo对象集合
      */
     List<TeacherVo> getAllVo();
+
+    /**
+     * 更新上次登录时间
+     *
+     * @param teacherDto 待更新对象
+     */
+    void updateLastLoginTime(TeacherDto teacherDto);
 }
