@@ -109,4 +109,11 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
     public List<TeacherVo> getAll() {
         return teacherDao.getAllVo();
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateLastLoginTime(TeacherDto teacherDto) {
+        teacherDao.updateLastLoginTime(teacherDto);
+    }
 }

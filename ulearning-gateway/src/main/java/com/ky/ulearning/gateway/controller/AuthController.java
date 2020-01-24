@@ -218,7 +218,7 @@ public class AuthController {
             teacherEntity.put("id", jwtAccount.getId());
             teacherEntity.put("lastLoginTime", new Date());
             teacherEntity.put("updateTime", jwtAccount.getUpdateTime());
-            systemManageRemoting.update(teacherEntity);
+            systemManageRemoting.updateLoginTime(teacherEntity);
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //TODO 更新学生登录时间
         }

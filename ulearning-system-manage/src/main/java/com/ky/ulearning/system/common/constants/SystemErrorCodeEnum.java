@@ -31,11 +31,14 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     TEACHING_TASK_ALIAS_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学任务别称不能为空"),
     TERM_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学期不能为空"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
-    STU_NUMBER_CONNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学号不能为空"),
-    STU_NAME_CONNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名"),
+    STU_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学号不能为空"),
+    STU_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名不能为空!"),
+    ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不能为空!"),
+    LAST_LOGIN_TIME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "上次登录时间不能为空"),
+    UPATE_TIME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "更新时间不能为空"),
+
 
     TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师不存在!"),
-    ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不可为空!"),
     TEA_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师id不存在"),
 
     ;
