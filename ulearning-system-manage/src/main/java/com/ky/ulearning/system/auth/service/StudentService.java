@@ -44,4 +44,19 @@ public interface StudentService {
      * @param updateBy 更新者
      */
     void delete(Long id, String updateBy);
+
+    /**
+     * 根据学号获取学生信息
+     *
+     * @param stuNumber 学号
+     * @return 返回学生信息
+     */
+    StudentEntity getByStuNumber(String stuNumber);
+
+    /**
+     * 更新上次登录时间，不更新更新时间
+     *
+     * @param studentDto 待更新的学生对象
+     */
+    void updateLastLoginTime(StudentDto studentDto);
 }

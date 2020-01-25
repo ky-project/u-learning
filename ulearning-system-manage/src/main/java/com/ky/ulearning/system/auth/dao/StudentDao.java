@@ -83,4 +83,11 @@ public interface StudentDao {
      * @param updateBy 更新者
      */
     void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
+
+    /**
+     * 更新上次登录时间，不更新更新时间
+     *
+     * @param studentDto 待更新的学生对象
+     */
+    void updateLastLoginTime(StudentDto studentDto);
 }

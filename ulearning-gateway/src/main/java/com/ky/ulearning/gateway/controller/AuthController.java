@@ -27,6 +27,7 @@ import com.ky.ulearning.spi.common.dto.LoginUser;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
+import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -98,7 +99,7 @@ public class AuthController {
             //教师身份
             return ResponseEntityUtil.ok(JsonResult.buildData(jwtAccount.getPermissions()));
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
-            //TODO 学生身份
+            //学生身份
             return ResponseEntityUtil.ok(JsonResult.buildMsg("学生无权限信息"));
         } else {
             return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
@@ -118,7 +119,7 @@ public class AuthController {
             //教师身份
             return ResponseEntityUtil.ok(JsonResult.buildData(jwtAccount.getRoles()));
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
-            //TODO 学生身份
+            //学生身份
             return ResponseEntityUtil.ok(JsonResult.buildMsg("学生无角色信息"));
         } else {
             return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
@@ -140,8 +141,9 @@ public class AuthController {
             TeacherEntity teacher = systemManageRemoting.getById(jwtAccount.getId()).getData();
             return ResponseEntityUtil.ok(JsonResult.buildData(teacher));
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
-            //TODO 学生身份
-            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+            //学生身份
+            StudentEntity student = systemManageRemoting.studentGetById(jwtAccount.getId()).getData();
+            return ResponseEntityUtil.ok(JsonResult.buildData(student));
         } else {
             return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum((GatewayErrorCodeEnum.ACCOUNT_ERROR)));
         }
@@ -156,7 +158,7 @@ public class AuthController {
     @ApiOperation(value = "", hidden = true)
     @GetMapping(value = "/logout/success")
     public ResponseEntity logoutSuccess() {
-        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(null, "安全退出"));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("安全退出"));
     }
 
     /**
@@ -213,14 +215,16 @@ public class AuthController {
         map.put("refreshToken", refreshToken);
 
         //根据角色登录日期更新
+        Map<String, Object> updateMap = new HashMap<>(16);
+        updateMap.put("id", jwtAccount.getId());
+        updateMap.put("lastLoginTime", new Date());
+        updateMap.put("updateTime", jwtAccount.getUpdateTime());
         if (MicroConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())) {
-            Map<String, Object> teacherEntity = new HashMap<>(16);
-            teacherEntity.put("id", jwtAccount.getId());
-            teacherEntity.put("lastLoginTime", new Date());
-            teacherEntity.put("updateTime", jwtAccount.getUpdateTime());
-            systemManageRemoting.updateLoginTime(teacherEntity);
+            //更新教师登录时间
+            systemManageRemoting.updateLoginTime(updateMap);
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
-            //TODO 更新学生登录时间
+            //更新学生登录时间
+            systemManageRemoting.studentUpdateLoginTime(updateMap);
         }
 
         //登录日志
@@ -288,10 +292,7 @@ public class AuthController {
         logEntity.setUpdateBy("system");
 
         Map<String, Object> logMap =
-                JSONObject.parseObject(JSON.toJSONString(logEntity,
-                        SerializerFeature.WriteNullStringAsEmpty,
-                        SerializerFeature.WriteNullNumberAsZero,
-                        SerializerFeature.WriteMapNullValue));
+                JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
 
         monitorManageRemoting.add(logMap);
     }

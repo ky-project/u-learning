@@ -72,4 +72,17 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public void delete(Long id, String updateBy) {
         studentDao.updateValidById(id, 0, updateBy);
     }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public StudentEntity getByStuNumber(String stuNumber) {
+        return studentDao.getByStuNumber(stuNumber);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateLastLoginTime(StudentDto studentDto) {
+        studentDao.updateLastLoginTime(studentDto);
+    }
 }

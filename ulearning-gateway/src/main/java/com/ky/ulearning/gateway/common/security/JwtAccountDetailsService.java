@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,8 +35,8 @@ public class JwtAccountDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //教师账号
         UserContext teacher = teacherLogin(username);
-        //TODO 学生登录
-        UserContext student = null;
+        //学生登录
+        UserContext student = studentLogin(username);
         //账号都不存在时
         if (teacher == null && student == null) {
             throw new BadRequestException(GatewayErrorCodeEnum.USER_NOT_EXISTS);
@@ -48,7 +49,7 @@ public class JwtAccountDetailsService implements UserDetailsService {
         //判断是教师还是学生
         if (teacher != null) {
             //教师无任何角色时
-            if (teacher.getRoles() == null) {
+            if (CollectionUtils.isEmpty(teacher.getRoles())) {
                 throw new BadRequestException(GatewayErrorCodeEnum.TEACHER_HAS_NO_ROLE);
             }
             jwtAccount = userContextJwtAccountMapper.toDto(teacher);
@@ -59,8 +60,8 @@ public class JwtAccountDetailsService implements UserDetailsService {
                         .collect(Collectors.toList()));
             }
         } else {
-            //TODO
-            jwtAccount = userContextJwtAccountMapper.toDto(teacher);
+            jwtAccount = userContextJwtAccountMapper.toDto(student);
+            jwtAccount.setAuthorities(Collections.emptyList());
         }
         return jwtAccount;
     }
@@ -74,7 +75,25 @@ public class JwtAccountDetailsService implements UserDetailsService {
     private UserContext teacherLogin(String teaNumber) {
         //获取教师信息
         try {
-            JsonResult<UserContext> userContextJsonResult = systemManageRemoting.login(teaNumber);
+            JsonResult<UserContext> userContextJsonResult = systemManageRemoting.teacherLogin(teaNumber);
+            return Optional.ofNullable(userContextJsonResult)
+                    .map(JsonResult::getData)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 登录学生账号并获取信息
+     *
+     * @param stuNumber 登录的学生账号 - 学号
+     * @return 返回登录账号信息
+     */
+    private UserContext studentLogin(String stuNumber) {
+        //获取教师信息
+        try {
+            JsonResult<UserContext> userContextJsonResult = systemManageRemoting.studentLogin(stuNumber);
             return Optional.ofNullable(userContextJsonResult)
                     .map(JsonResult::getData)
                     .orElse(null);
