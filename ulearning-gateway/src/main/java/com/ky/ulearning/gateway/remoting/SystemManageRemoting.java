@@ -3,10 +3,13 @@ package com.ky.ulearning.gateway.remoting;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
+import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -28,16 +31,16 @@ public interface SystemManageRemoting {
      * @return 登录的账号信息
      */
     @PostMapping("/teacher/login")
-    JsonResult<UserContext> login(@RequestParam("teaNumber") String teaNumber);
+    JsonResult<UserContext> teacherLogin(@RequestParam("teaNumber") String teaNumber);
 
     /**
-     * 更新教师信息
+     * 更新教师登录信息
      *
-     * @param teacherEntity 待更新的教师信息
+     * @param teacherDto 待更新的教师登录信息
      * @return 教师信息
      */
     @PostMapping("/teacher/loginUpdate")
-    JsonResult<TeacherDto> updateLoginTime(@RequestParam Map<String, Object> teacherEntity);
+    JsonResult updateLoginTime(@RequestParam Map<String, Object> teacherDto);
 
     /**
      * 根据id查询教师信息
@@ -47,4 +50,33 @@ public interface SystemManageRemoting {
      */
     @GetMapping("/teacher/getById")
     JsonResult<TeacherEntity> getById(@RequestParam("id") Long id);
+
+    /**
+     * ------------------------ StudentController ------------------------
+     * 教师登录
+     *
+     * @param stuNumber 学生number
+     * @return 登录的账号信息
+     */
+    @PostMapping("/student/login")
+    JsonResult<UserContext> studentLogin(@RequestParam("stuNumber") String stuNumber);
+
+    /**
+     * 更新学生登录信息
+     *
+     * @param studentDto 待更新的学生登录信息
+     * @return 学生信息
+     */
+    @PostMapping("/student/loginUpdate")
+    JsonResult<TeacherDto> studentUpdateLoginTime(@RequestParam Map<String, Object> studentDto);
+
+    /**
+     * 根据id查询学生信息
+     *
+     * @param id 学生id
+     * @return 学生
+     */
+    @GetMapping("/student/getById")
+    JsonResult<StudentEntity> studentGetById(@RequestParam("id") Long id);
+
 }

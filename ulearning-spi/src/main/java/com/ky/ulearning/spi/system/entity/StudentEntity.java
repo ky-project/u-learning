@@ -2,6 +2,7 @@ package com.ky.ulearning.spi.system.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ky.ulearning.spi.common.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -35,6 +36,7 @@ public class StudentEntity extends BaseEntity {
 	* 密码
 	*/
     @ApiModelProperty("密码")
+    @JsonIgnore
     private String stuPassword;
 
     /**

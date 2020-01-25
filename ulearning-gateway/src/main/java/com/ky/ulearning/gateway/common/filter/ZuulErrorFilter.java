@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.ERROR_TYPE;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SEND_ERROR_FILTER_ORDER;
 
@@ -63,7 +66,16 @@ public class ZuulErrorFilter extends SendErrorFilter {
         ctx.setSendZuulResponse(false);
         ctx.setResponseStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         ctx.getResponse().setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        ctx.setResponseBody(JsonUtil.toJsonString(JsonResult.buildErrorEnum(MicroErrorCodeEnum.SERVER_DOWN)));
+        PrintWriter writer = null;
+        try {
+            writer = ctx.getResponse().getWriter();
+            writer.print(JsonUtil.toJsonString(JsonResult.buildErrorEnum(MicroErrorCodeEnum.SERVER_DOWN)));
+        } catch (IOException e) {
+            log.error("设置errorInfo异常");
+        }
+        if (writer != null) {
+            writer.close();
+        }
     }
 
     private RequestContext getRequestContext() {

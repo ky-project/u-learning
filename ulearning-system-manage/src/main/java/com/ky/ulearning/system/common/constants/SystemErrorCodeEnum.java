@@ -40,6 +40,7 @@ public enum SystemErrorCodeEnum implements BaseEnum {
 
     TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师不存在!"),
     TEA_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师id不存在"),
+    STUDENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "学生不存在!"),
 
     ;
 

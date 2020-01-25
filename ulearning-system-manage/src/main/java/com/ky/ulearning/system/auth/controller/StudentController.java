@@ -12,6 +12,7 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
@@ -21,12 +22,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
 
 /**
  * @author luyuhao
@@ -114,5 +116,39 @@ public class StudentController {
         //TODO 设置初始头像url
         studentService.save(studentDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加学生成功"));
+    }
+
+    @ApiOperation(value = "", hidden = true)
+    @PostMapping("/login")
+    public ResponseEntity<JsonResult<UserContext>> studentLogin(String stuNumber) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(stuNumber), SystemErrorCodeEnum.STU_NUMBER_CANNOT_BE_NULL);
+        //获取学生信息
+        StudentEntity studentEntity = studentService.getByStuNumber(stuNumber);
+        ValidateHandler.checkParameter(studentEntity == null, SystemErrorCodeEnum.STUDENT_NOT_EXISTS);
+        //初始化用户context,无角色和权限信息
+        UserContext userContext = new UserContext()
+                .setId(studentEntity.getId())
+                .setSysRole(MicroConstant.SYS_ROLE_STUDENT)
+                .setUsername(studentEntity.getStuNumber())
+                .setPassword(studentEntity.getStuPassword())
+                .setUpdateTime(studentEntity.getUpdateTime())
+                .setRoles(Collections.emptyList())
+                .setPermissions(Collections.emptyList());
+        return ResponseEntityUtil.ok(JsonResult.buildData(userContext));
+    }
+
+    /**
+     * 登录成功更新登录时间但不更新更新日期
+     */
+    @ApiOperation(value = "", hidden = true)
+    @PostMapping("/loginUpdate")
+    public ResponseEntity<JsonResult> loginUpdate(StudentDto studentDto){
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(studentDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(studentDto.getUpdateTime()), SystemErrorCodeEnum.UPATE_TIME_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        studentService.updateLastLoginTime(studentDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 }

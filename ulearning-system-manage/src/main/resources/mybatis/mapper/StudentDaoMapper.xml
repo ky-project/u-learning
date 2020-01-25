@@ -21,23 +21,23 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id,
-        stu_number,
-        stu_name,
-        stu_password,
-        stu_gender,
-        stu_dept,
-        stu_class,
-        stu_phone,
-        stu_email,
-        stu_photo,
-        last_login_time,
-        `valid`,
-        memo,
-        create_time,
-        create_by,
-        update_time,
-        update_by
+            id,
+            stu_number,
+            stu_name,
+            stu_password,
+            stu_gender,
+            stu_dept,
+            stu_class,
+            stu_phone,
+            stu_email,
+            stu_photo,
+            last_login_time,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
     </sql>
     <!--根据id获取学生信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -187,5 +187,13 @@
             update_time = now(),
             update_by   = #{updateBy}
         WHERE id = #{id}
+    </update>
+    <!--更新上次登录时间，不更新更新时间-->
+    <update id="updateLastLoginTime" parameterType="com.ky.ulearning.spi.system.dto.StudentDto">
+        UPDATE u_student
+        SET last_login_time = #{lastLoginTime},
+            update_time     = #{updateTime}
+        WHERE valid = 1
+          AND id = #{id}
     </update>
 </mapper>
