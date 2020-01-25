@@ -1,7 +1,8 @@
 package com.ky.ulearning.common.core.redis;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.ky.ulearning.common.core.utils.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 
@@ -11,12 +12,23 @@ import java.nio.charset.Charset;
  * Value 序列化
  *
  * @author luyuhao
- * @date 19/12/06 20:18
+ * @since 19/12/06 20:18
  */
+@Slf4j
 public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
 
 
-    public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+
+    private static final SerializerFeature[] FEATURES = {
+            SerializerFeature.SkipTransientField,
+            SerializerFeature.WriteDateUseDateFormat,
+            SerializerFeature.WriteMapNullValue,
+            SerializerFeature.WriteNullListAsEmpty,
+            SerializerFeature.WriteNullBooleanAsFalse,
+            SerializerFeature.WriteNullStringAsEmpty,
+            SerializerFeature.WriteClassName
+    };
 
     private Class<T> clazz;
 
@@ -30,7 +42,7 @@ public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
         if (t == null) {
             return new byte[0];
         }
-        return JSON.toJSONString(t, SerializerFeature.WriteClassName).getBytes(DEFAULT_CHARSET);
+        return JsonUtil.toJsonString(t, FEATURES).getBytes(DEFAULT_CHARSET);
     }
 
     @Override
@@ -39,6 +51,6 @@ public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
             return null;
         }
         String str = new String(bytes, DEFAULT_CHARSET);
-        return (T) JSON.parseObject(str, clazz);
+        return JsonUtil.parseObject(str, clazz);
     }
 }

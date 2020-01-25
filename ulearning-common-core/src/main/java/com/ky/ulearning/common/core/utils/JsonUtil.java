@@ -33,6 +33,16 @@ public class JsonUtil {
     }
 
     /**
+     * 将Object 转为JsonString
+     *
+     * @param object 待转换的对象
+     * @return 返回json字符串
+     */
+    public static String toJsonString(Object object, SerializerFeature... features) {
+        return JSONObject.toJSONString(object, features);
+    }
+
+    /**
      * String -> T
      */
     public static <T> T parseObject(String json, Class<T> clazz){
