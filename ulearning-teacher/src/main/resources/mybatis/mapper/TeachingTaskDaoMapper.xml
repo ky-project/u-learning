@@ -2,6 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ky.ulearning.teacher.dao.TeachingTaskDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.TeachingTaskEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="tea_id" jdbcType="BIGINT" property="teaId"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <collection property="teacher" resultMap="com.ky.ulearning.teacher.dao.TeacherDao.BaseResultMap"
+                    ofType="com.ky.ulearning.spi.system.entity.TeacherEntity"/>
+        <collection property="course" resultMap="com.ky.ulearning.teacher.dao.CourseDao.BaseResultMap"
+                    ofType="com.ky.ulearning.spi.system.entity.CourseEntity"/>
+    </resultMap>
     <resultMap id="CourseTeachingTaskDtoResultMap" type="com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="course_id" jdbcType="BIGINT" property="courseId"/>
@@ -18,6 +35,19 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            course_id,
+            tea_id,
+            teaching_task_alias,
+            term,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
     <!--分页查询课程&教学任务信息-->
     <select id="listPage" resultMap="CourseTeachingTaskDtoResultMap">
         SELECT utt.id, utt.course_id, utt.tea_id, utt.teaching_task_alias, utt.term, utt.valid, utt.memo,
@@ -72,4 +102,28 @@
             AND uc.course_credit = #{courseTeachingTaskDto.courseCredit}
         </if>
     </select>
+    <!--根据教师id、课程id、学期和别称查询教学任务信息-->
+    <select id="getByTeaIdAndCourseIdAndTermAndAlias" resultMap="BaseResultMap"
+            parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND tea_id = #{teaId}
+        AND course_id = #{courseId}
+        AND teaching_task_alias = #{teachingTaskAlias}
+        AND term = #{term}
+    </select>
+    <!--插入教学任务信息-->
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto" useGeneratedKeys="true">
+        insert into u_teaching_task (course_id, tea_id, teaching_task_alias,
+                                     term, `valid`, memo,
+                                     create_time, create_by, update_time,
+                                     update_by)
+        values (#{courseId,jdbcType=BIGINT}, #{teaId,jdbcType=BIGINT}, #{teachingTaskAlias,jdbcType=VARCHAR},
+                #{term,jdbcType=VARCHAR}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
 </mapper>

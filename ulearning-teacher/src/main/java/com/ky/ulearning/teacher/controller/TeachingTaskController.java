@@ -7,9 +7,20 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.utils.TermUtil;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.TermVo;
+import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
+import com.ky.ulearning.teacher.common.constants.TeacherConfigParameters;
+import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
+import com.ky.ulearning.teacher.service.CourseService;
+import com.ky.ulearning.teacher.service.TeacherService;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,8 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 教学任务controller
@@ -36,6 +50,15 @@ public class TeachingTaskController extends BaseController {
     @Autowired
     private TeachingTaskService teachingTaskService;
 
+    @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private TeacherService teacherService;
+
+    @Autowired
+    private TeacherConfigParameters teacherConfigParameters;
+
     @Log("教师-分页查询教学任务")
     @ApiOperation(value = "分页查询教学任务")
     @ApiOperationSupport(ignoreParameters = {"id", "courseId", "teaId"})
@@ -47,4 +70,36 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
+    @Log("教师-获取学期集合")
+    @ApiOperation(value = "获取学期集合")
+    @GetMapping("/getTermList")
+    public ResponseEntity<JsonResult<List<TermVo>>> getTermList() {
+        //获取系统配置前preYears后nextYears的学期信息
+        Integer preYears = teacherConfigParameters.getPreYears();
+        Integer nextYears = teacherConfigParameters.getNextYears();
+        List<TermVo> termList = TermUtil.getTermList(preYears, nextYears);
+
+        return ResponseEntityUtil.ok(JsonResult.buildData(termList));
+    }
+
+    @Log("教师-添加教学任务")
+    @ApiOperation(value = "添加教学任务")
+    @ApiOperationSupport(ignoreParameters = {"id", "teaId"})
+    @PostMapping("/save")
+    public ResponseEntity<JsonResult> save(TeachingTaskDto teachingTaskDto) {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(teachingTaskDto.getCourseId()), TeacherErrorCodeEnum.COURSE_ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teachingTaskDto.getTeachingTaskAlias()), TeacherErrorCodeEnum.TEACHING_TASK_ALIAS_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teachingTaskDto.getTerm()), TeacherErrorCodeEnum.TERM_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        TeacherEntity teacherEntity = teacherService.getByTeaNumber(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        //教师number是否存在
+        ValidateHandler.checkParameter(teacherEntity == null, TeacherErrorCodeEnum.TEA_NUMBER_NOT_EXISTS);
+        //课程id是否存在
+        ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, TeacherErrorCodeEnum.COURSE_ID_NOT_EXISTS);
+        teachingTaskDto.setTeaId(teacherEntity.getId());
+        //插入记录
+        teachingTaskService.insert(teachingTaskDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+    }
 }

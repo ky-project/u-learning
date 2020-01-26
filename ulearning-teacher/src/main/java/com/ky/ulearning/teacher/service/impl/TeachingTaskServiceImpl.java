@@ -1,13 +1,17 @@
 package com.ky.ulearning.teacher.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
+import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
 import com.ky.ulearning.teacher.dao.TeachingTaskDao;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,5 +39,17 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
                 //设置查询结果
                 .setContent(teacherList);
         return setPageBeanProperties(pageBean, pageParam);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void insert(TeachingTaskDto teachingTaskDto) {
+        //判断是否存在相同记录
+        TeachingTaskEntity teachingTaskEntity = teachingTaskDao.getByTeaIdAndCourseIdAndTermAndAlias(teachingTaskDto);
+        if (teachingTaskEntity != null) {
+            throw new EntityExistException("教学任务");
+        }
+        teachingTaskDao.insert(teachingTaskDto);
     }
 }

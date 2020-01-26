@@ -11,3 +11,10 @@ jwt:
 #swagger2
 swagger:
   enabled: true
+
+#系统变量
+ulearning:
+  # 显示的学期前n年和后n年
+  term:
+    preyears: 3
+    nextyears: 3

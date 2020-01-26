@@ -2,6 +2,7 @@ package com.ky.ulearning.teacher.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
 
 /**
@@ -17,4 +18,11 @@ public interface TeachingTaskService {
      * @return 返回封装课程&教学任务信息的分页对象
      */
     PageBean<CourseTeachingTaskDto> pageList(PageParam pageParam, CourseTeachingTaskDto courseTeachingTaskDto);
+
+    /**
+     * 插入教学任务信息
+     *
+     * @param teachingTaskDto 教学任务对象
+     */
+    void insert(TeachingTaskDto teachingTaskDto);
 }
