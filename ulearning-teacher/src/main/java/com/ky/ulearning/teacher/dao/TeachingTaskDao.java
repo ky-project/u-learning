@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 教学任务dto
@@ -51,4 +52,18 @@ public interface TeachingTaskDao {
      */
     void insert(TeachingTaskDto teachingTaskDto);
 
+    /**
+     * 更新教学任务信息
+     *
+     * @param teachingTaskDto 教学任务对象
+     */
+    void update(TeachingTaskDto teachingTaskDto);
+
+    /**
+     * 根据教师id查询所有教学任务id集合
+     *
+     * @param teaId 教师id
+     * @return 教学任务id集合
+     */
+    Set<Long> getIdByTeaId(Long teaId);
 }

@@ -87,6 +87,9 @@ public class TeachingTaskController extends BaseController {
         ValidateHandler.checkParameter(teacherService.getById(teachingTaskDto.getTeaId()) == null, SystemErrorCodeEnum.TEA_ID_NOT_EXISTS);
         //课程id是否存在
         ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, SystemErrorCodeEnum.COURSE_ID_NOT_EXISTS);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        teachingTaskDto.setUpdateBy(username);
+        teachingTaskDto.setUpdateBy(username);
         //插入记录
         teachingTaskService.insert(teachingTaskDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));

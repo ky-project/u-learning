@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 教学任务controller
@@ -92,14 +93,41 @@ public class TeachingTaskController extends BaseController {
                 .on(StringUtil.isEmpty(teachingTaskDto.getTeachingTaskAlias()), TeacherErrorCodeEnum.TEACHING_TASK_ALIAS_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teachingTaskDto.getTerm()), TeacherErrorCodeEnum.TERM_CANNOT_BE_NULL)
                 .doValidate().checkResult();
-        TeacherEntity teacherEntity = teacherService.getByTeaNumber(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        String teaNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        TeacherEntity teacherEntity = teacherService.getByTeaNumber(teaNumber);
         //教师number是否存在
         ValidateHandler.checkParameter(teacherEntity == null, TeacherErrorCodeEnum.TEA_NUMBER_NOT_EXISTS);
         //课程id是否存在
         ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, TeacherErrorCodeEnum.COURSE_ID_NOT_EXISTS);
+        //完善相关属性
         teachingTaskDto.setTeaId(teacherEntity.getId());
+        teachingTaskDto.setUpdateBy(teaNumber);
+        teachingTaskDto.setCreateBy(teaNumber);
         //插入记录
         teachingTaskService.insert(teachingTaskDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+    }
+
+    @Log("教师-更新教学任务")
+    @ApiOperation(value = "更新教学任务")
+    @ApiOperationSupport(ignoreParameters = {"teaId"})
+    @PostMapping("/update")
+    public ResponseEntity<JsonResult> update(TeachingTaskDto teachingTaskDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(teachingTaskDto.getId()), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+
+        TeacherEntity teacherEntity = teacherService.getByTeaNumber(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        //教师number是否存在
+        ValidateHandler.checkParameter(teacherEntity == null, TeacherErrorCodeEnum.TEA_NUMBER_NOT_EXISTS);
+        //教学任务id是否可操作
+        Set<Long> teachingTaskIdSet = teachingTaskService.getIdByTeaId(teacherEntity.getId());
+        ValidateHandler.checkParameter(teachingTaskIdSet == null || ! teachingTaskIdSet.contains(teachingTaskDto.getId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_ILLEGAL);
+        //课程id是否存在
+        if (StringUtil.isNotEmpty(teachingTaskDto.getCourseId())) {
+            ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, TeacherErrorCodeEnum.COURSE_ID_NOT_EXISTS);
+        }
+        teachingTaskDto.setTeaId(teacherEntity.getId());
+        teachingTaskDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        teachingTaskService.update(teachingTaskDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 }

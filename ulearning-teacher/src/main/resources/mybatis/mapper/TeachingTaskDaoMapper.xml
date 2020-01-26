@@ -126,4 +126,37 @@
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
                 #{updateBy,jdbcType=VARCHAR})
     </insert>
+    <!--更新教学任务信息-->
+    <update id="update" parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+        update u_teaching_task
+        <set>
+            update_time = now(),
+            <if test="courseId != null">
+                course_id = #{courseId,jdbcType=BIGINT},
+            </if>
+            <if test="teaId != null">
+                tea_id = #{teaId,jdbcType=BIGINT},
+            </if>
+            <if test="teachingTaskAlias != null and teachingTaskAlias != ''">
+                teaching_task_alias = #{teachingTaskAlias,jdbcType=VARCHAR},
+            </if>
+            <if test="term != null and term != ''">
+                term = #{term,jdbcType=VARCHAR},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--根据教师id查询所有教学任务id集合-->
+    <select id="getIdByTeaId" resultType="java.lang.Long" parameterType="java.lang.Long">
+        SELECT id
+        FROM u_teaching_task
+        WHERE valid = 1
+          AND tea_id = #{teaId}
+    </select>
 </mapper>

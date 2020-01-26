@@ -5,6 +5,8 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
 
+import java.util.Set;
+
 /**
  * @author luyuhao
  * @since 20/01/26 16:16
@@ -25,4 +27,19 @@ public interface TeachingTaskService {
      * @param teachingTaskDto 教学任务对象
      */
     void insert(TeachingTaskDto teachingTaskDto);
+
+    /**
+     * 更新教学任务信息
+     *
+     * @param teachingTaskDto 教学任务对象
+     */
+    void update(TeachingTaskDto teachingTaskDto);
+
+    /**
+     * 根据教师id查询所有教学任务id集合
+     *
+     * @param teaId 教师id
+     * @return 教学任务id集合
+     */
+    Set<Long> getIdByTeaId(Long teaId);
 }
