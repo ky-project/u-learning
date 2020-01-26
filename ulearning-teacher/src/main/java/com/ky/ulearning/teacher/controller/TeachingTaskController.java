@@ -42,9 +42,8 @@ public class TeachingTaskController extends BaseController {
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<CourseTeachingTaskDto>>> pageList(PageParam pageParam,
                                                                                 CourseTeachingTaskDto courseTeachingTaskDto) {
-        pageParam = setPageParam(pageParam);
         courseTeachingTaskDto.setTeaNumber(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
-        PageBean<CourseTeachingTaskDto> pageBean = teachingTaskService.pageList(pageParam, courseTeachingTaskDto);
+        PageBean<CourseTeachingTaskDto> pageBean = teachingTaskService.pageList(setPageParam(pageParam), courseTeachingTaskDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 

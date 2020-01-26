@@ -2,6 +2,7 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
@@ -51,7 +52,7 @@ import java.util.stream.Collectors;
 @RestController
 @Api(tags = "教师管理", description = "教师管理接口")
 @RequestMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-public class TeacherController {
+public class TeacherController extends BaseController {
 
     @Autowired
     private TeacherService teacherService;
@@ -102,10 +103,7 @@ public class TeacherController {
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<TeacherEntity>>> pageList(TeacherDto teacherDto,
                                                                         PageParam pageParam) {
-        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
-            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
-        }
-        PageBean<TeacherEntity> pageBean = teacherService.pageTeacherList(teacherDto, pageParam);
+        PageBean<TeacherEntity> pageBean = teacherService.pageTeacherList(teacherDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.build(HttpStatus.OK.value(), "查询成功", pageBean));
     }
 
