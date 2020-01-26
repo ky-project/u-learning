@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.teacher.dao.TeacherDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.system.entity.TeacherEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
+        <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
+        <result column="tea_password" jdbcType="VARCHAR" property="teaPassword"/>
+        <result column="tea_gender" jdbcType="VARCHAR" property="teaGender"/>
+        <result column="tea_dept" jdbcType="VARCHAR" property="teaDept"/>
+        <result column="tea_title" jdbcType="VARCHAR" property="teaTitle"/>
+        <result column="tea_phone" jdbcType="VARCHAR" property="teaPhone"/>
+        <result column="tea_email" jdbcType="VARCHAR" property="teaEmail"/>
+        <result column="tea_photo" jdbcType="VARCHAR" property="teaPhoto"/>
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <resultMap id="TeacherVoResultMap" type="com.ky.ulearning.spi.system.vo.TeacherVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
+        <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
+    </resultMap>
+    <sql id="selectAll">
+        id, tea_number,
+        tea_name, tea_password,
+        tea_gender, tea_dept,
+        tea_title, tea_phone,
+        tea_email, tea_photo,
+        last_login_time, `valid`,
+        memo, create_time,
+        create_by, update_time,
+        update_by
+    </sql>
+    <!--根据教师编号查询教师信息-->
+    <select id="getByTeaNumber" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_number = #{teaNumber,jdbcType=VARCHAR}
+        limit 1
+    </select>
+</mapper>

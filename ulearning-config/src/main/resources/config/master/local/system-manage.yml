@@ -12,9 +12,3 @@ hystrix:
 ribbon:
   ReadTimeout: 30000
   ConnectTimeout: 30000
-
-#系统变量
-ulearning:
-  term:
-    preyears: 3
-    nextyears: 3

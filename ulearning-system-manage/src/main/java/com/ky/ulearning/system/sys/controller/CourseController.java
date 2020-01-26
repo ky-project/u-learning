@@ -2,6 +2,7 @@ package com.ky.ulearning.system.sys.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
@@ -37,7 +38,7 @@ import java.util.List;
 @RestController
 @Api(tags = "课程管理", description = "课程管理接口")
 @RequestMapping(value = "/course")
-public class CourseController {
+public class CourseController extends BaseController {
 
     @Autowired
     private CourseService courseService;
@@ -47,10 +48,7 @@ public class CourseController {
     @PermissionName(source = "course:pageList", name = "课程查询", group = "课程管理")
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<CourseEntity>>> pageList(PageParam pageParam, CourseDto courseDto) {
-        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
-            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
-        }
-        PageBean<CourseEntity> pageBean = courseService.pageCourseList(courseDto, pageParam);
+        PageBean<CourseEntity> pageBean = courseService.pageCourseList(courseDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 

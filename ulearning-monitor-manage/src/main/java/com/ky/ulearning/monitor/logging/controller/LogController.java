@@ -2,6 +2,7 @@ package com.ky.ulearning.monitor.logging.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.monitor.logging.service.LogService;
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "日志管理", description = "日志管理接口")
 @RestController
 @RequestMapping("/log")
-public class LogController {
+public class LogController extends BaseController {
 
     @Autowired
     private LogService logService;
@@ -45,10 +46,7 @@ public class LogController {
     @PermissionName(source = "log:pageList", name = "日志查询", group = "日志管理")
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<LogEntity>>> pageList(PageParam pageParam, LogDto logDto) {
-        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
-            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
-        }
-        PageBean<LogEntity> pageBean = logService.pageLogList(logDto, pageParam);
+        PageBean<LogEntity> pageBean = logService.pageLogList(logDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 }

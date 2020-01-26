@@ -2,6 +2,7 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
@@ -42,7 +43,7 @@ import static com.ky.ulearning.system.common.constants.SystemErrorCodeEnum.*;
 @RestController
 @Api(tags = "权限管理", description = "权限管理接口")
 @RequestMapping(value = "/permission")
-public class PermissionController {
+public class PermissionController extends BaseController {
 
     @Autowired
     private PermissionService permissionService;
@@ -67,10 +68,7 @@ public class PermissionController {
     @PermissionName(source = "permission:pageList", name = "查询权限", group = "权限管理")
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<PermissionEntity>>> pageList(PageParam pageParam, PermissionDto permission) {
-        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
-            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
-        }
-        PageBean<PermissionEntity> pageBean = permissionService.pagePermissionList(permission, pageParam);
+        PageBean<PermissionEntity> pageBean = permissionService.pagePermissionList(permission, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 

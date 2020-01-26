@@ -2,6 +2,7 @@ package com.ky.ulearning.system.auth.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
@@ -41,7 +42,7 @@ import java.util.Map;
 @RestController
 @Api(tags = "角色管理", description = "角色管理接口")
 @RequestMapping("/role")
-public class RoleController {
+public class RoleController extends BaseController {
 
     @Autowired
     private RolePermissionService rolePermissionService;
@@ -54,10 +55,7 @@ public class RoleController {
     @PermissionName(source = "role:pageList", name = "角色查询", group = "角色管理")
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<RoleEntity>>> pageList(PageParam pageParam, RoleDto roleDto) {
-        if (pageParam.getCurrentPage() != null && pageParam.getPageSize() != null) {
-            pageParam.setStartIndex((pageParam.getCurrentPage() - 1) * pageParam.getPageSize());
-        }
-        PageBean<RoleEntity> pageBean = roleService.pageRoleList(roleDto, pageParam);
+        PageBean<RoleEntity> pageBean = roleService.pageRoleList(roleDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 
