@@ -12,6 +12,7 @@
         <module>../ulearning-register</module>
         <module>../ulearning-spi</module>
         <module>../ulearning-system-manage</module>
+        <module>../ulearning-teacher</module>
     </modules>
 
     <parent>

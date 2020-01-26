@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.teacher.dao.TeachingTaskDao">
+    <resultMap id="CourseTeachingTaskDtoResultMap" type="com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="tea_id" jdbcType="BIGINT" property="teaId"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+        <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <!--分页查询课程&教学任务信息-->
+    <select id="listPage" resultMap="CourseTeachingTaskDtoResultMap">
+        SELECT utt.id, utt.course_id, utt.tea_id, utt.teaching_task_alias, utt.term, utt.valid, utt.memo,
+        utt.create_time, utt.create_by, utt.update_time, utt.update_by,
+        uc.course_number, uc.course_name, uc.course_credit
+        FROM u_teaching_task utt
+        INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
+        INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
+        WHERE utt.valid = 1
+        AND ut.tea_number = #{courseTeachingTaskDto.teaNumber}
+        <if test="courseTeachingTaskDto.teachingTaskAlias != null and courseTeachingTaskDto.teachingTaskAlias != ''">
+            AND utt.teaching_task_alias LIKE CONCAT('%', #{courseTeachingTaskDto.teachingTaskAlias}, '%')
+        </if>
+        <if test="courseTeachingTaskDto.term != null and courseTeachingTaskDto.term != ''">
+            AND utt.term = #{courseTeachingTaskDto.term}
+        </if>
+        <if test="courseTeachingTaskDto.courseNumber != null and courseTeachingTaskDto.courseNumber != ''">
+            AND uc.course_number LIKE CONCAT('%', #{courseTeachingTaskDto.courseNumber}, '%')
+        </if>
+        <if test="courseTeachingTaskDto.courseName != null and courseTeachingTaskDto.courseName != ''">
+            AND uc.course_name LIKE CONCAT('%', #{courseTeachingTaskDto.courseName}, '%')
+        </if>
+        <if test="courseTeachingTaskDto.courseCredit != null">
+            AND uc.course_credit = #{courseTeachingTaskDto.courseCredit}
+        </if>
+        ORDER BY utt.update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询课程&教学任务信息-总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM u_teaching_task utt
+        INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
+        INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
+        WHERE utt.valid = 1
+        AND ut.tea_number = #{courseTeachingTaskDto.teaNumber}
+        <if test="courseTeachingTaskDto.teachingTaskAlias != null and courseTeachingTaskDto.teachingTaskAlias != ''">
+            AND utt.teaching_task_alias LIKE CONCAT('%', #{courseTeachingTaskDto.teachingTaskAlias}, '%')
+        </if>
+        <if test="courseTeachingTaskDto.term != null and courseTeachingTaskDto.term != ''">
+            AND utt.term = #{courseTeachingTaskDto.term}
+        </if>
+        <if test="courseTeachingTaskDto.courseNumber != null and courseTeachingTaskDto.courseNumber != ''">
+            AND uc.course_number LIKE CONCAT('%', #{courseTeachingTaskDto.courseNumber}, '%')
+        </if>
+        <if test="courseTeachingTaskDto.courseName != null and courseTeachingTaskDto.courseName != ''">
+            AND uc.course_name LIKE CONCAT('%', #{courseTeachingTaskDto.courseName}, '%')
+        </if>
+        <if test="courseTeachingTaskDto.courseCredit != null">
+            AND uc.course_credit = #{courseTeachingTaskDto.courseCredit}
+        </if>
+    </select>
+</mapper>

@@ -1,6 +1,7 @@
 package com.ky.ulearning.spi.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -56,4 +57,11 @@ public class BaseDto implements Serializable {
      */
     @ApiModelProperty(hidden = true)
     private String updateBy;
+
+    /**
+     * 教师工号
+     */
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    private String teaNumber;
 }
