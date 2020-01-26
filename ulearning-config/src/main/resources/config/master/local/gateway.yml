@@ -13,6 +13,10 @@ zuul:
       path: /system-manage/**
       stripPrefix: false
       serviceId: system-manage
+    teacher:
+      path: /teacher/**
+      stripPrefix: false
+      serviceId: teacher
 
 #hystrix的超时时间
 hystrix:
@@ -32,7 +36,7 @@ ribbon:
 # 系统的各个端的匹配路径
 ulearning:
   admin-patterns: ${zuul.routes.monitor-manage.path}, ${zuul.routes.system-manage.path}
-  teacher-patterns:
+  teacher-patterns: ${zuul.routes.teacher.path}
   student-patterns:
   # 无需进行权限校验的路径
   permission-release-patterns: /auth/**
