@@ -100,6 +100,13 @@
             <artifactId>springfox-bean-validators</artifactId>
         </dependency>
         <!-- swagger2 End -->
+
+        <!-- FastDFS-Client Begin -->
+        <dependency>
+            <groupId>com.github.tobato</groupId>
+            <artifactId>fastdfs-client</artifactId>
+        </dependency>
+        <!-- FastDFS-Client End -->
         <!-- Plugins End -->
 
         <!-- U-Learning Begin -->
@@ -109,7 +116,14 @@
         </dependency>
         <!-- U-Learning End -->
 
-        <!-- Develop Tool Begin -->
+        <!-- Test Begin -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>5.1.7.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Test End -->
     </dependencies>
 
 </project>

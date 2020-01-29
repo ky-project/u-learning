@@ -3,12 +3,12 @@ package com.ky.ulearning.system.auth.controller;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
+import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
+import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
-import com.ky.ulearning.common.core.utils.EncryptUtil;
-import com.ky.ulearning.common.core.utils.RequestHolderUtil;
-import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
-import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.utils.*;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -27,18 +27,17 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +62,12 @@ public class TeacherController extends BaseController {
     @Autowired
     private RolePermissionService rolePermissionService;
 
+    @Autowired
+    private DefaultConfigParameters defaultConfigParameters;
+
+    @Autowired
+    private FastDfsClientWrapper fastDfsClientWrapper;
+
 
     @Log("教师添加")
     @ApiOperationSupport(ignoreParameters = {"id", "teaPassword"})
@@ -82,7 +87,6 @@ public class TeacherController extends BaseController {
         teacher.setUpdateBy(userNumber);
         //密码加密
         teacher.setTeaPassword(EncryptUtil.encryptPassword("123456"));
-        //TODO 设置初始头像url
         teacherService.save(teacher);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加教师成功"));
     }
@@ -141,7 +145,7 @@ public class TeacherController extends BaseController {
      */
     @ApiOperation(value = "", hidden = true)
     @PostMapping("/loginUpdate")
-    public ResponseEntity<JsonResult> updateLoginTime(TeacherDto teacherDto){
+    public ResponseEntity<JsonResult> updateLoginTime(TeacherDto teacherDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teacherDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
@@ -177,7 +181,7 @@ public class TeacherController extends BaseController {
     @PostMapping("/update")
     public ResponseEntity<JsonResult<TeacherDto>> update(TeacherDto teacherDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        if (!StringUtils.isEmpty(teacherDto.getTeaPassword())) {
+        if (!StringUtil.isEmpty(teacherDto.getTeaPassword())) {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
         }
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
@@ -211,8 +215,43 @@ public class TeacherController extends BaseController {
     @ApiOperation("获取所有教师信息")
     @PermissionName(source = "teacher:getAll", name = "获取所有教师信息", group = "教师管理")
     @GetMapping("/getAll")
-    public ResponseEntity<JsonResult<List<TeacherVo>>> getAll(){
+    public ResponseEntity<JsonResult<List<TeacherVo>>> getAll() {
         List<TeacherVo> teacherVoList = teacherService.getAll();
         return ResponseEntityUtil.ok(JsonResult.buildData(teacherVoList));
+    }
+
+    @Log("上传头像")
+    @ApiOperation("上传头像")
+    @PermissionName(source = "teacher:uploadPhoto", name = "上传头像", group = "教师管理")
+    @PostMapping("/uploadPhoto")
+    public ResponseEntity<JsonResult> uploadPhoto(@RequestParam("photo") MultipartFile photo, @Param("id")Long id) throws IOException, InterruptedException {
+        ValidatorBuilder.build()
+                //参数非空校验
+                .on(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(photo.isEmpty(), CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
+                //文件类型篡改校验
+                .on(! FileUtil.fileTypeCheck(photo), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
+                //文件类型校验
+                .on(! FileUtil.fileTypeRuleCheck(photo, FileUtil.IMAGE_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                //文件大小校验
+                .on(photo.getSize() > defaultConfigParameters.getPhotoMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
+                .doValidate().checkResult();
+        //获取用户信息
+        TeacherEntity teacherEntity = teacherService.getById(id);
+        //判断是否已有头像，有则先删除
+        if(StringUtil.isNotEmpty(teacherEntity.getTeaPhoto())){
+            fastDfsClientWrapper.deleteFile(teacherEntity.getTeaPhoto());
+        }
+        //保存文件
+        String url = fastDfsClientWrapper.uploadFile(photo);
+        //更新url
+        TeacherDto teacherDto = new TeacherDto();
+        teacherDto.setId(id);
+        teacherDto.setTeaPhoto(url);
+        teacherDto.setUpdateTime(teacherEntity.getUpdateTime());
+        teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        teacherService.updateTeaPhoto(teacherDto);
+        //返回信息
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
     }
 }

@@ -85,4 +85,24 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public void updateLastLoginTime(StudentDto studentDto) {
         studentDao.updateLastLoginTime(studentDto);
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    public void update(StudentDto studentDto) {
+        //判断学生学号是否存
+        if (StringUtil.isNotEmpty(studentDto.getStuNumber())) {
+            StudentEntity stuNumberExists = studentDao.getByStuNumber(studentDto.getStuNumber());
+            if (stuNumberExists != null && !stuNumberExists.getId().equals(studentDto.getId())) {
+                throw new EntityExistException("学号");
+            }
+        }
+        //判断学生邮箱是否存在
+        if (StringUtil.isNotEmpty(studentDto.getStuEmail())) {
+            StudentEntity stuEmailExists = studentDao.getByStuEmail(studentDto.getStuEmail());
+            if (stuEmailExists != null && !stuEmailExists.getId().equals(studentDto.getId())) {
+                throw new EntityExistException("邮箱");
+            }
+        }
+        studentDao.update(studentDto);
+    }
 }

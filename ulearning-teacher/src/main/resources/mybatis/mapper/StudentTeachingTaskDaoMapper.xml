@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.StudentTeachingTaskDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="stu_id" jdbcType="BIGINT" property="stuId"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            stu_id,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--删除关联信息-->
+    <delete id="delete" parameterType="java.lang.Long">
+        delete
+        from u_student_teaching_task
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <!--插入关联信息-->
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.StudentTeachingTaskDto" useGeneratedKeys="true">
+        insert into u_student_teaching_task (teaching_task_id, stu_id, `valid`,
+                                             memo, create_time, create_by,
+                                             update_time, update_by)
+        values (#{teachingTaskId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT}, 1,
+                #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+                now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+</mapper>

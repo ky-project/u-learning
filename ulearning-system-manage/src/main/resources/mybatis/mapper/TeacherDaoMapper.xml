@@ -213,4 +213,14 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--更新用户照片-->
+    <update id="updateTeaPhoto" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto">
+        UPDATE u_teacher
+        SET tea_photo   = #{teaPhoto},
+            update_time = #{updateTime},
+            update_by   = #{updateBy}
+        WHERE valid = 1
+          AND id = #{id}
+
+    </update>
 </mapper>

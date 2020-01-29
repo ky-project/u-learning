@@ -116,4 +116,11 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
     public void updateLastLoginTime(TeacherDto teacherDto) {
         teacherDao.updateLastLoginTime(teacherDto);
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateTeaPhoto(TeacherDto teacherDto) {
+        teacherDao.updateTeaPhoto(teacherDto);
+    }
 }

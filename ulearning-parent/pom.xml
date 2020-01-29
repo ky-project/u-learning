@@ -51,6 +51,7 @@
         <swagger.version>1.5.21</swagger.version>
         <spring-boot-admin.version>2.1.6</spring-boot-admin.version>
         <fastinfoset.version>1.2.16</fastinfoset.version>
+        <fastdfs-client.version>1.26.6</fastdfs-client.version>
 
         <target.dir>D:\Mydata\Major\java\develop\u-learning\shell</target.dir>
     </properties>
@@ -204,6 +205,13 @@
             </dependency>
             <!-- FastInfoset End -->
 
+            <!-- FastDFS-Client Begin -->
+            <dependency>
+                <groupId>com.github.tobato</groupId>
+                <artifactId>fastdfs-client</artifactId>
+                <version>${fastdfs-client.version}</version>
+            </dependency>
+            <!-- FastDFS-Client End -->
             <!-- Plugins End -->
 
             <!-- ulearning Begin -->

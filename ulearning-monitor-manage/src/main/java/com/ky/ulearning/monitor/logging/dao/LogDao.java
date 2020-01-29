@@ -40,4 +40,11 @@ public interface LogDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("logDto") LogDto logDto);
+
+    /**
+     * 获取日志类型集合
+     *
+     * @return 日志类型集合
+     */
+    List<String> getLogType();
 }

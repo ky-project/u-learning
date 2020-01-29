@@ -129,4 +129,9 @@
             AND log_address LIKE CONCAT('%', #{logDto.logAddress}, '%')
         </if>
     </select>
+     <!--获取日志类型集合-->
+    <select id="getLogType" resultType="java.lang.String">
+        SELECT DISTINCT log_type
+        FROM u_log
+    </select>
 </mapper>

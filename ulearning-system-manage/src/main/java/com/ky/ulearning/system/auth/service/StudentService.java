@@ -59,4 +59,10 @@ public interface StudentService {
      * @param studentDto 待更新的学生对象
      */
     void updateLastLoginTime(StudentDto studentDto);
+
+    /**
+     * 更新学生信息
+     * @param studentDto 待更新的学生对象
+     */
+    void update(StudentDto studentDto);
 }

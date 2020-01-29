@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Optional;
@@ -48,6 +49,14 @@ public class GlobalExceptionHandler {
         String message = StringUtil.isContainChinese(ae.getMessage()) ? ae.getMessage() : null;
         return ResponseEntityUtil.forbidden(JsonResult.buildErrorMsg(HttpStatus.FORBIDDEN.value(),
                 Optional.ofNullable(message).orElse(MicroErrorCodeEnum.HAS_NO_PERMISSION.getMessage())));
+    }
+
+    /**
+     * 文件上传异常处理
+     */
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity handleMultipartException(Throwable t){
+        return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(MicroErrorCodeEnum.FILE_UPLOAD_ERROR));
     }
 
     /**

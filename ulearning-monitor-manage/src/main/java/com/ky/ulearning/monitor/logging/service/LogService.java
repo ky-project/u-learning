@@ -6,6 +6,8 @@ import com.ky.ulearning.spi.monitor.logging.dto.LogDto;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import org.springframework.scheduling.annotation.Async;
 
+import java.util.List;
+
 /**
  * 日志 service 接口类
  *
@@ -29,4 +31,11 @@ public interface LogService {
      * @return 返回封装好的分页日志对象
      */
     PageBean<LogEntity> pageLogList(LogDto logDto, PageParam pageParam);
+
+    /**
+     * 获取日志类型集合
+     *
+     * @return 日志类型集合
+     */
+    List<String> getLogType();
 }
