@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 日志
  *
@@ -48,5 +50,14 @@ public class LogController extends BaseController {
     public ResponseEntity<JsonResult<PageBean<LogEntity>>> pageList(PageParam pageParam, LogDto logDto) {
         PageBean<LogEntity> pageBean = logService.pageLogList(logDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
+    }
+
+    @Log("日志类型查询")
+    @ApiOperation(value = "日志类型查询")
+    @PermissionName(source = "log:logTypeList", name = "日志类型查询", group = "日志管理")
+    @GetMapping("/logTypeList")
+    public ResponseEntity<JsonResult<List<String>>> logTypeList() {
+        List<String> logTypeList = logService.getLogType();
+        return ResponseEntityUtil.ok(JsonResult.buildData(logTypeList));
     }
 }
