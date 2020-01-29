@@ -1,10 +1,17 @@
 package com.ky.ulearning.common.core.utils;
 
 import cn.hutool.core.util.IdUtil;
+import com.ky.ulearning.common.core.constant.FileTypeEnum;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author luyuhao
@@ -29,6 +36,11 @@ public class FileUtil {
      * 格式化小数
      */
     private static final DecimalFormat DF = new DecimalFormat("0.00");
+
+    /**
+     * 常见图片类型
+     */
+    public static final String[] IMAGE_TYPE = {"jpg", "png", "jpeg", "gif", "bmp"};
 
     /**
      * MultipartFile转File
@@ -124,5 +136,102 @@ public class FileUtil {
         os.close();
         ins.close();
         return file;
+    }
+
+    /**
+     * 校验文件后缀是否符合类型规则
+     *
+     * @param multipartFile 文件
+     * @param typeRules     类型规则
+     */
+    public static boolean fileTypeRuleCheck(MultipartFile multipartFile, String... typeRules) {
+        if (StringUtil.isArrEmpty(typeRules)) {
+            return true;
+        }
+        //获取文件后缀
+        String fileExt = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+        //后缀转大写
+        String fileExtUpper = Optional.ofNullable(fileExt).map(String::toUpperCase).orElse("");
+        //遍历比较
+        for (String typeRule : typeRules) {
+            if (typeRule.toUpperCase().equals(fileExtUpper)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 校验文件是否存在篡改
+     *
+     * @param multipartFile 待校验文件流
+     */
+    public static boolean fileTypeCheck(MultipartFile multipartFile) {
+        try {
+            boolean resFlag = false;
+            //获取文件后缀
+            String fileExt = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+            //后缀转大写
+            String fileExtUpper = Optional.ofNullable(fileExt).map(String::toUpperCase).orElse("");
+            byte[] buffer = new byte[10];
+            multipartFile.getInputStream().read(buffer);
+
+            //获取当前文件的真实类型
+            Set<String> currentFileType = getTrueFileType(bytesToHexFileTypeString(buffer));
+
+            //指定文件类型中是否匹配当前文件类型
+            if (currentFileType.contains(fileExtUpper)) {
+                resFlag = true;
+            }
+
+            return resFlag;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 将字节流转为hex文件格式字符串
+     *
+     * @param buffer 字节流
+     * @return 文件类型string
+     */
+    private static String bytesToHexFileTypeString(byte[] buffer) {
+        StringBuilder hexFileTypeStr = new StringBuilder();
+        for (byte b : buffer) {
+            String hexString = Integer.toHexString(b & 0xFF);
+            if (hexString.length() < 2) {
+                hexFileTypeStr.append("0");
+            }
+            hexFileTypeStr.append(hexString);
+        }
+        return hexFileTypeStr.toString();
+    }
+
+    /**
+     * 根据文件流解析byte获取文件类型
+     *
+     * @param s 文件流字符串
+     * @return 文件类型
+     */
+    private static Set<String> getTrueFileType(String s) {
+        Set<String> typeList = new HashSet<>();
+        for (FileTypeEnum fileTypeEnum : FileTypeEnum.values()) {
+            if (s.toUpperCase().startsWith(fileTypeEnum.getValue().toUpperCase())) {
+                typeList.add(fileTypeEnum.toString().toUpperCase());
+            }
+        }
+        return typeList;
+    }
+
+    /**
+     * 测试main
+     */
+    public static void main(String[] args) throws IOException {
+        File file = new File("D:\\Mydata\\Major\\java\\JavaTest\\HTML\\Templates\\web\\jQueryTest\\a.html");
+        FileInputStream input = new FileInputStream(file);
+
+        MultipartFile multipartFile = new MockMultipartFile("a.html", file.getName(), "text/plain", IOUtils.toByteArray(input));
+        System.out.println(fileTypeCheck(multipartFile));
     }
 }

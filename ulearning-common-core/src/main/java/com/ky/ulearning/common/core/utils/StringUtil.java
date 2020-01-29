@@ -4,6 +4,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +40,9 @@ public class StringUtil extends StringUtils {
      * @return longList
      */
     public static List<Long> strArrToLongList(String[] strArr) {
+        if(isArrEmpty(strArr)){
+            return Collections.emptyList();
+        }
         List<Long> res = new ArrayList<>();
         for (String str : strArr) {
             res.add(Long.parseLong(str));
@@ -54,5 +58,19 @@ public class StringUtil extends StringUtils {
      */
     public static boolean isNotEmpty(@Nullable Object str) {
         return !isEmpty(str);
+    }
+
+    /**
+     * 数组是否为null
+     */
+    public static <T> boolean isArrEmpty(T[] strArr){
+        return strArr == null || strArr.length < 1;
+    }
+
+    /**
+     * 数组是否不为null
+     */
+    public static <T> boolean isArrNotEmpty(T[] strArr){
+        return ! isArrEmpty(strArr);
     }
 }

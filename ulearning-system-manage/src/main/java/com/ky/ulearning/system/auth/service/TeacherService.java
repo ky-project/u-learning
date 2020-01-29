@@ -76,4 +76,10 @@ public interface TeacherService {
      * @param teacherDto 待更新的教师对象
      */
     void updateLastLoginTime(TeacherDto teacherDto);
+
+    /**
+     * 更新用户照片
+     * @param teacherDto 待更新的教师对象
+     */
+    void updateTeaPhoto(TeacherDto teacherDto);
 }

@@ -63,7 +63,6 @@ public class StudentController extends BaseController {
 
         //密码加密
         studentDto.setStuPassword(EncryptUtil.encryptPassword("123456"));
-        //TODO 设置初始头像url
         studentService.save(studentDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加学生成功"));
     }
@@ -104,15 +103,13 @@ public class StudentController extends BaseController {
     @PostMapping("/update")
     public ResponseEntity<JsonResult> update(StudentDto studentDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        //获取操作者的编号
-        String userNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        if (!StringUtil.isEmpty(studentDto.getStuPassword())) {
+            studentDto.setStuPassword(EncryptUtil.encryptPassword(studentDto.getStuPassword()));
+        }
         //设置更新者编号
-        studentDto.setUpdateBy(userNumber);
+        studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
 
-        //密码加密
-        studentDto.setStuPassword(EncryptUtil.encryptPassword("123456"));
-        //TODO 设置初始头像url
-        studentService.save(studentDto);
+        studentService.update(studentDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加学生成功"));
     }
 

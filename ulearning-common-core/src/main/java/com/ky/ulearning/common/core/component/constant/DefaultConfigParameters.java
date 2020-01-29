@@ -21,4 +21,13 @@ public class DefaultConfigParameters {
 
     @Value("${swagger.enabled}")
     private Boolean swaggerEnabled;
+
+    @Value("${fdfs.reqHost}")
+    private String fdsReqHost;
+
+    @Value("${fdfs.reqPort}")
+    private String dfsReqPort;
+
+    @Value("#{${ulearning.photo.max-size} * 1024 * 1024}")
+    private Long photoMaxSize;
 }

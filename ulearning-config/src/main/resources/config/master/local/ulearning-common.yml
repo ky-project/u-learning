@@ -1,3 +1,14 @@
+# spring公共配置
+spring:
+  servlet:
+    # 文件大小限制
+    multipart:
+      enabled: true
+      #设置单个文件最大长度
+      max-file-size: 600MB
+      #最大请求文件的大小
+      max-request-size: 600MB
+
 #jwt
 jwt:
   header-token: Authorization-token
@@ -12,9 +23,35 @@ jwt:
 swagger:
   enabled: true
 
+#fastDFS
+fdfs:
+  so-timeout: 1501
+  connect-timeout: 601
+  #nginx访问地址
+  reqHost: darren1112.com
+  #nginx访问端口
+  reqPort: 8888
+  #TrackerList参数,支持多个
+  tracker-list:
+    - darren1112.com:22122
+  pool:
+    #从池中借出的对象的最大数目（配置为-1表示不限制）
+    max-total: -1
+    #获取连接时的最大等待毫秒数(默认配置为5秒)
+    max-wait-millis: 5000
+    #每个key最大连接数
+    max-total-per-key: 500
+    #每个key对应的连接池最大空闲连接数
+    max-idle-per-key: 10
+    #每个key对应的连接池最小空闲连接数
+    max_idle_per_key: 5
+
 #系统变量
 ulearning:
   # 显示的学期前n年和后n年
   term:
     preyears: 3
     nextyears: 3
+  photo:
+    # 默认MB
+    max-size: 3

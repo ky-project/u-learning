@@ -92,9 +92,6 @@
             <if test="stuEmail != null and stuEmail != ''">
                 stu_email = #{stuEmail,jdbcType=VARCHAR},
             </if>
-            <if test="lastLoginTime != null">
-                last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-            </if>
             <if test="memo != null">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
