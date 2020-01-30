@@ -66,4 +66,12 @@ public interface TeachingTaskDao {
      * @return 教学任务id集合
      */
     Set<Long> getIdByTeaId(Long teaId);
+
+    /**
+     * 根据教学任务id查询课程教学任务信息
+     *
+     * @param id 教学任务id
+     * @return 返回课程教学任务对象
+     */
+    CourseTeachingTaskDto getById(Long id);
 }

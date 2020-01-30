@@ -39,4 +39,101 @@
                 #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
                 now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
+    <!--分页查询选课学生信息-->
+    <select id="listPage" resultMap="com.ky.ulearning.teacher.dao.StudentDao.BaseResultMap">
+        SELECT us.id,
+        us.stu_number,
+        us.stu_name,
+        us.stu_password,
+        us.stu_gender,
+        us.stu_dept,
+        us.stu_class,
+        us.stu_phone,
+        us.stu_email,
+        us.stu_photo,
+        us.last_login_time,
+        us.valid,
+        us.memo,
+        us.create_time,
+        us.create_by,
+        us.update_time,
+        us.update_by
+        FROM u_student_teaching_task ustt
+        INNER JOIN u_student us ON us.valid = 1 AND ustt.stu_id = us.id
+        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+        WHERE utt.valid = 1
+        AND utt.id = #{teachingTaskId}
+        <if test="studentDto.stuNumber != null and studentDto.stuNumber != ''">
+            AND stu_number LIKE CONCAT('%', #{studentDto.stuNumber}, '%')
+        </if>
+        <if test="studentDto.stuName != null and studentDto.stuName != ''">
+            AND stu_name LIKE CONCAT('%', #{studentDto.stuName}, '%')
+        </if>
+        <if test="studentDto.stuGender != null and studentDto.stuGender != ''">
+            AND stu_gender = #{studentDto.stuGender}
+        </if>
+        <if test="studentDto.stuDept != null and studentDto.stuDept != ''">
+            AND stu_dept = #{studentDto.stuDept}
+        </if>
+        <if test="studentDto.stuClass != null and studentDto.stuClass != ''">
+            AND stu_class = #{studentDto.stuClass}
+        </if>
+        <if test="studentDto.stuPhone != null and studentDto.stuPhone != ''">
+            AND stu_phone LIKE CONCAT('%', #{studentDto.stuPhone}, '%')
+        </if>
+        <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
+            AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
+        </if>
+        order by ustt.update_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询选课学生信息 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM u_student_teaching_task ustt
+        INNER JOIN u_student us ON us.valid = 1 AND ustt.stu_id = us.id
+        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+        WHERE utt.valid = 1
+        AND utt.id = #{teachingTaskId}
+        <if test="studentDto.stuNumber != null and studentDto.stuNumber != ''">
+            AND stu_number LIKE CONCAT('%', #{studentDto.stuNumber}, '%')
+        </if>
+        <if test="studentDto.stuName != null and studentDto.stuName != ''">
+            AND stu_name LIKE CONCAT('%', #{studentDto.stuName}, '%')
+        </if>
+        <if test="studentDto.stuGender != null and studentDto.stuGender != ''">
+            AND stu_gender = #{studentDto.stuGender}
+        </if>
+        <if test="studentDto.stuDept != null and studentDto.stuDept != ''">
+            AND stu_dept = #{studentDto.stuDept}
+        </if>
+        <if test="studentDto.stuClass != null and studentDto.stuClass != ''">
+            AND stu_class = #{studentDto.stuClass}
+        </if>
+        <if test="studentDto.stuPhone != null and studentDto.stuPhone != ''">
+            AND stu_phone LIKE CONCAT('%', #{studentDto.stuPhone}, '%')
+        </if>
+        <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
+            AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
+        </if>
+    </select>
+    <!--根据教学任务id查询学生id集合-->
+    <select id="getStuIdSetByTeachingTaskId" resultType="java.lang.Long">
+        SELECT stu_id
+        FROM u_student_teaching_task
+        WHERE valid = 1
+        AND teaching_task_id IN
+        <foreach collection="teachingTaskIdSet" separator="," item="teachingTaskId" open="(" close=")">
+            #{teachingTaskId}
+        </foreach>
+    </select>
+    <!--移除选课学生-->
+    <update id="remove">
+        UPDATE u_student_teaching_task
+        SET valid = 0
+        WHERE stu_id = #{studentTeachingTaskDto.stuId}
+          AND teaching_task_id = #{studentTeachingTaskDto.teachingTaskId}
+    </update>
 </mapper>

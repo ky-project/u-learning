@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.TeachingTaskNoticeDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="notice_title" jdbcType="VARCHAR" property="noticeTitle"/>
+        <result column="notice_content" jdbcType="VARCHAR" property="noticeContent"/>
+        <result column="notice_attachment" jdbcType="VARCHAR" property="noticeAttachment"/>
+        <result column="notice_shared" jdbcType="BOOLEAN" property="noticeShared"/>
+        <result column="notice_post_time" jdbcType="TIMESTAMP" property="noticePostTime"/>
+        <result column="notice_keywords" jdbcType="VARCHAR" property="noticeKeywords"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            notice_title,
+            notice_content,
+            notice_attachment,
+            notice_shared,
+            notice_post_time,
+            notice_keywords,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_teaching_task_notice
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto"
+            useGeneratedKeys="true">
+        insert into u_teaching_task_notice (teaching_task_id, notice_title, notice_content,
+                                            notice_attachment, notice_shared, notice_post_time,
+                                            notice_keywords, `valid`, memo,
+                                            create_time, create_by, update_time,
+                                            update_by)
+        values (#{teachingTaskId,jdbcType=BIGINT}, #{noticeTitle,jdbcType=VARCHAR}, #{noticeContent,jdbcType=VARCHAR},
+                #{noticeAttachment,jdbcType=VARCHAR}, #{noticeShared,jdbcType=BOOLEAN},
+                #{noticePostTime,jdbcType=TIMESTAMP},
+                #{noticeKeywords,jdbcType=VARCHAR}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto">
+        update u_teaching_task_notice
+        <set>
+            <if test="teachingTaskId != null">
+                teaching_task_id = #{teachingTaskId,jdbcType=BIGINT},
+            </if>
+            <if test="noticeTitle != null">
+                notice_title = #{noticeTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeContent != null">
+                notice_content = #{noticeContent,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeAttachment != null">
+                notice_attachment = #{noticeAttachment,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeShared != null">
+                notice_shared = #{noticeShared,jdbcType=BOOLEAN},
+            </if>
+            <if test="noticePostTime != null">
+                notice_post_time = #{noticePostTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="noticeKeywords != null">
+                notice_keywords = #{noticeKeywords,jdbcType=VARCHAR},
+            </if>
+            <if test="valid != null">
+                `valid` = #{valid,jdbcType=BOOLEAN},
+            </if>
+            <if test="memo != null">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
