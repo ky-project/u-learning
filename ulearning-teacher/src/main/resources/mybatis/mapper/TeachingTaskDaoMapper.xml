@@ -159,4 +159,25 @@
         WHERE valid = 1
           AND tea_id = #{teaId}
     </select>
+    <!--根据教学任务id查询课程教学任务信息-->
+    <select id="getById" resultMap="CourseTeachingTaskDtoResultMap">
+        SELECT utt.id,
+               utt.course_id,
+               utt.tea_id,
+               utt.teaching_task_alias,
+               utt.term,
+               utt.valid,
+               utt.memo,
+               utt.create_time,
+               utt.create_by,
+               utt.update_time,
+               utt.update_by,
+               uc.course_number,
+               uc.course_name,
+               uc.course_credit
+        FROM u_teaching_task utt
+                 INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
+        WHERE utt.valid = 1
+          AND utt.id = #{id}
+    </select>
 </mapper>

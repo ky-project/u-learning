@@ -19,6 +19,7 @@ import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
 import com.ky.ulearning.teacher.common.constants.TeacherConfigParameters;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
+import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.service.CourseService;
 import com.ky.ulearning.teacher.service.TeacherService;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
@@ -59,6 +60,9 @@ public class TeachingTaskController extends BaseController {
 
     @Autowired
     private TeacherConfigParameters teacherConfigParameters;
+
+    @Autowired
+    private TeachingTaskValidUtil teachingTaskValidUtil;
 
     @Log("教师-分页查询教学任务")
     @ApiOperation(value = "分页查询教学任务")
@@ -109,18 +113,14 @@ public class TeachingTaskController extends BaseController {
     }
 
     @Log("教师-更新教学任务")
-    @ApiOperation(value = "更新教学任务")
+    @ApiOperation(value = "更新教学任务", notes = "只能更新属于自己的教学任务")
     @ApiOperationSupport(ignoreParameters = {"teaId"})
     @PostMapping("/update")
     public ResponseEntity<JsonResult> update(TeachingTaskDto teachingTaskDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teachingTaskDto.getId()), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
 
-        TeacherEntity teacherEntity = teacherService.getByTeaNumber(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
-        //教师number是否存在
-        ValidateHandler.checkParameter(teacherEntity == null, TeacherErrorCodeEnum.TEA_NUMBER_NOT_EXISTS);
-        //教学任务id是否可操作
-        Set<Long> teachingTaskIdSet = teachingTaskService.getIdByTeaId(teacherEntity.getId());
-        ValidateHandler.checkParameter(teachingTaskIdSet == null || ! teachingTaskIdSet.contains(teachingTaskDto.getId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_ILLEGAL);
+        //校验是否有操作权限
+        TeacherEntity teacherEntity = teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskDto.getId());
         //课程id是否存在
         if (StringUtil.isNotEmpty(teachingTaskDto.getCourseId())) {
             ValidateHandler.checkParameter(courseService.getById(teachingTaskDto.getCourseId()) == null, TeacherErrorCodeEnum.COURSE_ID_NOT_EXISTS);
@@ -129,5 +129,17 @@ public class TeachingTaskController extends BaseController {
         teachingTaskDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teachingTaskService.update(teachingTaskDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("教师-根据id查询教学任务")
+    @ApiOperation(value = "根据id查询教学任务", notes = "只能查看属于自己的教学任务")
+    @PostMapping("/getById")
+    public ResponseEntity<JsonResult<CourseTeachingTaskDto>> getById(Long id) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        //校验是否有操作权限
+        teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), id);
+
+        CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskService.getById(id);
+        return ResponseEntityUtil.ok(JsonResult.buildData(courseTeachingTaskDto));
     }
 }
