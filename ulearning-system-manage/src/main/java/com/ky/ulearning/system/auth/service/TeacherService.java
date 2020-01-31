@@ -6,6 +6,7 @@ import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.system.vo.TeacherVo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,4 +83,11 @@ public interface TeacherService {
      * @param teacherDto 待更新的教师对象
      */
     void updateTeaPhoto(TeacherDto teacherDto);
+
+    /**
+     * 更新更新时间
+     * @param id 教师id
+     * @param updateTime 更新时间
+     */
+    void updateUpdateTime(Long id, Date updateTime);
 }

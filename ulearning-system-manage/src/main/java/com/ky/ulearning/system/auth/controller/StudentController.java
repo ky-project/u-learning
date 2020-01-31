@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * @author luyuhao
@@ -141,9 +142,20 @@ public class StudentController extends BaseController {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(studentDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(studentDto.getUpdateTime()), SystemErrorCodeEnum.UPATE_TIME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(studentDto.getUpdateTime()), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         studentService.updateLastLoginTime(studentDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @ApiOperation(value = "", hidden = true)
+    @PostMapping("/updateUpdateTime")
+    public ResponseEntity<JsonResult> updateUpdateTime(Long id, Date updateTime){
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(updateTime), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        studentService.updateUpdateTime(id, updateTime);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 }

@@ -21,8 +21,8 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     NOT_LOGGED_IN(HttpStatus.UNAUTHORIZED,"请先登录"),
     INSUFFICIENT_PERMISSION(HttpStatus.FORBIDDEN,"权限不足!"),
     REQUEST_PATH_NOT_REGISTER(HttpStatus.BAD_REQUEST, "访问路径非法!"),
-    AUTHORIZED_FAILURE(HttpStatus.UNAUTHORIZED,"认证失败")
-    ;
+    AUTHORIZED_FAILURE(HttpStatus.UNAUTHORIZED,"认证失败"),
+    UPDATE_FAILED(HttpStatus.BAD_REQUEST, "更新失败，请确认信息或稍后再试");
 
     private Integer code;
     private String message;

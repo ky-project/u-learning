@@ -2,14 +2,17 @@ package com.ky.ulearning.gateway.controller;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ky.ulearning.common.core.annotation.Log;
+import com.ky.ulearning.common.core.annotation.PermissionName;
+import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
+import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
@@ -25,25 +28,25 @@ import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.system.dto.StudentDto;
+import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Id;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -85,6 +88,12 @@ public class AuthController {
 
     @Autowired
     private MonitorManageRemoting monitorManageRemoting;
+
+    @Autowired
+    private DefaultConfigParameters defaultConfigParameters;
+
+    @Autowired
+    private FastDfsClientWrapper fastDfsClientWrapper;
 
     @Log("获取个人权限信息")
     @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
@@ -129,7 +138,7 @@ public class AuthController {
     @Log("获取个人信息")
     @ApiOperation(value = "获取个人信息")
     @GetMapping(value = "/info")
-    public ResponseEntity getUserInfo() {
+    public ResponseEntity<JsonResult> getUserInfo() {
         JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
         ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
 
@@ -295,5 +304,98 @@ public class AuthController {
                 JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
 
         monitorManageRemoting.add(logMap);
+    }
+
+    @Log("修改个人信息")
+    @ApiOperation(value = "修改个人信息", notes = "根据登录端不同，只需填写对应信息即可")
+    @ApiOperationSupport(ignoreParameters = {"id", "teaNumber", "teaPassword", "stuNumber", "stuPassword"})
+    @PostMapping(value = "/update/info")
+    public ResponseEntity<JsonResult> updateInfo(TeacherDto teacherDto, StudentDto studentDto) {
+        JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
+        ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
+
+        String sysRole = jwtAccount.getSysRole();
+        Map<String, Object> param = new HashMap<>(16);
+        param.put("id", jwtAccount.getId());
+        param.put("updateBy", jwtAccount.getUsername());
+        try {
+            //根据不同系统角色调用不同接口
+            if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+                //教师身份
+                param.put("teaDept", teacherDto.getTeaDept());
+                param.put("teaEmail", teacherDto.getTeaEmail());
+                param.put("teaGender", teacherDto.getTeaGender());
+                param.put("teaName", teacherDto.getTeaName());
+                param.put("teaPhone", teacherDto.getTeaPhone());
+                param.put("teaTitle", teacherDto.getTeaTitle());
+                systemManageRemoting.teacherUpdate(param);
+                //不改变更新时间
+                systemManageRemoting.teacherUpdateUpdateTime(jwtAccount.getId(), jwtAccount.getUpdateTime());
+            } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+                //学生身份
+                param.put("stuClass", studentDto.getStuClass());
+                param.put("stuDept", studentDto.getStuDept());
+                param.put("stuEmail", studentDto.getStuEmail());
+                param.put("stuGender", studentDto.getStuGender());
+                param.put("stuName", studentDto.getStuName());
+                param.put("stuPhone", studentDto.getStuPhone());
+                systemManageRemoting.studentUpdate(param);
+                //不改变更新时间
+                systemManageRemoting.studentUpdateUpdateTime(jwtAccount.getId(), jwtAccount.getUpdateTime());
+            } else {
+                return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum((GatewayErrorCodeEnum.ACCOUNT_ERROR)));
+            }
+            return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+        } catch (Exception e) {
+            return ResponseEntityUtil.ok(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.UPDATE_FAILED));
+        }
+    }
+
+    @Log("上传头像")
+    @ApiOperation("上传头像")
+    @PostMapping("/uploadPhoto")
+    public ResponseEntity<JsonResult> uploadPhoto(MultipartFile photo){
+        JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
+        ValidatorBuilder.build()
+                .on(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN)
+                //参数非空校验
+                .on(photo == null || photo.isEmpty(), CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
+                //文件类型篡改校验
+                .on(!FileUtil.fileTypeCheck(photo), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
+                //文件类型校验
+                .on(!FileUtil.fileTypeRuleCheck(photo, FileUtil.IMAGE_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                //文件大小校验
+                .on(photo.getSize() > defaultConfigParameters.getPhotoMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
+                .doValidate().checkResult();
+        try {
+            String sysRole = jwtAccount.getSysRole();
+            Map<String, Object> param = new HashMap<>(16);
+            param.put("id", jwtAccount.getId());
+            param.put("updateBy", jwtAccount.getUsername());
+            //根据不同系统角色调用不同接口
+            if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+                //教师身份
+                //获取当前用户信息
+                TeacherEntity teacherEntity = systemManageRemoting.getById(jwtAccount.getId()).getData();
+                //判断是否已有头像，有则先删除
+                if (StringUtil.isNotEmpty(teacherEntity.getTeaPhoto())) {
+                    fastDfsClientWrapper.deleteFile(teacherEntity.getTeaPhoto());
+                }
+                //保存文件
+                String url = fastDfsClientWrapper.uploadFile(photo);
+                //更新url
+                param.put("teaPhoto", url);
+                param.put("updateTime", teacherEntity.getUpdateTime());
+                systemManageRemoting.updateTeaPhoto(param);
+            } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+                //TODO 学生身份
+            } else {
+                return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+            }
+            //返回信息
+            return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
+        }catch (Exception e){
+            return ResponseEntityUtil.ok(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.UPDATE_FAILED));
+        }
     }
 }

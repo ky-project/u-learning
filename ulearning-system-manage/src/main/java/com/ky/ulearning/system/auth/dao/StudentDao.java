@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -90,4 +91,12 @@ public interface StudentDao {
      * @param studentDto 待更新的学生对象
      */
     void updateLastLoginTime(StudentDto studentDto);
+
+    /**
+     * 更新学生信息更新时间
+     *
+     * @param id         学生id
+     * @param updateTime 更新时间
+     */
+    void updateUpdateTime(@Param("id") Long id, @Param("updateTime") Date updateTime);
 }

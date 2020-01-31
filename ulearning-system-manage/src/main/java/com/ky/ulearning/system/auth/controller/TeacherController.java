@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -149,7 +150,7 @@ public class TeacherController extends BaseController {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(teacherDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(teacherDto.getUpdateTime()), SystemErrorCodeEnum.UPATE_TIME_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(teacherDto.getUpdateTime()), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         teacherService.updateLastLoginTime(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
@@ -254,4 +255,23 @@ public class TeacherController extends BaseController {
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
     }
+
+    @ApiOperation(value = "", hidden = true)
+    @PostMapping("/updateUpdateTime")
+    public ResponseEntity<JsonResult> updateUpdateTime(Long id, Date updateTime) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+        ValidateHandler.checkParameter(StringUtil.isEmpty(updateTime), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL);
+        teacherService.updateUpdateTime(id, updateTime);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @ApiOperation(value = "", hidden = true)
+    @PostMapping("/updateTeaPhoto")
+    public ResponseEntity<JsonResult> updateTeaPhoto(TeacherDto teacherDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
+        ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getTeaPhoto()), SystemErrorCodeEnum.TEA_PHOTO_CANNOT_BE_NULL);
+        teacherService.updateTeaPhoto(teacherDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
 }

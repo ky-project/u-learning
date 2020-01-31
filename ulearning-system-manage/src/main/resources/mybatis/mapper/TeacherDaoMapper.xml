@@ -103,9 +103,6 @@
             <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime},
-            </if>
         </set>
         where valid = 1
         and id = #{id}
@@ -222,5 +219,12 @@
         WHERE valid = 1
           AND id = #{id}
 
+    </update>
+    <!--更新更新时间-->
+    <update id="updateUpdateTime">
+        UPDATE u_teacher
+        SET update_time = #{updateTime}
+        WHERE valid = 1
+          AND id = #{id}
     </update>
 </mapper>

@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -88,6 +89,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
 
     @Override
     @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
     public void update(StudentDto studentDto) {
         //判断学生学号是否存
         if (StringUtil.isNotEmpty(studentDto.getStuNumber())) {
@@ -104,5 +106,12 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             }
         }
         studentDao.update(studentDto);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateUpdateTime(Long id, Date updateTime) {
+        studentDao.updateUpdateTime(id, updateTime);
     }
 }

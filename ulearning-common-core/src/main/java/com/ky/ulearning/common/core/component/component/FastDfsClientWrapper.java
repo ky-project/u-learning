@@ -88,7 +88,7 @@ public class FastDfsClientWrapper {
             StorePath storePath = StorePath.parseFromUrl(fileUrl);
             fastFileStorageClient.deleteFile(storePath.getGroup(), storePath.getPath());
             return true;
-        } catch (FdfsUnsupportStorePathException e) {
+        } catch (Exception e) {
             return false;
         }
     }
