@@ -16,6 +16,7 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="notice_attachment_name" jdbcType="VARCHAR" property="noticeAttachmentName"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -31,7 +32,8 @@
             create_time,
             create_by,
             update_time,
-            update_by
+            update_by,
+            notice_attachment_name
     </sql>
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
@@ -47,17 +49,18 @@
                                             notice_attachment, notice_shared, notice_post_time,
                                             notice_keywords, `valid`, memo,
                                             create_time, create_by, update_time,
-                                            update_by)
+                                            update_by, notice_attachment_name)
         values (#{teachingTaskId,jdbcType=BIGINT}, #{noticeTitle,jdbcType=VARCHAR}, #{noticeContent,jdbcType=VARCHAR},
                 #{noticeAttachment,jdbcType=VARCHAR}, #{noticeShared,jdbcType=BOOLEAN},
                 #{noticePostTime,jdbcType=TIMESTAMP},
                 #{noticeKeywords,jdbcType=VARCHAR}, 1, #{memo,jdbcType=VARCHAR},
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
-                #{updateBy,jdbcType=VARCHAR})
+                #{updateBy,jdbcType=VARCHAR}, #{noticeAttachmentName,jdbcType=VARCHAR})
     </insert>
     <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto">
         update u_teaching_task_notice
         <set>
+            update_time = now(),
             <if test="teachingTaskId != null">
                 teaching_task_id = #{teachingTaskId,jdbcType=BIGINT},
             </if>
@@ -85,20 +88,84 @@
             <if test="memo != null">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null">
-                create_by = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="noticeAttachmentName != null and noticeAttachmentName != ''">
+                notice_attachment_name = #{noticeAttachmentName,jdbcType=VARCHAR},
             </if>
         </set>
         where valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </update>
+    <!--分页查询通告内容-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT uttn.id,
+        uttn.teaching_task_id,
+        uttn.notice_title,
+        uttn.notice_content,
+        uttn.notice_attachment,
+        uttn.notice_shared,
+        uttn.notice_post_time,
+        uttn.notice_keywords,
+        uttn.valid,
+        uttn.memo,
+        uttn.create_time,
+        uttn.create_by,
+        uttn.update_time,
+        uttn.update_by,
+        uttn.notice_attachment_name
+        FROM u_teaching_task_notice uttn
+        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND uttn.teaching_task_id = utt.id
+        WHERE uttn.valid = 1
+        AND uttn.teaching_task_id = #{teachingTaskNoticeDto.teachingTaskId}
+        <if test="teachingTaskNoticeDto.noticeTitle != null and teachingTaskNoticeDto.noticeTitle != ''">
+            AND uttn.notice_title LIKE CONCAT('%',#{teachingTaskNoticeDto.noticeTitle}, '%')
+        </if>
+        <if test="teachingTaskNoticeDto.noticeContent != null and teachingTaskNoticeDto.noticeContent != ''">
+            AND uttn.notice_content LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeContent}, '%')
+        </if>
+        <if test="teachingTaskNoticeDto.noticeShared != null">
+            AND uttn.notice_shared = #{teachingTaskNoticeDto.noticeShared}
+        </if>
+        <if test="teachingTaskNoticeDto.noticePostTime != null">
+            AND DATE(uttn.notice_post_time) = #{teachingTaskNoticeDto.noticePostTime}
+        </if>
+        <if test="teachingTaskNoticeDto.noticeKeywords != null and teachingTaskNoticeDto.noticeKeywords != ''">
+            AND uttn.notice_keywords LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeKeywords}, '%')
+        </if>
+        <if test="teachingTaskNoticeDto.noticeAttachmentName != null and teachingTaskNoticeDto.noticeAttachmentName != ''">
+            AND uttn.notice_attachment_name LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeAttachmentName}, '%')
+        </if>
+        ORDER BY uttn.notice_post_time desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询通告内容 - 总记录-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM u_teaching_task_notice uttn
+        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND uttn.teaching_task_id = utt.id
+        WHERE uttn.valid = 1
+        AND uttn.teaching_task_id = #{teachingTaskNoticeDto.teachingTaskId}
+        <if test="teachingTaskNoticeDto.noticeTitle != null and teachingTaskNoticeDto.noticeTitle != ''">
+            AND uttn.notice_title LIKE CONCAT('%',#{teachingTaskNoticeDto.noticeTitle}, '%')
+        </if>
+        <if test="teachingTaskNoticeDto.noticeContent != null and teachingTaskNoticeDto.noticeContent != ''">
+            AND uttn.notice_content LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeContent}, '%')
+        </if>
+        <if test="teachingTaskNoticeDto.noticeShared != null">
+            AND uttn.notice_shared = #{teachingTaskNoticeDto.noticeShared}
+        </if>
+        <if test="teachingTaskNoticeDto.noticePostTime != null">
+            AND DATE(uttn.notice_post_time) = #{teachingTaskNoticeDto.noticePostTime}
+        </if>
+        <if test="teachingTaskNoticeDto.noticeKeywords != null and teachingTaskNoticeDto.noticeKeywords != ''">
+            AND uttn.notice_keywords LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeKeywords}, '%')
+        </if>
+        <if test="teachingTaskNoticeDto.noticeAttachmentName != null and teachingTaskNoticeDto.noticeAttachmentName != ''">
+            AND uttn.notice_attachment_name LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeAttachmentName}, '%')
+        </if>
+    </select>
 </mapper>

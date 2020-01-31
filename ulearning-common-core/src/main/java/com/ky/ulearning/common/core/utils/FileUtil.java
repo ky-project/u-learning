@@ -43,6 +43,19 @@ public class FileUtil {
     public static final String[] IMAGE_TYPE = {"jpg", "png", "jpeg", "gif", "bmp"};
 
     /**
+     * 常见附件类型
+     */
+    public static final String[] ATTACHMENT_YTPE = {
+            //图片
+            "jpg", "png", "jpeg", "gif", "bmp",
+            //音频
+            "mp4", "mp3", ".avi",
+            //office
+            "doc", "docx", "xls", "xlsx", "ppt", "pptx",
+            //压缩文件
+            "zip", "rar"};
+
+    /**
      * MultipartFile转File
      */
     public static File toFile(MultipartFile multipartFile) {
@@ -226,12 +239,28 @@ public class FileUtil {
 
     /**
      * 测试main
+     * xlsx: 504b0304140006000800
+     * xls:  d0cf11e0a1b11ae10000
+     * docx: 504b0304140006000800
+     * doc:  d0cf11e0a1b11ae10000
+     * mp3:  49443303000000000076
+     * avi:  52494646c4dd5f004156
+     * zip:  504b03040a0000000000
+     * rar:  526172211a0700cf9073
+     * pptx: 504b0304140006000800
+     * ppt:  d0cf11e0a1b11ae10000
      */
     public static void main(String[] args) throws IOException {
-        File file = new File("D:\\Mydata\\Major\\java\\JavaTest\\HTML\\Templates\\web\\jQueryTest\\a.html");
+        String filePath = "D:\\Mydata\\STU\\Java\\资料\\Java视频\\Java从入门到精通（第4版）（配光盘）9787302444541\\PPT\\第14章\\01 集合类概述.ppt";
+        File file = new File(filePath);
         FileInputStream input = new FileInputStream(file);
 
         MultipartFile multipartFile = new MockMultipartFile("a.html", file.getName(), "text/plain", IOUtils.toByteArray(input));
-        System.out.println(fileTypeCheck(multipartFile));
+        byte[] buffer = new byte[10];
+        multipartFile.getInputStream().read(buffer);
+
+        //获取当前文件的流
+        String typeString = bytesToHexFileTypeString(buffer);
+        System.out.println(typeString);
     }
 }

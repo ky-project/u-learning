@@ -28,6 +28,9 @@ public class DefaultConfigParameters {
     @Value("${fdfs.reqPort}")
     private String dfsReqPort;
 
-    @Value("#{${ulearning.photo.max-size} * 1024 * 1024}")
+    @Value("#{${ulearning.file.photo-max-size} * 1024 * 1024}")
     private Long photoMaxSize;
+
+    @Value("#{${ulearning.file.attachment-max-size} * 1024 * 1024}")
+    private Long attachmentMaxSize;
 }

@@ -60,4 +60,10 @@ public class TeachingTaskNoticeDto extends BaseDto {
      */
     @ApiModelProperty("关键词")
     private String noticeKeywords;
+
+    /**
+     * 附件名
+     */
+    @ApiModelProperty("附件名")
+    private String noticeAttachmentName;
 }
