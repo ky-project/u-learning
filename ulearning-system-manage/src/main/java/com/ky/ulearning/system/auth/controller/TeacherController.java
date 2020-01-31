@@ -228,7 +228,7 @@ public class TeacherController extends BaseController {
         ValidatorBuilder.build()
                 //参数非空校验
                 .on(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
-                .on(photo.isEmpty(), CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
+                .on(photo == null || photo.isEmpty(), CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
                 //文件类型篡改校验
                 .on(! FileUtil.fileTypeCheck(photo), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
                 //文件类型校验

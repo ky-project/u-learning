@@ -52,6 +52,9 @@ ulearning:
   term:
     preyears: 3
     nextyears: 3
-  photo:
+  file:
     # 默认MB
-    max-size: 3
+    # 图片最大限制
+    photo-max-size: 3
+    # 附件最大限制
+    attachment-max-size: 10
