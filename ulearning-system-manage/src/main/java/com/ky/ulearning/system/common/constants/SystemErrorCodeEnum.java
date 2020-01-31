@@ -35,7 +35,8 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     STU_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名不能为空!"),
     ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "ID不能为空!"),
     LAST_LOGIN_TIME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "上次登录时间不能为空"),
-    UPATE_TIME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "更新时间不能为空"),
+    UPDATE_TIME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "更新时间不能为空"),
+    TEA_PHOTO_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教师头像url不能为空"),
 
 
     TEACHER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师不存在!"),

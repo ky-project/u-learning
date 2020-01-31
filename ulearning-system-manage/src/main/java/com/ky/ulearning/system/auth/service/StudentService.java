@@ -5,6 +5,8 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 
+import java.util.Date;
+
 /**
  * 学生service - 接口类
  *
@@ -62,7 +64,16 @@ public interface StudentService {
 
     /**
      * 更新学生信息
+     *
      * @param studentDto 待更新的学生对象
      */
     void update(StudentDto studentDto);
+
+    /**
+     * 更新学生信息更新时间
+     *
+     * @param id         学生id
+     * @param updateTime 更新时间
+     */
+    void updateUpdateTime(Long id, Date updateTime);
 }

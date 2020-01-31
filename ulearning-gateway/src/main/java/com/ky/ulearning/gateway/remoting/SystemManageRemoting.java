@@ -6,11 +6,13 @@ import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -52,6 +54,33 @@ public interface SystemManageRemoting {
     JsonResult<TeacherEntity> getById(@RequestParam("id") Long id);
 
     /**
+     * 更新教师信息
+     *
+     * @param teacherDto 待更新的教师对象
+     * @return 更新的教师对象
+     */
+    @PostMapping("/teacher/update")
+    JsonResult<TeacherDto> teacherUpdate(@RequestParam Map<String, Object> teacherDto);
+
+    /**
+     * 更新教师的更新时间
+     *
+     * @param id         教师id
+     * @param updateTime 更新时间
+     * @return 提示信息
+     */
+    @PostMapping("/teacher/updateUpdateTime")
+    JsonResult teacherUpdateUpdateTime(@RequestParam("id") Long id, @RequestParam("updateTime") Date updateTime);
+
+    /**
+     * 更新教师头像url
+     * @param teacherDto 待更新的教师对象
+     * @return 提示信息
+     */
+    @PostMapping("/teacher/updateTeaPhoto")
+    JsonResult updateTeaPhoto(@RequestParam Map<String, Object> teacherDto);
+
+    /**
      * ------------------------ StudentController ------------------------
      * 教师登录
      *
@@ -79,4 +108,23 @@ public interface SystemManageRemoting {
     @GetMapping("/student/getById")
     JsonResult<StudentEntity> studentGetById(@RequestParam("id") Long id);
 
+
+    /**
+     * 更新学生信息
+     *
+     * @param studentDto 待更新的学生对象
+     * @return 提示信息
+     */
+    @PostMapping("/student/update")
+    JsonResult studentUpdate(@RequestParam Map<String, Object> studentDto);
+
+    /**
+     * 更新学生信息的更新时间
+     *
+     * @param id         学生id
+     * @param updateTime 更新时间
+     * @return 提示信息
+     */
+    @PostMapping("/student/updateUpdateTime")
+    ResponseEntity<JsonResult> studentUpdateUpdateTime(@RequestParam("id") Long id, @RequestParam("updateTime") Date updateTime);
 }

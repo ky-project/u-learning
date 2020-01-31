@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -111,4 +112,12 @@ public interface TeacherDao {
      * @param teacherDto 待更新的教师对象
      */
     void updateTeaPhoto(TeacherDto teacherDto);
+
+    /**
+     * 更新更新时间
+     *
+     * @param id         教师id
+     * @param updateTime 更新时间
+     */
+    void updateUpdateTime(@Param("id") Long id, @Param("updateTime") Date updateTime);
 }

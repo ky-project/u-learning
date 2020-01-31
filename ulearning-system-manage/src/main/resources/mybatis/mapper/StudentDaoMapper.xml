@@ -193,4 +193,11 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--更新学生信息更新时间-->
+    <update id="updateUpdateTime">
+        UPDATE u_student
+        SET update_time = #{updateTime}
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>
