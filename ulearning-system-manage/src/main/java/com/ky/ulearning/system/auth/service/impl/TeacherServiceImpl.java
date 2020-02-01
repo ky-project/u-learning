@@ -111,24 +111,4 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
         return teacherDao.getAllVo();
     }
 
-    @Override
-    @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Throwable.class)
-    public void updateLastLoginTime(TeacherDto teacherDto) {
-        teacherDao.updateLastLoginTime(teacherDto);
-    }
-
-    @Override
-    @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Throwable.class)
-    public void updateTeaPhoto(TeacherDto teacherDto) {
-        teacherDao.updateTeaPhoto(teacherDto);
-    }
-
-    @Override
-    @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Throwable.class)
-    public void updateUpdateTime(Long id, Date updateTime) {
-        teacherDao.updateUpdateTime(id, updateTime);
-    }
 }

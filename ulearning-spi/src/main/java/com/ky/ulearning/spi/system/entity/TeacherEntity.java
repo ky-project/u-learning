@@ -82,4 +82,11 @@ public class TeacherEntity extends BaseEntity {
     @ApiModelProperty("上次登陆时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
+
+    /**
+     * 密码更新时间
+     */
+    @ApiModelProperty("密码更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date pwdUpdateTime;
 }

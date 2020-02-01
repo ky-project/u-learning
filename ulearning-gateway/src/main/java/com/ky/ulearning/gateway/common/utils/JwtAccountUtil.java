@@ -65,14 +65,14 @@ public class JwtAccountUtil {
     }
 
     /**
-     * 获取系统用户上次更新时间
+     * 获取系统用户上次敏感信息更新时间
      *
-     * @return 系统用户上次更新时间
+     * @return 系统用户上次敏感信息更新时间
      */
-    public static Date getUpdateTime() {
+    public static Date getPwdUpdateTime() {
         JwtAccount jwtAccount = getUserDetails();
         return Optional.ofNullable(jwtAccount)
-                .map(JwtAccount::getUpdateTime)
+                .map(JwtAccount::getPwdUpdateTime)
                 .orElse(null);
     }
 

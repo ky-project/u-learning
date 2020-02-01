@@ -1,6 +1,5 @@
 package com.ky.ulearning.gateway.common.security;
 
-import com.ky.ulearning.common.core.constant.MicroErrorCodeEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;

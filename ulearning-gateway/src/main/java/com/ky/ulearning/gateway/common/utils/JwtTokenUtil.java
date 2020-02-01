@@ -127,7 +127,7 @@ public class JwtTokenUtil {
 //        final Date expiration = getExpirationDateFromToken(token);
 //        如果token存在，且token创建日期 > 最后修改信息的日期 则代表token有效
         return (!isTokenExpired(token)
-                && !isCreatedBeforeLastPasswordReset(created, jwtAccount.getUpdateTime())
+                && !isCreatedBeforeLastPasswordReset(created, jwtAccount.getPwdUpdateTime())
         );
     }
 

@@ -20,6 +20,7 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="pwd_update_time" jdbcType="TIMESTAMP" property="pwdUpdateTime"/>
     </resultMap>
     <resultMap id="TeacherVoResultMap" type="com.ky.ulearning.spi.system.vo.TeacherVo">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -35,7 +36,7 @@
         last_login_time, `valid`,
         memo, create_time,
         create_by, update_time,
-        update_by
+        update_by, pwd_update_time
     </sql>
     <sql id="vo">
             id,
@@ -102,6 +103,15 @@
             </if>
             <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="pwdUpdateTime != null">
+                pwd_update_time = #{pwdUpdateTime},
+            </if>
+            <if test="teaPhoto != null and teaPhoto != ''">
+                tea_photo = #{teaPhoto},
             </if>
         </set>
         where valid = 1
@@ -175,16 +185,18 @@
     </select>
     <update id="updateValidByTeaId">
         UPDATE u_teacher
-        SET valid     = #{valid},
-            update_by = #{updateBy}
+        SET valid           = #{valid},
+            update_time     = now(),
+            pwd_update_time = now(),
+            update_by       = #{updateBy}
         WHERE id = #{id}
     </update>
     <!--新增教师-->
     <insert id="save" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto">
         INSERT INTO u_teacher(tea_number, tea_name, tea_password, tea_gender, tea_dept, tea_title, tea_phone, tea_email,
-                              tea_photo, valid, memo, create_time, create_by, update_time, update_by)
+                              tea_photo, valid, memo, create_time, create_by, update_time, update_by, pwd_update_time)
         VALUES (#{teaNumber}, #{teaName}, #{teaPassword}, #{teaGender}, #{teaDept}, #{teaTitle}, #{teaPhone},
-                #{teaEmail}, #{teaPhoto}, 1, #{memo}, now(), #{createBy}, now(), #{updateBy})
+                #{teaEmail}, #{teaPhoto}, 1, #{memo}, now(), #{createBy}, now(), #{updateBy}, now())
     </insert>
     <!--根据id查询教师信息-->
     <select id="getById" resultMap="BaseResultMap">
@@ -202,29 +214,4 @@
         FROM u_teacher
         WHERE valid = 1
     </select>
-    <!--更新上次登录时间-->
-    <update id="updateLastLoginTime" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto">
-        UPDATE u_teacher
-        SET last_login_time = #{lastLoginTime},
-            update_time     = #{updateTime}
-        WHERE valid = 1
-          AND id = #{id}
-    </update>
-    <!--更新用户照片-->
-    <update id="updateTeaPhoto" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto">
-        UPDATE u_teacher
-        SET tea_photo   = #{teaPhoto},
-            update_time = #{updateTime},
-            update_by   = #{updateBy}
-        WHERE valid = 1
-          AND id = #{id}
-
-    </update>
-    <!--更新更新时间-->
-    <update id="updateUpdateTime">
-        UPDATE u_teacher
-        SET update_time = #{updateTime}
-        WHERE valid = 1
-          AND id = #{id}
-    </update>
 </mapper>
