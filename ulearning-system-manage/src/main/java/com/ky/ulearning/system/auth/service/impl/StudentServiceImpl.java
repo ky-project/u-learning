@@ -83,13 +83,6 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
-    public void updateLastLoginTime(StudentDto studentDto) {
-        studentDao.updateLastLoginTime(studentDto);
-    }
-
-    @Override
-    @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Throwable.class)
     public void update(StudentDto studentDto) {
         //判断学生学号是否存
         if (StringUtil.isNotEmpty(studentDto.getStuNumber())) {
@@ -106,19 +99,5 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             }
         }
         studentDao.update(studentDto);
-    }
-
-    @Override
-    @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Throwable.class)
-    public void updateUpdateTime(Long id, Date updateTime) {
-        studentDao.updateUpdateTime(id, updateTime);
-    }
-
-    @Override
-    @CacheEvict(allEntries = true)
-    @Transactional(rollbackFor = Throwable.class)
-    public void updateStuPhoto(StudentDto studentDto) {
-        studentDao.updateStuPhoto(studentDto);
     }
 }

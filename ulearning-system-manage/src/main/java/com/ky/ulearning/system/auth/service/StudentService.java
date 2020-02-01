@@ -56,31 +56,9 @@ public interface StudentService {
     StudentEntity getByStuNumber(String stuNumber);
 
     /**
-     * 更新上次登录时间，不更新更新时间
-     *
-     * @param studentDto 待更新的学生对象
-     */
-    void updateLastLoginTime(StudentDto studentDto);
-
-    /**
      * 更新学生信息
      *
      * @param studentDto 待更新的学生对象
      */
     void update(StudentDto studentDto);
-
-    /**
-     * 更新学生信息更新时间
-     *
-     * @param id         学生id
-     * @param updateTime 更新时间
-     */
-    void updateUpdateTime(Long id, Date updateTime);
-
-    /**
-     * 更新学生头像,不修改更新时间
-     *
-     * @param studentDto 待更新的学生信息
-     */
-    void updateStuPhoto(StudentDto studentDto);
 }

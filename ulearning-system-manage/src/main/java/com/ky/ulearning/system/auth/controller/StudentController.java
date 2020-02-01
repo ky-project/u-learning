@@ -112,12 +112,13 @@ public class StudentController extends BaseController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
         if (!StringUtil.isEmpty(studentDto.getStuPassword())) {
             studentDto.setStuPassword(EncryptUtil.encryptPassword(studentDto.getStuPassword()));
+            studentDto.setPwdUpdateTime(new Date());
         }
         //设置更新者编号
         studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
 
         studentService.update(studentDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加学生成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新学生成功"));
     }
 
     @ApiOperation(value = "", hidden = true)
@@ -133,36 +134,10 @@ public class StudentController extends BaseController {
                 .setSysRole(MicroConstant.SYS_ROLE_STUDENT)
                 .setUsername(studentEntity.getStuNumber())
                 .setPassword(studentEntity.getStuPassword())
-                .setUpdateTime(studentEntity.getUpdateTime())
+                .setPwdUpdateTime(studentEntity.getPwdUpdateTime())
                 .setRoles(Collections.emptyList())
                 .setPermissions(Collections.emptyList());
         return ResponseEntityUtil.ok(JsonResult.buildData(userContext));
-    }
-
-    /**
-     * 登录成功更新登录时间但不更新更新日期
-     */
-    @ApiOperation(value = "", hidden = true)
-    @PostMapping("/loginUpdate")
-    public ResponseEntity<JsonResult> loginUpdate(StudentDto studentDto) {
-        ValidatorBuilder.build()
-                .on(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(studentDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(studentDto.getUpdateTime()), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL)
-                .doValidate().checkResult();
-        studentService.updateLastLoginTime(studentDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @PostMapping("/updateUpdateTime")
-    public ResponseEntity<JsonResult> updateUpdateTime(Long id, Date updateTime) {
-        ValidatorBuilder.build()
-                .on(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(updateTime), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL)
-                .doValidate().checkResult();
-        studentService.updateUpdateTime(id, updateTime);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
     @Log("更新密码")
@@ -188,6 +163,7 @@ public class StudentController extends BaseController {
         studentDto.setId(passwordUpdateDto.getId());
         studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         studentDto.setStuPassword(newPassword);
+        studentDto.setPwdUpdateTime(new Date());
         studentService.update(studentDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }
@@ -220,19 +196,9 @@ public class StudentController extends BaseController {
         StudentDto studentDto = new StudentDto();
         studentDto.setId(id);
         studentDto.setStuPhoto(url);
-        studentDto.setUpdateTime(studentEntity.getUpdateTime());
         studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
-        studentService.updateStuPhoto(studentDto);
+        studentService.update(studentDto);
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @PostMapping("/updateStuPhoto")
-    public ResponseEntity<JsonResult> updateStuPhoto(StudentDto studentDto) {
-        ValidateHandler.checkParameter(StringUtil.isEmpty(studentDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        ValidateHandler.checkParameter(StringUtil.isEmpty(studentDto.getStuPhoto()), SystemErrorCodeEnum.STU_PHOTO_CANNOT_BE_NULL);
-        studentService.updateStuPhoto(studentDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 }

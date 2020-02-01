@@ -149,7 +149,7 @@ public class AuthController {
         //根据不同系统角色调用不同接口
         if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
             //教师身份
-            TeacherEntity teacher = systemManageRemoting.getById(jwtAccount.getId()).getData();
+            TeacherEntity teacher = systemManageRemoting.teacherGetById(jwtAccount.getId()).getData();
             return ResponseEntityUtil.ok(JsonResult.buildData(teacher));
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
             //学生身份
@@ -229,13 +229,12 @@ public class AuthController {
         Map<String, Object> updateMap = new HashMap<>(16);
         updateMap.put("id", jwtAccount.getId());
         updateMap.put("lastLoginTime", new Date());
-        updateMap.put("updateTime", jwtAccount.getUpdateTime());
         if (MicroConstant.SYS_ROLE_TEACHER.equals(jwtAccount.getSysRole())) {
             //更新教师登录时间
-            systemManageRemoting.updateLoginTime(updateMap);
+            systemManageRemoting.teacherUpdate(updateMap);
         } else if (MicroConstant.SYS_ROLE_STUDENT.equals(jwtAccount.getSysRole())) {
             //更新学生登录时间
-            systemManageRemoting.studentUpdateLoginTime(updateMap);
+            systemManageRemoting.studentUpdate(updateMap);
         }
 
         //登录日志
@@ -331,8 +330,6 @@ public class AuthController {
                 param.put("teaPhone", teacherDto.getTeaPhone());
                 param.put("teaTitle", teacherDto.getTeaTitle());
                 systemManageRemoting.teacherUpdate(param);
-                //不改变更新时间
-                systemManageRemoting.teacherUpdateUpdateTime(jwtAccount.getId(), jwtAccount.getUpdateTime());
             } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
                 //学生身份
                 param.put("stuClass", studentDto.getStuClass());
@@ -342,8 +339,6 @@ public class AuthController {
                 param.put("stuName", studentDto.getStuName());
                 param.put("stuPhone", studentDto.getStuPhone());
                 systemManageRemoting.studentUpdate(param);
-                //不改变更新时间
-                systemManageRemoting.studentUpdateUpdateTime(jwtAccount.getId(), jwtAccount.getUpdateTime());
             } else {
                 return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum((GatewayErrorCodeEnum.ACCOUNT_ERROR)));
             }
@@ -378,7 +373,7 @@ public class AuthController {
             if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
                 //教师身份
                 //获取当前用户信息
-                TeacherEntity teacherEntity = systemManageRemoting.getById(jwtAccount.getId()).getData();
+                TeacherEntity teacherEntity = systemManageRemoting.teacherGetById(jwtAccount.getId()).getData();
                 //判断是否已有头像，有则先删除
                 if (StringUtil.isNotEmpty(teacherEntity.getTeaPhoto())) {
                     fastDfsClientWrapper.deleteFile(teacherEntity.getTeaPhoto());
@@ -387,8 +382,7 @@ public class AuthController {
                 String url = fastDfsClientWrapper.uploadFile(photo);
                 //更新url
                 param.put("teaPhoto", url);
-                param.put("updateTime", teacherEntity.getUpdateTime());
-                systemManageRemoting.updateTeaPhoto(param);
+                systemManageRemoting.teacherUpdate(param);
             } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
                 //学生身份
                 //获取当前用户信息
@@ -401,8 +395,7 @@ public class AuthController {
                 String url = fastDfsClientWrapper.uploadFile(photo);
                 //更新url
                 param.put("stuPhoto", url);
-                param.put("updateTime", studentEntity.getUpdateTime());
-                systemManageRemoting.updateStuPhoto(param);
+                systemManageRemoting.studentUpdate(param);
             } else {
                 return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
             }

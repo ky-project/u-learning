@@ -125,7 +125,7 @@ public class TeacherController extends BaseController {
                 .setSysRole(MicroConstant.SYS_ROLE_TEACHER)
                 .setUsername(teacher.getTeaNumber())
                 .setPassword(teacher.getTeaPassword())
-                .setUpdateTime(teacher.getUpdateTime());
+                .setPwdUpdateTime(teacher.getPwdUpdateTime());
 
         //获取该教师的角色
         List<RoleEntity> roleList = teacherRoleService.getRoleByTeaId(teacher.getId());
@@ -140,21 +140,6 @@ public class TeacherController extends BaseController {
             userContext.setPermissions(rolePermissionService.getPermissionListByRoleId(roleIdList));
         }
         return ResponseEntityUtil.ok(JsonResult.buildData(userContext));
-    }
-
-    /**
-     * 登录成功更新登录时间但不更新更新日期
-     */
-    @ApiOperation(value = "", hidden = true)
-    @PostMapping("/loginUpdate")
-    public ResponseEntity<JsonResult> updateLoginTime(TeacherDto teacherDto) {
-        ValidatorBuilder.build()
-                .on(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(teacherDto.getLastLoginTime()), SystemErrorCodeEnum.LAST_LOGIN_TIME_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(teacherDto.getUpdateTime()), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL)
-                .doValidate().checkResult();
-        teacherService.updateLastLoginTime(teacherDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
     @Log("根据工号查询教师")
@@ -185,6 +170,7 @@ public class TeacherController extends BaseController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
         if (!StringUtil.isEmpty(teacherDto.getTeaPassword())) {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
+            teacherDto.setPwdUpdateTime(new Date());
         }
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teacherService.update(teacherDto);
@@ -200,6 +186,11 @@ public class TeacherController extends BaseController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teaId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
 
         teacherRoleService.saveAssignedRole(teaId, roleIds, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        //更新pwd_update_time
+        TeacherDto teacherDto = new TeacherDto();
+        teacherDto.setId(teaId);
+        teacherDto.setPwdUpdateTime(new Date());
+        teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分配成功"));
     }
 
@@ -250,29 +241,10 @@ public class TeacherController extends BaseController {
         TeacherDto teacherDto = new TeacherDto();
         teacherDto.setId(id);
         teacherDto.setTeaPhoto(url);
-        teacherDto.setUpdateTime(teacherEntity.getUpdateTime());
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
-        teacherService.updateTeaPhoto(teacherDto);
+        teacherService.update(teacherDto);
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @PostMapping("/updateUpdateTime")
-    public ResponseEntity<JsonResult> updateUpdateTime(Long id, Date updateTime) {
-        ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        ValidateHandler.checkParameter(StringUtil.isEmpty(updateTime), SystemErrorCodeEnum.UPDATE_TIME_CANNOT_BE_NULL);
-        teacherService.updateUpdateTime(id, updateTime);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
-    }
-
-    @ApiOperation(value = "", hidden = true)
-    @PostMapping("/updateTeaPhoto")
-    public ResponseEntity<JsonResult> updateTeaPhoto(TeacherDto teacherDto) {
-        ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
-        ValidateHandler.checkParameter(StringUtil.isEmpty(teacherDto.getTeaPhoto()), SystemErrorCodeEnum.TEA_PHOTO_CANNOT_BE_NULL);
-        teacherService.updateTeaPhoto(teacherDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
     @Log("更新密码")
@@ -298,6 +270,7 @@ public class TeacherController extends BaseController {
         teacherDto.setId(passwordUpdateDto.getId());
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teacherDto.setTeaPassword(newPassword);
+        teacherDto.setPwdUpdateTime(new Date());
         teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }

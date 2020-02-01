@@ -48,7 +48,7 @@ public class UserContext implements Serializable {
     private List<PermissionEntity> permissions;
 
     /**
-     * 更新时间
+     * 密码更新时间
      */
-    private Date updateTime;
+    private Date pwdUpdateTime;
 }

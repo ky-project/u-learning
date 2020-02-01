@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @ApiModel("登录实体类")
 public class LoginUser {
-    @ApiModelProperty(value = "账号:学号/工号", example = "admin", required = true)
+    @ApiModelProperty(value = "账号:学号/工号", required = true)
     private String username;
 
     @ApiModelProperty(value = "密码", example = "123456", required = true)

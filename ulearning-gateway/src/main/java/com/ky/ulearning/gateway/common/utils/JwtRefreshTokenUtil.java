@@ -1,7 +1,7 @@
 package com.ky.ulearning.gateway.common.utils;
 
-import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
+import com.ky.ulearning.gateway.common.security.JwtAccount;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClock;
 import io.jsonwebtoken.impl.TextCodec;
@@ -156,7 +156,7 @@ public class JwtRefreshTokenUtil {
 //        final Date expiration = getExpirationDateFromToken(token);
 //        如果token存在，且token创建日期 > 最后修改信息的日期 则代表token有效
         return (!isTokenExpired(refreshToken)
-                && !isCreatedBeforeLastPasswordReset(created, jwtAccount.getUpdateTime())
+                && !isCreatedBeforeLastPasswordReset(created, jwtAccount.getPwdUpdateTime())
         );
     }
 

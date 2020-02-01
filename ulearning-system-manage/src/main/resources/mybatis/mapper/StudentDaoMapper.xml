@@ -19,6 +19,7 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="pwd_update_time" jdbcType="TIMESTAMP" property="pwdUpdateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -37,7 +38,8 @@
             create_time,
             create_by,
             update_time,
-            update_by
+            update_by,
+            pwd_update_time
     </sql>
     <!--根据id获取学生信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -55,13 +57,13 @@
                                stu_phone, stu_email, stu_photo,
                                last_login_time, `valid`, memo,
                                create_time, create_by, update_time,
-                               update_by)
+                               update_by, pwd_update_time)
         values (#{stuNumber,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{stuPassword,jdbcType=VARCHAR},
                 #{stuGender,jdbcType=VARCHAR}, #{stuDept,jdbcType=VARCHAR}, #{stuClass,jdbcType=VARCHAR},
                 #{stuPhone,jdbcType=VARCHAR}, #{stuEmail,jdbcType=VARCHAR}, #{stuPhoto,jdbcType=VARCHAR},
                 #{lastLoginTime,jdbcType=TIMESTAMP}, 1, #{memo,jdbcType=VARCHAR},
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
-                #{updateBy,jdbcType=VARCHAR})
+                #{updateBy,jdbcType=VARCHAR}, now())
     </insert>
     <!--更新学生信息-->
     <update id="update" parameterType="com.ky.ulearning.spi.system.dto.StudentDto">
@@ -97,6 +99,15 @@
             </if>
             <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="pwdUpdateTime != null">
+                pwd_update_time = #{pwdUpdateTime},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="stuPhoto != null and stuPhoto != ''">
+                stu_photo = #{stuPhoto},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -180,33 +191,10 @@
     <!--根据id更新valid-->
     <update id="updateValidById">
         UPDATE u_student
-        SET valid       = #{valid},
-            update_time = now(),
-            update_by   = #{updateBy}
+        SET valid           = #{valid},
+            update_time     = now(),
+            pwd_update_time = now(),
+            update_by       = #{updateBy}
         WHERE id = #{id}
-    </update>
-    <!--更新上次登录时间，不更新更新时间-->
-    <update id="updateLastLoginTime" parameterType="com.ky.ulearning.spi.system.dto.StudentDto">
-        UPDATE u_student
-        SET last_login_time = #{lastLoginTime},
-            update_time     = #{updateTime}
-        WHERE valid = 1
-          AND id = #{id}
-    </update>
-    <!--更新学生信息更新时间-->
-    <update id="updateUpdateTime">
-        UPDATE u_student
-        SET update_time = #{updateTime}
-        WHERE valid = 1
-          AND id = #{id}
-    </update>
-    <!--更新学生头像-->
-    <update id="updateStuPhoto">
-        UPDATE u_student
-        SET update_time = #{updateTime},
-            stu_photo   = #{stuPhoto},
-            update_by   = #{updateBy}
-        WHERE valid = 1
-          AND id = #{id}
     </update>
 </mapper>

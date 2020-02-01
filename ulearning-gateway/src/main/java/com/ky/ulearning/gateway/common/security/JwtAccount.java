@@ -15,7 +15,7 @@ import java.util.List;
  * 登录账号信息
  *
  * @author luyuhao
- * @date 19/12/06 21:30
+ * @since 19/12/06 21:30
  */
 @Data
 @Accessors(chain = true)
@@ -51,9 +51,9 @@ public class JwtAccount implements UserDetails {
     private List<PermissionEntity> permissions;
 
     /**
-     * 更新时间
+     * 密码更新时间
      */
-    private Date updateTime;
+    private Date pwdUpdateTime;
 
     /**
      * 权限集合

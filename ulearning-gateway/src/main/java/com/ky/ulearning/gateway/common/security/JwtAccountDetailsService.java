@@ -48,10 +48,6 @@ public class JwtAccountDetailsService implements UserDetailsService {
         JwtAccount jwtAccount;
         //判断是教师还是学生
         if (teacher != null) {
-            //教师无任何角色时
-            if (CollectionUtils.isEmpty(teacher.getRoles())) {
-                throw new BadRequestException(GatewayErrorCodeEnum.TEACHER_HAS_NO_ROLE);
-            }
             jwtAccount = userContextJwtAccountMapper.toDto(teacher);
             if (!CollectionUtils.isEmpty(teacher.getPermissions())) {
                 jwtAccount.setAuthorities(teacher.getPermissions()

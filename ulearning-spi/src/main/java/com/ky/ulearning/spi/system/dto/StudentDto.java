@@ -78,4 +78,11 @@ public class StudentDto extends BaseDto {
     @ApiModelProperty(hidden = true)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
+
+    /**
+     * 密码更新时间
+     */
+    @ApiModelProperty(hidden = true)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date pwdUpdateTime;
 }

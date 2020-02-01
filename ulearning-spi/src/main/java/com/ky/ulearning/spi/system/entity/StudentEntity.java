@@ -2,6 +2,7 @@ package com.ky.ulearning.spi.system.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ky.ulearning.spi.common.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -79,5 +80,13 @@ public class StudentEntity extends BaseEntity {
 	* 上次登录时间
 	*/
     @ApiModelProperty("上次登录时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastLoginTime;
+
+    /**
+     * 密码更新时间
+     */
+    @ApiModelProperty("密码更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date pwdUpdateTime;
 }

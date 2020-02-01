@@ -71,23 +71,4 @@ public interface TeacherService {
      */
     List<TeacherVo> getAll();
 
-    /**
-     * 更新登录，不更新更新时间
-     *
-     * @param teacherDto 待更新的教师对象
-     */
-    void updateLastLoginTime(TeacherDto teacherDto);
-
-    /**
-     * 更新用户照片
-     * @param teacherDto 待更新的教师对象
-     */
-    void updateTeaPhoto(TeacherDto teacherDto);
-
-    /**
-     * 更新更新时间
-     * @param id 教师id
-     * @param updateTime 更新时间
-     */
-    void updateUpdateTime(Long id, Date updateTime);
 }
