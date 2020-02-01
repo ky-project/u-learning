@@ -1,0 +1,1 @@
+ALTER TABLE u_teacher ADD COLUMN `pwd_update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0)  COMMENT '密码更新时间';
