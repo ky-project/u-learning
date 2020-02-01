@@ -22,7 +22,9 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     INSUFFICIENT_PERMISSION(HttpStatus.FORBIDDEN,"权限不足!"),
     REQUEST_PATH_NOT_REGISTER(HttpStatus.BAD_REQUEST, "访问路径非法!"),
     AUTHORIZED_FAILURE(HttpStatus.UNAUTHORIZED,"认证失败"),
-    UPDATE_FAILED(HttpStatus.BAD_REQUEST, "更新失败，请确认信息或稍后再试");
+    UPDATE_FAILED(HttpStatus.BAD_REQUEST, "邮箱已存在，请确认信息或稍后再试"),
+    UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "文件上传失败，请稍后再试")
+    ;
 
     private Integer code;
     private String message;

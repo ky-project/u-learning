@@ -54,7 +54,7 @@ public class LogAspect {
         //设置log属性
         LogEntity logEntity = AopUtil.buildLogEntity(joinPoint, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class),
                 RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP), currentTime,
-                MicroConstant.LOG_TYPE[0], null);
+                MicroConstant.LOG_TYPE[0], null, "监控系统");
 
         //若ip和username都为null，默许为内部调用，不记录操作表
         if (StringUtil.isEmpty(logEntity.getLogUsername())
@@ -79,7 +79,7 @@ public class LogAspect {
         ProceedingJoinPoint joinPoint = (ProceedingJoinPoint) join;
         //设置log属性
         LogEntity logEntity = AopUtil.buildLogEntity(joinPoint, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class),
-                RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP), currentTime, MicroConstant.LOG_TYPE[1], e.getMessage());
+                RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP), currentTime, MicroConstant.LOG_TYPE[1], e.getMessage(), "监控系统");
 
         //若ip和username都为null，默许为内部调用，不记录操作表
         if (StringUtil.isEmpty(logEntity.getLogUsername())

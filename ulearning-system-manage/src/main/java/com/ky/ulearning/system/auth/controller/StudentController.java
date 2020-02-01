@@ -3,6 +3,7 @@ package com.ky.ulearning.system.auth.controller;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
+import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.EncryptUtil;
@@ -13,9 +14,12 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.StudentDto;
+import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import io.swagger.annotations.Api;
@@ -157,5 +161,32 @@ public class StudentController extends BaseController {
                 .doValidate().checkResult();
         studentService.updateUpdateTime(id, updateTime);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("更新密码")
+    @ApiOperation("更新密码")
+    @PermissionName(source = "student:updatePassword", name = "更新密码", group = "学生管理")
+    @PostMapping("/updatePassword")
+    public ResponseEntity<JsonResult> updatePassword(PasswordUpdateDto passwordUpdateDto){
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(passwordUpdateDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.OLD_PASSWORD_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(passwordUpdateDto.getNewPassword()), CommonErrorCodeEnum.NEW_PASSWORD_CANNOT_BE_NULL)
+                .on(passwordUpdateDto.getNewPassword().equals(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.PASSWORD_SAME)
+                .doValidate().checkResult();
+        //获取教师信息并校验
+        StudentEntity studentEntity = studentService.getById(passwordUpdateDto.getId());
+        ValidateHandler.checkParameter(studentEntity == null, SystemErrorCodeEnum.STUDENT_NOT_EXISTS);
+
+        String oldPassword = EncryptUtil.encryptPassword(passwordUpdateDto.getOldPassword());
+        String newPassword = EncryptUtil.encryptPassword(passwordUpdateDto.getNewPassword());
+        //旧密码错误
+        ValidateHandler.checkParameter(!oldPassword.equals(studentEntity.getStuPassword()), CommonErrorCodeEnum.OLD_PASSWORD_ERROR);
+        StudentDto studentDto = new StudentDto();
+        studentDto.setId(passwordUpdateDto.getId());
+        studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        studentDto.setStuPassword(newPassword);
+        studentService.update(studentDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }
 }
