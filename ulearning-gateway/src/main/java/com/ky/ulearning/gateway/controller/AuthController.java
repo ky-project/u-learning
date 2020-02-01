@@ -390,7 +390,19 @@ public class AuthController {
                 param.put("updateTime", teacherEntity.getUpdateTime());
                 systemManageRemoting.updateTeaPhoto(param);
             } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
-                //TODO 学生身份
+                //学生身份
+                //获取当前用户信息
+                StudentEntity studentEntity = systemManageRemoting.studentGetById(jwtAccount.getId()).getData();
+                //判断是否已有头像，有则先删除
+                if (StringUtil.isNotEmpty(studentEntity.getStuPhoto())) {
+                    fastDfsClientWrapper.deleteFile(studentEntity.getStuPhoto());
+                }
+                //保存文件
+                String url = fastDfsClientWrapper.uploadFile(photo);
+                //更新url
+                param.put("stuPhoto", url);
+                param.put("updateTime", studentEntity.getUpdateTime());
+                systemManageRemoting.updateStuPhoto(param);
             } else {
                 return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
             }

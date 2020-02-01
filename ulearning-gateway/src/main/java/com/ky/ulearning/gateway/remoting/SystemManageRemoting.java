@@ -6,7 +6,6 @@ import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +73,7 @@ public interface SystemManageRemoting {
 
     /**
      * 更新教师头像url
+     *
      * @param teacherDto 待更新的教师对象
      * @return 提示信息
      */
@@ -126,5 +126,14 @@ public interface SystemManageRemoting {
      * @return 提示信息
      */
     @PostMapping("/student/updateUpdateTime")
-    ResponseEntity<JsonResult> studentUpdateUpdateTime(@RequestParam("id") Long id, @RequestParam("updateTime") Date updateTime);
+    JsonResult studentUpdateUpdateTime(@RequestParam("id") Long id, @RequestParam("updateTime") Date updateTime);
+
+    /**
+     * 更新学生头像url
+     *
+     * @param studentDto 待更新的学生对象
+     * @return 提示信息
+     */
+    @PostMapping("/student/updateStuPhoto")
+    JsonResult updateStuPhoto(@RequestParam Map<String, Object> studentDto);
 }
