@@ -76,4 +76,11 @@ public interface StudentService {
      * @param updateTime 更新时间
      */
     void updateUpdateTime(Long id, Date updateTime);
+
+    /**
+     * 更新学生头像,不修改更新时间
+     *
+     * @param studentDto 待更新的学生信息
+     */
+    void updateStuPhoto(StudentDto studentDto);
 }

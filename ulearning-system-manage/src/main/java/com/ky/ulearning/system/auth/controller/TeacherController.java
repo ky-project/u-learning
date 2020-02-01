@@ -226,7 +226,7 @@ public class TeacherController extends BaseController {
     @ApiOperation("上传头像")
     @PermissionName(source = "teacher:uploadPhoto", name = "上传头像", group = "教师管理")
     @PostMapping("/uploadPhoto")
-    public ResponseEntity<JsonResult> uploadPhoto(@RequestParam("photo") MultipartFile photo, @Param("id")Long id) throws IOException, InterruptedException {
+    public ResponseEntity<JsonResult> uploadPhoto(@RequestParam("photo") MultipartFile photo, @RequestParam("id")Long id) throws IOException, InterruptedException {
         ValidatorBuilder.build()
                 //参数非空校验
                 .on(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)

@@ -114,4 +114,11 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     public void updateUpdateTime(Long id, Date updateTime) {
         studentDao.updateUpdateTime(id, updateTime);
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateStuPhoto(StudentDto studentDto) {
+        studentDao.updateStuPhoto(studentDto);
+    }
 }

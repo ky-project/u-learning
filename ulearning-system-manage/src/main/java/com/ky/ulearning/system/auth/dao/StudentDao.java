@@ -99,4 +99,11 @@ public interface StudentDao {
      * @param updateTime 更新时间
      */
     void updateUpdateTime(@Param("id") Long id, @Param("updateTime") Date updateTime);
+
+    /**
+     * 更新学生头像
+     *
+     * @param studentDto 待更新的学生信息
+     */
+    void updateStuPhoto(StudentDto studentDto);
 }
