@@ -4,7 +4,6 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ky.ulearning.common.core.annotation.Log;
-import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
@@ -27,6 +26,7 @@ import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
+import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
@@ -38,14 +38,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
@@ -354,7 +356,7 @@ public class AuthController {
     @Log("上传头像")
     @ApiOperation("上传头像")
     @PostMapping("/uploadPhoto")
-    public ResponseEntity<JsonResult> uploadPhoto(MultipartFile photo){
+    public ResponseEntity<JsonResult> uploadPhoto(MultipartFile photo) {
         JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
         ValidatorBuilder.build()
                 .on(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN)
@@ -388,14 +390,64 @@ public class AuthController {
                 param.put("updateTime", teacherEntity.getUpdateTime());
                 systemManageRemoting.updateTeaPhoto(param);
             } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
-                //TODO 学生身份
+                //学生身份
+                //获取当前用户信息
+                StudentEntity studentEntity = systemManageRemoting.studentGetById(jwtAccount.getId()).getData();
+                //判断是否已有头像，有则先删除
+                if (StringUtil.isNotEmpty(studentEntity.getStuPhoto())) {
+                    fastDfsClientWrapper.deleteFile(studentEntity.getStuPhoto());
+                }
+                //保存文件
+                String url = fastDfsClientWrapper.uploadFile(photo);
+                //更新url
+                param.put("stuPhoto", url);
+                param.put("updateTime", studentEntity.getUpdateTime());
+                systemManageRemoting.updateStuPhoto(param);
             } else {
                 return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
             }
             //返回信息
             return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
-        }catch (Exception e){
-            return ResponseEntityUtil.ok(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.UPDATE_FAILED));
+        } catch (Exception e) {
+            return ResponseEntityUtil.ok(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.UPLOAD_FAILED));
         }
+    }
+
+    @Log("修改密码")
+    @ApiOperation("修改密码")
+    @ApiOperationSupport(ignoreParameters = "id")
+    @PostMapping("/updatePassword")
+    public ResponseEntity<JsonResult> updatePassword(PasswordUpdateDto passwordUpdateDto) {
+        JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
+        ValidatorBuilder.build()
+                .on(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN)
+                .on(StringUtil.isEmpty(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.OLD_PASSWORD_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(passwordUpdateDto.getNewPassword()), CommonErrorCodeEnum.NEW_PASSWORD_CANNOT_BE_NULL)
+                .on(passwordUpdateDto.getNewPassword().equals(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.PASSWORD_SAME)
+                .doValidate().checkResult();
+
+        String oldPassword = EncryptUtil.encryptPassword(passwordUpdateDto.getOldPassword());
+        //旧密码错误
+        ValidateHandler.checkParameter(!oldPassword.equals(jwtAccount.getPassword()), CommonErrorCodeEnum.OLD_PASSWORD_ERROR);
+        //参数初始化
+        Map<String, Object> param = new HashMap<>(16);
+        param.put("id", jwtAccount.getId());
+        param.put("updateBy", jwtAccount.getUsername());
+        String sysRole = jwtAccount.getSysRole();
+
+        //根据不同系统角色调用不同接口
+        if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+            //教师身份
+            param.put("teaPassword", passwordUpdateDto.getNewPassword());
+            systemManageRemoting.teacherUpdate(param);
+        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+            //学生身份
+            param.put("stuPassword", passwordUpdateDto.getNewPassword());
+            systemManageRemoting.studentUpdate(param);
+        } else {
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+        }
+        //返回信息
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 }

@@ -22,13 +22,16 @@ public class AopUtil {
      * @param currentTime  开始执行时间
      * @param logType      日志类型
      * @param exceptionMsg 错误信息
+     * @param preDesc      描述前缀
      * @return 日志对象
      */
-    public static LogEntity buildLogEntity(ProceedingJoinPoint joinPoint, String username, String ip, long currentTime, String logType, String exceptionMsg) {
+    public static LogEntity buildLogEntity(ProceedingJoinPoint joinPoint, String username,
+                                           String ip, long currentTime, String logType,
+                                           String exceptionMsg, String preDesc) {
         LogEntity logEntity = new LogEntity();
         //获取用户信息
         logEntity.setLogUsername(username);
-        logEntity.setLogDescription(getDescription(joinPoint));
+        logEntity.setLogDescription(preDesc + "-" + getDescription(joinPoint));
         logEntity.setLogModule(getModule(joinPoint));
         logEntity.setLogIp(ip);
         logEntity.setLogType(logType);

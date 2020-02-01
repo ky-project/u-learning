@@ -200,4 +200,13 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--更新学生头像-->
+    <update id="updateStuPhoto">
+        UPDATE u_student
+        SET update_time = #{updateTime},
+            stu_photo   = #{stuPhoto},
+            update_by   = #{updateBy}
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>
