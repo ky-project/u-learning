@@ -3,9 +3,7 @@ package com.ky.ulearning.common.core.utils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +38,7 @@ public class StringUtil extends StringUtils {
      * @return longList
      */
     public static List<Long> strArrToLongList(String[] strArr) {
-        if(isArrEmpty(strArr)){
+        if (isArrEmpty(strArr)) {
             return Collections.emptyList();
         }
         List<Long> res = new ArrayList<>();
@@ -63,14 +61,44 @@ public class StringUtil extends StringUtils {
     /**
      * 数组是否为null
      */
-    public static <T> boolean isArrEmpty(T[] strArr){
+    public static <T> boolean isArrEmpty(T[] strArr) {
         return strArr == null || strArr.length < 1;
     }
 
     /**
      * 数组是否不为null
      */
-    public static <T> boolean isArrNotEmpty(T[] strArr){
-        return ! isArrEmpty(strArr);
+    public static <T> boolean isArrNotEmpty(T[] strArr) {
+        return !isArrEmpty(strArr);
+    }
+
+    /**
+     * 字符串转为list
+     */
+    public static List<String> strToList(String str, String splitStr) {
+        if (isEmpty(str)) {
+            return Collections.emptyList();
+        }
+        try {
+            String[] strSplit = str.split(splitStr);
+            return Arrays.asList(strSplit);
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * 字符串转为set
+     */
+    public static Set<String> strToSet(String str, String splitStr) {
+        if (isEmpty(str)) {
+            return Collections.emptySet();
+        }
+        try {
+            String[] strSplit = str.split(splitStr);
+            return new HashSet<>(Arrays.asList(strSplit));
+        } catch (Exception e) {
+            return Collections.emptySet();
+        }
     }
 }

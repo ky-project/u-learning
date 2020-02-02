@@ -50,7 +50,7 @@ public class StudentTeachingTaskController extends BaseController {
     @Autowired
     private StudentService studentService;
 
-    @Log("教师-分页查询选课学生信息")
+    @Log("分页查询选课学生信息")
     @ApiOperation(value = "分页查询选课学生信息", notes = "只能查看选了自己课的学生信息")
     @ApiOperationSupport(ignoreParameters = {"id", "stuPassword"})
     @GetMapping("/pageList")
@@ -62,7 +62,7 @@ public class StudentTeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("教师-根据id查询选课学生信息")
+    @Log("根据id查询选课学生信息")
     @ApiOperation(value = "根据id查询选课学生信息", notes = "只能查看选了自己课的学生信息")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<StudentEntity>> getById(Long stuId) {
@@ -73,7 +73,7 @@ public class StudentTeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(studentEntity));
     }
 
-    @Log("教师-移除选课学生信息")
+    @Log("移除选课学生信息")
     @ApiOperation(value = "移除选课学生信息", notes = "只能移除选了自己课的学生")
     @ApiOperationSupport(ignoreParameters = {"id", "memo"})
     @PostMapping("/remove")

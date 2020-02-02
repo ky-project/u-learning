@@ -19,10 +19,12 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     TEACHING_TASK_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学任务id不能为空"),
     STUDENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学生id不能为空"),
     NOTICE_TITLE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "标题不能为空"),
+    NOTICE_ATTACHMENET_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "附件不能为空"),
 
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
+    NOTICE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告不存在"),
 
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),
     STUDENT_ILLEGAL(HttpStatus.BAD_REQUEST, "该学生不可操作")

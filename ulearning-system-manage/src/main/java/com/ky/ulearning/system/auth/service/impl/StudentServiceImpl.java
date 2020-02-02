@@ -70,6 +70,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
 
     @Override
     @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id, String updateBy) {
         studentDao.updateValidById(id, 0, updateBy);
     }

@@ -1,6 +1,7 @@
 package com.ky.ulearning.spi.teacher.entity;
 
 import com.ky.ulearning.spi.common.entity.BaseEntity;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import java.util.Date;
  * @since 2020/01/30 23:16
  */
 @Data
+@ApiModel("教学任务通告实体类")
 @EqualsAndHashCode(callSuper = true)
 public class TeachingTaskNoticeEntity extends BaseEntity {
 
@@ -36,9 +38,9 @@ public class TeachingTaskNoticeEntity extends BaseEntity {
     private String noticeContent;
 
     /**
-     * 附件URL
+     * 附件URL，逗号分隔
      */
-    @ApiModelProperty("附件URL")
+    @ApiModelProperty("附件URL，逗号分隔")
     private String noticeAttachment;
 
     /**
@@ -60,8 +62,8 @@ public class TeachingTaskNoticeEntity extends BaseEntity {
     private String noticeKeywords;
 
     /**
-     * 附件名
+     * 附件名，逗号分隔
      */
-    @ApiModelProperty("附件名")
+    @ApiModelProperty("附件名，逗号分隔")
     private String noticeAttachmentName;
 }

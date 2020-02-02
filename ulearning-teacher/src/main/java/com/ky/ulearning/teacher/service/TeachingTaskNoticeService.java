@@ -28,4 +28,27 @@ public interface TeachingTaskNoticeService {
      * @param teachingTaskNoticeDto 待插入的通告记录
      */
     void save(TeachingTaskNoticeDto teachingTaskNoticeDto);
+
+    /**
+     * 根据id查询通告信息
+     *
+     * @param id 通告id
+     * @return 通告对象
+     */
+    TeachingTaskNoticeEntity getById(Long id);
+
+    /**
+     * 更新通告信息
+     *
+     * @param teachingTaskNoticeDto 待更新的通告信息
+     */
+    void update(TeachingTaskNoticeDto teachingTaskNoticeDto);
+
+    /**
+     * 删除通告
+     *
+     * @param id       通告id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
 }

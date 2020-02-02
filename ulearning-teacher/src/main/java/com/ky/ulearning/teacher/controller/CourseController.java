@@ -30,7 +30,7 @@ public class CourseController extends BaseController {
     @Autowired
     private CourseService courseService;
 
-    @Log("教师-获取所有课程信息")
+    @Log("获取所有课程信息")
     @ApiOperation(value = "获取所有课程信息")
     @GetMapping("/getAll")
     public ResponseEntity<JsonResult<List<CourseVo>>> getAll() {

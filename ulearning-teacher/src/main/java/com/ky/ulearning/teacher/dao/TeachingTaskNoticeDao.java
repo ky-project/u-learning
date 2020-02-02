@@ -59,4 +59,13 @@ public interface TeachingTaskNoticeDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("teachingTaskNoticeDto") TeachingTaskNoticeDto teachingTaskNoticeDto);
+
+    /**
+     * 更新valid值
+     *
+     * @param id       通告id
+     * @param updateBy 更新者
+     * @param valid    值
+     */
+    void updateValid(@Param("id") Long id, @Param("updateBy") String updateBy, @Param("valid") Integer valid);
 }
