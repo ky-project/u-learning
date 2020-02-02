@@ -10,6 +10,7 @@ import com.ky.ulearning.teacher.service.TeachingTaskNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,5 +47,25 @@ public class TeachingTaskNoticeServiceImpl extends BaseService implements Teachi
     @Transactional(rollbackFor = Throwable.class)
     public void save(TeachingTaskNoticeDto teachingTaskNoticeDto) {
         teachingTaskNoticeDao.insert(teachingTaskNoticeDto);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public TeachingTaskNoticeEntity getById(Long id) {
+        return teachingTaskNoticeDao.getById(id);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void update(TeachingTaskNoticeDto teachingTaskNoticeDto) {
+        teachingTaskNoticeDao.update(teachingTaskNoticeDto);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, String updateBy) {
+        teachingTaskNoticeDao.updateValid(id, updateBy, 0);
     }
 }

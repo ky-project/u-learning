@@ -64,7 +64,7 @@ public class TeachingTaskController extends BaseController {
     @Autowired
     private TeachingTaskValidUtil teachingTaskValidUtil;
 
-    @Log("教师-分页查询教学任务")
+    @Log("分页查询教学任务")
     @ApiOperation(value = "分页查询教学任务")
     @ApiOperationSupport(ignoreParameters = {"id", "courseId", "teaId"})
     @GetMapping("/pageList")
@@ -75,7 +75,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("教师-获取学期集合")
+    @Log("获取学期集合")
     @ApiOperation(value = "获取学期集合")
     @GetMapping("/getTermList")
     public ResponseEntity<JsonResult<List<TermVo>>> getTermList() {
@@ -87,7 +87,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(termList));
     }
 
-    @Log("教师-添加教学任务")
+    @Log("添加教学任务")
     @ApiOperation(value = "添加教学任务")
     @ApiOperationSupport(ignoreParameters = {"id", "teaId"})
     @PostMapping("/save")
@@ -112,7 +112,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
-    @Log("教师-更新教学任务")
+    @Log("更新教学任务")
     @ApiOperation(value = "更新教学任务", notes = "只能更新属于自己的教学任务")
     @ApiOperationSupport(ignoreParameters = {"teaId"})
     @PostMapping("/update")
@@ -131,7 +131,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
-    @Log("教师-根据id查询教学任务")
+    @Log("根据id查询教学任务")
     @ApiOperation(value = "根据id查询教学任务", notes = "只能查看属于自己的教学任务")
     @PostMapping("/getById")
     public ResponseEntity<JsonResult<CourseTeachingTaskDto>> getById(Long id) {

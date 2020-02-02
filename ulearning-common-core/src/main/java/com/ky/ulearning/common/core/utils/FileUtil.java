@@ -45,13 +45,13 @@ public class FileUtil {
     /**
      * 常见附件类型
      */
-    public static final String[] ATTACHMENT_YTPE = {
+    public static final String[] ATTACHMENT_TYPE = {
             //图片
             "jpg", "png", "jpeg", "gif", "bmp",
             //音频
             "mp4", "mp3", ".avi",
-            //office
-            "doc", "docx", "xls", "xlsx", "ppt", "pptx",
+            //文档
+            "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf",
             //压缩文件
             "zip", "rar"};
 

@@ -64,10 +64,10 @@
             <if test="teachingTaskId != null">
                 teaching_task_id = #{teachingTaskId,jdbcType=BIGINT},
             </if>
-            <if test="noticeTitle != null">
+            <if test="noticeTitle != null and noticeTitle != ''">
                 notice_title = #{noticeTitle,jdbcType=VARCHAR},
             </if>
-            <if test="noticeContent != null">
+            <if test="noticeContent != null and noticeContent != ''">
                 notice_content = #{noticeContent,jdbcType=VARCHAR},
             </if>
             <if test="noticeAttachment != null">
@@ -79,19 +79,19 @@
             <if test="noticePostTime != null">
                 notice_post_time = #{noticePostTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="noticeKeywords != null">
+            <if test="noticeKeywords != null and noticeKeywords != ''">
                 notice_keywords = #{noticeKeywords,jdbcType=VARCHAR},
             </if>
             <if test="valid != null">
                 `valid` = #{valid,jdbcType=BOOLEAN},
             </if>
-            <if test="memo != null">
+            <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
+            <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
-            <if test="noticeAttachmentName != null and noticeAttachmentName != ''">
+            <if test="noticeAttachmentName != null">
                 notice_attachment_name = #{noticeAttachmentName,jdbcType=VARCHAR},
             </if>
         </set>
@@ -168,4 +168,12 @@
             AND uttn.notice_attachment_name LIKE CONCAT('%', #{teachingTaskNoticeDto.noticeAttachmentName}, '%')
         </if>
     </select>
+    <!--更新valid值-->
+    <update id="updateValid">
+        UPDATE u_teaching_task_notice
+        SET valid       = #{valid},
+            update_by   = #{updateBy},
+            update_time = now()
+        WHERE id = #{id}
+    </update>
 </mapper>
