@@ -13,9 +13,11 @@ import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
-import com.ky.ulearning.spi.teacher.vo.NoticeAttachmentVo;
+import com.ky.ulearning.spi.teacher.dto.QuestionDto;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.service.CourseQuestionService;
@@ -26,6 +28,7 @@ import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,25 +88,38 @@ public class CourseQuestionController extends BaseController {
     @ApiOperation("添加试题")
     @ApiOperationSupport(ignoreParameters = {"id", "courseId"})
     @PostMapping("/save")
-    public ResponseEntity<JsonResult> save(CourseQuestionDto courseQuestionDto) {
+    public ResponseEntity<JsonResult> save(QuestionDto questionDto) {
         ValidatorBuilder.build()
-                .on(StringUtil.isEmpty(courseQuestionDto.getQuestionText()), TeacherErrorCodeEnum.QUESTION_TEXT_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(courseQuestionDto.getQuestionKnowledge()), TeacherErrorCodeEnum.QUESTION_KNOWLEDGE_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(courseQuestionDto.getQuestionType()), TeacherErrorCodeEnum.QUESTION_TYPE_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(courseQuestionDto.getTeachingTaskId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(questionDto.getQuestionText()), TeacherErrorCodeEnum.QUESTION_TEXT_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(questionDto.getQuestionKnowledge()), TeacherErrorCodeEnum.QUESTION_KNOWLEDGE_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(questionDto.getQuestionType()), TeacherErrorCodeEnum.QUESTION_TYPE_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(questionDto.getTeachingTaskId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //教学任务id校验
-        teachingTaskValidUtil.checkTeachingTask(username, courseQuestionDto.getTeachingTaskId());
+        teachingTaskValidUtil.checkTeachingTask(username, questionDto.getTeachingTaskId());
         //获取课程教学任务对象并校验
-        CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskService.getById(courseQuestionDto.getTeachingTaskId());
+        CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskService.getById(questionDto.getTeachingTaskId());
         ValidateHandler.checkParameter(courseTeachingTaskDto == null, TeacherErrorCodeEnum.TEACHING_TASK_NOT_EXISTS);
         //设置获取到的courseId
-        courseQuestionDto.setCourseId(courseTeachingTaskDto.getCourseId());
-        courseQuestionDto.setUpdateBy(username);
-        courseQuestionDto.setCreateBy(username);
+        questionDto.setCourseId(courseTeachingTaskDto.getCourseId());
+        questionDto.setUpdateBy(username);
+        questionDto.setCreateBy(username);
         //保存试题
-        courseQuestionService.save(courseQuestionDto);
+        courseQuestionService.save(questionDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+    }
+
+    @Log("分页查询课程试题")
+    @ApiOperation(value = "分页查询课程试题", notes = "只能查看自己教学任务的课程试题")
+    @ApiOperationSupport(ignoreParameters = {"id", "courseId", "questionUrl", "courseNumber", "courseName", "courseCredit"})
+    @GetMapping("/pageList")
+    public ResponseEntity<JsonResult<PageBean<CourseQuestionDto>>> pageList(PageParam pageParam,
+                                                                            CourseQuestionDto courseQuestionDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(courseQuestionDto.getTeachingTaskId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
+        //教学任务id校验
+        teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), courseQuestionDto.getTeachingTaskId());
+        PageBean<CourseQuestionDto> pageBean = courseQuestionService.pageList(setPageParam(pageParam), courseQuestionDto);
+        return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 }

@@ -8,15 +8,15 @@ import lombok.EqualsAndHashCode;
 
 /**
  * {@link com.ky.ulearning.spi.teacher.entity.CourseQuestionEntity}
- * 课程试题dto
+ * 试题dto
  *
  * @author luyuhao
- * @since 20/02/03 19:42
+ * @since 20/02/04 00:16
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ApiModel("课程试题dto")
-public class CourseQuestionDto extends BaseDto {
+@ApiModel("试题dto")
+public class QuestionDto extends BaseDto {
     /**
      * 课程ID
      */
@@ -58,22 +58,4 @@ public class CourseQuestionDto extends BaseDto {
      */
     @ApiModelProperty("教学任务ID")
     private Long teachingTaskId;
-
-    /**
-     * 课程号
-     */
-    @ApiModelProperty("课程号")
-    private String courseNumber;
-
-    /**
-     * 课程名
-     */
-    @ApiModelProperty("课程名")
-    private String courseName;
-
-    /**
-     * 学分
-     */
-    @ApiModelProperty("学分")
-    private Short courseCredit;
 }
