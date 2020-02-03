@@ -52,4 +52,10 @@ public class CourseQuestionDto extends BaseDto {
      */
     @ApiModelProperty("试题类型 1：选择题，2：判断题，3：多选题，4：填空题，5：简答题")
     private Integer questionType;
+
+    /**
+     * 教学任务ID
+     */
+    @ApiModelProperty("教学任务ID")
+    private Long teachingTaskId;
 }

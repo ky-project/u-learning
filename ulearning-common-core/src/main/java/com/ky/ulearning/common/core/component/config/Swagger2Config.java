@@ -42,9 +42,9 @@ public class Swagger2Config {
                 //扫描指定注解
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 .paths(PathSelectors.any())
-                .build()
-                .securityContexts(Lists.newArrayList(tokenSecurityContext(), refreshTokenSecurityContext()))
-                .securitySchemes(Lists.<SecurityScheme>newArrayList(token(), refreshToken()));
+                .build();
+//                .securityContexts(Lists.newArrayList(tokenSecurityContext(), refreshTokenSecurityContext()))
+//                .securitySchemes(Lists.<SecurityScheme>newArrayList(token(), refreshToken()));
     }
 
     private ApiInfo apiInfo() {

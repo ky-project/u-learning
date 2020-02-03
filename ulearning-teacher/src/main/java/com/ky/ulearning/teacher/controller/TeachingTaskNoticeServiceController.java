@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
@@ -190,8 +189,8 @@ public class TeachingTaskNoticeServiceController extends BaseController {
             @DynamicParameter(name = "id", value = "通告id"),
             @DynamicParameter(name = "attachmentName", value = "附件名")}))
     @GetMapping("/downloadAttachment")
-    public ResponseEntity<byte[]> downloadAttachment(Long id,
-                                                     String attachmentName) throws UnsupportedEncodingException {
+    public ResponseEntity downloadAttachment(Long id,
+                                             String attachmentName) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(attachmentName), TeacherErrorCodeEnum.NOTICE_ATTACHMENT_CANNOT_BE_NULL)

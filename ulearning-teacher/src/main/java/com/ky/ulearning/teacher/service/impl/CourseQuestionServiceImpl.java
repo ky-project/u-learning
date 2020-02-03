@@ -1,10 +1,12 @@
 package com.ky.ulearning.teacher.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.teacher.dao.CourseQuestionDao;
 import com.ky.ulearning.teacher.service.CourseQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,4 +23,11 @@ public class CourseQuestionServiceImpl extends BaseService implements CourseQues
 
     @Autowired
     private CourseQuestionDao courseQuestionDao;
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void save(CourseQuestionDto courseQuestionDto) {
+        courseQuestionDao.insert(courseQuestionDto);
+    }
 }
