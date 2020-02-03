@@ -1,0 +1,1 @@
+ALTER TABLE u_course MODIFY COLUMN `course_credit` float COMMENT '学分';
