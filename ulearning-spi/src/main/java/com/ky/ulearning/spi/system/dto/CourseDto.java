@@ -31,5 +31,5 @@ public class CourseDto extends BaseDto {
      * 学分
      */
     @ApiModelProperty("学分")
-    private Short courseCredit;
+    private Double courseCredit;
 }

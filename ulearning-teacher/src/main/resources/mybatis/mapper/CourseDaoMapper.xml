@@ -6,7 +6,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
         <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
-        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+        <result column="course_credit" jdbcType="FLOAT" property="courseCredit"/>
         <result column="valid" jdbcType="BOOLEAN" property="valid"/>
         <result column="memo" jdbcType="VARCHAR" property="memo"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
@@ -18,7 +18,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
         <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
-        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+        <result column="course_credit" jdbcType="FLOAT" property="courseCredit"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,

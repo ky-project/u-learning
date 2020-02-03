@@ -37,5 +37,5 @@ public class CourseVo implements Serializable {
      * 学分
      */
     @ApiModelProperty("学分")
-    private Short courseCredit;
+    private Double courseCredit;
 }
