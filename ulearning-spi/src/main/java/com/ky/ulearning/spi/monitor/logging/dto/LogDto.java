@@ -1,9 +1,12 @@
 package com.ky.ulearning.spi.monitor.logging.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 /**
  * {@link com.ky.ulearning.spi.monitor.logging.entity.LogEntity}
@@ -68,4 +71,11 @@ public class LogDto extends BaseDto {
      */
     @ApiModelProperty("操作地址")
     private String logAddress;
+
+    /**
+     * 创建时间
+     */
+    @ApiModelProperty("创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 }

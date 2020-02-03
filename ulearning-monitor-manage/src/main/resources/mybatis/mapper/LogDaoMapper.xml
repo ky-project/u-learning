@@ -93,6 +93,9 @@
         <if test="logDto.logAddress != null and logDto.logAddress != ''">
             AND log_address LIKE CONCAT('%', #{logDto.logAddress}, '%')
         </if>
+        <if test="logDto.createTime != null">
+            AND DATE(create_time) = #{logDto.createTime}
+        </if>
         order by update_time desc
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             limit #{pageParam.startIndex}, #{pageParam.pageSize}
@@ -127,6 +130,9 @@
         </if>
         <if test="logDto.logAddress != null and logDto.logAddress != ''">
             AND log_address LIKE CONCAT('%', #{logDto.logAddress}, '%')
+        </if>
+        <if test="logDto.createTime != null">
+            AND DATE(create_time) = #{logDto.createTime}
         </if>
     </select>
      <!--获取日志类型集合-->

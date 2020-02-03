@@ -2,17 +2,16 @@ package com.ky.ulearning.teacher.common.utils;
 
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.service.StudentTeachingTaskService;
 import com.ky.ulearning.teacher.service.TeacherService;
+import com.ky.ulearning.teacher.service.TeachingTaskNoticeService;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 教学任务有效校验工具类
@@ -31,6 +30,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private StudentTeachingTaskService studentTeachingTaskService;
+
+    @Autowired
+    private TeachingTaskNoticeService teachingTaskNoticeService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -61,7 +63,22 @@ public class TeachingTaskValidUtil {
         //查询可操作的教学任务id
         Set<Long> teachingTaskIdSet = teachingTaskService.getIdByTeaId(teacherEntity.getId());
         Set<Long> stuIdSet = studentTeachingTaskService.getStuIdSetByTeachingTaskId(teachingTaskIdSet);
-        ValidateHandler.checkParameter(! stuIdSet.contains(stuId), TeacherErrorCodeEnum.STUDENT_ILLEGAL);
+        ValidateHandler.checkParameter(!stuIdSet.contains(stuId), TeacherErrorCodeEnum.STUDENT_ILLEGAL);
         return teacherEntity;
+    }
+
+    /**
+     * 校验教师是否有操作通告的权限
+     *
+     * @param username 教师工号
+     * @param noticeId 通告id
+     */
+    public TeachingTaskNoticeEntity checkNoticeId(Long noticeId, String username) {
+        //获取原通告对象并校验
+        TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskNoticeService.getById(noticeId);
+        ValidateHandler.checkParameter(teachingTaskNoticeEntity == null, TeacherErrorCodeEnum.NOTICE_NOT_EXISTS);
+        //权限校验
+        checkTeachingTask(username, teachingTaskNoticeEntity.getTeachingTaskId());
+        return teachingTaskNoticeEntity;
     }
 }

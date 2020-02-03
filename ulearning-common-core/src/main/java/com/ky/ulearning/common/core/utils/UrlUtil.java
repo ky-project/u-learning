@@ -2,6 +2,9 @@ package com.ky.ulearning.common.core.utils;
 
 import org.springframework.util.AntPathMatcher;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * @author luyuhao
  * @date 19/12/14 21:44
@@ -28,5 +31,16 @@ public class UrlUtil {
             }
         }
         return false;
+    }
+
+    public static String getPath(String url){
+        String path;
+        try {
+            URL parseUrl = new URL(url);
+            path = parseUrl.getPath();
+        } catch (MalformedURLException e) {
+            path = "";
+        }
+        return path;
     }
 }

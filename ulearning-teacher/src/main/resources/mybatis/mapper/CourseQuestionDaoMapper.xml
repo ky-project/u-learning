@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.CourseQuestionDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.CourseQuestionEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
+        <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <resultMap id="CourseQuestionDtoResultMap" type="com.ky.ulearning.spi.teacher.dto.CourseQuestionDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
+        <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            course_id,
+            question_text,
+            question_URL,
+            question_key,
+            question_knowledge,
+            question_type,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--根据id查询试题-->
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_course_question
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <!--插入试题记录-->
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.QuestionDto" useGeneratedKeys="true">
+        insert into u_course_question (course_id, question_text, question_URL,
+                                       question_key, question_knowledge, question_type,
+                                       `valid`, memo, create_time,
+                                       create_by, update_time, update_by)
+        values (#{courseId,jdbcType=BIGINT}, #{questionText,jdbcType=VARCHAR}, #{questionUrl,jdbcType=VARCHAR},
+                #{questionKey,jdbcType=VARCHAR}, #{questionKnowledge,jdbcType=VARCHAR},
+                #{questionType,jdbcType=SMALLINT},
+                1, #{memo,jdbcType=VARCHAR}, now(),
+                #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <!--更新试题-->
+    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.CourseQuestionDto">
+        update u_course_question
+        <set>
+            update_time = now(),
+            <if test="courseId != null">
+                course_id = #{courseId,jdbcType=BIGINT},
+            </if>
+            <if test="questionText != null and questionText != ''">
+                question_text = #{questionText,jdbcType=VARCHAR},
+            </if>
+            <if test="questionUrl != null and questionUrl != ''">
+                question_URL = #{questionUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="questionKey != null and questionKey != ''">
+                question_key = #{questionKey,jdbcType=VARCHAR},
+            </if>
+            <if test="questionKnowledge != null and questionKnowledge != ''">
+                question_knowledge = #{questionKnowledge,jdbcType=VARCHAR},
+            </if>
+            <if test="questionType != null">
+                question_type = #{questionType,jdbcType=SMALLINT},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--分页查询课程试题-->
+    <select id="listPage" resultMap="CourseQuestionDtoResultMap">
+        SELECT ucq.id, ucq.course_id, ucq.question_text, ucq.question_URL, ucq.question_key, ucq.question_knowledge,
+        ucq.question_type, ucq.valid, ucq.memo, ucq.create_time, ucq.create_by, ucq.update_time, ucq.update_by,
+        uc.course_credit, uc.course_name, uc.course_number
+        FROM u_course_question ucq
+        INNER JOIN u_course uc ON uc.valid = 1 AND ucq.course_id = uc.id
+        LEFT JOIN u_teaching_task utt ON utt.valid = 1 AND uc.id = utt.course_id
+        WHERE ucq.valid = 1
+        AND utt.id = #{courseQuestionDto.teachingTaskId}
+        <if test="courseQuestionDto.questionText != null and courseQuestionDto.questionText != ''">
+            AND ucq.question_text LIKE CONCAT('%', #{courseQuestionDto.questionText}, '%')
+        </if>
+        <if test="courseQuestionDto.questionKey != null and courseQuestionDto.questionKey != ''">
+            AND ucq.question_key LIKE CONCAT('%', #{courseQuestionDto.questionKey}, '%')
+        </if>
+        <if test="courseQuestionDto.questionKnowledge != null and courseQuestionDto.questionKnowledge != ''">
+            AND ucq.question_knowledge LIKE CONCAT('%', #{courseQuestionDto.questionKnowledge}, '%')
+        </if>
+        <if test="courseQuestionDto.questionType != null">
+            AND ucq.question_type LIKE CONCAT('%', #{courseQuestionDto.questionType}, '%')
+        </if>
+        ORDER BY ucq.update_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询课程试题 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseQuestionDto">
+        SELECT COUNT(1)
+        FROM u_course_question ucq
+        INNER JOIN u_course uc ON uc.valid = 1 AND ucq.course_id = uc.id
+        LEFT JOIN u_teaching_task utt ON utt.valid = 1 AND uc.id = utt.course_id
+        WHERE ucq.valid = 1
+        AND utt.id = #{courseQuestionDto.teachingTaskId}
+        <if test="courseQuestionDto.questionText != null and courseQuestionDto.questionText != ''">
+            AND ucq.question_text LIKE CONCAT('%', #{courseQuestionDto.questionText}, '%')
+        </if>
+        <if test="courseQuestionDto.questionKey != null and courseQuestionDto.questionKey != ''">
+            AND ucq.question_key LIKE CONCAT('%', #{courseQuestionDto.questionKey}, '%')
+        </if>
+        <if test="courseQuestionDto.questionKnowledge != null and courseQuestionDto.questionKnowledge != ''">
+            AND ucq.question_knowledge LIKE CONCAT('%', #{courseQuestionDto.questionKnowledge}, '%')
+        </if>
+        <if test="courseQuestionDto.questionType != null">
+            AND ucq.question_type LIKE CONCAT('%', #{courseQuestionDto.questionType}, '%')
+        </if>
+    </select>
+</mapper>
