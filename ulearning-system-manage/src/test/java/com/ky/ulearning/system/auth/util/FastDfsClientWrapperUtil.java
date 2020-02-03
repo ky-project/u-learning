@@ -2,8 +2,10 @@ package com.ky.ulearning.system.auth.util;
 
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.utils.EnvironmentAwareUtil;
+import com.ky.ulearning.common.core.utils.UrlUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author luyuhao
@@ -27,10 +30,13 @@ public class FastDfsClientWrapperUtil {
     private FastFileStorageClient fastFileStorageClient;
 
     @Autowired
+    private FastDfsClientWrapper fastDfsClientWrapper;
+
+    @Autowired
     private DefaultConfigParameters defaultConfigParameters;
 
     @BeforeClass
-    public static void init(){
+    public static void init() {
         EnvironmentAwareUtil.adjust();
     }
 
@@ -49,8 +55,15 @@ public class FastDfsClientWrapperUtil {
     }
 
     @Test
-    public void test02(){
-        StorePath filePath = StorePath.parseFromUrl("http://darren1112.com:8888/group1/M00/00/00/L18Ofl4wSgOAT5hpJ9CC9TuAQlg3071.sh");
+    public void test02() {
+        StorePath filePath = StorePath.parseFromUrl("http://darren1112.com:8888/group1/M00/00/00/L18Ofl43CXKAKzWUAADJdlf2uL8942.png");
         fastFileStorageClient.deleteFile(filePath.getGroup(), filePath.getPath());
+    }
+
+    @Test
+    public void test03() {
+        String filePath = "http://darren1112.com:8888/group1/M00/00/00/L18Ofl4267qAcw1XAAB5tEHATng664.jpg";
+        byte[] download = fastDfsClientWrapper.download(filePath);
+        System.out.println(new String(download, StandardCharsets.UTF_8));
     }
 }

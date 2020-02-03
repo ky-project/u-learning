@@ -21,11 +21,11 @@ import com.ky.ulearning.spi.teacher.vo.NoticeAttachmentVo;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.service.TeachingTaskNoticeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiOperationSupport;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +34,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -78,7 +81,7 @@ public class TeachingTaskNoticeServiceController extends BaseController {
     @ApiOperation(value = "添加附件", notes = "添加附件，支持批量上传，多个文件url和名字逗号分隔")
     @PostMapping("/saveAttachments")
     public ResponseEntity<JsonResult<NoticeAttachmentVo>> saveAttachments(MultipartFile[] attachments) throws IOException {
-        ValidateHandler.checkParameter(attachments == null || attachments.length < 1, TeacherErrorCodeEnum.NOTICE_ATTACHMENET_CANNOT_BE_NULL);
+        ValidateHandler.checkParameter(attachments == null || attachments.length < 1, TeacherErrorCodeEnum.NOTICE_ATTACHMENT_CANNOT_BE_NULL);
         String noticeAttachment = "";
         String noticeAttachmentName = "";
         //遍历校验文件
@@ -142,7 +145,7 @@ public class TeachingTaskNoticeServiceController extends BaseController {
     @ApiOperation(value = "修改通告", notes = "只能操作自己的教学任务的通告")
     @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "noticePostTime"})
     @PostMapping("/update")
-    public ResponseEntity<JsonResult> update(TeachingTaskNoticeDto teachingTaskNoticeDto){
+    public ResponseEntity<JsonResult> update(TeachingTaskNoticeDto teachingTaskNoticeDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(teachingTaskNoticeDto.getId()), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .doValidate().checkResult();
@@ -181,6 +184,56 @@ public class TeachingTaskNoticeServiceController extends BaseController {
         //权限校验
         teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskNoticeEntity.getTeachingTaskId());
         teachingTaskNoticeService.delete(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        //移除原有附件
+        List<String> attachmentList = StringUtil.strToList(teachingTaskNoticeEntity.getNoticeAttachment(), ",");
+        for (String attachment : attachmentList) {
+            fastDfsClientWrapper.deleteFile(attachment);
+        }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("下载附件")
+    @ApiOperation(value = "下载附件", notes = "只能操作自己教学任务的通告")
+    @ApiOperationSupport(params = @DynamicParameters(properties = {
+            @DynamicParameter(name = "id", value = "通告id"),
+            @DynamicParameter(name = "attachmentName", value = "附件名")}))
+    @GetMapping("/downloadAttachment")
+    public ResponseEntity<byte[]> downloadAttachment(Long id,
+                                                     String attachmentName) throws UnsupportedEncodingException {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(attachmentName), TeacherErrorCodeEnum.NOTICE_ATTACHMENT_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        //获取原通告对象并校验
+        TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskNoticeService.getById(id);
+        ValidateHandler.checkParameter(teachingTaskNoticeEntity == null, TeacherErrorCodeEnum.NOTICE_NOT_EXISTS);
+        //权限校验
+        teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskNoticeEntity.getTeachingTaskId());
+
+        //获取附件name和url集合
+        List<String> attachmentList = StringUtil.strToList(teachingTaskNoticeEntity.getNoticeAttachment(), ",");
+        List<String> attachmentNameList = StringUtil.strToList(teachingTaskNoticeEntity.getNoticeAttachmentName(), ",");
+
+        //查询对应附件名的url
+        String attachment = "";
+        for (int i = 0; i < attachmentNameList.size(); i++) {
+            if (attachmentName.equals(attachmentNameList.get(i))) {
+                attachment = attachmentList.get(i);
+                break;
+            }
+        }
+        //检验附件名是否存在
+        ValidateHandler.checkParameter(StringUtil.isEmpty(attachment), TeacherErrorCodeEnum.NOTICE_ATTACHMENT_NOT_EXISTS);
+        //下载并校验附件是否过期
+        byte[] attachmentBytes = fastDfsClientWrapper.download(attachment);
+        ValidateHandler.checkParameter(attachmentBytes == null, TeacherErrorCodeEnum.NOTICE_ATTACHMENT_ILLEGAL);
+
+        //设置head
+        HttpHeaders headers = new HttpHeaders();
+        //文件的属性名
+        headers.setContentDispositionFormData("attachment", new String(attachmentName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //响应内容是字节流
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntityUtil.ok(headers, attachmentBytes);
     }
 }

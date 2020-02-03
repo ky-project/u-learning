@@ -5,6 +5,7 @@ import com.github.tobato.fastdfs.domain.proto.storage.DownloadByteArray;
 import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +70,12 @@ public class FastDfsClientWrapper {
      * @param fileUrl 文件url
      */
     public byte[] download(String fileUrl) {
+        if(StringUtil.isEmpty(fileUrl)){
+            return null;
+        }
         try {
-            String group = fileUrl.substring(0, fileUrl.indexOf("/"));
-            String path = fileUrl.substring(fileUrl.indexOf("/") + 1);
-            return fastFileStorageClient.downloadFile(group, path, new DownloadByteArray());
+            StorePath storePath = StorePath.parseFromUrl(fileUrl);
+            return fastFileStorageClient.downloadFile(storePath.getGroup(), storePath.getPath(), new DownloadByteArray());
         } catch (Exception e) {
             return null;
         }
@@ -84,6 +87,9 @@ public class FastDfsClientWrapper {
      * @param fileUrl 文件访问地址
      */
     public boolean deleteFile(String fileUrl) {
+        if(StringUtil.isEmpty(fileUrl)){
+            return true;
+        }
         try {
             StorePath storePath = StorePath.parseFromUrl(fileUrl);
             fastFileStorageClient.deleteFile(storePath.getGroup(), storePath.getPath());
