@@ -80,7 +80,7 @@ public class CourseController extends BaseController {
 
         courseService.insert(courseDto);
 
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(courseDto.getId(), "添加成功"));
     }
 
     @Log("更新课程信息")

@@ -71,7 +71,7 @@ public class StudentController extends BaseController {
         //密码加密
         studentDto.setStuPassword(EncryptUtil.encryptPassword("123456"));
         studentService.save(studentDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加学生成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(studentDto.getId(), "添加学生成功"));
     }
 
     @Log("根据id查询学生信息")

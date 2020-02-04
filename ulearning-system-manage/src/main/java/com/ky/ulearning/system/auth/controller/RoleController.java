@@ -8,8 +8,8 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.RoleDto;
@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.spring.web.json.Json;
 
 import java.util.List;
 import java.util.Map;
@@ -89,7 +88,7 @@ public class RoleController extends BaseController {
         roleDto.setCreateBy(username);
         roleDto.setUpdateBy(username);
         roleService.insert(roleDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(roleDto.getId(), "添加成功"));
     }
 
     @Log("删除角色")
@@ -118,7 +117,7 @@ public class RoleController extends BaseController {
     @ApiOperation(value = "查询角色已分配权限", notes = "根据角色id分组查询所拥有的所有权限")
     @PermissionName(source = "role:getAssignedPermission", name = "查询角色已分配权限", group = "角色管理")
     @GetMapping("/getAssignedPermission")
-    public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> getAssignedPermission(Long roleId){
+    public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> getAssignedPermission(Long roleId) {
         Map<String, List<PermissionEntity>> permissionGroupList = rolePermissionService.getAssignedPermission(roleId);
 
         return ResponseEntityUtil.ok(JsonResult.buildData(permissionGroupList));
@@ -129,7 +128,7 @@ public class RoleController extends BaseController {
     @ApiImplicitParam(name = "permissionIds", value = "权限id字符串，逗号分隔")
     @PermissionName(source = "role:saveAssignedPermission", name = "角色分配权限", group = "角色管理")
     @PostMapping("/saveAssignedPermission")
-    public ResponseEntity<JsonResult> saveAssignedPermission(Long roleId, String permissionIds){
+    public ResponseEntity<JsonResult> saveAssignedPermission(Long roleId, String permissionIds) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(roleId), SystemErrorCodeEnum.ID_CANNOT_BE_NULL);
         rolePermissionService.saveAssignedPermission(roleId, permissionIds, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("权限分配成功"));

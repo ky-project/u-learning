@@ -89,7 +89,7 @@ public class PermissionController extends BaseController {
         permissionDto.setCreateBy(username);
         permissionDto.setUpdateBy(username);
         permissionService.insert(permissionDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(permissionDto.getId(), "添加成功"));
     }
 
     @Log("删除权限")
