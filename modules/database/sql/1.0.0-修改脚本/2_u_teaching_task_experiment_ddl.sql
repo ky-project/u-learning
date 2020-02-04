@@ -1,0 +1,1 @@
+ALTER TABLE u_teaching_task_experiment ADD COLUMN `experiment_attachment_name` varchar(255) COMMENT '附件名';
