@@ -92,7 +92,7 @@ public class TeachingTaskController extends BaseController {
         teachingTaskDto.setUpdateBy(username);
         //插入记录
         teachingTaskService.insert(teachingTaskDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(teachingTaskDto.getId(), "添加成功"));
     }
 
     @Log("分页查询教学任务")

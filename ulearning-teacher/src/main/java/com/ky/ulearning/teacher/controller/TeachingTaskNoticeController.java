@@ -125,7 +125,7 @@ public class TeachingTaskNoticeController extends BaseController {
         teachingTaskNoticeDto.setUpdateBy(username);
         teachingTaskNoticeDto.setNoticePostTime(new Date());
         teachingTaskNoticeService.save(teachingTaskNoticeDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(teachingTaskNoticeDto.getId(), "添加成功"));
     }
 
     @Log("根据id查询通告")

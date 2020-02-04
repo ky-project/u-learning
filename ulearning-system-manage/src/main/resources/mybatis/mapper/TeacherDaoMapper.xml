@@ -192,7 +192,8 @@
         WHERE id = #{id}
     </update>
     <!--新增教师-->
-    <insert id="save" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto">
+    <insert id="save" parameterType="com.ky.ulearning.spi.system.dto.TeacherDto"
+            keyProperty="id" keyColumn="id" useGeneratedKeys="true">
         INSERT INTO u_teacher(tea_number, tea_name, tea_password, tea_gender, tea_dept, tea_title, tea_phone, tea_email,
                               tea_photo, valid, memo, create_time, create_by, update_time, update_by, pwd_update_time)
         VALUES (#{teaNumber}, #{teaName}, #{teaPassword}, #{teaGender}, #{teaDept}, #{teaTitle}, #{teaPhone},

@@ -1,7 +1,6 @@
 package com.ky.ulearning.teacher.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
-import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 教学任务controller
@@ -109,7 +107,7 @@ public class TeachingTaskController extends BaseController {
         teachingTaskDto.setCreateBy(teaNumber);
         //插入记录
         teachingTaskService.insert(teachingTaskDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(teachingTaskDto.getId(), "添加成功"));
     }
 
     @Log("更新教学任务")

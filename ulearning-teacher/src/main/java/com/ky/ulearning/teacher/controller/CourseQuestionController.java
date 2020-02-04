@@ -107,7 +107,7 @@ public class CourseQuestionController extends BaseController {
         questionDto.setCreateBy(username);
         //保存试题
         courseQuestionService.save(questionDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(questionDto.getId(), "添加成功"));
     }
 
     @Log("分页查询课程试题")

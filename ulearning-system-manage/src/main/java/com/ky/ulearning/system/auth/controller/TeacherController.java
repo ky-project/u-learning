@@ -90,7 +90,7 @@ public class TeacherController extends BaseController {
         //密码加密
         teacher.setTeaPassword(EncryptUtil.encryptPassword("123456"));
         teacherService.save(teacher);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加教师成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(teacher.getId(), "添加教师成功"));
     }
 
     @Log("教师删除")
