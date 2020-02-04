@@ -59,8 +59,11 @@ public class RoleController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 
+    /**
+     * 暂时隐藏接口不显示
+     */
     @Log("获取角色权限集合")
-    @ApiOperation(value = "获取角色权限集合")
+    @ApiOperation(value = "获取角色权限集合", hidden = true)
     @ApiImplicitParam(name = "roleIdArr", value = "角色id字符串，逗号分隔")
     @PermissionName(source = "role:getPermissionListByRoleId", name = "获取角色权限集合", group = "角色管理")
     @GetMapping("/getPermissionListByRoleId")
