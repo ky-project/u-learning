@@ -23,6 +23,9 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     QUESTION_KNOWLEDGE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "知识模块不能为空"),
     QUESTION_TYPE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "试题类型不能为空"),
     QUESTION_TEXT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "试题内容不能为空"),
+    EXPERIMENT_ATTACHMENT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "附件不能为空"),
+    EXPERIMENT_ORDER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验序号不能为空"),
+    EXPERIMENT_TITLE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验标题不能为空"),
 
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
