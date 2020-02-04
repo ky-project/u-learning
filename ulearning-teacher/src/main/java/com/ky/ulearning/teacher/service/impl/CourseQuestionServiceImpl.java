@@ -11,6 +11,7 @@ import com.ky.ulearning.teacher.service.CourseQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,5 +48,25 @@ public class CourseQuestionServiceImpl extends BaseService implements CourseQues
                 //设置查询结果
                 .setContent(studentList);
         return setPageBeanProperties(pageBean, pageParam);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public CourseQuestionDto getById(Long id) {
+        return courseQuestionDao.getById(id);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void update(QuestionDto questionDto) {
+        courseQuestionDao.update(questionDto);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, String updateBy) {
+        courseQuestionDao.updateValidById(id, updateBy, 0);
     }
 }

@@ -1,5 +1,6 @@
 package com.ky.ulearning.spi.teacher.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -57,6 +58,7 @@ public class CourseQuestionDto extends BaseDto {
      * 教学任务ID
      */
     @ApiModelProperty("教学任务ID")
+    @JsonIgnore
     private Long teachingTaskId;
 
     /**

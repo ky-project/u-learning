@@ -3,7 +3,6 @@ package com.ky.ulearning.teacher.dao;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.QuestionDto;
-import com.ky.ulearning.spi.teacher.entity.CourseQuestionEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -33,14 +32,14 @@ public interface CourseQuestionDao {
      * @param id 试题id
      * @return 试题对象
      */
-    CourseQuestionEntity getById(Long id);
+    CourseQuestionDto getById(Long id);
 
     /**
      * 更新试题
      *
-     * @param courseQuestionDto 待更新的试题对象
+     * @param questionDto 待更新的试题对象
      */
-    void update(CourseQuestionDto courseQuestionDto);
+    void update(QuestionDto questionDto);
 
     /**
      * 分页查询课程试题
@@ -59,4 +58,15 @@ public interface CourseQuestionDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("courseQuestionDto") CourseQuestionDto courseQuestionDto);
+
+    /**
+     * 删除试题
+     *
+     * @param id       试题id
+     * @param updateBy 更新者
+     * @param valid    有效值
+     */
+    void updateValidById(@Param("id") Long id,
+                         @Param("updateBy") String updateBy,
+                         @Param("valid") Integer valid);
 }

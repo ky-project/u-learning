@@ -78,4 +78,10 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     public CourseTeachingTaskDto getById(Long id) {
         return teachingTaskDao.getById(id);
     }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public Set<Long> getCourseIdByTeaId(Long teaId) {
+        return teachingTaskDao.getCourseIdByTeaId(teaId);
+    }
 }

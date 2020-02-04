@@ -27,4 +27,27 @@ public interface CourseQuestionService {
      * @return 封装课程试题的分页对象
      */
     PageBean<CourseQuestionDto> pageList(PageParam pageParam, CourseQuestionDto courseQuestionDto);
+
+    /**
+     * 根据id查询课程试题
+     *
+     * @param id 试题id
+     * @return 课程试题对象
+     */
+    CourseQuestionDto getById(Long id);
+
+    /**
+     * 更新试题
+     *
+     * @param questionDto 待更新的试题对象
+     */
+    void update(QuestionDto questionDto);
+
+    /**
+     * 删除试题
+     *
+     * @param id       试题id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
 }
