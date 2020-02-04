@@ -58,3 +58,5 @@ ulearning:
     photo-max-size: 3
     # 通告附件最大限制
     notice-attachment-max-size: 10
+    # 实验附件最大限制
+    experiment_attachment-max-size: 100

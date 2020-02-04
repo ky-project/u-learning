@@ -49,7 +49,7 @@ import java.util.Set;
 @RestController
 @Api(tags = "通告管理", description = "通告管理接口")
 @RequestMapping(value = "/teachingTaskNotice")
-public class TeachingTaskNoticeServiceController extends BaseController {
+public class TeachingTaskNoticeController extends BaseController {
 
     @Autowired
     private TeachingTaskNoticeService teachingTaskNoticeService;
