@@ -91,7 +91,7 @@ public class TeachingTaskNoticeServiceController extends BaseController {
                     //文件类型校验
                     .on(!FileUtil.fileTypeRuleCheck(attachment, FileUtil.ATTACHMENT_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
                     //文件大小校验
-                    .on(attachment.getSize() > defaultConfigParameters.getAttachmentMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
+                    .on(attachment.getSize() > defaultConfigParameters.getNoticeAttachmentMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
                     .doValidate().checkResult();
         }
         int index = 0;

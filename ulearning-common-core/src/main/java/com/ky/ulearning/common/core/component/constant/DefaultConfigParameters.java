@@ -31,6 +31,6 @@ public class DefaultConfigParameters {
     @Value("#{${ulearning.file.photo-max-size} * 1024 * 1024}")
     private Long photoMaxSize;
 
-    @Value("#{${ulearning.file.attachment-max-size} * 1024 * 1024}")
-    private Long attachmentMaxSize;
+    @Value("#{${ulearning.file.notice-attachment-max-size} * 1024 * 1024}")
+    private Long noticeAttachmentMaxSize;
 }
