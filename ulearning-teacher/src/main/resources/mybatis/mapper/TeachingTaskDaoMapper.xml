@@ -180,4 +180,11 @@
         WHERE utt.valid = 1
           AND utt.id = #{id}
     </select>
+    <!--根据教师id查询所有课程id集合-->
+    <select id="getCourseIdByTeaId" resultType="java.lang.Long" parameterType="java.lang.Long">
+        SELECT course_id
+        FROM u_teaching_task
+        WHERE valid = 1
+          AND tea_id = #{teaId}
+    </select>
 </mapper>

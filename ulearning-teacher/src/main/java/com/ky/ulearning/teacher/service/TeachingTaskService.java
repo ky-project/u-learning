@@ -50,4 +50,12 @@ public interface TeachingTaskService {
      * @return 返回课程教学任务对象
      */
     CourseTeachingTaskDto getById(Long id);
+
+    /**
+     * 根据教师id查询所有课程id集合
+     *
+     * @param teaId 教师id
+     * @return 课程id集合
+     */
+    Set<Long> getCourseIdByTeaId(Long teaId);
 }

@@ -122,4 +122,57 @@ public class CourseQuestionController extends BaseController {
         PageBean<CourseQuestionDto> pageBean = courseQuestionService.pageList(setPageParam(pageParam), courseQuestionDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
+
+    @Log("根据id查询课程试题")
+    @ApiOperation(value = "根据id查询课程试题", notes = "只能查看自己教学任务的课程试题")
+    @GetMapping("/getById")
+    public ResponseEntity<JsonResult<CourseQuestionDto>> getById(Long id) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        CourseQuestionDto courseQuestionDto = teachingTaskValidUtil.checkCourseQuestionId(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        return ResponseEntityUtil.ok(JsonResult.buildData(courseQuestionDto));
+    }
+
+    @Log("更新试题")
+    @ApiOperation("更新试题")
+    @ApiOperationSupport(ignoreParameters = {"courseId", "teachingTaskId"})
+    @PostMapping("/update")
+    public ResponseEntity<JsonResult> update(QuestionDto questionDto) {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(questionDto.getId()), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //获取原试题对象
+        CourseQuestionDto courseQuestionDto = teachingTaskValidUtil.checkCourseQuestionId(questionDto.getId(), username);
+        //设置获取到的courseId防止篡改
+        questionDto.setCourseId(courseQuestionDto.getCourseId());
+        questionDto.setUpdateBy(username);
+        questionDto.setCreateBy(username);
+        //更新试题
+        courseQuestionService.update(questionDto);
+
+        //判断是否需要删除原图片
+        if (StringUtil.isNotEmpty(courseQuestionDto.getQuestionUrl())) {
+            if (StringUtil.isEmpty(questionDto.getQuestionUrl())
+                    || !courseQuestionDto.getQuestionUrl().equals(questionDto.getQuestionUrl())) {
+                fastDfsClientWrapper.deleteFile(courseQuestionDto.getQuestionUrl());
+            }
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("删除试题")
+    @ApiOperation(value = "删除试题", notes = "只能操作自己教学任务的课程试题")
+    @GetMapping("/delete")
+    public ResponseEntity<JsonResult> delete(Long id) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        CourseQuestionDto courseQuestionDto = teachingTaskValidUtil.checkCourseQuestionId(id, username);
+        courseQuestionService.delete(id, username);
+
+        //判断是否需要删除原图片
+        if (StringUtil.isNotEmpty(courseQuestionDto.getQuestionUrl())) {
+            fastDfsClientWrapper.deleteFile(courseQuestionDto.getQuestionUrl());
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
 }

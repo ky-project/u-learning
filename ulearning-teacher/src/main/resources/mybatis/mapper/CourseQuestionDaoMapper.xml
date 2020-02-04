@@ -50,12 +50,27 @@
             update_by
     </sql>
     <!--根据id查询试题-->
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from u_course_question
-        where valid = 1
-        AND id = #{id,jdbcType=BIGINT}
+    <select id="getById" parameterType="java.lang.Long" resultMap="CourseQuestionDtoResultMap">
+        select ucq.id,
+               ucq.course_id,
+               ucq.question_text,
+               ucq.question_URL,
+               ucq.question_key,
+               ucq.question_knowledge,
+               ucq.question_type,
+               ucq.valid,
+               ucq.memo,
+               ucq.create_time,
+               ucq.create_by,
+               ucq.update_time,
+               ucq.update_by,
+               uc.course_credit,
+               uc.course_name,
+               uc.course_number
+        from u_course_question ucq
+                 INNER JOIN u_course uc ON uc.valid = 1 AND ucq.course_id = uc.id
+        where ucq.valid = 1
+          AND ucq.id = #{id,jdbcType=BIGINT}
     </select>
     <!--插入试题记录-->
     <insert id="insert" keyColumn="id" keyProperty="id"
@@ -71,7 +86,7 @@
                 #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
     <!--更新试题-->
-    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.CourseQuestionDto">
+    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.QuestionDto">
         update u_course_question
         <set>
             update_time = now(),
@@ -81,7 +96,7 @@
             <if test="questionText != null and questionText != ''">
                 question_text = #{questionText,jdbcType=VARCHAR},
             </if>
-            <if test="questionUrl != null and questionUrl != ''">
+            <if test="questionUrl != null">
                 question_URL = #{questionUrl,jdbcType=VARCHAR},
             </if>
             <if test="questionKey != null and questionKey != ''">
@@ -151,4 +166,12 @@
             AND ucq.question_type LIKE CONCAT('%', #{courseQuestionDto.questionType}, '%')
         </if>
     </select>
+    <!--删除试题-->
+    <update id="updateValidById">
+        UPDATE u_course_question
+        SET valid       = #{valid},
+            update_by   = #{updateBy},
+            update_time = now()
+        WHERE id = #{id}
+    </update>
 </mapper>
