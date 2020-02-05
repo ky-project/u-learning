@@ -1,8 +1,8 @@
-package com.ky.ulearning.monitor.logging.dao;
+package com.ky.ulearning.monitor.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
-import com.ky.ulearning.spi.monitor.logging.dto.LogDto;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.dto.LogDto;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

@@ -1,15 +1,15 @@
-package com.ky.ulearning.monitor.logging.controller;
+package com.ky.ulearning.monitor.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
-import com.ky.ulearning.monitor.logging.service.LogService;
+import com.ky.ulearning.monitor.service.LogService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
-import com.ky.ulearning.spi.monitor.logging.dto.LogDto;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.dto.LogDto;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;

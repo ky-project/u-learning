@@ -1,12 +1,12 @@
-package com.ky.ulearning.monitor.logging.service.impl;
+package com.ky.ulearning.monitor.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
-import com.ky.ulearning.monitor.logging.dao.LogDao;
-import com.ky.ulearning.monitor.logging.service.LogService;
+import com.ky.ulearning.monitor.dao.LogDao;
+import com.ky.ulearning.monitor.service.LogService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
-import com.ky.ulearning.spi.monitor.logging.dto.LogDto;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.dto.LogDto;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;

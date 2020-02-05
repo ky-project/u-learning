@@ -1,7 +1,7 @@
 package com.ky.ulearning.common.core.utils;
 
 import com.ky.ulearning.common.core.annotation.Log;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
