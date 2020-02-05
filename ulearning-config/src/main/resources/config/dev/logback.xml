@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
-    <property name="logback.logdir" value="./ulearning-logs/config/sys" />
-    <property name="logback.appname" value="config" />
+    <property name="logback.logDir" value="/tmp/ulearning-logs/config/sys" />
+    <property name="logback.appName" value="config" />
+    <!-- 日志最大的历史 90天 -->
+    <property name="logback.maxHistory" value="90"/>
+    <property name="logback.maxSize" value="25MB" />
 
-    <contextName>${appname}</contextName>
+    <contextName>${logback.appName}</contextName>
 
     <!--输出到控制台 ConsoleAppender-->
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
@@ -31,15 +34,15 @@
             如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
         -->
-        <File>${logback.logdir}/info.${logback.appname}.log</File>
+        <File>${logback.logDir}/info.${logback.appName}.log</File>
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
-            <FileNamePattern>${logback.logdir}/info.${logback.appname}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${logback.logDir}/info/info.${logback.appName}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <!--只保留最近90天的日志-->
-            <maxHistory>90</maxHistory>
-            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
-            <totalSizeCap>25MB</totalSizeCap>
+            <maxHistory>${logback.maxHistory}</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会执行滚动-->
+            <MaxFileSize>${logback.maxSize}</MaxFileSize>
         </rollingPolicy>
         <!--日志输出编码格式化-->
         <encoder>
@@ -58,15 +61,15 @@
             如果同时有<File>和<FileNamePattern>，那么当天日志是<File>，明天会自动把今天
             的日志改名为今天的日期。即，<File> 的日志都是当天的。
         -->
-        <File>${logback.logdir}/error.${logback.appname}.log</File>
+        <File>${logback.logDir}/error.${logback.appName}.log</File>
         <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
-            <FileNamePattern>${logback.logdir}/error.${logback.appname}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>${logback.logDir}/error/error.${logback.appName}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <!--只保留最近90天的日志-->
-            <maxHistory>90</maxHistory>
-            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
-            <totalSizeCap>25MB</totalSizeCap>
+            <maxHistory>${logback.maxHistory}</maxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会执行滚动-->
+            <MaxFileSize>${logback.maxSize}</MaxFileSize>
         </rollingPolicy>
         <!--日志输出编码格式化-->
         <encoder>
@@ -80,7 +83,6 @@
         <!--appender将会添加到这个loger-->
         <appender-ref ref="fileInfoLog"/>
         <appender-ref ref="fileErrorLog"/>
-        <!--<appender-ref ref="consoleLog"/>-->
     </root>
 
 </configuration>
