@@ -16,6 +16,24 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
     </resultMap>
+    <resultMap id="TeachingTaskExperimentDtoResultMap"
+               type="com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="experiment_order" jdbcType="SMALLINT" property="experimentOrder"/>
+        <result column="experiment_title" jdbcType="VARCHAR" property="experimentTitle"/>
+        <result column="experiment_content" jdbcType="VARCHAR" property="experimentContent"/>
+        <result column="experiment_attachment" jdbcType="VARCHAR" property="experimentAttachment"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             teaching_task_id,
@@ -32,12 +50,26 @@
             experiment_attachment_name
     </sql>
     <!--根据id查询实验信息-->
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from u_teaching_task_experiment
-        where valid = 1
-        AND id = #{id,jdbcType=BIGINT}
+    <select id="getById" parameterType="java.lang.Long" resultMap="TeachingTaskExperimentDtoResultMap">
+        SELECT utte.id,
+               utte.teaching_task_id,
+               utte.experiment_order,
+               utte.experiment_title,
+               utte.experiment_content,
+               utte.experiment_attachment,
+               utte.valid,
+               utte.memo,
+               utte.create_time,
+               utte.create_by,
+               utte.update_time,
+               utte.update_by,
+               utte.experiment_attachment_name,
+               utt.teaching_task_alias,
+               utt.term
+        FROM u_teaching_task_experiment utte
+                 INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
+        WHERE utte.valid = 1
+          AND utte.id = #{id,jdbcType=BIGINT}
     </select>
     <!--插入实验-->
     <insert id="insert" keyColumn="id" keyProperty="id"
@@ -87,4 +119,62 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+    <!--分页查询实验信息-->
+    <select id="listPage" resultMap="TeachingTaskExperimentDtoResultMap">
+        SELECT utte.id,
+        utte.teaching_task_id,
+        utte.experiment_order,
+        utte.experiment_title,
+        utte.experiment_content,
+        utte.experiment_attachment,
+        utte.valid,
+        utte.memo,
+        utte.create_time,
+        utte.create_by,
+        utte.update_time,
+        utte.update_by,
+        utte.experiment_attachment_name,
+        utt.teaching_task_alias,
+        utt.term
+        FROM u_teaching_task_experiment utte
+        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
+        WHERE utte.valid = 1
+        AND utte.teaching_task_id = #{experimentDto.teachingTaskId}
+        <if test="experimentDto.experimentOrder != null">
+            AND utte.experiment_order = #{experimentDto.experimentOrder}
+        </if>
+        <if test="experimentDto.experimentTitle != null and experimentDto.experimentTitle != ''">
+            AND utte.experiment_title LIKE CONCAT('%', #{experimentDto.experimentTitle}, '%')
+        </if>
+        <if test="experimentDto.experimentContent != null and experimentDto.experimentContent != ''">
+            AND experiment_content LIKE CONCAT('%', #{experimentDto.experimentContent}, '%')
+        </if>
+        <if test="experimentDto.experimentAttachmentName != null and experimentDto.experimentAttachmentName != ''">
+            AND utte.experiment_attachment_name LIKE #{experimentDto.experimentAttachmentName}
+        </if>
+        ORDER BY utte.experiment_order desc
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询实验信息 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM u_teaching_task_experiment utte
+        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
+        WHERE utte.valid = 1
+        AND utte.teaching_task_id = #{experimentDto.teachingTaskId}
+        <if test="experimentDto.experimentOrder != null">
+            AND utte.experiment_order = #{experimentDto.experimentOrder}
+        </if>
+        <if test="experimentDto.experimentTitle != null and experimentDto.experimentTitle != ''">
+            AND utte.experiment_title LIKE CONCAT('%', #{experimentDto.experimentTitle}, '%')
+        </if>
+        <if test="experimentDto.experimentContent != null and experimentDto.experimentContent != ''">
+            AND experiment_content LIKE CONCAT('%', #{experimentDto.experimentContent}, '%')
+        </if>
+        <if test="experimentDto.experimentAttachmentName != null and experimentDto.experimentAttachmentName != ''">
+            AND utte.experiment_attachment_name LIKE #{experimentDto.experimentAttachmentName}
+        </if>
+    </select>
 </mapper>

@@ -27,7 +27,7 @@ import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
 import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;

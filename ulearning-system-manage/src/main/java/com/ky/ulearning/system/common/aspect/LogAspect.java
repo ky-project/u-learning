@@ -6,7 +6,7 @@ import com.ky.ulearning.common.core.utils.AopUtil;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

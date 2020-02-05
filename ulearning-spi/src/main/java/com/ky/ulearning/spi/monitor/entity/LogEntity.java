@@ -1,23 +1,24 @@
-package com.ky.ulearning.spi.monitor.logging.dto;
+package com.ky.ulearning.spi.monitor.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ky.ulearning.spi.common.dto.BaseDto;
+import com.ky.ulearning.spi.common.entity.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 /**
- * {@link com.ky.ulearning.spi.monitor.logging.entity.LogEntity}
- * 日志dto
+ * 日志实体类
  *
  * @author luyuhao
- * @since 20/01/13 00:44
+ * @date 19/12/05 02:30
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LogDto extends BaseDto {
+public class LogEntity extends BaseEntity {
+
     /**
      * 用户账号
      */
@@ -43,9 +44,9 @@ public class LogDto extends BaseDto {
     private String logIp;
 
     /**
-     * 日志类型
+     * 具体操作内容
      */
-    @ApiModelProperty("日志类型")
+    @ApiModelProperty("具体操作内容")
     private String logType;
 
     /**
@@ -71,11 +72,4 @@ public class LogDto extends BaseDto {
      */
     @ApiModelProperty("操作地址")
     private String logAddress;
-
-    /**
-     * 创建时间
-     */
-    @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime;
 }

@@ -14,7 +14,7 @@ server:
       directory: ./access
       buffered: false
       file-date-format: .yyyy-MM-dd
-      pattern: common
+      pattern: '%h %l %u %t "%r" %s %b %D %{User-Agent}i'
       prefix: ${spring.application.name}
       rotate: true
       suffix: .log

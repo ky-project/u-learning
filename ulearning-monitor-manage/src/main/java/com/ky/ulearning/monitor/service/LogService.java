@@ -1,9 +1,9 @@
-package com.ky.ulearning.monitor.logging.service;
+package com.ky.ulearning.monitor.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
-import com.ky.ulearning.spi.monitor.logging.dto.LogDto;
-import com.ky.ulearning.spi.monitor.logging.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.dto.LogDto;
+import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;

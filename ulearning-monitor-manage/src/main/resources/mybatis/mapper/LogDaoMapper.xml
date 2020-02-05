@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ky.ulearning.monitor.logging.dao.LogDao">
-    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.monitor.logging.entity.LogEntity">
+<mapper namespace="com.ky.ulearning.monitor.dao.LogDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.monitor.entity.LogEntity">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="log_username" jdbcType="VARCHAR" property="logUsername"/>
         <result column="log_description" jdbcType="VARCHAR" property="logDescription"/>
@@ -51,7 +51,7 @@
             update_by
     </sql>
     <!-- 插入记录 -->
-    <insert id="insert" parameterType="com.ky.ulearning.spi.monitor.logging.entity.LogEntity">
+    <insert id="insert" parameterType="com.ky.ulearning.spi.monitor.entity.LogEntity">
         insert into u_log(<include refid="insertSql"/>)
         values (#{logUsername}, #{logDescription},
         #{logModule}, #{logIp},
