@@ -20,6 +20,7 @@ import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.spi.teacher.vo.NoticeAttachmentVo;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
+import com.ky.ulearning.teacher.remoting.MonitorManageRemoting;
 import com.ky.ulearning.teacher.service.TeachingTaskNoticeService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,9 @@ public class TeachingTaskNoticeController extends BaseController {
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
 
+    @Autowired
+    private MonitorManageRemoting monitorManageRemoting;
+
     @Log("分页查询通告")
     @ApiOperation(value = "分页查询通告", notes = "只能查看自己教学任务的通告")
     @ApiOperationSupport(ignoreParameters = {"id", "noticeAttachment"})
@@ -101,9 +105,13 @@ public class TeachingTaskNoticeController extends BaseController {
                 noticeAttachment += ",";
                 noticeAttachmentName += ",";
             }
-            noticeAttachment += fastDfsClientWrapper.uploadFile(attachment);
+            String noticeAttachmentUrl = fastDfsClientWrapper.uploadFile(attachment);
+            noticeAttachment += noticeAttachmentUrl;
             noticeAttachmentName += attachment.getOriginalFilename();
             index++;
+            //记录文件
+            monitorManageRemoting.addFileRecord(getFileRecordDto(noticeAttachmentUrl, attachment,
+                    MicroConstant.TEACHING_TASK_NOTICE_TABLE_NAME, null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         }
         return ResponseEntityUtil.ok(JsonResult.buildData(new NoticeAttachmentVo(noticeAttachment, noticeAttachmentName)));
     }

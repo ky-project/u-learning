@@ -4,6 +4,7 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ky.ulearning.common.core.annotation.Log;
+import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
@@ -68,7 +69,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/auth")
 @Api(tags = "系统认证接口")
-public class AuthController {
+public class AuthController extends BaseController {
 
     @Autowired
     private RedisService redisService;
@@ -178,7 +179,7 @@ public class AuthController {
      * @param loginUser 登陆用户信息
      * @return 返回用户信息和token
      */
-    @ApiOperation(value = "登录系统-单点登录", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
+    @ApiOperation(value = "登录系统", notes = "将返回token和refresh_token存于cookie中，之后每次请求需带上两个token")
     @PostMapping("/login")
     public ResponseEntity<JsonResult> login(LoginUser loginUser,
                                             HttpServletRequest request,
@@ -383,6 +384,9 @@ public class AuthController {
                 //更新url
                 param.put("teaPhoto", url);
                 systemManageRemoting.teacherUpdate(param);
+                //记录文件
+                monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
+                        MicroConstant.TEACHER_TABLE_NAME, jwtAccount.getId(), jwtAccount.getUsername()));
             } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
                 //学生身份
                 //获取当前用户信息
@@ -396,6 +400,9 @@ public class AuthController {
                 //更新url
                 param.put("stuPhoto", url);
                 systemManageRemoting.studentUpdate(param);
+                //记录文件
+                monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
+                        MicroConstant.STUDENT_TABLE_NAME, jwtAccount.getId(), jwtAccount.getUsername()));
             } else {
                 return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
             }

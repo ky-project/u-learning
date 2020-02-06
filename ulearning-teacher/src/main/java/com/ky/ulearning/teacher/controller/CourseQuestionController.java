@@ -20,6 +20,7 @@ import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
 import com.ky.ulearning.spi.teacher.dto.QuestionDto;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
+import com.ky.ulearning.teacher.remoting.MonitorManageRemoting;
 import com.ky.ulearning.teacher.service.CourseQuestionService;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import io.swagger.annotations.Api;
@@ -65,6 +66,9 @@ public class CourseQuestionController extends BaseController {
     @Autowired
     private TeachingTaskValidUtil teachingTaskValidUtil;
 
+    @Autowired
+    private MonitorManageRemoting monitorManageRemoting;
+
     @Log("添加试题图片")
     @ApiOperation(value = "添加试题图片", notes = "添加图片，返回图片url")
     @PostMapping("/saveQuestionFile")
@@ -81,6 +85,10 @@ public class CourseQuestionController extends BaseController {
         String questionUrl = fastDfsClientWrapper.uploadFile(questionFile);
         Map<String, Object> map = new HashMap<>(4);
         map.put("questionUrl", questionUrl);
+
+        //记录文件
+        monitorManageRemoting.addFileRecord(getFileRecordDto(questionUrl, questionFile,
+                MicroConstant.COURSE_QUESTION_TABLE_NAME, null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         return ResponseEntityUtil.ok(JsonResult.buildData(map));
     }
 

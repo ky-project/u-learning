@@ -19,6 +19,7 @@ import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
@@ -50,6 +51,9 @@ public class StudentController extends BaseController {
 
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
+
+    @Autowired
+    private MonitorManageRemoting monitorManageRemoting;
 
     @Log("学生添加")
     @ApiOperationSupport(ignoreParameters = {"id", "stuPassword"})
@@ -198,6 +202,10 @@ public class StudentController extends BaseController {
         studentDto.setStuPhoto(url);
         studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         studentService.update(studentDto);
+        //记录文件
+        monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
+                MicroConstant.TEACHER_TABLE_NAME, id,
+                RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
     }
