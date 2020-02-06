@@ -36,4 +36,7 @@ public class DefaultConfigParameters {
 
     @Value("#{${ulearning.file.experiment_attachment-max-size} * 1024 * 1024}")
     private Long experimentAttachmentMaxSize;
+
+    @Value("${spring.mail.username}")
+    private String mailFrom;
 }

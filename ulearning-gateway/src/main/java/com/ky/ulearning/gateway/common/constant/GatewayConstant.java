@@ -29,4 +29,9 @@ public class GatewayConstant {
      * 静态文件
      */
     public static final String[] STATIC_SUFFIX = {".css", ".js", ".html", ".ico", ".svg", ".png"};
+
+    /**
+     * 找回密码验证码email标题
+     */
+    public static final String VERIFY_CODE_MAIL_TITLE = "U-Learning找回登录密码通知";
 }
