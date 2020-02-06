@@ -8,7 +8,18 @@ spring:
       max-file-size: 600MB
       #最大请求文件的大小
       max-request-size: 600MB
-
+  mail:
+    username: ludaye1112@163.com
+    password: luyuhao2010
+    host: smtp.163.com
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 #jwt
 jwt:
   header-token: Authorization-token
