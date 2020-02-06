@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.monitor.dao.FileRecordDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.monitor.entity.FileRecordEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="record_url" jdbcType="VARCHAR" property="recordUrl"/>
+        <result column="record_name" jdbcType="VARCHAR" property="recordName"/>
+        <result column="record_size" jdbcType="BIGINT" property="recordSize"/>
+        <result column="record_type" jdbcType="VARCHAR" property="recordType"/>
+        <result column="record_table" jdbcType="VARCHAR" property="recordTable"/>
+        <result column="record_table_id" jdbcType="BIGINT" property="recordTableId"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            record_url,
+            record_name,
+            record_size,
+            record_type,
+            record_table,
+            record_table_id,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--根据id查询文件记录-->
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_file_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <!--插入文件记录-->
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.monitor.dto.FileRecordDto" useGeneratedKeys="true">
+        insert into u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        values (#{recordUrl,jdbcType=VARCHAR}, #{recordName,jdbcType=VARCHAR}, #{recordSize,jdbcType=BIGINT},
+                #{recordType,jdbcType=VARCHAR}, #{recordTable,jdbcType=VARCHAR}, #{recordTableId,jdbcType=BIGINT},
+                1, #{memo,jdbcType=VARCHAR}, now(),
+                #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <!--根据id更新记录有效位-->
+    <update id="updateValidById">
+        UPDATE u_file_record
+        SET valid       = #{valid},
+            update_time = now(),
+            update_by   = #{updateBy}
+        WHERE id = #{id}
+    </update>
+</mapper>
