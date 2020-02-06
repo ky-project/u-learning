@@ -20,6 +20,7 @@ import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.vo.ExperimentAttachmentVo;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
+import com.ky.ulearning.teacher.remoting.MonitorManageRemoting;
 import com.ky.ulearning.teacher.service.TeachingTaskExperimentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -62,6 +63,9 @@ public class TeachingTaskExperimentController extends BaseController {
     @Autowired
     private TeachingTaskValidUtil teachingTaskValidUtil;
 
+    @Autowired
+    private MonitorManageRemoting monitorManageRemoting;
+
     @Log("添加附件")
     @ApiOperation(value = "添加附件")
     @PostMapping("/uploadAttachment")
@@ -76,6 +80,9 @@ public class TeachingTaskExperimentController extends BaseController {
                 .on(attachment.getSize() > defaultConfigParameters.getExperimentAttachmentMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
                 .doValidate().checkResult();
         String attachmentUrl = fastDfsClientWrapper.uploadFile(attachment);
+        //记录文件
+        monitorManageRemoting.addFileRecord(getFileRecordDto(attachmentUrl, attachment,
+                MicroConstant.TEACHING_TASK_EXPERIMENT_TABLE_NAME, null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         return ResponseEntityUtil.ok(JsonResult.buildData(new ExperimentAttachmentVo(attachmentUrl, attachment.getOriginalFilename())));
     }
 

@@ -23,12 +23,12 @@ import com.ky.ulearning.system.auth.service.RolePermissionService;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -69,6 +69,9 @@ public class TeacherController extends BaseController {
 
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
+
+    @Autowired
+    private MonitorManageRemoting monitorManageRemoting;
 
 
     @Log("教师添加")
@@ -217,22 +220,22 @@ public class TeacherController extends BaseController {
     @ApiOperation("上传头像")
     @PermissionName(source = "teacher:uploadPhoto", name = "上传头像", group = "教师管理")
     @PostMapping("/uploadPhoto")
-    public ResponseEntity<JsonResult> uploadPhoto(@RequestParam("photo") MultipartFile photo, @RequestParam("id")Long id) throws IOException, InterruptedException {
+    public ResponseEntity<JsonResult> uploadPhoto(@RequestParam("photo") MultipartFile photo, @RequestParam("id") Long id) throws IOException, InterruptedException {
         ValidatorBuilder.build()
                 //参数非空校验
                 .on(StringUtil.isEmpty(id), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .on(photo == null || photo.isEmpty(), CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
                 //文件类型篡改校验
-                .on(! FileUtil.fileTypeCheck(photo), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
+                .on(!FileUtil.fileTypeCheck(photo), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
                 //文件类型校验
-                .on(! FileUtil.fileTypeRuleCheck(photo, FileUtil.IMAGE_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                .on(!FileUtil.fileTypeRuleCheck(photo, FileUtil.IMAGE_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
                 //文件大小校验
                 .on(photo.getSize() > defaultConfigParameters.getPhotoMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
                 .doValidate().checkResult();
         //获取用户信息
         TeacherEntity teacherEntity = teacherService.getById(id);
         //判断是否已有头像，有则先删除
-        if(StringUtil.isNotEmpty(teacherEntity.getTeaPhoto())){
+        if (StringUtil.isNotEmpty(teacherEntity.getTeaPhoto())) {
             fastDfsClientWrapper.deleteFile(teacherEntity.getTeaPhoto());
         }
         //保存文件
@@ -243,6 +246,10 @@ public class TeacherController extends BaseController {
         teacherDto.setTeaPhoto(url);
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teacherService.update(teacherDto);
+        //记录文件
+        monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
+                MicroConstant.TEACHER_TABLE_NAME, id,
+                RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
     }
@@ -251,7 +258,7 @@ public class TeacherController extends BaseController {
     @ApiOperation("更新密码")
     @PermissionName(source = "teacher:updatePassword", name = "更新密码", group = "教师管理")
     @PostMapping("/updatePassword")
-    public ResponseEntity<JsonResult> updatePassword(PasswordUpdateDto passwordUpdateDto){
+    public ResponseEntity<JsonResult> updatePassword(PasswordUpdateDto passwordUpdateDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(passwordUpdateDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.OLD_PASSWORD_CANNOT_BE_NULL)

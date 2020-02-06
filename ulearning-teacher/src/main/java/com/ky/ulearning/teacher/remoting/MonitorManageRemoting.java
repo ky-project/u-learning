@@ -13,7 +13,7 @@ import java.util.Map;
  * @date 19/12/17 02:58
  */
 @FeignClient(value = "monitor-manage")
-@RequestMapping(value = "/monitor-manage/log")
+@RequestMapping(value = "/monitor-manage")
 public interface MonitorManageRemoting {
 
     /**
@@ -22,6 +22,15 @@ public interface MonitorManageRemoting {
      * @param logEntity 待添加的日志对象
      */
     @Async
-    @PostMapping("/add")
+    @PostMapping("/log/add")
     void add(@RequestParam Map<String, Object> logEntity);
+
+    /**
+     * 添加文件记录
+     *
+     * @param fileRecordDto 待添加的文件对象
+     */
+    @Async
+    @PostMapping("/fileRecord/add")
+    void addFileRecord(@RequestParam Map<String, Object> fileRecordDto);
 }
