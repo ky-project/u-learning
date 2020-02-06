@@ -30,9 +30,9 @@ public class FileRecordEntity extends BaseEntity {
     private String recordName;
 
     /**
-     * 文件记录名大小
+     * 文件记录名大小(B)
      */
-    @ApiModelProperty("文件记录名大小")
+    @ApiModelProperty("文件记录名大小(B)")
     private Long recordSize;
 
     /**
