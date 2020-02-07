@@ -22,6 +22,9 @@ public class ForgetPasswordDto implements Serializable {
     @ApiModelProperty(value = "用户角色", hidden = true)
     private String sysRole;
 
+    @ApiModelProperty(value = "用户工号/学号", hidden = true)
+    private String username;
+
     @ApiModelProperty(value = "用户邮箱")
     private String email;
 
@@ -31,6 +34,19 @@ public class ForgetPasswordDto implements Serializable {
     @ApiModelProperty(value = "用户输入的验证码")
     private String code;
 
-    @ApiModelProperty(value = "验证码生成的uuid")
+    @ApiModelProperty(value = "发送邮件生成的uuid")
     private String uuid;
+
+    @Override
+    public String toString() {
+        return "ForgetPasswordDto{" +
+                "id=" + id +
+                ", sysRole='" + sysRole + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", password='******'" +
+                ", code='" + code + '\'' +
+                ", uuid='" + uuid + '\'' +
+                '}';
+    }
 }

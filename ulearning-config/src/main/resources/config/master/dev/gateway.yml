@@ -41,4 +41,4 @@ ulearning:
   # 无需进行权限校验的路径
   permission-release-patterns: /auth/**, /zuul/**
   # 无需登录验证的路径
-  authenticate-release-patterns: /*.html, /webjars/**, /**/*.html, /**/*.css, /**/*.js, /**/*.ico, /**/*.png, /**/*.svg, /swagger-resources, /v2/api-docs, /auth/login, /auth/logout, /auth/logout/success, /auth/vCode, /actuator/**
+  authenticate-release-patterns: /*.html, /webjars/**, /**/*.html, /**/*.css, /**/*.js, /**/*.ico, /**/*.png, /**/*.svg, /swagger-resources, /v2/api-docs, /auth/login, /auth/logout, /auth/logout/success, /auth/vCode, /actuator/**, /auth/sendUpdatePwdEmail, /auth/updatePwdByEmail
