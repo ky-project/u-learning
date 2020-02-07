@@ -6,7 +6,6 @@ import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.system.vo.TeacherVo;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -71,4 +70,11 @@ public interface TeacherService {
      */
     List<TeacherVo> getAll();
 
+    /**
+     * 根据email查询教师信息
+     *
+     * @param teaEmail 教师邮箱
+     * @return 返回教师信息
+     */
+    TeacherEntity getByTeaEmail(String teaEmail);
 }

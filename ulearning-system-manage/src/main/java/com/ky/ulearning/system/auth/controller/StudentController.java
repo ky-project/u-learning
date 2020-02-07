@@ -17,6 +17,7 @@ import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
+import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
@@ -26,6 +27,7 @@ import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -208,5 +210,15 @@ public class StudentController extends BaseController {
                 RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
+    }
+
+    @Log("根据email查询学生")
+    @ApiOperation("根据email查询学生")
+    @PermissionName(source = "student:getByStuEmail", name = "根据email查询学生", group = "学生管理")
+    @GetMapping("/getByStuEmail")
+    public ResponseEntity<JsonResult<StudentEntity>> getByStuEmail(String stuEmail) {
+        ValidateHandler.checkParameter(StringUtils.isEmpty(stuEmail), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
+        StudentEntity exists = studentService.getByStuEmail(stuEmail);
+        return ResponseEntityUtil.ok(JsonResult.buildData(exists));
     }
 }

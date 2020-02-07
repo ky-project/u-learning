@@ -93,7 +93,7 @@ public class SendMailUtil {
             helper.setText(tmpMailContent, true);
             javaMailSender.send(message);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
     }
 }

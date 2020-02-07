@@ -1,6 +1,7 @@
 package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -16,9 +17,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,14 +47,14 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
     @Transactional(rollbackFor = Throwable.class)
     public void update(TeacherDto newTeacher) {
         //判断teaNumber是否存在
-        if(!StringUtil.isEmpty(newTeacher.getTeaNumber())) {
+        if (!StringUtil.isEmpty(newTeacher.getTeaNumber())) {
             TeacherEntity teaNumberExists = teacherDao.findByTeaNumber(newTeacher.getTeaNumber());
             if (teaNumberExists != null && !teaNumberExists.getId().equals(newTeacher.getId())) {
                 throw new EntityExistException("教师编号");
             }
         }
         //判断邮箱是否存在
-        if(!StringUtil.isEmpty(newTeacher.getTeaEmail())) {
+        if (!StringUtil.isEmpty(newTeacher.getTeaEmail())) {
             TeacherEntity emailExists = teacherDao.findByEmail(newTeacher.getTeaEmail());
             if (emailExists != null && !emailExists.getId().equals(newTeacher.getId())) {
                 throw new EntityExistException("教师邮箱");
@@ -111,4 +112,16 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
         return teacherDao.getAllVo();
     }
 
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public TeacherEntity getByTeaEmail(String teaEmail) {
+        List<TeacherEntity> teacherEntityList = teacherDao.getListByTeaEmail(teaEmail);
+        if (CollectionUtils.isEmpty(teacherEntityList)) {
+            throw new BadRequestException("教师不存在");
+        }
+        if (teacherEntityList.size() > 1) {
+            throw new BadRequestException("存在重复绑定该邮箱教师");
+        }
+        return teacherEntityList.get(0);
+    }
 }

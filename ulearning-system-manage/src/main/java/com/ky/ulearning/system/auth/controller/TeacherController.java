@@ -281,4 +281,14 @@ public class TeacherController extends BaseController {
         teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }
+
+    @Log("根据email查询教师")
+    @ApiOperation("根据email查询教师")
+    @PermissionName(source = "teacher:getByTeaEmail", name = "根据email查询教师", group = "教师管理")
+    @GetMapping("/getByTeaEmail")
+    public ResponseEntity<JsonResult<TeacherEntity>> getByTeaEmail(String teaEmail) {
+        ValidateHandler.checkParameter(StringUtils.isEmpty(teaEmail), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
+        TeacherEntity exists = teacherService.getByTeaEmail(teaEmail);
+        return ResponseEntityUtil.ok(JsonResult.buildData(exists));
+    }
 }

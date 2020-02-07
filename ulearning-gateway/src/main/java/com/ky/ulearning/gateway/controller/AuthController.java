@@ -23,8 +23,10 @@ import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
+import com.ky.ulearning.gateway.common.utils.SendMailUtil;
 import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
+import com.ky.ulearning.spi.common.dto.ForgetPasswordDto;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
 import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
@@ -56,10 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author luyuhao
@@ -97,6 +96,9 @@ public class AuthController extends BaseController {
 
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
+
+    @Autowired
+    private SendMailUtil sendMailUtil;
 
     @Log("获取个人权限信息")
     @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
@@ -449,5 +451,76 @@ public class AuthController extends BaseController {
         }
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("发送修改密码邮件")
+    @ApiOperation(value = "发送修改密码邮件", notes = "忘记密码时使用")
+    @ApiOperationSupport(ignoreParameters = {"password", "code", "uuid"})
+    @PostMapping("/sendUpdatePwdEmail")
+    public ResponseEntity<JsonResult<String>> updatePassword(ForgetPasswordDto forgetPasswordDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(forgetPasswordDto.getEmail()), GatewayErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
+        //获取学生教师信息
+        TeacherEntity teacherEntity = getByTeaEmail(forgetPasswordDto.getEmail());
+        StudentEntity studentEntity = getByStuEmail(forgetPasswordDto.getEmail());
+        //都不存在时
+        if (teacherEntity == null && studentEntity == null) {
+            throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_NOT_EXISTS);
+        }
+        //账号都存在时
+        if (teacherEntity != null && studentEntity != null) {
+            throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_ERROR);
+        }
+        String username;
+        if (teacherEntity != null) {
+            forgetPasswordDto.setId(teacherEntity.getId())
+                    .setSysRole(MicroConstant.SYS_ROLE_TEACHER);
+            username = teacherEntity.getTeaName();
+        } else {
+            forgetPasswordDto.setId(studentEntity.getId())
+                    .setSysRole(MicroConstant.SYS_ROLE_STUDENT);
+            username = studentEntity.getStuName();
+        }
+        //生成随机字串
+        String code = VerifyCodeUtil.generateVerifyCode(6, VerifyCodeUtil.NUMBER_VERIFY_CODES);
+        String uuid = IdUtil.simpleUUID();
+        forgetPasswordDto.setCode(code);
+        redisService.saveCode(uuid, JsonUtil.toJsonString(forgetPasswordDto));
+        //发送邮件
+        sendMailUtil.sendVerifyCodeMail(username, code, forgetPasswordDto.getEmail());
+        return ResponseEntityUtil.ok(JsonResult.buildData(uuid));
+    }
+
+    /**
+     * 根据邮箱查询教师信息
+     *
+     * @param teaEmail 教师邮箱
+     * @return 教师对象
+     */
+    private TeacherEntity getByTeaEmail(String teaEmail) {
+        try {
+            JsonResult<TeacherEntity> jsonResult = systemManageRemoting.getByTeaEmail(teaEmail);
+            return Optional.ofNullable(jsonResult)
+                    .map(JsonResult::getData)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 根据邮箱查询学生信息
+     *
+     * @param stuEmail 学生邮箱
+     * @return 学生对象
+     */
+    private StudentEntity getByStuEmail(String stuEmail) {
+        try {
+            JsonResult<StudentEntity> jsonResult = systemManageRemoting.getByStuEmail(stuEmail);
+            return Optional.ofNullable(jsonResult)
+                    .map(JsonResult::getData)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
