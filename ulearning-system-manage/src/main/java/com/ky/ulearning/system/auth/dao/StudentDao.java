@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -84,4 +83,12 @@ public interface StudentDao {
      * @param updateBy 更新者
      */
     void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
+
+    /**
+     * 根据邮箱查询
+     *
+     * @param stuEmail 邮箱
+     * @return 返回学生信息集合
+     */
+    List<StudentEntity> getListByStuEmail(String stuEmail);
 }

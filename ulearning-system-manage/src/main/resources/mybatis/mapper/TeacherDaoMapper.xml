@@ -215,4 +215,12 @@
         FROM u_teacher
         WHERE valid = 1
     </select>
+    <!--根据email查询教师信息-->
+    <select id="getListByTeaEmail" resultMap="BaseResultMap">
+        select
+        <include refid="selectAll"/>
+        from u_teacher
+        where valid = 1
+        and tea_email = #{teaEmail}
+    </select>
 </mapper>

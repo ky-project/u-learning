@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -53,8 +52,17 @@ public interface SystemManageRemoting {
     JsonResult<TeacherDto> teacherUpdate(@RequestParam Map<String, Object> teacherDto);
 
     /**
+     * 根据邮箱查询教师信息
+     *
+     * @param teaEmail 教师邮箱
+     * @return 教师信息
+     */
+    @GetMapping("/teacher/getByTeaEmail")
+    JsonResult<TeacherEntity> getByTeaEmail(@RequestParam("teaEmail") String teaEmail);
+
+    /**
      * ------------------------ StudentController ------------------------
-     * 教师登录
+     * 学生登录
      *
      * @param stuNumber 学生number
      * @return 登录的账号信息
@@ -80,4 +88,13 @@ public interface SystemManageRemoting {
      */
     @PostMapping("/student/update")
     JsonResult studentUpdate(@RequestParam Map<String, Object> studentDto);
+
+    /**
+     * 根据邮箱查询学生信息
+     *
+     * @param stuEmail 学生邮箱
+     * @return 学生信息
+     */
+    @GetMapping("/student/getByStuEmail")
+    JsonResult<StudentEntity> getByStuEmail(@RequestParam("stuEmail") String stuEmail);
 }

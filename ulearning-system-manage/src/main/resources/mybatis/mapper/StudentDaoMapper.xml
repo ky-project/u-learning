@@ -119,6 +119,7 @@
         FROM u_student
         WHERE valid = 1
         AND stu_number = #{stuNumber}
+        LIMIT 1
     </select>
     <!--根据邮箱查询-->
     <select id="getByStuEmail" resultMap="BaseResultMap">
@@ -127,6 +128,7 @@
         FROM u_student
         WHERE valid = 1
         AND stu_email = #{stuEmail}
+        LIMIT 1
     </select>
     <!--分页查询学生信息-->
     <select id="listPage" resultMap="BaseResultMap">
@@ -197,4 +199,12 @@
             update_by       = #{updateBy}
         WHERE id = #{id}
     </update>
+    <!--根据邮箱查询-->
+    <select id="getListByStuEmail" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_student
+        WHERE valid = 1
+        AND stu_email = #{stuEmail}
+    </select>
 </mapper>

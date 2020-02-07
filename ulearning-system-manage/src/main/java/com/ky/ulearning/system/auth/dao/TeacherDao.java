@@ -99,4 +99,11 @@ public interface TeacherDao {
      */
     List<TeacherVo> getAllVo();
 
+    /**
+     * 根据email查询教师信息
+     *
+     * @param teaEmail 教师邮箱
+     * @return 返回教师信息集合
+     */
+    List<TeacherEntity> getListByTeaEmail(String teaEmail);
 }

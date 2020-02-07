@@ -23,7 +23,12 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     REQUEST_PATH_NOT_REGISTER(HttpStatus.BAD_REQUEST, "访问路径非法!"),
     AUTHORIZED_FAILURE(HttpStatus.UNAUTHORIZED,"认证失败"),
     UPDATE_FAILED(HttpStatus.BAD_REQUEST, "邮箱已存在，请确认信息或稍后再试"),
-    UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "文件上传失败，请稍后再试")
+    UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "文件上传失败，请稍后再试"),
+    EMAIL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "邮箱不能为空"),
+    EMAIL_NOT_EXISTS(HttpStatus.BAD_REQUEST,"邮箱未绑定或邮箱被多个账号绑定，请联系管理员"),
+    EMAIL_ERROR(HttpStatus.BAD_REQUEST, "邮箱被多个账号绑定，请联系管理员"),
+    VERIFY_CODE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST,"验证码不能为空"),
+    LOST_PARAMETERS(HttpStatus.BAD_REQUEST, "缺少参数"),
     ;
 
     private Integer code;

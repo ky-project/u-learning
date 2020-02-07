@@ -1,6 +1,7 @@
 package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -15,8 +16,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -100,5 +101,18 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             }
         }
         studentDao.update(studentDto);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public StudentEntity getByStuEmail(String stuEmail) {
+        List<StudentEntity> studentEntityList = studentDao.getListByStuEmail(stuEmail);
+        if (CollectionUtils.isEmpty(studentEntityList)) {
+            throw new BadRequestException("学生不存在");
+        }
+        if (studentEntityList.size() > 1) {
+            throw new BadRequestException("存在重复绑定该邮箱学生");
+        }
+        return studentEntityList.get(0);
     }
 }

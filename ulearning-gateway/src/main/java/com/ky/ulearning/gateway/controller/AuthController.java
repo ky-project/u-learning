@@ -23,8 +23,10 @@ import com.ky.ulearning.gateway.common.security.JwtAccountDetailsService;
 import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.gateway.common.utils.JwtRefreshTokenUtil;
 import com.ky.ulearning.gateway.common.utils.JwtTokenUtil;
+import com.ky.ulearning.gateway.common.utils.SendMailUtil;
 import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
+import com.ky.ulearning.spi.common.dto.ForgetPasswordDto;
 import com.ky.ulearning.spi.common.dto.ImgResult;
 import com.ky.ulearning.spi.common.dto.LoginUser;
 import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
@@ -56,10 +58,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author luyuhao
@@ -97,6 +96,9 @@ public class AuthController extends BaseController {
 
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
+
+    @Autowired
+    private SendMailUtil sendMailUtil;
 
     @Log("获取个人权限信息")
     @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
@@ -187,8 +189,8 @@ public class AuthController extends BaseController {
         long currentTime = System.currentTimeMillis();
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
-        loginUser.setUsername(loginUser.getUsername().trim());
-        loginUser.setPassword(loginUser.getPassword().trim());
+//        loginUser.setUsername(loginUser.getUsername().trim());
+//        loginUser.setPassword(loginUser.getPassword().trim());
         // 清除验证码
         redisService.delete(loginUser.getUuid());
         ValidateHandler.checkParameter(StringUtils.isEmpty(code), GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
@@ -449,5 +451,120 @@ public class AuthController extends BaseController {
         }
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("发送修改密码邮件")
+    @ApiOperation(value = "发送修改密码邮件", notes = "忘记密码时使用")
+    @ApiOperationSupport(ignoreParameters = {"password", "code", "uuid"})
+    @PostMapping("/sendUpdatePwdEmail")
+    public ResponseEntity<JsonResult<String>> sendUpdatePwdEmail(ForgetPasswordDto forgetPasswordDto) {
+        ValidateHandler.checkParameter(StringUtil.isEmpty(forgetPasswordDto.getEmail()), GatewayErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
+        //获取学生教师信息
+        TeacherEntity teacherEntity = getByTeaEmail(forgetPasswordDto.getEmail());
+        StudentEntity studentEntity = getByStuEmail(forgetPasswordDto.getEmail());
+        //都不存在时
+        if (teacherEntity == null && studentEntity == null) {
+            throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_NOT_EXISTS);
+        }
+        //账号都存在时
+        if (teacherEntity != null && studentEntity != null) {
+            throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_ERROR);
+        }
+        String username;
+        if (teacherEntity != null) {
+            forgetPasswordDto.setId(teacherEntity.getId())
+                    .setSysRole(MicroConstant.SYS_ROLE_TEACHER)
+                    .setUsername(teacherEntity.getTeaNumber());
+            username = teacherEntity.getTeaName();
+        } else {
+            forgetPasswordDto.setId(studentEntity.getId())
+                    .setSysRole(MicroConstant.SYS_ROLE_STUDENT)
+                    .setUsername(studentEntity.getStuNumber());
+            username = studentEntity.getStuName();
+        }
+        //生成随机字串
+        String code = VerifyCodeUtil.generateVerifyCode(6, VerifyCodeUtil.NUMBER_VERIFY_CODES);
+        String uuid = IdUtil.simpleUUID();
+        forgetPasswordDto.setCode(code);
+        redisService.saveCode(uuid, JsonUtil.toJsonString(forgetPasswordDto));
+        //发送邮件
+        sendMailUtil.sendVerifyCodeMail(username, code, forgetPasswordDto.getEmail());
+        return ResponseEntityUtil.ok(JsonResult.buildData(uuid));
+    }
+
+    /**
+     * 根据邮箱查询教师信息
+     *
+     * @param teaEmail 教师邮箱
+     * @return 教师对象
+     */
+    private TeacherEntity getByTeaEmail(String teaEmail) {
+        try {
+            JsonResult<TeacherEntity> jsonResult = systemManageRemoting.getByTeaEmail(teaEmail);
+            return Optional.ofNullable(jsonResult)
+                    .map(JsonResult::getData)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 根据邮箱查询学生信息
+     *
+     * @param stuEmail 学生邮箱
+     * @return 学生对象
+     */
+    private StudentEntity getByStuEmail(String stuEmail) {
+        try {
+            JsonResult<StudentEntity> jsonResult = systemManageRemoting.getByStuEmail(stuEmail);
+            return Optional.ofNullable(jsonResult)
+                    .map(JsonResult::getData)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Log("通过邮箱修改密码")
+    @ApiOperation(value = "通过邮箱修改密码", notes = "忘记密码时使用")
+    @ApiOperationSupport(ignoreParameters = {"email"})
+    @PostMapping("/updatePwdByEmail")
+    public ResponseEntity<JsonResult> updatePwdByEmail(ForgetPasswordDto forgetPasswordDto) {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(forgetPasswordDto.getPassword()), CommonErrorCodeEnum.NEW_PASSWORD_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(forgetPasswordDto.getCode()), GatewayErrorCodeEnum.VERIFY_CODE_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(forgetPasswordDto.getUuid()), GatewayErrorCodeEnum.LOST_PARAMETERS)
+                .doValidate().checkResult();
+        // 查询验证码
+        String jsonStr = redisService.getCodeVal(forgetPasswordDto.getUuid());
+        // 清除验证码
+        redisService.delete(forgetPasswordDto.getUuid());
+        ValidateHandler.checkParameter(StringUtils.isEmpty(jsonStr), GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
+        //获取uuid对应的dto
+        ForgetPasswordDto checkDto = JsonUtil.parseObject(jsonStr, ForgetPasswordDto.class);
+        //判断验证码是否正确
+        ValidateHandler.checkParameter(! forgetPasswordDto.getCode().trim().equals(checkDto.getCode()), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
+
+        //参数初始化
+        Map<String, Object> param = new HashMap<>(4);
+        param.put("id", checkDto.getId());
+        param.put("updateBy", checkDto.getUsername());
+        String sysRole = checkDto.getSysRole();
+
+        //根据不同系统角色调用不同接口
+        if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
+            //教师身份
+            param.put("teaPassword", forgetPasswordDto.getPassword());
+            systemManageRemoting.teacherUpdate(param);
+        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
+            //学生身份
+            param.put("stuPassword", forgetPasswordDto.getPassword());
+            systemManageRemoting.studentUpdate(param);
+        } else {
+            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+        }
+        //返回信息
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }
 }

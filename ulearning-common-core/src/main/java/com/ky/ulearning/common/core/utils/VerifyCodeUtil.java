@@ -20,6 +20,8 @@ public class VerifyCodeUtil {
      * 使用到Algerian字体，系统里没有的话需要安装字体，字体只显示大写，去掉了1,0,i,o几个容易混淆的字符
      */
     private static final String VERIFY_CODES = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+    public static final String NUMBER_VERIFY_CODES = "0123456789";
     private static Random random = new Random();
 
     /**
