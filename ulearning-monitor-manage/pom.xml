@@ -123,6 +123,12 @@
             <artifactId>springfox-bean-validators</artifactId>
         </dependency>
         <!-- swagger2 End -->
+        <!-- xxl-job-core Begin -->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+        </dependency>
+        <!-- xxl-job-core End -->
         <!-- Plugins End -->
 
         <!-- U-Learning Begin -->

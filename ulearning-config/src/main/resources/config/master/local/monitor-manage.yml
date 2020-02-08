@@ -1,0 +1,12 @@
+# xxl-job
+xxl:
+  job:
+    accessToken:
+    admin:
+      addresses: http://127.0.0.1:14007/xxl-job-admin
+    executor:
+      appname: ${spring.application.name}
+      ip:
+      logpath: ./ulearning-logs/xxl-job/${spring.application.name}
+      logretentiondays: 30
+      port: 24004
