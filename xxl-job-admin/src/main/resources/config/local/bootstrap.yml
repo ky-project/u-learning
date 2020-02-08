@@ -1,0 +1,24 @@
+#服务配置
+spring:
+  application:
+    name: xxl-job-admin
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config
+      name: ${spring.application.name}, ulearning-jdbc, ulearning-common
+      label: local
+#服务注册中心配置
+eureka:
+  instance:
+    hostname: localhost
+    home-page-url-path: /${spring.application.name}
+    lease-expiration-duration-in-seconds: 90
+    lease-renewal-interval-in-seconds: 30
+    metadata-map:
+      management.context-path: /${spring.application.name}/actuator
+  client:
+    serviceUrl:
+      defaultZone: http://www.darren1112.com:14001/eureka/
+    registry-fetch-interval-seconds: 5
