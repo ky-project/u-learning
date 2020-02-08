@@ -30,8 +30,7 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
 		//通过网关访问
-		String username = request.getHeader(LoginService.USERNAME);
-		request.setAttribute(REQUEST_PROXY, StringUtils.isEmpty(request.getHeader(LoginService.USERNAME)) ? false: true);
+		request.setAttribute(REQUEST_PROXY, ! StringUtils.isEmpty(request.getHeader(LoginService.USERNAME)));
 
 		if (!(handler instanceof HandlerMethod)) {
 			return super.preHandle(request, response, handler);
