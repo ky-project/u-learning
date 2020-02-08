@@ -8,6 +8,7 @@ import com.xxl.job.admin.dao.XxlJobUserDao;
 import com.xxl.job.core.biz.model.ReturnT;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,10 @@ import java.math.BigInteger;
 public class LoginService {
 
     public static final String LOGIN_IDENTITY_KEY = "XXL_JOB_LOGIN_IDENTITY";
+
+    public static final String USERNAME = "username";
+
+    private static final String DEFAULT_PASSWORD = "123456";
 
     @Resource
     private XxlJobUserDao xxlJobUserDao;
@@ -83,6 +88,21 @@ public class LoginService {
      * @return
      */
     public XxlJobUser ifLogin(HttpServletRequest request, HttpServletResponse response){
+        //通过网关访问
+        String username = request.getHeader(USERNAME);
+        if(! StringUtils.isEmpty(username)){
+            XxlJobUser dbUser = xxlJobUserDao.loadByUserName(username);
+            if(dbUser == null){
+                dbUser = new XxlJobUser();
+                dbUser.setUsername(username);
+                dbUser.setPassword(DigestUtils.md5DigestAsHex(DEFAULT_PASSWORD.getBytes()));
+                dbUser.setRole(1);
+                dbUser.setPermission(null);
+                xxlJobUserDao.save(dbUser);
+            }
+            return dbUser;
+        }
+        //正常访问
         String cookieToken = CookieUtil.getValue(request, LOGIN_IDENTITY_KEY);
         if (cookieToken != null) {
             XxlJobUser cookieUser = null;
