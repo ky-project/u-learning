@@ -82,16 +82,21 @@
           	<div class="navbar-custom-menu">
 				<ul class="nav navbar-nav">
 					<#-- login user -->
-                    <li class="dropdown">
-                        <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            ${I18n.system_welcome} ${Request["XXL_JOB_LOGIN_IDENTITY"].username}
-                            <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li id="updatePwd" ><a href="javascript:">${I18n.change_pwd}</a></li>
-                            <li id="logoutBtn" ><a href="javascript:">${I18n.logout_btn}</a></li>
-                        </ul>
-                    </li>
+					<li class="dropdown">
+						<#if proxy == true>
+							<a>${I18n.system_welcome} ${Request["XXL_JOB_LOGIN_IDENTITY"].username}</a>
+						</#if>
+						<#if proxy == false>
+							<a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+								${I18n.system_welcome} ${Request["XXL_JOB_LOGIN_IDENTITY"].username}
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" role="menu">
+								<li id="updatePwd"><a href="javascript:">${I18n.change_pwd}</a></li>
+								<li id="logoutBtn"><a href="javascript:">${I18n.logout_btn}</a></li>
+							</ul>
+						</#if>
+					</li>
 				</ul>
 			</div>
 

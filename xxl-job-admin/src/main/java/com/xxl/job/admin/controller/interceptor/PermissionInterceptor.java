@@ -5,6 +5,7 @@ import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.service.LoginService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,12 +21,18 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class PermissionInterceptor extends HandlerInterceptorAdapter {
 
+	private static final String REQUEST_PROXY = "proxy";
+
 	@Resource
 	private LoginService loginService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		
+
+		//通过网关访问
+		String username = request.getHeader(LoginService.USERNAME);
+		request.setAttribute(REQUEST_PROXY, StringUtils.isEmpty(request.getHeader(LoginService.USERNAME)) ? false: true);
+
 		if (!(handler instanceof HandlerMethod)) {
 			return super.preHandle(request, response, handler);
 		}
@@ -55,5 +62,5 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 
 		return super.preHandle(request, response, handler);
 	}
-	
+
 }
