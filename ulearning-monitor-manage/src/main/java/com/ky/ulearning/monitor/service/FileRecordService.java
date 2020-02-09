@@ -6,6 +6,8 @@ import com.ky.ulearning.spi.monitor.dto.FileRecordDto;
 import com.ky.ulearning.spi.monitor.entity.FileRecordEntity;
 import org.springframework.scheduling.annotation.Async;
 
+import java.util.List;
+
 /**
  * 文件记录service - 接口类
  *
@@ -46,4 +48,50 @@ public interface FileRecordService {
      * @param updateBy 更新者
      */
     void delete(Long id, String updateBy);
+
+    /**
+     * 获取所有文件记录
+     *
+     * @return 返回文件记录集合
+     */
+    List<FileRecordEntity> getAll();
+
+    /**
+     * 扫描教师表
+     */
+    void scanTeacherTable();
+
+    /**
+     * 扫描学生表
+     */
+    void scanStudentTable();
+
+    /**
+     * 扫描课程试题表
+     */
+    void scanCourseQuestionTable();
+
+    /**
+     * 扫描教学任务实验表
+     */
+    void scanTeachingTaskExperimentTable();
+
+    /**
+     * 扫描教学任务通告表
+     */
+    void scanTeachingTaskNoticeTable();
+
+    /**
+     * 根据table和url更新tableId
+     *
+     * @param fileRecordEntity 参数
+     */
+    void updateTableIdByTableAndUrl(FileRecordEntity fileRecordEntity);
+
+    /**
+     * 更新文件大小
+     *
+     * @param fileRecordEntity 待更新的文件记录对象
+     */
+    void updateRecordSize(FileRecordEntity fileRecordEntity);
 }

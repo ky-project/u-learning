@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.util;
 
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
@@ -65,5 +66,11 @@ public class FastDfsClientWrapperUtil {
         String filePath = "http://darren1112.com:8888/group1/M00/00/00/L18Ofl4267qAcw1XAAB5tEHATng664.jpg";
         byte[] download = fastDfsClientWrapper.download(filePath);
         System.out.println(new String(download, StandardCharsets.UTF_8));
+    }
+
+    @Test
+    public void test04(){
+        String filePath = "http://darren1112.com:8888/group1/M00/00/00/L18Ofl4770qAQ1PTAADf0BgFB78109.jpg";
+        System.out.println(fastDfsClientWrapper.hasFile(filePath));
     }
 }

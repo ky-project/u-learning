@@ -1,8 +1,8 @@
 package com.ky.ulearning.common.core.component.component;
 
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.domain.proto.storage.DownloadByteArray;
-import com.github.tobato.fastdfs.exception.FdfsUnsupportStorePathException;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.utils.StringUtil;
@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Optional;
 
 /**
  * fastDFS封装工具类
@@ -70,7 +71,7 @@ public class FastDfsClientWrapper {
      * @param fileUrl 文件url
      */
     public byte[] download(String fileUrl) {
-        if(StringUtil.isEmpty(fileUrl)){
+        if (StringUtil.isEmpty(fileUrl)) {
             return null;
         }
         try {
@@ -87,7 +88,7 @@ public class FastDfsClientWrapper {
      * @param fileUrl 文件访问地址
      */
     public boolean deleteFile(String fileUrl) {
-        if(StringUtil.isEmpty(fileUrl)){
+        if (StringUtil.isEmpty(fileUrl)) {
             return true;
         }
         try {
@@ -96,6 +97,43 @@ public class FastDfsClientWrapper {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * 判断是否存在文件
+     *
+     * @param fileUrl 文件url
+     */
+    public boolean hasFile(String fileUrl) {
+        if (StringUtil.isEmpty(fileUrl)) {
+            return false;
+        }
+        try {
+            StorePath storePath = StorePath.parseFromUrl(fileUrl);
+            FileInfo fileInfo = fastFileStorageClient.queryFileInfo(storePath.getGroup(), storePath.getPath());
+            return fileInfo != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * 获取文件信息
+     *
+     * @param fileUrl 文件url
+     */
+    public FileInfo getFileInfo(String fileUrl) {
+        if (StringUtil.isEmpty(fileUrl)) {
+            return null;
+        }
+        try {
+            StorePath storePath = StorePath.parseFromUrl(fileUrl);
+            FileInfo fileInfo = fastFileStorageClient.queryFileInfo(storePath.getGroup(), storePath.getPath());
+            return Optional.ofNullable(fileInfo)
+                    .orElse(null);
+        } catch (Exception e) {
+            return null;
         }
     }
 }
