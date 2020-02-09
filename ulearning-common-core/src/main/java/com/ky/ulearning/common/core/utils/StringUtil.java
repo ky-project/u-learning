@@ -101,4 +101,10 @@ public class StringUtil extends StringUtils {
             return Collections.emptySet();
         }
     }
+
+    public static void main(String[] args){
+        String temp = "1.jpg";
+        List<String> stringList = strToList(temp, ",");
+        System.out.println(stringList);
+    }
 }

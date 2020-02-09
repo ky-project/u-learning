@@ -37,7 +37,7 @@
         <include refid="Base_Column_List"/>
         from u_file_record
         where valid = 1
-              AND id = #{id,jdbcType=BIGINT}
+        AND id = #{id,jdbcType=BIGINT}
     </select>
     <!--插入文件记录-->
     <insert id="insert" keyColumn="id" keyProperty="id"
@@ -100,4 +100,144 @@
             AND record_table LIKE CONCAT('%', #{fileRecordDto.recordTable} , '%')
         </if>
     </select>
+    <!--获取所有文件记录-->
+    <select id="getAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_file_record
+        WHERE valid = 1
+    </select>
+    <!--从教师表插入文件记录-->
+    <insert id="insertFromTeacher">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT tea_photo,
+               SUBSTRING_INDEX(tea_photo, '/', -1),
+               null,
+               SUBSTRING_INDEX(tea_photo, '.', -1),
+               'u_teacher',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_teacher
+        WHERE valid = 1
+          AND tea_photo IS NOT NULL
+          AND tea_photo NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
+    <!--从学生表插入文件记录-->
+    <insert id="insertFromStudent">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT stu_photo,
+               SUBSTRING_INDEX(stu_photo, '/', -1),
+               null,
+               SUBSTRING_INDEX(stu_photo, '.', -1),
+               'u_student',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_student
+        WHERE valid = 1
+          AND stu_photo IS NOT NULL
+          AND stu_photo != ''
+          AND stu_photo NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
+    <!--从课程试题表插入文件记录-->
+    <insert id="insertFromCourseQuestion">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT question_URL,
+               SUBSTRING_INDEX(question_URL, '/', -1),
+               null,
+               SUBSTRING_INDEX(question_URL, '.', -1),
+               'u_course_question',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_course_question
+        WHERE valid = 1
+          AND question_URL IS NOT NULL
+          AND question_URL != ''
+          AND question_URL NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
+    <!--从教学任务实验表插入文件记录-->
+    <insert id="insertFromTeachingTaskExperiment">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT experiment_attachment,
+               experiment_attachment_name,
+               null,
+               SUBSTRING_INDEX(experiment_attachment, '.', -1),
+               'u_teaching_task_experiment',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_teaching_task_experiment
+        WHERE valid = 1
+          AND experiment_attachment IS NOT NULL
+          AND experiment_attachment != ''
+          AND experiment_attachment NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
+    <!--根据table和url更新tableId-->
+    <update id="updateTableIdByTableAndUrl">
+        UPDATE u_file_record
+        SET record_table_id = (
+            SELECT id
+            FROM ${fileRecordEntity.recordTable}
+            WHERE valid = 1
+              AND ${tableFileCol} LIKE CONCAT('%', #{fileRecordEntity.recordUrl}, '%')
+            LIMIT 1
+        )
+        WHERE valid = 1
+          AND id = #{fileRecordEntity.id}
+    </update>
+    <!--更新文件大小-->
+    <update id="updateRecordSize" parameterType="com.ky.ulearning.spi.monitor.entity.FileRecordEntity">
+        UPDATE u_file_record
+        SET record_size = #{recordSize},
+            update_by   = #{updateBy},
+            update_time = now()
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>

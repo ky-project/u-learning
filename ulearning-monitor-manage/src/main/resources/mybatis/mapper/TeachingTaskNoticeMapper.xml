@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.monitor.dao.TeachingTaskNoticeDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="notice_title" jdbcType="VARCHAR" property="noticeTitle"/>
+        <result column="notice_content" jdbcType="VARCHAR" property="noticeContent"/>
+        <result column="notice_attachment" jdbcType="VARCHAR" property="noticeAttachment"/>
+        <result column="notice_shared" jdbcType="BOOLEAN" property="noticeShared"/>
+        <result column="notice_post_time" jdbcType="TIMESTAMP" property="noticePostTime"/>
+        <result column="notice_keywords" jdbcType="VARCHAR" property="noticeKeywords"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="notice_attachment_name" jdbcType="VARCHAR" property="noticeAttachmentName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            notice_title,
+            notice_content,
+            notice_attachment,
+            notice_shared,
+            notice_post_time,
+            notice_keywords,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            notice_attachment_name
+    </sql>
+    <!--获取所有教学任务通告-->
+    <select id="getByNoticeAttachment" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task_notice
+        WHERE valid = 1
+        AND notice_attachment IS NOT NULL
+    </select>
+</mapper>

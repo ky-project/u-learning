@@ -62,4 +62,47 @@ public interface FileRecordDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("fileRecordDto") FileRecordDto fileRecordDto);
+
+    /**
+     * 获取所有文件记录
+     *
+     * @return 返回文件记录集合
+     */
+    List<FileRecordEntity> getAll();
+
+    /**
+     * 从教师表插入文件记录
+     */
+    void insertFromTeacher();
+
+    /**
+     * 从学生表插入文件记录
+     */
+    void insertFromStudent();
+
+    /**
+     * 从课程试题表插入文件记录
+     */
+    void insertFromCourseQuestion();
+
+    /**
+     * 从教学任务实验表插入文件记录
+     */
+    void insertFromTeachingTaskExperiment();
+
+    /**
+     * 根据table和url更新tableId
+     *
+     * @param fileRecordEntity 参数
+     * @param tableFileCol     查询字段
+     */
+    void updateTableIdByTableAndUrl(@Param("fileRecordEntity") FileRecordEntity fileRecordEntity,
+                                    @Param("tableFileCol") String tableFileCol);
+
+    /**
+     * 更新文件大小
+     *
+     * @param fileRecordEntity 待更新的文件记录对象
+     */
+    void updateRecordSize(FileRecordEntity fileRecordEntity);
 }
