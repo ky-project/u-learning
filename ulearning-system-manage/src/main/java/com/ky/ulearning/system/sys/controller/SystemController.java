@@ -3,6 +3,7 @@ package com.ky.ulearning.system.sys.controller;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
+import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
@@ -12,9 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author luyuhao
@@ -37,7 +35,7 @@ import java.util.Set;
 public class SystemController extends BaseController {
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisClientWrapper redisClientWrapper;
 
     @Autowired
     private PermissionService permissionService;
@@ -53,10 +51,7 @@ public class SystemController extends BaseController {
     @PermissionName(source = "system:clearRedis", name = "清空redis缓存", group = "系统管理")
     @GetMapping("/clearRedis")
     public ResponseEntity<JsonResult> clearRedis() {
-        Set<String> keys = stringRedisTemplate.keys("*");
-        if (!CollectionUtils.isEmpty(keys)) {
-            stringRedisTemplate.delete(keys);
-        }
+        redisClientWrapper.clear();
         return ResponseEntityUtil.ok(JsonResult.buildMsg("清空成功"));
     }
 
