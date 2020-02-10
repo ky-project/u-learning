@@ -1,4 +1,23 @@
-# U-Learning
+<p align="center">
+    <img src="https://raw.githubusercontent.com/Daye1112/u-learning/dev/modules/pic/项目logo.jpg" width="150">
+    <h1 align="center">U-Learning</h1>
+    <p align="center">
+        U-Learning——Studying With Anytime, Anywhere, Anyone, Anydevice, Anything
+        <br>
+        <br>
+         <a href="https://github.com/Daye1112/u-learning">
+             <img src="https://img.shields.io/github/watchers/Daye1112/u-learning?style=social" >
+         </a>
+         <a href="https://github.com/Daye1112/u-learning">
+             <img src="https://img.shields.io/github/stars/Daye1112/u-learning?style=social" >
+         </a>
+         <a href="https://github.com/Daye1112/u-learning">
+             <img src="https://img.shields.io/github/forks/Daye1112/u-learning?style=social" >
+         </a>
+    </p>    
+</p>
+
+## 项目背景
 
 该系统是一次将理论与实践相结合的创新设计，它结合当下在线教育形势，未来泛在学习发展趋势，在完美融合学校教育需求下进行的一次实践探索。
 
