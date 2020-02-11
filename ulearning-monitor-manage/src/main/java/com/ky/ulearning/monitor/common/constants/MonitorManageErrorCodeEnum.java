@@ -16,7 +16,9 @@ public enum MonitorManageErrorCodeEnum implements BaseEnum {
 
     FILE_RECORD_NOT_EXISTS(HttpStatus.BAD_REQUEST, "文件记录不存在"),
     FILE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "文件不存在"),
-    FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "文件已失效");
+    FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "文件已失效"),
+    TRAFFIC_DAYS_ERROR(HttpStatus.BAD_REQUEST, "查询天数必须>0")
+    ;
 
     private Integer code;
     private String message;

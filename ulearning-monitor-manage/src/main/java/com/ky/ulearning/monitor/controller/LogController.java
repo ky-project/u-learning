@@ -1,12 +1,13 @@
 package com.ky.ulearning.monitor.controller;
 
-import cn.hutool.core.date.DatePattern;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.DateUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
+import com.ky.ulearning.monitor.common.constants.MonitorManageErrorCodeEnum;
 import com.ky.ulearning.monitor.service.LogService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
@@ -65,23 +66,20 @@ public class LogController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(logTypeList));
     }
 
-    @Log("查询当日访问量")
-    @ApiOperation(value = "查询当日访问用户数量")
-    @PermissionName(source = "log:getTodayTraffic", name = "查询当日访问用户数量", group = "日志管理")
-    @GetMapping("/getTodayTraffic")
-    public ResponseEntity<JsonResult<TrafficVo>> getTodayUserNumber(){
-        TrafficVo trafficVo = logService.getTodayUserNumber(DateUtil.today());
-        return ResponseEntityUtil.ok(JsonResult.buildData(trafficVo));
-    }
-
-    @Log("查询近7天的访问量")
-    @ApiOperation(value = "查询近7天的访问量")
-    @PermissionName(source = "log:getSevenDaysTraffic", name = "查询近7天的访问量", group = "日志管理")
-    @GetMapping("/getSevenDaysTraffic")
-    public ResponseEntity<JsonResult<List<TrafficVo>>> getSevenDaysTraffic(){
-        List<TrafficVo> userNumberList = logService.getTrafficByDate(new Date(), DateUtil.offsetDay(new Date(), -6));
+    @ApiOperation(value = "查询近n天的访问量")
+    @PermissionName(source = "log:getDaysTraffic", name = "查询近n天的访问量", group = "日志管理")
+    @GetMapping("/getDaysTraffic")
+    public ResponseEntity<JsonResult<List<TrafficVo>>> getDaysTraffic(Integer days) {
+        ValidateHandler.checkParameter(days <= 0, MonitorManageErrorCodeEnum.TRAFFIC_DAYS_ERROR);
+        List<TrafficVo> userNumberList = logService.getTrafficByDate(new Date(), DateUtil.offsetDay(new Date(), 1 - days));
         return ResponseEntityUtil.ok(JsonResult.buildData(userNumberList));
     }
 
-
+    @ApiOperation(value = "查询前n条日志")
+    @PermissionName(source = "log:getTop", name = "查询前n条日志", group = "日志管理")
+    @GetMapping("/getTop")
+    public ResponseEntity<JsonResult<List<LogEntity>>> getTopTwentyLog(Integer topNumber) {
+        List<LogEntity> logEntityList = logService.getLogTop(topNumber);
+        return ResponseEntityUtil.ok(JsonResult.buildData(logEntityList));
+    }
 }

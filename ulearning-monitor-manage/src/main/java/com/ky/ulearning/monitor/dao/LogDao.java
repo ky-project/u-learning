@@ -79,4 +79,12 @@ public interface LogDao {
      * @return 当天访问人数
      */
     Long getTodayUserNumber(String today);
+
+    /**
+     * 查询前topNumber条日志
+     *
+     * @param topNumber 查询数量
+     * @return 返回日志对象集合
+     */
+    List<LogEntity> getLogTop(Integer topNumber);
 }

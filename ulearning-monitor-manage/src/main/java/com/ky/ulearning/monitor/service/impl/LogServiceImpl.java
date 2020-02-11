@@ -75,12 +75,6 @@ public class LogServiceImpl extends BaseService implements LogService {
     }
 
     @Override
-    public TrafficVo getTodayUserNumber(String today) {
-        Long todayUserNumber = logDao.getTodayUserNumber(today);
-        return new TrafficVo(today, todayUserNumber);
-    }
-
-    @Override
     public List<TrafficVo> getTrafficByDate(Date today, Date oldDate) {
         List<TrafficVo> trafficVoList = new ArrayList<>();
         int index = 0;
@@ -97,5 +91,10 @@ public class LogServiceImpl extends BaseService implements LogService {
             trafficVoList.add(trafficVo);
         } while (!DateUtil.isSameDay(today, indexDate));
         return trafficVoList;
+    }
+
+    @Override
+    public List<LogEntity> getLogTop(Integer topNumber) {
+        return logDao.getLogTop(topNumber);
     }
 }

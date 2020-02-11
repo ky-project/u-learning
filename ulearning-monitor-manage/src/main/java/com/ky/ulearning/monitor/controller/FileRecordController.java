@@ -118,7 +118,6 @@ public class FileRecordController extends BaseController {
         return ResponseEntityUtil.ok(headers, attachmentBytes);
     }
 
-    @Log("查询文件总量")
     @ApiOperation(value = "查询文件总量")
     @PermissionName(source = "fileRecord:getSumFileSize", name = "查询文件总量", group = "文件管理")
     @GetMapping("/getSumFileSize")

@@ -175,4 +175,15 @@
                    AND log_username != ''
                  GROUP BY log_username) number
     </select>
+    <!--查询前topNumber条日志-->
+    <select id="getLogTop" resultMap="BaseResultMap">
+        SELECT
+        <include refid="All"/>
+        FROM u_log
+        WHERE valid = 1
+        AND log_username IS NOT NULL
+        AND log_username != ''
+        ORDER BY update_time DESC
+        LIMIT #{topNumber}
+    </select>
 </mapper>

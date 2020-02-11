@@ -65,14 +65,6 @@ public interface LogService {
     void deleteByDate(String date);
 
     /**
-     * 查询当日访问用户数量
-     *
-     * @param today 当天日期
-     * @return 当天访问人数
-     */
-    TrafficVo getTodayUserNumber(String today);
-
-    /**
      * 查询oldDate~today范围内的访问量
      *
      * @param today   当天
@@ -80,4 +72,12 @@ public interface LogService {
      * @return 返回每天的访问量
      */
     List<TrafficVo> getTrafficByDate(Date today, Date oldDate);
+
+    /**
+     * 查询前topNumber条日志
+     *
+     * @param topNumber 查询数量
+     * @return 返回日志对象集合
+     */
+    List<LogEntity> getLogTop(Integer topNumber);
 }
