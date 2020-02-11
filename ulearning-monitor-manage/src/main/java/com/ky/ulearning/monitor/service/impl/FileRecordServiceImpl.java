@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
  * @since 20/02/06 17:05
  */
 @Service
-@CacheConfig(cacheNames = "fileRecord")
 @Transactional(readOnly = true, rollbackFor = Throwable.class)
 public class FileRecordServiceImpl extends BaseService implements FileRecordService {
 
@@ -48,7 +47,6 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     private TeachingTaskNoticeDao teachingTaskNoticeDao;
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void insert(FileRecordDto fileRecordDto) {
         fileRecordDao.insert(fileRecordDto);
@@ -67,55 +65,47 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     }
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public FileRecordEntity getById(Long id) {
         return fileRecordDao.getById(id);
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id, String updateBy) {
         fileRecordDao.updateValidById(id, updateBy, 0);
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public List<FileRecordEntity> getAll() {
         return fileRecordDao.getAll();
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void scanTeacherTable() {
         fileRecordDao.insertFromTeacher();
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void scanStudentTable() {
         fileRecordDao.insertFromStudent();
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void scanCourseQuestionTable() {
         fileRecordDao.insertFromCourseQuestion();
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void scanTeachingTaskExperimentTable() {
         fileRecordDao.insertFromTeachingTaskExperiment();
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void scanTeachingTaskNoticeTable() {
         //获取所有含附件的通告集合
@@ -152,7 +142,6 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void updateTableIdByTableAndUrl(FileRecordEntity fileRecordEntity) {
         switch (fileRecordEntity.getRecordTable()) {
@@ -178,16 +167,19 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void updateRecordSize(FileRecordEntity fileRecordEntity) {
         fileRecordDao.updateRecordSize(fileRecordEntity);
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void scanLogHistoryTable() {
         fileRecordDao.insertFromLogHistory();
+    }
+
+    @Override
+    public Long getSumFileSize() {
+        return fileRecordDao.getSumFileSize();
     }
 }

@@ -268,4 +268,10 @@
             WHERE valid = 1
         )
     </insert>
+    <!--计算文件总量-->
+    <select id="getSumFileSize" resultType="java.lang.Long">
+        SELECT SUM(record_size)
+        FROM u_file_record
+        WHERE valid = 1
+    </select>
 </mapper>

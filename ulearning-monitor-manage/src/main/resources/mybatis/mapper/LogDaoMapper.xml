@@ -159,7 +159,20 @@
     </select>
     <!--根据日期删除日志-->
     <delete id="deleteByDate">
-        DELETE FROM u_log
+        DELETE
+        FROM u_log
         WHERE DATE(create_time) = #{date}
     </delete>
+    <!--查询当日访问用户数量-->
+    <select id="getTodayUserNumber" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM (
+                 SELECT COUNT(1)
+                 FROM u_log
+                 WHERE valid = 1
+                   AND DATE(create_time) = #{today}
+                   AND log_username IS NOT NULL
+                   AND log_username != ''
+                 GROUP BY log_username) number
+    </select>
 </mapper>

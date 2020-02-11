@@ -1,15 +1,18 @@
 package com.ky.ulearning.monitor.controller;
 
+import cn.hutool.core.date.DatePattern;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.DateUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.monitor.service.LogService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.vo.TrafficVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,4 +64,24 @@ public class LogController extends BaseController {
         List<String> logTypeList = logService.getLogType();
         return ResponseEntityUtil.ok(JsonResult.buildData(logTypeList));
     }
+
+    @Log("查询当日访问量")
+    @ApiOperation(value = "查询当日访问用户数量")
+    @PermissionName(source = "log:getTodayTraffic", name = "查询当日访问用户数量", group = "日志管理")
+    @GetMapping("/getTodayTraffic")
+    public ResponseEntity<JsonResult<TrafficVo>> getTodayUserNumber(){
+        TrafficVo trafficVo = logService.getTodayUserNumber(DateUtil.today());
+        return ResponseEntityUtil.ok(JsonResult.buildData(trafficVo));
+    }
+
+    @Log("查询近7天的访问量")
+    @ApiOperation(value = "查询近7天的访问量")
+    @PermissionName(source = "log:getSevenDaysTraffic", name = "查询近7天的访问量", group = "日志管理")
+    @GetMapping("/getSevenDaysTraffic")
+    public ResponseEntity<JsonResult<List<TrafficVo>>> getSevenDaysTraffic(){
+        List<TrafficVo> userNumberList = logService.getTrafficByDate(new Date(), DateUtil.offsetDay(new Date(), -6));
+        return ResponseEntityUtil.ok(JsonResult.buildData(userNumberList));
+    }
+
+
 }

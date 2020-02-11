@@ -114,7 +114,7 @@ public class FileUtil {
     /**
      * 文件大小转换
      */
-    public static String getSize(int size) {
+    public static String getSize(long size) {
         String resultSize = "";
         if (size / GB >= 1) {
             //如果当前Byte的值大于等于1GB

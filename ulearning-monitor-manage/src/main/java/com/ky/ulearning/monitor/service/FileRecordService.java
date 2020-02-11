@@ -99,4 +99,11 @@ public interface FileRecordService {
      * 扫描日志历史表
      */
     void scanLogHistoryTable();
+
+    /**
+     * 计算文件总量
+     *
+     * @return 文件大小总量
+     */
+    Long getSumFileSize();
 }

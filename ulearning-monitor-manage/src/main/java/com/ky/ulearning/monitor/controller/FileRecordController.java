@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
@@ -115,5 +116,14 @@ public class FileRecordController extends BaseController {
         //响应内容是字节流
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, attachmentBytes);
+    }
+
+    @Log("查询文件总量")
+    @ApiOperation(value = "查询文件总量")
+    @PermissionName(source = "fileRecord:getSumFileSize", name = "查询文件总量", group = "文件管理")
+    @GetMapping("/getSumFileSize")
+    public ResponseEntity<JsonResult> getSumFileSize(){
+        Long sumFileSize = fileRecordService.getSumFileSize();
+        return ResponseEntityUtil.ok(JsonResult.buildData(FileUtil.getSize(sumFileSize)));
     }
 }

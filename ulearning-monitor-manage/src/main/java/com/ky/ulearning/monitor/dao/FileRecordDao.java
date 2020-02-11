@@ -110,4 +110,11 @@ public interface FileRecordDao {
      * 从日志历史表插入文件记录
      */
     void insertFromLogHistory();
+
+    /**
+     * 计算文件总量
+     *
+     * @return 文件大小总量
+     */
+    Long getSumFileSize();
 }

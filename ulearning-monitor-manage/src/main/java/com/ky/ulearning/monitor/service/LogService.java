@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.vo.TrafficVo;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.Date;
@@ -62,4 +63,21 @@ public interface LogService {
      * @param date 待删除的日期
      */
     void deleteByDate(String date);
+
+    /**
+     * 查询当日访问用户数量
+     *
+     * @param today 当天日期
+     * @return 当天访问人数
+     */
+    TrafficVo getTodayUserNumber(String today);
+
+    /**
+     * 查询oldDate~today范围内的访问量
+     *
+     * @param today   当天
+     * @param oldDate 待计算的天数
+     * @return 返回每天的访问量
+     */
+    List<TrafficVo> getTrafficByDate(Date today, Date oldDate);
 }

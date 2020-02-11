@@ -71,4 +71,12 @@ public interface LogDao {
      * @param date 待删除的日期
      */
     void deleteByDate(String date);
+
+    /**
+     * 查询当日访问用户数量
+     *
+     * @param today 当天日期
+     * @return 当天访问人数
+     */
+    Long getTodayUserNumber(String today);
 }
