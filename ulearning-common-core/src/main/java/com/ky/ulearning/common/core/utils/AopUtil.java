@@ -5,7 +5,9 @@ import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * @author luyuhao
@@ -28,11 +30,13 @@ public class AopUtil {
     public static LogEntity buildLogEntity(ProceedingJoinPoint joinPoint, String username,
                                            String ip, long currentTime, String logType,
                                            String exceptionMsg, String preDesc) {
+        HttpServletRequest request = RequestHolderUtil.getHttpServletRequest();
         LogEntity logEntity = new LogEntity();
         //获取用户信息
         logEntity.setLogUsername(username);
         logEntity.setLogDescription(preDesc + "-" + getDescription(joinPoint));
-        logEntity.setLogModule(getModule(joinPoint));
+        logEntity.setLogModule(Optional.ofNullable(request)
+                .map(HttpServletRequest::getRequestURI).orElse(getModule(joinPoint)));
         logEntity.setLogIp(ip);
         logEntity.setLogType(logType);
         logEntity.setLogException(exceptionMsg);
