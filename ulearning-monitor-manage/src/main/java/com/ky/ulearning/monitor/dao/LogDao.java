@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -47,4 +48,27 @@ public interface LogDao {
      * @return 日志类型集合
      */
     List<String> getLogType();
+
+    /**
+     * 查询小于等于startDelDate的第一个日期
+     *
+     * @param dateTime 待比较的时间
+     * @return 返回日期
+     */
+    Date getFirstCreateTimeLessOrEqual(String dateTime);
+
+    /**
+     * 根据日期查询日志记录
+     *
+     * @param date 查询的日期,yyyy-MM-dd
+     * @return 返回日志集合
+     */
+    List<LogEntity> getByDate(String date);
+
+    /**
+     * 根据日期删除日志
+     *
+     * @param date 待删除的日期
+     */
+    void deleteByDate(String date);
 }

@@ -105,4 +105,9 @@ public interface FileRecordDao {
      * @param fileRecordEntity 待更新的文件记录对象
      */
     void updateRecordSize(FileRecordEntity fileRecordEntity);
+
+    /**
+     * 从日志历史表插入文件记录
+     */
+    void insertFromLogHistory();
 }

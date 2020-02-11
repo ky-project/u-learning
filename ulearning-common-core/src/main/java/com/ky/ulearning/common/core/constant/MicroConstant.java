@@ -57,4 +57,9 @@ public class MicroConstant {
      * 教学任务通告表名
      */
     public static final String TEACHING_TASK_NOTICE_TABLE_NAME = "u_teaching_task_notice";
+
+    /**
+     * 日志历史表名
+     */
+    public static final String LOG_HISTORY_TABLE_NAME = "u_log_history";
 }

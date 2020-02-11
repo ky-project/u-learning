@@ -34,9 +34,15 @@ public class DefaultConfigParameters {
     @Value("#{${ulearning.file.notice-attachment-max-size} * 1024 * 1024}")
     private Long noticeAttachmentMaxSize;
 
-    @Value("#{${ulearning.file.experiment_attachment-max-size} * 1024 * 1024}")
+    @Value("#{${ulearning.file.experiment-attachment-max-size} * 1024 * 1024}")
     private Long experimentAttachmentMaxSize;
 
     @Value("${spring.mail.username}")
     private String mailFrom;
+
+    @Value("#{${ulearning.log.retention-days} < 7 ? 7 : ${ulearning.log.retention-days}}")
+    private int logRetentionDays;
+
+    @Value("${ulearning.log.max-delete-days}")
+    private int logMaxDeleteDays;
 }

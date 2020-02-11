@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.monitor.dao.LogHistoryDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.monitor.entity.LogHistoryEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="log_history_date" jdbcType="VARCHAR" property="logHistoryDate"/>
+        <result column="log_history_name" jdbcType="VARCHAR" property="logHistoryName"/>
+        <result column="log_history_url" jdbcType="VARCHAR" property="logHistoryUrl"/>
+        <result column="log_history_size" jdbcType="BIGINT" property="logHistorySize"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            log_history_date,
+            log_history_name,
+            log_history_url,
+            log_history_size,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_log_history
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.monitor.dto.LogHistoryDto" useGeneratedKeys="true">
+        insert into u_log_history (log_history_date, log_history_name, log_history_url,
+                                   log_history_size, `valid`, memo,
+                                   create_time, create_by, update_time,
+                                   update_by)
+        values (#{logHistoryDate,jdbcType=VARCHAR}, #{logHistoryName,jdbcType=VARCHAR},
+                #{logHistoryUrl,jdbcType=VARCHAR},
+                #{logHistorySize,jdbcType=BIGINT}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+</mapper>

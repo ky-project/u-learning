@@ -183,4 +183,11 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     public void updateRecordSize(FileRecordEntity fileRecordEntity) {
         fileRecordDao.updateRecordSize(fileRecordEntity);
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void scanLogHistoryTable() {
+        fileRecordDao.insertFromLogHistory();
+    }
 }

@@ -9,10 +9,12 @@ import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,5 +53,22 @@ public class LogServiceImpl extends BaseService implements LogService {
     @Cacheable(keyGenerator = "keyGenerator")
     public List<String> getLogType() {
         return logDao.getLogType();
+    }
+
+    @Override
+    public Date getFirstCreateTimeLessOrEqual(String dateTime) {
+        return logDao.getFirstCreateTimeLessOrEqual(dateTime);
+    }
+
+    @Override
+    public List<LogEntity> getByDate(String date) {
+        return logDao.getByDate(date);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void deleteByDate(String date) {
+        logDao.deleteByDate(date);
     }
 }

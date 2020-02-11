@@ -240,4 +240,32 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--从日志历史表插入文件记录-->
+    <insert id="insertFromLogHistory">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT log_history_url,
+               log_history_name,
+               log_history_size,
+               SUBSTRING_INDEX(log_history_url, '.', -1),
+               'u_log_history',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_log_history
+        WHERE valid = 1
+          AND log_history_url IS NOT NULL
+          AND log_history_url != ''
+          AND log_history_url NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
 </mapper>

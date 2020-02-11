@@ -54,7 +54,7 @@ public class FileRecordHandler extends IJobHandler {
             return SUCCESS;
         } catch (Exception e) {
             XxlJobLogger.log("!!!!!!!!!!! 文件记录跑批 失败 !!!!!!!!!!!");
-            XxlJobLogger.log(e.getMessage());
+            XxlJobLogger.log("失败原因：{}", e.getMessage());
             log.error(e.getMessage(), e);
             return FAIL;
         }
@@ -117,5 +117,7 @@ public class FileRecordHandler extends IJobHandler {
         fileRecordService.scanTeachingTaskExperimentTable();
         XxlJobLogger.log("扫描u_teaching_task_notice表");
         fileRecordService.scanTeachingTaskNoticeTable();
+        XxlJobLogger.log("扫描u_log_history表");
+        fileRecordService.scanLogHistoryTable();
     }
 }

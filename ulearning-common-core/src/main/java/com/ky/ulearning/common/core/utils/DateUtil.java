@@ -1,5 +1,6 @@
 package com.ky.ulearning.common.core.utils;
 
+import cn.hutool.core.date.DateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.util.StringUtils;
@@ -46,5 +47,16 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
         }
         return date;
 
+    }
+
+    public static void main(String[] args){
+        DateTime dateTime1 = parse("2020-01-28", "yyyy-MM-dd");
+        DateTime dateTime2 = parse("2020-01-23", "yyyy-MM-dd");
+        int index = 0;
+        DateTime dateTime;
+        do{
+            dateTime = offsetDay(dateTime1, -(index++));
+            System.out.println(format(dateTime, "yyyy-MM-dd"));
+        }while (! isSameDay(dateTime, dateTime2));
     }
 }

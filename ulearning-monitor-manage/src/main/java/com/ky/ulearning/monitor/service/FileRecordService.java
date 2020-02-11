@@ -94,4 +94,9 @@ public interface FileRecordService {
      * @param fileRecordEntity 待更新的文件记录对象
      */
     void updateRecordSize(FileRecordEntity fileRecordEntity);
+
+    /**
+     * 扫描日志历史表
+     */
+    void scanLogHistoryTable();
 }

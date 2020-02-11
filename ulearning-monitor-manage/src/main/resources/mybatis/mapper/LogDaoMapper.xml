@@ -135,9 +135,31 @@
             AND DATE(create_time) = #{logDto.createTime}
         </if>
     </select>
-     <!--获取日志类型集合-->
+    <!--获取日志类型集合-->
     <select id="getLogType" resultType="java.lang.String">
         SELECT DISTINCT log_type
         FROM u_log
     </select>
+    <!--查询小于等于startDelDate的第一个日期-->
+    <select id="getFirstCreateTimeLessOrEqual" parameterType="java.lang.String" resultType="java.util.Date">
+        SELECT create_time
+        FROM u_log
+        WHERE valid = 1
+          AND DATE(create_time) <![CDATA[ <= ]]> #{dateTime}
+        ORDER BY create_time ASC
+        LIMIT 1
+    </select>
+    <!--根据日期查询日志记录-->
+    <select id="getByDate" resultMap="BaseResultMap">
+        SELECT
+        <include refid="All"/>
+        FROM u_log
+        WHERE DATE(create_time) = #{date}
+        ORDER BY update_time ASC
+    </select>
+    <!--根据日期删除日志-->
+    <delete id="deleteByDate">
+        DELETE FROM u_log
+        WHERE DATE(create_time) = #{date}
+    </delete>
 </mapper>
