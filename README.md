@@ -69,8 +69,8 @@ ulearning模块
 ​```
 ├─doc                             ------ 系统开发文档、sql脚本和发布记录等
 ├─ulearning-common-core           ------ 系统核心模块
-├─ulearning-config				 ------ 微服务配置中心
-├─ulearning-gateway				 ------ 微服务网关
+├─ulearning-config                ------ 微服务配置中心
+├─ulearning-gateway               ------ 微服务网关
 ├─ulearning-monitor-manage        ------ 微服务监控系统
 ├─ulearning-parent                ------ 整个项目的父模块
 ├─ulearning-register              ------ 微服务注册中心
