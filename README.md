@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/Daye1112/u-learning/dev/modules/pic/项目logo.jpg" width="150">
+    <img src="https://raw.githubusercontent.com/Daye1112/u-learning/dev/doc/modules/pic/项目logo.jpg" width="150">
     <h1 align="center">U-Learning</h1>
     <p align="center">
         U-Learning——Studying With Anytime, Anywhere, Anyone, Anydevice, Anything
