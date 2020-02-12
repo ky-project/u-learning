@@ -34,6 +34,7 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     private CourseDao courseDao;
 
     @Override
+    @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<CourseEntity> pageCourseList(CourseDto courseDto, PageParam pageParam) {
         List<CourseEntity> teacherList = courseDao.listPage(courseDto, pageParam);
 

@@ -58,6 +58,7 @@ public class StudentServiceImpl extends BaseService implements StudentService {
     }
 
     @Override
+    @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<StudentEntity> pageStudentList(StudentDto studentDto, PageParam pageParam) {
         List<StudentEntity> studentList = studentDao.listPage(studentDto, pageParam);
 

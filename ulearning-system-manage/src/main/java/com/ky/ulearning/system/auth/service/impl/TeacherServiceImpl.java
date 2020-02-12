@@ -65,6 +65,7 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
     }
 
     @Override
+    @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<TeacherEntity> pageTeacherList(TeacherDto teacherDto, PageParam pageParam) {
         List<TeacherEntity> teacherList = teacherDao.listPage(teacherDto, pageParam);
 

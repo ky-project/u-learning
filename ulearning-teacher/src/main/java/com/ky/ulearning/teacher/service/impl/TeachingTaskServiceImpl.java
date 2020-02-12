@@ -24,7 +24,7 @@ import java.util.Set;
  * @since 20/01/26 16:16
  */
 @Service
-@CacheConfig(cacheNames = {"course", "teacher"})
+@CacheConfig(cacheNames = "teachingTask")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class TeachingTaskServiceImpl extends BaseService implements TeachingTaskService {
 
@@ -74,7 +74,6 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     }
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public CourseTeachingTaskDto getById(Long id) {
         return teachingTaskDao.getById(id);
     }

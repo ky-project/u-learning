@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date 19/12/08 20:45
  */
 @Service
-@CacheConfig(cacheNames = {"teacher", "role"})
+@CacheConfig(cacheNames = "teacherRole")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class TeacherRoleServiceImpl extends BaseService implements TeacherRoleService {
 
@@ -36,7 +36,6 @@ public class TeacherRoleServiceImpl extends BaseService implements TeacherRoleSe
     private RoleDao roleDao;
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public List<RoleEntity> getRoleByTeaId(Long teaId) {
         return teacherRoleDao.getRoleByTeaId(teaId);
     }

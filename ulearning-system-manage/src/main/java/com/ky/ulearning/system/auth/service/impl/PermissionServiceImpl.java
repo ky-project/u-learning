@@ -91,6 +91,7 @@ public class PermissionServiceImpl extends BaseService implements PermissionServ
     }
 
     @Override
+    @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<PermissionEntity> pagePermissionList(PermissionDto permission, PageParam pageParam) {
         List<PermissionEntity> permissionList = permissionDao.listPage(permission, pageParam);
 

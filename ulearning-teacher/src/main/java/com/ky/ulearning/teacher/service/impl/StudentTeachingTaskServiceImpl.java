@@ -9,6 +9,8 @@ import com.ky.ulearning.spi.teacher.dto.StudentTeachingTaskDto;
 import com.ky.ulearning.teacher.dao.StudentTeachingTaskDao;
 import com.ky.ulearning.teacher.service.StudentTeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +28,7 @@ import java.util.Set;
  * @since 20/01/30 00:31
  */
 @Service
+@CacheConfig(cacheNames = "studentTeachingTask")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class StudentTeachingTaskServiceImpl extends BaseService implements StudentTeachingTaskService {
 
@@ -53,6 +56,7 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
     }
 
     @Override
+    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void remove(StudentTeachingTaskDto studentTeachingTaskDto) {
         studentTeachingTaskDao.remove(studentTeachingTaskDto);

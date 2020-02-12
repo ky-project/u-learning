@@ -24,7 +24,7 @@ import java.util.List;
  * @since 20/01/16 00:29
  */
 @Service
-@CacheConfig(cacheNames = {"course", "teacher"})
+@CacheConfig(cacheNames = "teachingTask")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class TeachingTaskServiceImpl extends BaseService implements TeachingTaskService {
 

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @date 19/12/14 16:26
  */
 @Service
-@CacheConfig(cacheNames = {"role", "permission"})
+@CacheConfig(cacheNames = "rolePermission")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class RolePermissionServiceImpl extends BaseService implements RolePermissionService {
 
@@ -37,13 +37,11 @@ public class RolePermissionServiceImpl extends BaseService implements RolePermis
     private PermissionDao permissionDao;
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public List<PermissionEntity> getPermissionListByRoleId(List<Long> roleIdList) {
         return rolePermissionDao.getPermissionListByRoleId(roleIdList);
     }
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public Map<String, List<PermissionEntity>> getAssignedPermission(Long roleId) {
         List<PermissionEntity> permissionList = rolePermissionDao.getAssignedPermissionByRoleId(roleId);
         //空值判断
