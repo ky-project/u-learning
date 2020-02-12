@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.ExaminationTaskDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="examination_name" jdbcType="VARCHAR" property="examinationName"/>
+        <result column="examination_duration" jdbcType="SMALLINT" property="examinationDuration"/>
+        <result column="examination_state" jdbcType="SMALLINT" property="examinationState"/>
+        <result column="examination_parameters" jdbcType="VARCHAR" property="examinationParameters"/>
+        <result column="examination_show_result" jdbcType="BOOLEAN" property="examinationShowResult"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            examination_name,
+            examination_duration,
+            examination_state,
+            examination_parameters,
+            examination_show_result,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_teaching_task_examination_task
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto" useGeneratedKeys="true">
+        insert into u_teaching_task_examination_task (teaching_task_id, examination_name, examination_duration,
+                                                      examination_state, examination_parameters,
+                                                      examination_show_result, `valid`, memo,
+                                                      create_time, create_by, update_time,
+                                                      update_by)
+        values (#{teachingTaskId,jdbcType=BIGINT}, #{examinationName,jdbcType=VARCHAR},
+                #{examinationDuration,jdbcType=SMALLINT},
+                #{examinationState,jdbcType=SMALLINT}, #{examinationParameters,jdbcType=VARCHAR},
+                #{examinationShowResult,jdbcType=BOOLEAN}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto">
+        update u_teaching_task_examination_task
+        <set>
+            update_time = now(),
+            <if test="teachingTaskId != null">
+                teaching_task_id = #{teachingTaskId,jdbcType=BIGINT},
+            </if>
+            <if test="examinationName != null and examinationName != ''">
+                examination_name = #{examinationName,jdbcType=VARCHAR},
+            </if>
+            <if test="examinationDuration != null">
+                examination_duration = #{examinationDuration,jdbcType=SMALLINT},
+            </if>
+            <if test="examinationState != null">
+                examination_state = #{examinationState,jdbcType=SMALLINT},
+            </if>
+            <if test="examinationParameters != null and examinationParameters != ''">
+                examination_parameters = #{examinationParameters,jdbcType=VARCHAR},
+            </if>
+            <if test="examinationShowResult != null">
+                examination_show_result = #{examinationShowResult,jdbcType=BOOLEAN},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
