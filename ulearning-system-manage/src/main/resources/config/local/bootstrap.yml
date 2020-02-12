@@ -12,6 +12,7 @@ spring:
 #服务注册中心配置
 eureka:
   instance:
+    # 所部署服务器域名
     hostname: localhost
     home-page-url-path: /${spring.application.name}
     lease-expiration-duration-in-seconds: 90
@@ -20,5 +21,6 @@ eureka:
       management.context-path: /${spring.application.name}/actuator
   client:
     serviceUrl:
+      # 注册中心url
       defaultZone: http://www.darren1112.com:14001/eureka/
     registry-fetch-interval-seconds: 5

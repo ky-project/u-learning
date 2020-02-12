@@ -17,6 +17,11 @@ zuul:
       path: /teacher/**
       stripPrefix: false
       serviceId: teacher
+    xxl-job-admin:
+      path: /xxl-job-admin/**
+      stripPrefix: false
+      serviceId: xxl-job-admin
+  add-host-header: true
 
 #hystrix的超时时间
 hystrix:
@@ -35,7 +40,7 @@ ribbon:
 
 # 系统的各个端的匹配路径
 ulearning:
-  admin-patterns: ${zuul.routes.monitor-manage.path}, ${zuul.routes.system-manage.path}
+  admin-patterns: ${zuul.routes.monitor-manage.path}, ${zuul.routes.system-manage.path}, ${zuul.routes.xxl-job-admin.path}
   teacher-patterns: ${zuul.routes.teacher.path}
   student-patterns:
   # 无需进行权限校验的路径
