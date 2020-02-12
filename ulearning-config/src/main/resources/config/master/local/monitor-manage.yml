@@ -6,6 +6,7 @@ xxl:
       addresses: http://127.0.0.1:14007/xxl-job-admin
     executor:
       appname: ${spring.application.name}
+      # 双网卡时需要指定可通信ip
       ip:
       logpath: ./ulearning-logs/xxl-job/${spring.application.name}
       logretentiondays: 30

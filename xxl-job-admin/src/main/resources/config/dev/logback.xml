@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
-    <property name="logback.logDir" value="./ulearning-logs/xxl-job-admin/sys" />
+    <property name="logback.logDir" value="/tmp/ulearning-logs/xxl-job-admin/sys" />
     <property name="logback.appName" value="xxl-job-admin" />
     <!-- 日志最大的历史 90天 -->
     <property name="logback.maxHistory" value="90"/>
