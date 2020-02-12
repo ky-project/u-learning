@@ -83,7 +83,6 @@
         <!--appender将会添加到这个loger-->
         <appender-ref ref="fileInfoLog"/>
         <appender-ref ref="fileErrorLog"/>
-        <appender-ref ref="consoleLog"/>
     </root>
 
 </configuration>
