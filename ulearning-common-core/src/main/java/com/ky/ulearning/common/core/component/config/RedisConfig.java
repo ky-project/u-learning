@@ -64,6 +64,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.common.vo");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.monitor.entity");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.monitor.dto");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.monitor.vo");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.entity");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.dto");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.system.vo");

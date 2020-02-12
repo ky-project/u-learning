@@ -100,7 +100,6 @@ public class AuthController extends BaseController {
     @Autowired
     private SendMailUtil sendMailUtil;
 
-    @Log("获取个人权限信息")
     @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
     @GetMapping(value = "/permissionInfo")
     public ResponseEntity<JsonResult<List<PermissionEntity>>> getPermissionInfo() {
@@ -120,7 +119,6 @@ public class AuthController extends BaseController {
         }
     }
 
-    @Log("获取个人角色信息")
     @ApiOperation(value = "获取个人角色信息", notes = "若为学生，则无角色信息")
     @GetMapping(value = "/roleInfo")
     public ResponseEntity<JsonResult<List<RoleEntity>>> getRoleInfo() {
@@ -140,7 +138,6 @@ public class AuthController extends BaseController {
         }
     }
 
-    @Log("获取个人信息")
     @ApiOperation(value = "获取个人信息")
     @GetMapping(value = "/info")
     public ResponseEntity<JsonResult> getUserInfo() {
@@ -253,7 +250,6 @@ public class AuthController extends BaseController {
     /**
      * 获取验证码
      */
-    @Log("获取验证码")
     @ApiOperation(value = "获取验证码", notes = "每次登录前必须先调用该api获取验证码，登录时需带上uuid和用户填写的验证码<br/>返回的img属性在img标签中使用，src=返回的img串")
     @GetMapping(value = "/vCode")
     public ResponseEntity<JsonResult<ImgResult>> getCode() throws IOException {
