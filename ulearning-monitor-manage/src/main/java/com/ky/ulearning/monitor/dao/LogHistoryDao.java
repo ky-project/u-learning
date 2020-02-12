@@ -2,8 +2,11 @@ package com.ky.ulearning.monitor.dao;
 
 import com.ky.ulearning.spi.monitor.dto.LogHistoryDto;
 import com.ky.ulearning.spi.monitor.entity.LogHistoryEntity;
+import com.ky.ulearning.spi.monitor.vo.LogHistoryVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 历史日志dao
@@ -28,4 +31,11 @@ public interface LogHistoryDao {
      * @return 返回历史日志对象
      */
     LogHistoryEntity getById(Long id);
+
+    /**
+     * 查询所有历史日志
+     *
+     * @return 历史日志vo集合
+     */
+    List<LogHistoryVo> getVoList();
 }

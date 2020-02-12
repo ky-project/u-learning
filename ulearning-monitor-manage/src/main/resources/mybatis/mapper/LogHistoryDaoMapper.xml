@@ -46,4 +46,11 @@
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
                 #{updateBy,jdbcType=VARCHAR})
     </insert>
+    <!--查询所有历史日志-->
+    <select id="getVoList" resultType="com.ky.ulearning.spi.monitor.vo.LogHistoryVo">
+        SELECT id, log_history_date logHistoryDate
+        FROM u_log_history
+        WHERE valid = 1
+        ORDER BY log_history_date DESC
+    </select>
 </mapper>
