@@ -6,7 +6,7 @@ CREATE TABLE `u_course_file`  (
   `file_name` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '文件名',
   `file_size` bigint(15) NULL COMMENT '文件大小',
   `file_ext` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '文件后缀名',
-  `file_type` tinyint(1) NULL COMMENT '文件类型 1：文件 2：文件夹',
+  `file_type` smallint(6) NULL COMMENT '文件类型 1：文件 2：文件夹',
   `file_parent_id` bigint(20) NULL DEFAULT NULL COMMENT '文件所属文件夹 0为根目录',
   `valid` tinyint(1) NULL DEFAULT 1 COMMENT '是否有效',
   `memo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
