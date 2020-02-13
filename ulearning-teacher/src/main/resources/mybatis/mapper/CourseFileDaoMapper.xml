@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.CourseFileDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.CourseFileEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="file_url" jdbcType="VARCHAR" property="fileUrl"/>
+        <result column="file_name" jdbcType="VARCHAR" property="fileName"/>
+        <result column="file_size" jdbcType="BIGINT" property="fileSize"/>
+        <result column="file_ext" jdbcType="VARCHAR" property="fileExt"/>
+        <result column="file_type" jdbcType="SMALLINT" property="fileType"/>
+        <result column="file_parent_id" jdbcType="BIGINT" property="fileParentId"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            course_id,
+            file_url,
+            file_name,
+            file_size,
+            file_ext,
+            file_type,
+            file_parent_id,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_course_file
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseFileDto" useGeneratedKeys="true">
+        insert into u_course_file (course_id, file_url, file_name,
+                                   file_size, file_ext, file_type,
+                                   file_parent_id, `valid`, memo,
+                                   create_time, create_by, update_time,
+                                   update_by)
+        values (#{courseId,jdbcType=BIGINT}, #{fileUrl,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+                #{fileSize,jdbcType=BIGINT}, #{fileExt,jdbcType=VARCHAR}, #{fileType,jdbcType=INTEGER},
+                #{fileParentId,jdbcType=BIGINT}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.CourseFileDto">
+        update u_course_file
+        <set>
+            update_time = now(),
+            <if test="courseId != null">
+                course_id = #{courseId,jdbcType=BIGINT},
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                file_url = #{fileUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null and fileName != ''">
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileSize != null">
+                file_size = #{fileSize,jdbcType=BIGINT},
+            </if>
+            <if test="fileExt != null and fileExt != ''">
+                file_ext = #{fileExt,jdbcType=VARCHAR},
+            </if>
+            <if test="fileType != null">
+                file_type = #{fileType,jdbcType=INTEGER},
+            </if>
+            <if test="fileParentId != null">
+                file_parent_id = #{fileParentId,jdbcType=BIGINT},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
