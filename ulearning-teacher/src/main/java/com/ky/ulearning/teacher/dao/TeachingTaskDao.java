@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
+import com.ky.ulearning.spi.teacher.vo.TeachingTaskVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -82,4 +83,12 @@ public interface TeachingTaskDao {
      * @return 课程id集合
      */
     Set<Long> getCourseIdByTeaId(Long teaId);
+
+    /**
+     * 获取教师所有教学任务信息
+     *
+     * @param username 教师工号
+     * @return 返回所有教学任务信息
+     */
+    List<TeachingTaskVo> getAll(String username);
 }

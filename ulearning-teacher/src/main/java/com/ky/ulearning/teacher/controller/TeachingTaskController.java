@@ -16,6 +16,7 @@ import com.ky.ulearning.spi.common.vo.TermVo;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
+import com.ky.ulearning.spi.teacher.vo.TeachingTaskVo;
 import com.ky.ulearning.teacher.common.constants.TeacherConfigParameters;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
@@ -139,5 +140,14 @@ public class TeachingTaskController extends BaseController {
 
         CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskService.getById(id);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseTeachingTaskDto));
+    }
+
+    @Log("获取教师所有的教学任务")
+    @ApiOperation(value = "获取教师所有的教学任务")
+    @GetMapping("/getAll")
+    public ResponseEntity<JsonResult<List<TeachingTaskVo>>> getAll(){
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        List<TeachingTaskVo> teachingTaskVoList = teachingTaskService.getAll(username);
+        return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskVoList));
     }
 }

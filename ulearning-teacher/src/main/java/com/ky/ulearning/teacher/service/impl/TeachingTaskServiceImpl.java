@@ -7,6 +7,7 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
+import com.ky.ulearning.spi.teacher.vo.TeachingTaskVo;
 import com.ky.ulearning.teacher.dao.TeachingTaskDao;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,5 +83,10 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     @Cacheable(keyGenerator = "keyGenerator")
     public Set<Long> getCourseIdByTeaId(Long teaId) {
         return teachingTaskDao.getCourseIdByTeaId(teaId);
+    }
+
+    @Override
+    public List<TeachingTaskVo> getAll(String username) {
+        return teachingTaskDao.getAll(username);
     }
 }

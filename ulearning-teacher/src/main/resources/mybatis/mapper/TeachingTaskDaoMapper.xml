@@ -35,6 +35,11 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <resultMap id="TeachingTaskVoResultMap" type="com.ky.ulearning.spi.teacher.vo.TeachingTaskVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             course_id,
@@ -186,5 +191,14 @@
         FROM u_teaching_task
         WHERE valid = 1
           AND tea_id = #{teaId}
+    </select>
+    <!--获取教师所有教学任务信息-->
+    <select id="getAll" resultMap="TeachingTaskVoResultMap">
+        SELECT utt.id, utt.teaching_task_alias, utt.term
+        FROM u_teaching_task utt
+                 INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
+        WHERE utt.valid = 1
+          AND ut.tea_number = #{courseTeachingTaskDto.teaNumber}
+        ORDER BY utt.id ASC
     </select>
 </mapper>
