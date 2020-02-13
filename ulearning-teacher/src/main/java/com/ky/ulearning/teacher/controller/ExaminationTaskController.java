@@ -97,6 +97,7 @@ public class ExaminationTaskController extends BaseController {
                 .on(StringUtil.isEmpty(examinationTaskDto.getId()), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        teachingTaskValidUtil.checkExaminationId(examinationTaskDto.getId(), username);
         //教学任务校验
         if(StringUtil.isNotEmpty(examinationTaskDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, examinationTaskDto.getTeachingTaskId());

@@ -88,6 +88,7 @@ public class TeachingTaskExperimentController extends BaseController {
 
     @Log("添加实验")
     @ApiOperation("添加实验")
+    @ApiOperationSupport(ignoreParameters = "id")
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(ExperimentDto experimentDto) {
         ValidatorBuilder.build()
@@ -128,7 +129,6 @@ public class TeachingTaskExperimentController extends BaseController {
 
     @Log("更新实验")
     @ApiOperation("更新实验")
-    @ApiOperationSupport(ignoreParameters = {"teachingTaskId"})
     @PostMapping("/update")
     public ResponseEntity<JsonResult> update(ExperimentDto experimentDto) {
         ValidatorBuilder.build()
@@ -137,10 +137,12 @@ public class TeachingTaskExperimentController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //获取实验信息
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskValidUtil.checkExperimentId(experimentDto.getId(), username);
-
+        //教学任务校验
+        if(StringUtil.isNotEmpty(experimentDto.getTeachingTaskId())){
+            teachingTaskValidUtil.checkTeachingTask(username, experimentDto.getTeachingTaskId());
+        }
         //设置更新者信息
         experimentDto.setUpdateBy(username);
-        experimentDto.setTeachingTaskId(teachingTaskExperimentDto.getTeachingTaskId());
         teachingTaskExperimentService.update(experimentDto);
 
         //判断是否需要删除原图片

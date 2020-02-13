@@ -148,7 +148,7 @@ public class TeachingTaskNoticeController extends BaseController {
 
     @Log("修改通告")
     @ApiOperation(value = "修改通告", notes = "只能操作自己的教学任务的通告")
-    @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "noticePostTime"})
+    @ApiOperationSupport(ignoreParameters = {"noticePostTime"})
     @PostMapping("/update")
     public ResponseEntity<JsonResult> update(TeachingTaskNoticeDto teachingTaskNoticeDto) {
         ValidatorBuilder.build()
@@ -158,9 +158,12 @@ public class TeachingTaskNoticeController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //获取原通告对象并校验
         TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskValidUtil.checkNoticeId(teachingTaskNoticeDto.getId(), username);
+        //教学任务校验
+        if(StringUtil.isNotEmpty(teachingTaskNoticeDto.getTeachingTaskId())){
+            teachingTaskValidUtil.checkTeachingTask(username, teachingTaskNoticeDto.getTeachingTaskId());
+        }
         //设置更新者和教学任务id防止修改
         teachingTaskNoticeDto.setUpdateBy(username);
-        teachingTaskNoticeDto.setTeachingTaskId(teachingTaskNoticeEntity.getTeachingTaskId());
         teachingTaskNoticeService.update(teachingTaskNoticeDto);
 
         //检测被删除的附件url
