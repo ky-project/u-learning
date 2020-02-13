@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
+import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.service.*;
@@ -40,6 +41,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private TeachingTaskExperimentService teachingTaskExperimentService;
+
+    @Autowired
+    private ExaminationTaskService examinationTaskService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -134,5 +138,19 @@ public class TeachingTaskValidUtil {
         ValidateHandler.checkParameter(teachingTaskExperimentDto == null, TeacherErrorCodeEnum.EXPERIMENT_NOT_EXISTS);
         checkTeachingTask(username, teachingTaskExperimentDto.getTeachingTaskId());
         return teachingTaskExperimentDto;
+    }
+
+    /**
+     * 校验教师是否有操作测试任务的权限
+     *
+     * @param examinationId 测试任务id
+     * @param username      教师工号
+     */
+    public ExaminationTaskEntity checkExaminationId(Long examinationId, String username) {
+        ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(examinationId);
+        //校验
+        ValidateHandler.checkParameter(examinationTaskEntity == null, TeacherErrorCodeEnum.EXAMINATION_NOTEXISTS);
+        checkTeachingTask(username, examinationTaskEntity.getTeachingTaskId());
+        return examinationTaskEntity;
     }
 }

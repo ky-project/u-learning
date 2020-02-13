@@ -27,7 +27,11 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     EXPERIMENT_ORDER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验序号不能为空"),
     EXPERIMENT_TITLE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验标题不能为空"),
     EXPERIMENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验id不能为空"),
-
+    EXAMINATION_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务名称不能为空"),
+    EXAMINATION_DURATION_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试时长不能为空"),
+    EXAMINATION_STATE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务状态不能为空"),
+    EXAMINATION_PARAMETERS_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "试题参数不能为空"),
+    EXAMINATION_SHOW_RESULT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "是否反馈测试结果不能为空"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
@@ -37,6 +41,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_QUESTION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "试题不存在"),
     EXPERIMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验不存在"),
     EXPERIMENT_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "附件不存在"),
+    EXAMINATION_NOTEXISTS(HttpStatus.BAD_REQUEST, "测试任务不存在"),
 
     NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),

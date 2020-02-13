@@ -1,10 +1,14 @@
 package com.ky.ulearning.teacher.dao;
 
 
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 测试任务dao
@@ -38,4 +42,32 @@ public interface ExaminationTaskDao {
      */
     void update(ExaminationTaskDto examinationTaskDto);
 
+    /**
+     * 分页查询测试任务
+     *
+     * @param examinationTaskDto 筛选参数
+     * @param pageParam          分页参数
+     * @return 测试任务集合
+     */
+    List<ExaminationTaskEntity> listPage(@Param("examinationTaskDto") ExaminationTaskDto examinationTaskDto,
+                                         @Param("pageParam") PageParam pageParam);
+
+    /**
+     * 分页查询测试任务 - 总记录数
+     *
+     * @param examinationTaskDto 筛选参数
+     * @return 总记录数
+     */
+    Integer countListPage(@Param("examinationTaskDto") ExaminationTaskDto examinationTaskDto);
+
+    /**
+     * 根据id更新有效位
+     *
+     * @param id       测试任务id
+     * @param updateBy 更新者
+     * @param valid    有效位
+     */
+    void updateValidById(@Param("id") Long id,
+                         @Param("updateBy") String updateBy,
+                         @Param("valid") Integer valid);
 }
