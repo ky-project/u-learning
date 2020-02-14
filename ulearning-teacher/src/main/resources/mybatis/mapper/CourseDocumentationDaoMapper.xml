@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.CourseDocumentationDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.CourseDocumentationEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="documentation_title" jdbcType="VARCHAR" property="documentationTitle"/>
+        <result column="documentation_summary" jdbcType="VARCHAR" property="documentationSummary"/>
+        <result column="documentation_category" jdbcType="SMALLINT" property="documentationCategory"/>
+        <result column="documentation_shared" jdbcType="BOOLEAN" property="documentationShared"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="file_id" jdbcType="BIGINT" property="fileId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            documentation_title,
+            documentation_summary,
+            documentation_category,
+            documentation_shared,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            file_id
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_course_documentation
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto" useGeneratedKeys="true">
+        insert into u_course_documentation (documentation_title, documentation_summary,
+                                            documentation_category, documentation_shared,
+                                            `valid`, memo, create_time,
+                                            create_by, update_time, update_by,
+                                            file_id)
+        values (#{documentationTitle,jdbcType=VARCHAR}, #{documentationSummary,jdbcType=VARCHAR},
+                #{documentationCategory,jdbcType=SMALLINT}, #{documentationShared,jdbcType=BOOLEAN},
+                1, #{memo,jdbcType=VARCHAR}, now(),
+                #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR},
+                #{fileId,jdbcType=BIGINT})
+    </insert>
+    <update id="update"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto">
+        update u_course_documentation
+        <set>
+            update_time = now(),
+            <if test="documentationTitle != null and documentationTitle != ''">
+                documentation_title = #{documentationTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="documentationSummary != null and documentationSummary != ''">
+                documentation_summary = #{documentationSummary,jdbcType=VARCHAR},
+            </if>
+            <if test="documentationCategory != null">
+                documentation_category = #{documentationCategory,jdbcType=SMALLINT},
+            </if>
+            <if test="documentationShared != null">
+                documentation_shared = #{documentationShared,jdbcType=BOOLEAN},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="fileId != null">
+                file_id = #{fileId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
