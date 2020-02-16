@@ -75,4 +75,18 @@ public class CourseFileServiceImpl extends BaseService implements CourseFileServ
         courseFileDto.setUpdateBy("system");
         return courseFileDto;
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void save(CourseFileDto courseFileDto) {
+        courseFileDao.insert(courseFileDto);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, String updateBy) {
+        courseFileDao.updateValidById(id, updateBy, 0);
+    }
 }

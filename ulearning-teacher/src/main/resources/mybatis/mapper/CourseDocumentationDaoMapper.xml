@@ -49,12 +49,28 @@
             update_by,
             file_id
     </sql>
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from u_course_documentation
-        where valid = 1
-        AND id = #{id,jdbcType=BIGINT}
+    <select id="getById" parameterType="java.lang.Long" resultMap="CourseFileDocumentationDtoMap">
+        SELECT ucd.id,
+               ucd.documentation_title,
+               ucd.documentation_summary,
+               ucd.documentation_category,
+               ucd.documentation_shared,
+               ucd.valid,
+               ucd.memo,
+               ucd.create_time,
+               ucd.create_by,
+               ucd.update_time,
+               ucd.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 LEFT JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+        WHERE ucf.valid = 1
+          AND ucd.id = #{id}
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto" useGeneratedKeys="true">
@@ -91,9 +107,6 @@
             </if>
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},
-            </if>
-            <if test="fileId != null">
-                file_id = #{fileId,jdbcType=BIGINT},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -168,4 +181,13 @@
         WHERE ucf.valid = 1
           AND ucf.id = #{fileId}
     </select>
+    <!--根据id更新valid值-->
+    <update id="updateValidById">
+        UPDATE u_course_documentation
+        SET update_by   = #{updateBy},
+            valid       = #{valid},
+            update_time = now()
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>

@@ -37,4 +37,28 @@ public interface CourseDocumentationService {
      * @return 课程文件资料对象
      */
     CourseFileDocumentationDto getByFileId(Long fileId);
+
+    /**
+     * 根据id查询课程文件资料对象
+     *
+     * @param id 文件资料id
+     * @return 课程文件资料对象
+     */
+    CourseFileDocumentationDto getById(Long id);
+
+    /**
+     * 更新课程文件资料
+     *
+     * @param courseFileDocumentationDto 课程文件资料对象
+     */
+    void update(CourseFileDocumentationDto courseFileDocumentationDto);
+
+    /**
+     * 根据id和fileId删除课程文件资料
+     *
+     * @param id       文件资料id
+     * @param fileId   课程文件id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, Long fileId, String updateBy);
 }

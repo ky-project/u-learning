@@ -2,8 +2,8 @@ package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
-import com.ky.ulearning.spi.teacher.entity.CourseDocumentationEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public interface CourseDocumentationDao {
      * @param id 文件资料id
      * @return 文件资料实体类
      */
-    CourseDocumentationEntity getById(Long id);
+    CourseFileDocumentationDto getById(Long id);
 
     /**
      * 更新文件资料
@@ -55,4 +55,13 @@ public interface CourseDocumentationDao {
      * @return 课程文件资料对象
      */
     CourseFileDocumentationDto getByFileId(Long fileId);
+
+    /**
+     * 根据id更新valid值
+     *
+     * @param id       id
+     * @param updateBy 更新者
+     * @param valid    有效位的值
+     */
+    void updateValidById(@Param("id") Long id, @Param("updateBy") String updateBy, @Param("valid") Integer valid);
 }

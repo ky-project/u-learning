@@ -1,5 +1,6 @@
 package com.ky.ulearning.teacher.service;
 
+import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 
 /**
@@ -26,4 +27,19 @@ public interface CourseFileService {
      * @return id
      */
     Long getByCourseIdAndUsername(Long courseId, String username);
+
+    /**
+     * 添加课程文件
+     *
+     * @param courseFileDto 课程文件对象
+     */
+    void save(CourseFileDto courseFileDto);
+
+    /**
+     * 删除课程文件夹
+     *
+     * @param id       id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
 }

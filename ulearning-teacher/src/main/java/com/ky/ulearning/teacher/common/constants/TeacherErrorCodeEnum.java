@@ -37,6 +37,8 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     DOCUMENTATION_CATEGORY_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料分类不能为空"),
     DOCUMENTATION_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料是否共享不能为空"),
     DOCUMENTATION_PATH_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料所属文件夹id不能为空"),
+    COURSE_FILE_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程文件名不能为空"),
+    COURSE_FILE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "课程文件id不能为空"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
@@ -46,12 +48,17 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_QUESTION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "试题不存在"),
     EXPERIMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验不存在"),
     EXPERIMENT_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "附件不存在"),
-    EXAMINATION_NOTEXISTS(HttpStatus.BAD_REQUEST, "测试任务不存在"),
+    EXAMINATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "测试任务不存在"),
+    DOCUMENTATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "文件资料不存在"),
+    COURSE_FILE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程文件不存在"),
 
     NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),
     STUDENT_ILLEGAL(HttpStatus.BAD_REQUEST, "该学生不可操作"),
-    COURSE_ILLEGAL(HttpStatus.BAD_REQUEST, "该课程不可操作")
+    COURSE_ILLEGAL(HttpStatus.BAD_REQUEST, "该课程不可操作"),
+    COURSE_FILE_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件id无效"),
+    COURSE_FILE_TYPE_ILLEGAL(HttpStatus.BAD_REQUEST, "操作的课程文件类型错误"),
+    COURSE_FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件已过期")
     ;
 
     private Integer code;

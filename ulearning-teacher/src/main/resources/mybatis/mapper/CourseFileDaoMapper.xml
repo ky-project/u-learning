@@ -57,26 +57,8 @@
         update u_course_file
         <set>
             update_time = now(),
-            <if test="courseId != null">
-                course_id = #{courseId,jdbcType=BIGINT},
-            </if>
-            <if test="fileUrl != null and fileUrl != ''">
-                file_url = #{fileUrl,jdbcType=VARCHAR},
-            </if>
             <if test="fileName != null and fileName != ''">
                 file_name = #{fileName,jdbcType=VARCHAR},
-            </if>
-            <if test="fileSize != null">
-                file_size = #{fileSize,jdbcType=BIGINT},
-            </if>
-            <if test="fileExt != null and fileExt != ''">
-                file_ext = #{fileExt,jdbcType=VARCHAR},
-            </if>
-            <if test="fileType != null">
-                file_type = #{fileType,jdbcType=INTEGER},
-            </if>
-            <if test="fileParentId != null">
-                file_parent_id = #{fileParentId,jdbcType=BIGINT},
             </if>
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
@@ -105,4 +87,12 @@
         AND file_parent_id = #{parentId}
         AND file_name = #{fileName}
     </select>
+    <!--根据id更新valid值-->
+    <update id="updateValidById">
+        UPDATE u_course_file
+        SET update_time = now(),
+            update_by   = #{updateBy},
+            valid       = #{valid}
+        WHERE id = #{id}
+    </update>
 </mapper>

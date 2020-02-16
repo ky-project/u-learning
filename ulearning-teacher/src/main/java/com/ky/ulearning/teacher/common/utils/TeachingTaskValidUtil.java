@@ -2,6 +2,7 @@ package com.ky.ulearning.teacher.common.utils;
 
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
+import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
@@ -48,6 +49,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private CourseFileService courseFileService;
+
+    @Autowired
+    private CourseDocumentationService courseDocumentationService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -153,7 +157,7 @@ public class TeachingTaskValidUtil {
     public ExaminationTaskEntity checkExaminationId(Long examinationId, String username) {
         ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(examinationId);
         //校验
-        ValidateHandler.checkParameter(examinationTaskEntity == null, TeacherErrorCodeEnum.EXAMINATION_NOTEXISTS);
+        ValidateHandler.checkParameter(examinationTaskEntity == null, TeacherErrorCodeEnum.EXAMINATION_NOT_EXISTS);
         checkTeachingTask(username, examinationTaskEntity.getTeachingTaskId());
         return examinationTaskEntity;
     }
@@ -167,8 +171,24 @@ public class TeachingTaskValidUtil {
      */
     public CourseFileEntity checkCourseFileId(Long courseFileId, String username) {
         CourseFileEntity courseFileEntity = courseFileService.getById(courseFileId);
+        ValidateHandler.checkNull(courseFileEntity, TeacherErrorCodeEnum.COURSE_FILE_NOT_EXISTS);
         //校验课程id
         checkCourseId(courseFileEntity.getCourseId(), username);
         return courseFileEntity;
+    }
+
+    /**
+     * 校验教师是否有操作文件资料的权限
+     *
+     * @param documentationId 文件资料id
+     * @param username        教师工号
+     */
+    public CourseFileDocumentationDto checkDocumentationId(Long documentationId, String username) {
+        CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationService.getById(documentationId);
+        //空值校验
+        ValidateHandler.checkNull(courseFileDocumentationDto, TeacherErrorCodeEnum.DOCUMENTATION_NOT_EXISTS);
+        //校验课程文件id
+        checkCourseFileId(courseFileDocumentationDto.getFileId(), username);
+        return courseFileDocumentationDto;
     }
 }

@@ -9,6 +9,7 @@ import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
+import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
@@ -25,13 +26,17 @@ import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -66,7 +71,7 @@ public class CourseDocumentationController extends BaseController {
     @ApiOperationSupport(ignoreParameters = "id")
     @ApiOperation(value = "添加文件", notes = "只能查询/操作属于自己的教学任务的数据")
     @PostMapping("/saveFile")
-    public ResponseEntity<JsonResult> save(MultipartFile file, CourseDocumentationDto courseDocumentationDto) throws IOException {
+    public ResponseEntity<JsonResult> saveFile(MultipartFile file, CourseDocumentationDto courseDocumentationDto) throws IOException {
         ValidatorBuilder.build()
                 .ofNull(file, TeacherErrorCodeEnum.DOCUMENTATION_FILE_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
@@ -110,10 +115,33 @@ public class CourseDocumentationController extends BaseController {
         return courseFileDto;
     }
 
+    @Log("添加文件夹")
+    @ApiOperationSupport(ignoreParameters = {"id", "fileType"})
+    @ApiOperation(value = "添加文件夹", notes = "只能查询/操作属于自己的教学任务的数据")
+    @PostMapping("/saveFolder")
+    public ResponseEntity<JsonResult> saveFolder(CourseFileDto courseFileDto) {
+        ValidatorBuilder.build()
+                .ofNull(courseFileDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .ofNull(courseFileDto.getFileName(), TeacherErrorCodeEnum.COURSE_FILE_NAME_CANNOT_BE_NULL)
+                .ofNull(courseFileDto.getFileParentId(), TeacherErrorCodeEnum.DOCUMENTATION_PATH_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //校验教学任务id
+        teachingTaskValidUtil.checkTeachingTask(username, courseFileDto.getTeachingTaskId());
+        //校验所属文件夹id
+        CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseFileDto.getFileParentId(), username);
+        courseFileDto.setCourseId(courseFileEntity.getCourseId());
+        courseFileDto.setFileType(MicroConstant.FOLDER_TYPE);
+        courseFileDto.setUpdateBy(username);
+        courseFileDto.setCreateBy(username);
+        //保存文件信息
+        courseFileService.save(courseFileDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
+    }
+
     @Log("查询文件资料根节点")
-    @ApiOperationSupport(ignoreParameters = "id")
     @ApiOperation(value = "查询文件资料根节点", notes = "只能查询/操作属于自己的教学任务的数据")
-    @PostMapping("/getRootFolder")
+    @GetMapping("/getRootFolder")
     public ResponseEntity<JsonResult<CourseFileDocumentationDto>> getRootFolder(Long teachingTaskId) {
         ValidatorBuilder.build()
                 .ofNull(teachingTaskId, TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
@@ -130,9 +158,9 @@ public class CourseDocumentationController extends BaseController {
     }
 
     @Log("查询文件资料列表")
-    @ApiOperationSupport(ignoreParameters = "id")
+    @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询文件资料列表", notes = "如果fileParentId为空，则默认查询教师根目录文件夹信息，只能查询/操作属于自己的教学任务的数据")
-    @PostMapping("/list")
+    @GetMapping("/list")
     public ResponseEntity<JsonResult<List<CourseFileDocumentationDto>>> list(CourseFileDocumentationDto courseFileDocumentationDto) {
         ValidatorBuilder.build()
                 .ofNull(courseFileDocumentationDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
@@ -146,5 +174,89 @@ public class CourseDocumentationController extends BaseController {
         //获取文件资料集合
         List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getList(courseFileDocumentationDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDtoList));
+    }
+
+    @Log("查询文件资料")
+    @ApiOperation(value = "查询文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/getById")
+    public ResponseEntity<JsonResult<CourseFileDocumentationDto>> getById(Long id) {
+        ValidateHandler.checkNull(id, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //参数校验
+        CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+        return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
+    }
+
+    @Log("更新文件资料")
+    @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "fileSize", "fileExt", "fileType", "fileParentId"})
+    @ApiOperation(value = "更新文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @PostMapping("/update")
+    public ResponseEntity<JsonResult> update(CourseFileDocumentationDto courseFileDocumentationDto) {
+        ValidatorBuilder.build()
+                .ofNull(courseFileDocumentationDto.getFileId(), TeacherErrorCodeEnum.COURSE_FILE_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        teachingTaskValidUtil.checkCourseFileId(courseFileDocumentationDto.getFileId(), username);
+        //校验文件资料id
+        if (StringUtil.isNotEmpty(courseFileDocumentationDto.getId())) {
+            teachingTaskValidUtil.checkDocumentationId(courseFileDocumentationDto.getId(), username);
+            CourseFileDocumentationDto courseFileDocumentationDtoCheck = courseDocumentationService.getById(courseFileDocumentationDto.getId());
+            //校验id与fileId是否对应
+            ValidateHandler.checkParameter(!courseFileDocumentationDtoCheck.getFileId().equals(courseFileDocumentationDto.getFileId()), TeacherErrorCodeEnum.COURSE_FILE_ID_ILLEGAL);
+        }
+        courseFileDocumentationDto.setUpdateBy(username);
+        courseDocumentationService.update(courseFileDocumentationDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @Log("删除文件资料")
+    @ApiOperation(value = "删除文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/deleteFile")
+    public ResponseEntity<JsonResult> deleteFile(Long id) {
+        ValidateHandler.checkNull(id, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //参数校验
+        CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+        //删除文件
+        CourseFileEntity courseFileEntity = courseFileService.getById(courseFileDocumentationDto.getFileId());
+        fastDfsClientWrapper.deleteFile(courseFileEntity.getFileUrl());
+        //删除数据库表记录
+        courseDocumentationService.delete(courseFileDocumentationDto.getId(), courseFileDocumentationDto.getFileId(), username);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("删除文件夹")
+    @ApiOperation(value = "删除文件夹", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/deleteFolder")
+    public ResponseEntity<JsonResult> deleteFolder(Long fileId) {
+        ValidateHandler.checkNull(fileId, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //参数校验
+        CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(fileId, username);
+        ValidateHandler.checkParameter(MicroConstant.FOLDER_TYPE != courseFileEntity.getFileType(), TeacherErrorCodeEnum.COURSE_FILE_TYPE_ILLEGAL);
+        //删除记录
+        courseFileService.delete(fileId, username);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("下载文件资料")
+    @ApiOperation(value = "下载文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/download")
+    public ResponseEntity download(Long id) {
+        ValidateHandler.checkNull(id, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //参数校验
+        CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+        //查询文件
+        CourseFileEntity courseFileEntity = courseFileService.getById(courseFileDocumentationDto.getFileId());
+        ValidateHandler.checkParameter(! fastDfsClientWrapper.hasFile(courseFileEntity.getFileUrl()), TeacherErrorCodeEnum.COURSE_FILE_ILLEGAL);
+        byte[] courseFileBytes = fastDfsClientWrapper.download(courseFileEntity.getFileUrl());
+        //设置head
+        HttpHeaders headers = new HttpHeaders();
+        //文件的属性名
+        headers.setContentDispositionFormData("attachment", new String(courseFileEntity.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //响应内容是字节流
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntityUtil.ok(headers, courseFileBytes);
     }
 }

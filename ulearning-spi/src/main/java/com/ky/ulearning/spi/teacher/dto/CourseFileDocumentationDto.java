@@ -46,7 +46,7 @@ public class CourseFileDocumentationDto extends BaseDto {
     /**
      * 课程文件ID
      */
-    @ApiModelProperty(value = "课程文件ID，文件资料所在文件夹id", hidden = true)
+    @ApiModelProperty(value = "课程文件ID")
     private Long fileId;
 
     /**

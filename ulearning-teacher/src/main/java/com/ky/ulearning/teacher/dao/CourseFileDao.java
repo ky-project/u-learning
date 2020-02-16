@@ -57,4 +57,15 @@ public interface CourseFileDao {
      */
     CourseFileEntity getByParentIdAndFileName(@Param("parentId") Long parentId,
                                               @Param("fileName") String fileName);
+
+    /**
+     * 根据id更新valid值
+     *
+     * @param id       id
+     * @param updateBy 更新者
+     * @param valid    有效位的值
+     */
+    void updateValidById(@Param("id") Long id,
+                         @Param("updateBy") String updateBy,
+                         @Param("valid") Integer valid);
 }

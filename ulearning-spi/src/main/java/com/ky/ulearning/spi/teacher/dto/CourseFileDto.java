@@ -33,7 +33,7 @@ public class CourseFileDto extends BaseDto {
     /**
      * 文件名
      */
-    @ApiModelProperty(value = "文件名", hidden = true)
+    @ApiModelProperty(value = "文件名")
     private String fileName;
 
     /**
@@ -58,6 +58,12 @@ public class CourseFileDto extends BaseDto {
     /**
      * 文件所属文件夹 0为根目录
      */
-    @ApiModelProperty(value = "文件所属文件夹 0为根目录", hidden = true)
+    @ApiModelProperty(value = "文件所属文件夹 0为根目录")
     private Long fileParentId;
+
+    /**
+     * 教学任务ID
+     */
+    @ApiModelProperty("教学任务ID")
+    private Long teachingTaskId;
 }

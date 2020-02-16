@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
@@ -51,5 +52,43 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
     @Override
     public CourseFileDocumentationDto getByFileId(Long fileId) {
         return courseDocumentationDao.getByFileId(fileId);
+    }
+
+    @Override
+    public CourseFileDocumentationDto getById(Long id) {
+        return courseDocumentationDao.getById(id);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void update(CourseFileDocumentationDto courseFileDocumentationDto) {
+        //更新文件资料信息
+        if(StringUtil.isNotEmpty(courseFileDocumentationDto.getId())){
+            CourseDocumentationDto courseDocumentationDto = new CourseDocumentationDto();
+            courseDocumentationDto.setId(courseFileDocumentationDto.getId());
+            courseDocumentationDto.setUpdateBy(courseFileDocumentationDto.getUpdateBy());
+            courseDocumentationDto.setDocumentationTitle(courseFileDocumentationDto.getDocumentationTitle());
+            courseDocumentationDto.setDocumentationSummary(courseFileDocumentationDto.getDocumentationSummary());
+            courseDocumentationDto.setDocumentationCategory(courseFileDocumentationDto.getDocumentationCategory());
+            courseDocumentationDto.setDocumentationShared(courseFileDocumentationDto.getDocumentationShared());
+            courseDocumentationDao.update(courseDocumentationDto);
+        }
+        //更新课程文件信息
+        if(StringUtil.isNotEmpty(courseFileDocumentationDto.getFileId())){
+            CourseFileDto courseFileDto = new CourseFileDto();
+            courseFileDto.setUpdateBy(courseFileDocumentationDto.getUpdateBy());
+            courseFileDto.setId(courseFileDocumentationDto.getFileId());
+            courseFileDto.setFileName(courseFileDocumentationDto.getFileName());
+            courseFileDao.update(courseFileDto);
+        }
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, Long fileId, String updateBy) {
+        courseDocumentationDao.updateValidById(id, updateBy, 0);
+        courseFileDao.updateValidById(fileId, updateBy, 0);
     }
 }
