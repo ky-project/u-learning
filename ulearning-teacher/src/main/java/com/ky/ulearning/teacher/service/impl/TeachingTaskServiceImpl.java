@@ -89,4 +89,10 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     public List<TeachingTaskVo> getAll(String username) {
         return teachingTaskDao.getAll(username);
     }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public Long getCourseIdById(Long id) {
+        return teachingTaskDao.getCourseIdById(id);
+    }
 }

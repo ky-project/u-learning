@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
+import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
@@ -44,6 +45,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private ExaminationTaskService examinationTaskService;
+
+    @Autowired
+    private CourseFileService courseFileService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -152,5 +156,19 @@ public class TeachingTaskValidUtil {
         ValidateHandler.checkParameter(examinationTaskEntity == null, TeacherErrorCodeEnum.EXAMINATION_NOTEXISTS);
         checkTeachingTask(username, examinationTaskEntity.getTeachingTaskId());
         return examinationTaskEntity;
+    }
+
+    /**
+     * 校验教师是否有操作课程文件的权限
+     *
+     * @param courseFileId 课程文件id
+     * @param username     教师工号
+     * @return 课程文件对象
+     */
+    public CourseFileEntity checkCourseFileId(Long courseFileId, String username) {
+        CourseFileEntity courseFileEntity = courseFileService.getById(courseFileId);
+        //校验课程id
+        checkCourseId(courseFileEntity.getCourseId(), username);
+        return courseFileEntity;
     }
 }

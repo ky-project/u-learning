@@ -91,4 +91,12 @@ public interface TeachingTaskDao {
      * @return 返回所有教学任务信息
      */
     List<TeachingTaskVo> getAll(String username);
+
+    /**
+     * 根据id查询课程id
+     *
+     * @param id 教学任务id
+     * @return 课程id
+     */
+    Long getCourseIdById(Long id);
 }

@@ -87,4 +87,22 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+    <!--根据courseId和文件名查询课程文件信息-->
+    <select id="getByCourseIdAndFileName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_course_file
+        WHERE valid = 1
+        AND course_id = #{courseId}
+        AND file_name = #{fileName}
+    </select>
+    <!--根据parentId和文件名查询课程文件信息-->
+    <select id="getByParentIdAndFileName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_course_file
+        WHERE valid = 1
+        AND file_parent_id = #{parentId}
+        AND file_name = #{fileName}
+    </select>
 </mapper>

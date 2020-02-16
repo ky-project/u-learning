@@ -175,6 +175,7 @@ public class TeacherController extends BaseController {
             teacherDto.setTeaPassword(EncryptUtil.encryptPassword(teacherDto.getTeaPassword()));
             teacherDto.setPwdUpdateTime(new Date());
         }
+        //TODO 当修改teaNumber时，修改courseFile表的根路径名
         teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         teacherService.update(teacherDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(teacherDto));

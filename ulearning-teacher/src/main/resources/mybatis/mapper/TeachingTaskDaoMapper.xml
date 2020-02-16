@@ -201,4 +201,11 @@
           AND ut.tea_number = #{courseTeachingTaskDto.teaNumber}
         ORDER BY utt.id ASC
     </select>
+    <!--根据id查询课程id-->
+    <select id="getCourseIdById" resultType="java.lang.Long">
+        SELECT course_id
+        FROM u_teaching_task
+        WHERE valid = 1
+          AND id = #{id}
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.ky.ulearning.common.core.validate.validator;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 
 import java.util.ArrayList;
@@ -35,6 +36,12 @@ public class ValidatorHolder {
         if(checkResult != null && baseEnum != null){
             addContext(checkResult, baseEnum);
         }
+        return this;
+    }
+
+    /** 校验链-空值判断 */
+    public ValidatorHolder ofNull(Object checkObj, BaseEnum baseEnum){
+            addContext(StringUtil.isEmpty(checkObj), baseEnum);
         return this;
     }
 

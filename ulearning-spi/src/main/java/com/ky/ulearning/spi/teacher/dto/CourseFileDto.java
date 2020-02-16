@@ -21,42 +21,43 @@ public class CourseFileDto extends BaseDto {
     /**
      * 课程ID
      */
-    @ApiModelProperty("课程ID")
+    @ApiModelProperty(value = "课程ID", hidden = true)
     private Long courseId;
 
     /**
      * 文件url
      */
-    @ApiModelProperty("文件url")
+    @ApiModelProperty(value = "文件url", hidden = true)
     private String fileUrl;
 
     /**
      * 文件名
      */
-    @ApiModelProperty("文件名")
+    @ApiModelProperty(value = "文件名", hidden = true)
     private String fileName;
 
     /**
      * 文件大小
      */
-    @ApiModelProperty("文件大小")
+    @ApiModelProperty(value = "文件大小", hidden = true)
     private Long fileSize;
 
     /**
      * 文件后缀名
      */
-    @ApiModelProperty("文件后缀名")
+    @ApiModelProperty(value = "文件后缀名", hidden = true)
     private String fileExt;
 
     /**
      * 文件类型 1：文件 2：文件夹
+     * 967999、26212345
      */
-    @ApiModelProperty("文件类型 1：文件 2：文件夹")
+    @ApiModelProperty(value = "文件类型 1：文件 2：文件夹")
     private Integer fileType;
 
     /**
      * 文件所属文件夹 0为根目录
      */
-    @ApiModelProperty("文件所属文件夹 0为根目录")
+    @ApiModelProperty(value = "文件所属文件夹 0为根目录", hidden = true)
     private Long fileParentId;
 }

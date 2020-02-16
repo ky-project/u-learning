@@ -1,9 +1,12 @@
 package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
+import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.entity.CourseDocumentationEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 文件资料dao
@@ -37,4 +40,19 @@ public interface CourseDocumentationDao {
      */
     void update(CourseDocumentationDto courseDocumentationDto);
 
+    /**
+     * 查询文件资料集合
+     *
+     * @param courseFileDocumentationDto 筛选对象
+     * @return 返回课程文件资料集合
+     */
+    List<CourseFileDocumentationDto> getList(CourseFileDocumentationDto courseFileDocumentationDto);
+
+    /**
+     * 根据文件id查询课程文件资料对象
+     *
+     * @param fileId 文件id
+     * @return 课程文件资料对象
+     */
+    CourseFileDocumentationDto getByFileId(Long fileId);
 }

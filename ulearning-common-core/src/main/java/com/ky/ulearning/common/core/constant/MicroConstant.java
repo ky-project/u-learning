@@ -62,4 +62,30 @@ public class MicroConstant {
      * 日志历史表名
      */
     public static final String LOG_HISTORY_TABLE_NAME = "u_log_history";
+
+    /**
+     * 课程文件表名
+     */
+    public static final String COURSE_FILE_TABLE_NAME = "u_course_file";
+
+    /**
+     * 根目录名
+     */
+    public static final String ROOT_FOLDER = "\\";
+
+    /**
+     * 根目录的母节点id
+     */
+    public static final long ROOT_FOLDER_PARENTID = 0L;
+
+    /**
+     * 文件夹
+     */
+    public static final int FOLDER_TYPE = 2;
+
+    /**
+     * 文件
+     */
+    public static final int FILE_TYPE = 1;
+
 }

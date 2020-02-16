@@ -32,6 +32,11 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     EXAMINATION_STATE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务状态不能为空"),
     EXAMINATION_PARAMETERS_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "试题参数不能为空"),
     EXAMINATION_SHOW_RESULT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "是否反馈测试结果不能为空"),
+    DOCUMENTATION_FILE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料不能为空"),
+    DOCUMENTATION_TITLE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料标题不能为空"),
+    DOCUMENTATION_CATEGORY_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料分类不能为空"),
+    DOCUMENTATION_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料是否共享不能为空"),
+    DOCUMENTATION_PATH_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料所属文件夹id不能为空"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),

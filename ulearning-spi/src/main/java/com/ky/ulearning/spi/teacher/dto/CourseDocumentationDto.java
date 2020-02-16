@@ -45,6 +45,18 @@ public class CourseDocumentationDto extends BaseDto {
     /**
      * 课程文件ID
      */
-    @ApiModelProperty("课程文件ID")
+    @ApiModelProperty(value = "课程文件ID", hidden = true)
     private Long fileId;
+
+    /**
+     * 父节点id
+     */
+    @ApiModelProperty("文件资料所在文件夹id")
+    private Long fileParentId;
+
+    /**
+     * 教学任务ID
+     */
+    @ApiModelProperty("教学任务ID")
+    private Long teachingTaskId;
 }

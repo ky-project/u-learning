@@ -3,6 +3,7 @@ package com.ky.ulearning.teacher.dao;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -37,4 +38,23 @@ public interface CourseFileDao {
      */
     void update(CourseFileDto courseFileDto);
 
+    /**
+     * 根据courseId和文件名查询课程文件信息
+     *
+     * @param courseId 课程id
+     * @param fileName 文件名
+     * @return 课程文件对象
+     */
+    CourseFileEntity getByCourseIdAndFileName(@Param("courseId") Long courseId,
+                                              @Param("fileName") String fileName);
+
+    /**
+     * 根据parentId和文件名查询课程文件信息
+     *
+     * @param parentId 父节点id
+     * @param fileName 文件名
+     * @return 课程文件对象
+     */
+    CourseFileEntity getByParentIdAndFileName(@Param("parentId") Long parentId,
+                                              @Param("fileName") String fileName);
 }
