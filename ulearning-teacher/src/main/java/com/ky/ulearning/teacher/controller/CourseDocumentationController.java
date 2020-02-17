@@ -15,6 +15,7 @@ import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
+import com.ky.ulearning.teacher.common.utils.CourseFileUtil;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.remoting.MonitorManageRemoting;
 import com.ky.ulearning.teacher.service.CourseDocumentationService;
@@ -88,7 +89,7 @@ public class CourseDocumentationController extends BaseController {
         //保存文件
         String fileUrl = fastDfsClientWrapper.uploadFile(file);
         //创建课程文件对象
-        CourseFileDto courseFileDto = createCourseFileDto(courseFileEntity.getId(), fileUrl, file, courseDocumentationDto.getFileParentId(), username);
+        CourseFileDto courseFileDto = CourseFileUtil.createCourseFileDto(courseFileEntity.getId(), fileUrl, file, courseDocumentationDto.getFileParentId(), username);
         courseDocumentationDto.setUpdateBy(username);
         courseDocumentationDto.setCreateBy(username);
         //保存文件信息
@@ -96,23 +97,6 @@ public class CourseDocumentationController extends BaseController {
         //监控记录文件上传
         monitorManageRemoting.add(getFileRecordDto(fileUrl, file, MicroConstant.COURSE_FILE_TABLE_NAME, courseFileDto.getId(), username));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
-    }
-
-    /**
-     * 根据参数创建课程文件对象
-     */
-    private CourseFileDto createCourseFileDto(Long courseId, String fileUrl, MultipartFile file, Long fileParentId, String username) {
-        CourseFileDto courseFileDto = new CourseFileDto();
-        courseFileDto.setCourseId(courseId);
-        courseFileDto.setFileUrl(fileUrl);
-        courseFileDto.setFileName(file.getOriginalFilename());
-        courseFileDto.setFileSize(file.getSize());
-        courseFileDto.setFileExt(FilenameUtils.getExtension(file.getOriginalFilename()));
-        courseFileDto.setFileType(1);
-        courseFileDto.setFileParentId(fileParentId);
-        courseFileDto.setUpdateBy(username);
-        courseFileDto.setCreateBy(username);
-        return courseFileDto;
     }
 
     @Log("添加文件夹")

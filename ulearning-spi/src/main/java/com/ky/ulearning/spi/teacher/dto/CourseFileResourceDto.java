@@ -1,6 +1,5 @@
 package com.ky.ulearning.spi.teacher.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,51 +8,51 @@ import lombok.EqualsAndHashCode;
 
 /**
  * {@link com.ky.ulearning.spi.teacher.entity.CourseFileEntity}
- * {@link com.ky.ulearning.spi.teacher.entity.CourseDocumentationEntity}
- * 课程文件&文件资料dto
+ * {@link com.ky.ulearning.spi.teacher.entity.CourseResourceEntity}
+ * 课程文件&教学资源dto
  *
  * @author luyuhao
- * @since 20/02/16 14:50
+ * @since 20/02/17 22:51
  */
 @EqualsAndHashCode(callSuper = true)
+@ApiModel("课程文件&教学资源dto")
 @Data
-@ApiModel("课程文件&文件资料dto")
-public class CourseFileDocumentationDto extends BaseDto {
+public class CourseFileResourceDto extends BaseDto {
+
     /**
      * 标题
      */
     @ApiModelProperty("标题")
-    private String documentationTitle;
+    private String resourceTitle;
 
     /**
-     * 摘要
+     * 概述
      */
-    @ApiModelProperty("摘要")
-    private String documentationSummary;
+    @ApiModelProperty("概述")
+    private String resourceSummary;
 
     /**
-     * 文件资料分类
+     * 类型
      */
-    @ApiModelProperty("文件资料分类")
-    private Short documentationCategory;
+    @ApiModelProperty("类型")
+    private Short resourceType;
 
     /**
      * 是否共享
      */
     @ApiModelProperty("是否共享")
-    private Boolean documentationShared;
+    private Boolean resourceShared;
 
     /**
      * 课程文件ID
      */
-    @ApiModelProperty(value = "课程文件ID")
+    @ApiModelProperty("课程文件ID")
     private Long fileId;
 
     /**
      * 教学任务ID
      */
     @ApiModelProperty("教学任务ID")
-    @JsonIgnore
     private Long teachingTaskId;
 
     /**

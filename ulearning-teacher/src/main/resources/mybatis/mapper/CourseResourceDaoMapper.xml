@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.CourseResourceDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.CourseResourceEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="resource_title" jdbcType="VARCHAR" property="resourceTitle"/>
+        <result column="resource_summary" jdbcType="VARCHAR" property="resourceSummary"/>
+        <result column="resource_type" jdbcType="SMALLINT" property="resourceType"/>
+        <result column="resource_shared" jdbcType="BOOLEAN" property="resourceShared"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="file_id" jdbcType="BIGINT" property="fileId"/>
+    </resultMap>
+    <resultMap id="CourseFileResourceDtoMap" type="com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="resource_title" jdbcType="VARCHAR" property="resourceTitle"/>
+        <result column="resource_summary" jdbcType="VARCHAR" property="resourceSummary"/>
+        <result column="resource_type" jdbcType="SMALLINT" property="resourceType"/>
+        <result column="resource_shared" jdbcType="BOOLEAN" property="resourceShared"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="file_id" jdbcType="BIGINT" property="fileId"/>
+
+        <result column="file_name" jdbcType="VARCHAR" property="fileName"/>
+        <result column="file_size" jdbcType="BIGINT" property="fileSize"/>
+        <result column="file_ext" jdbcType="VARCHAR" property="fileExt"/>
+        <result column="file_type" jdbcType="SMALLINT" property="fileType"/>
+        <result column="file_parent_id" jdbcType="BIGINT" property="fileParentId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            resource_title,
+            resource_summary,
+            resource_type,
+            resource_shared,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            file_id
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_course_resource
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseResourceDto" useGeneratedKeys="true">
+        insert into u_course_resource (resource_title, resource_summary, resource_type,
+                                       resource_shared, `valid`, memo,
+                                       create_time, create_by, update_time,
+                                       update_by, file_id)
+        values (#{resourceTitle,jdbcType=VARCHAR}, #{resourceSummary,jdbcType=VARCHAR},
+                #{resourceType,jdbcType=SMALLINT},
+                #{resourceShared,jdbcType=BOOLEAN}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR}, #{fileId,jdbcType=BIGINT})
+    </insert>
+    <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.CourseResourceDto">
+        update u_course_resource
+        <set>
+            update_time = now(),
+            <if test="resourceTitle != null and resourceTitle != ''">
+                resource_title = #{resourceTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceSummary != null and resourceSummary != ''">
+                resource_summary = #{resourceSummary,jdbcType=VARCHAR},
+            </if>
+            <if test="resourceType != null">
+                resource_type = #{resourceType,jdbcType=SMALLINT},
+            </if>
+            <if test="resourceShared != null">
+                resource_shared = #{resourceShared,jdbcType=BOOLEAN},
+            </if>
+            <if test="memo != null and memo != ''">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="fileId != null">
+                file_id = #{fileId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--根据文件id查询课程文件资料对象-->
+    <select id="getByFileId" resultMap="CourseFileResourceDtoMap">
+        SELECT ucr.id,
+               ucr.resource_title,
+               ucr.resource_summary,
+               ucr.resource_type,
+               ucr.resource_shared,
+               ucr.valid,
+               ucr.memo,
+               ucr.create_time,
+               ucr.create_by,
+               ucr.update_time,
+               ucr.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 LEFT JOIN u_course_resource ucr on ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+          AND ucf.id = #{fileId}
+    </select>
+</mapper>
