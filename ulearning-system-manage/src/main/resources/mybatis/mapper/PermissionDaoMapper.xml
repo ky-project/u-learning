@@ -159,4 +159,11 @@
         from u_permission
         where valid = 1
     </select>
+    <!--查询权限数组vo-->
+    <select id="getArrayVoList" resultType="com.ky.ulearning.spi.system.vo.PermissionArrayVo">
+        SELECT id              AS `key`,
+               permission_name AS label
+        FROM u_permission
+        WHERE valid = 1
+    </select>
 </mapper>

@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
+import com.ky.ulearning.spi.system.vo.PermissionArrayVo;
 
 import java.util.List;
 import java.util.Map;
@@ -81,4 +82,11 @@ public interface PermissionService {
      * @return 返回 组名:组权限list
      */
     Map<String, List<PermissionEntity>> groupList();
+
+    /**
+     * 查询权限数组vo
+     *
+     * @return 权限vo集合
+     */
+    List<PermissionArrayVo> getArrayVoList();
 }
