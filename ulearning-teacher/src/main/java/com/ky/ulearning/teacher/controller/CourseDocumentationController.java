@@ -89,7 +89,7 @@ public class CourseDocumentationController extends BaseController {
         //保存文件
         String fileUrl = fastDfsClientWrapper.uploadFile(file);
         //创建课程文件对象
-        CourseFileDto courseFileDto = CourseFileUtil.createCourseFileDto(courseFileEntity.getId(), fileUrl, file, courseDocumentationDto.getFileParentId(), username);
+        CourseFileDto courseFileDto = CourseFileUtil.createCourseFileDto(courseFileEntity.getCourseId(), fileUrl, file, courseDocumentationDto.getFileParentId(), username);
         courseDocumentationDto.setUpdateBy(username);
         courseDocumentationDto.setCreateBy(username);
         //保存文件信息
@@ -143,7 +143,7 @@ public class CourseDocumentationController extends BaseController {
 
     @Log("查询文件资料列表")
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
-    @ApiOperation(value = "查询文件资料列表", notes = "如果fileParentId为空，则默认查询教师根目录文件夹信息，只能查询/操作属于自己的教学任务的数据")
+    @ApiOperation(value = "查询文件资料列表", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/list")
     public ResponseEntity<JsonResult<List<CourseFileDocumentationDto>>> list(CourseFileDocumentationDto courseFileDocumentationDto) {
         ValidatorBuilder.build()
@@ -218,7 +218,7 @@ public class CourseDocumentationController extends BaseController {
         //参数校验
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(fileId, username);
         ValidateHandler.checkParameter(MicroConstant.FOLDER_TYPE != courseFileEntity.getFileType(), TeacherErrorCodeEnum.COURSE_FILE_TYPE_ILLEGAL);
-        //删除记录
+        //TODO 删除文件夹和所有子节点
         courseFileService.delete(fileId, username);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }

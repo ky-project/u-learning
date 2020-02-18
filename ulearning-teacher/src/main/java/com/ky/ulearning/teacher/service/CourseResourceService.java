@@ -4,6 +4,8 @@ import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
 import com.ky.ulearning.spi.teacher.dto.CourseResourceDto;
 
+import java.util.List;
+
 /**
  * @author luyuhao
  * @since 20/02/17 19:25
@@ -19,10 +21,42 @@ public interface CourseResourceService {
     void save(CourseResourceDto courseResourceDto, CourseFileDto courseFileDto);
 
     /**
-     * 根据文件id查询课程文件资料对象
+     * 根据文件id查询课程文件教学资源对象
      *
      * @param fileId 文件id
      * @return 课程文件资料对象
      */
     CourseFileResourceDto getByFileId(Long fileId);
+
+    /**
+     * 查询教学资源集合
+     *
+     * @param courseFileResourceDto 筛选对象
+     * @return 返回课程文件教学资源集合
+     */
+    List<CourseFileResourceDto> getList(CourseFileResourceDto courseFileResourceDto);
+
+    /**
+     * 根据id查询课程文件教学资源对象
+     *
+     * @param id id
+     * @return 课程文件教学资源对象
+     */
+    CourseFileResourceDto getById(Long id);
+
+    /**
+     * 更新课程文件教学资源
+     *
+     * @param courseFileResourceDto 课程文件教学资源对象
+     */
+    void update(CourseFileResourceDto courseFileResourceDto);
+
+    /**
+     * 根据id和fileId删除课程文件教学资源
+     *
+     * @param id       教学资源id
+     * @param fileId   课程文件id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, Long fileId, String updateBy);
 }

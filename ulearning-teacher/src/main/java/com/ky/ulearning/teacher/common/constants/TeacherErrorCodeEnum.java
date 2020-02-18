@@ -56,6 +56,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     EXAMINATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "测试任务不存在"),
     DOCUMENTATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "文件资料不存在"),
     COURSE_FILE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程文件不存在"),
+    RESOURCE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教学资源不存在"),
 
     NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),

@@ -3,6 +3,7 @@ package com.ky.ulearning.teacher.common.utils;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
+import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
@@ -52,6 +53,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private CourseDocumentationService courseDocumentationService;
+
+    @Autowired
+    private CourseResourceService courseResourceService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -190,5 +194,20 @@ public class TeachingTaskValidUtil {
         //校验课程文件id
         checkCourseFileId(courseFileDocumentationDto.getFileId(), username);
         return courseFileDocumentationDto;
+    }
+
+    /**
+     * 校验教师是否有操作教学资源的权限
+     *
+     * @param resourceId 教学资源id
+     * @param username   教师工号
+     */
+    public CourseFileResourceDto checkResourceId(Long resourceId, String username) {
+        CourseFileResourceDto courseFileResourceDto = courseResourceService.getById(resourceId);
+        //控制检验
+        ValidateHandler.checkNull(courseFileResourceDto, TeacherErrorCodeEnum.RESOURCE_NOT_EXISTS);
+        //校验课程文件id
+        checkCourseFileId(courseFileResourceDto.getFileId(), username);
+        return courseFileResourceDto;
     }
 }
