@@ -63,7 +63,7 @@
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
+            <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>

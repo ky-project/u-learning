@@ -68,7 +68,7 @@
                ucf.file_type,
                ucf.file_parent_id
         FROM u_course_file ucf
-                 LEFT JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+                 INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
         WHERE ucf.valid = 1
           AND ucd.id = #{id}
     </select>
@@ -105,7 +105,7 @@
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
+            <if test="updateBy != null and updateBy != ''">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
@@ -132,7 +132,7 @@
         ucf.file_type,
         ucf.file_parent_id
         FROM u_course_file ucf
-        LEFT JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+        INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
         WHERE ucf.valid = 1
         AND ucf.file_parent_id = #{fileParentId}
         <if test="documentationTitle != null and documentationTitle != ''">
@@ -177,7 +177,7 @@
                ucf.file_type,
                ucf.file_parent_id
         FROM u_course_file ucf
-                 LEFT JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+                 INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
         WHERE ucf.valid = 1
           AND ucf.id = #{fileId}
     </select>
@@ -190,4 +190,28 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--根据父节点id查询所有课程文件资料-->
+    <select id="getListByFileParentId" resultMap="CourseFileDocumentationDtoMap">
+        SELECT ucd.id,
+               ucd.documentation_title,
+               ucd.documentation_summary,
+               ucd.documentation_category,
+               ucd.documentation_shared,
+               ucd.valid,
+               ucd.memo,
+               ucd.create_time,
+               ucd.create_by,
+               ucd.update_time,
+               ucd.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+        WHERE ucf.valid = 1
+          AND ucf.file_parent_id = #{fileParentId}
+    </select>
 </mapper>

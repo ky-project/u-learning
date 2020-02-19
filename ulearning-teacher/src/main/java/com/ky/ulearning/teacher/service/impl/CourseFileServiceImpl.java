@@ -55,6 +55,7 @@ public class CourseFileServiceImpl extends BaseService implements CourseFileServ
             //如果教师根目录不存，初始化
             if (StringUtil.isEmpty(teacherCourseFileEntity)) {
                 CourseFileDto teacherCourseFileDto = createFolder(courseId, username, courseFileEntity.getId());
+                courseFileDao.insert(teacherCourseFileDto);
                 return teacherCourseFileDto.getId();
             } else {
                 return teacherCourseFileEntity.getId();

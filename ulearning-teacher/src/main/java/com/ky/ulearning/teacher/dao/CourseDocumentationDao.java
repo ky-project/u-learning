@@ -64,4 +64,12 @@ public interface CourseDocumentationDao {
      * @param valid    有效位的值
      */
     void updateValidById(@Param("id") Long id, @Param("updateBy") String updateBy, @Param("valid") Integer valid);
+
+    /**
+     * 根据父节点id查询所有课程文件资料
+     *
+     * @param fileParentId 父节点id
+     * @return 课程文件资料
+     */
+    List<CourseFileDocumentationDto> getListByFileParentId(Long fileParentId);
 }

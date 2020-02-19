@@ -61,4 +61,21 @@ public interface CourseDocumentationService {
      * @param updateBy 更新者
      */
     void delete(Long id, Long fileId, String updateBy);
+
+    /**
+     * 根据父节点id查询所有课程文件资料
+     *
+     * @param fileParentId 父节点id
+     * @return 课程文件资料
+     */
+    List<CourseFileDocumentationDto> getListByFileParentId(Long fileParentId);
+
+    /**
+     * 根据课程id和工号查询id
+     *
+     * @param courseId 课程id
+     * @param username 工号
+     * @return id
+     */
+    CourseFileDocumentationDto getByCourseIdAndUsername(Long courseId, String username);
 }

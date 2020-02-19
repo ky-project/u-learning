@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.common.utils;
 
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
 import org.apache.commons.io.FilenameUtils;
@@ -23,7 +24,7 @@ public class CourseFileUtil {
         CourseFileDto courseFileDto = new CourseFileDto();
         courseFileDto.setCourseId(courseId);
         courseFileDto.setFileUrl(fileUrl);
-        courseFileDto.setFileName(file.getOriginalFilename());
+        courseFileDto.setFileName(FileUtil.getFileNameNoEx(file.getOriginalFilename()));
         courseFileDto.setFileSize(file.getSize());
         courseFileDto.setFileExt(FilenameUtils.getExtension(file.getOriginalFilename()));
         courseFileDto.setFileType(MicroConstant.FILE_TYPE);
