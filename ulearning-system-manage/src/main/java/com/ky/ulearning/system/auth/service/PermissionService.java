@@ -2,9 +2,9 @@ package com.ky.ulearning.system.auth.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.vo.PermissionArrayVo;
 
 import java.util.List;
 import java.util.Map;
@@ -88,5 +88,5 @@ public interface PermissionService {
      *
      * @return 权限vo集合
      */
-    List<PermissionArrayVo> getArrayVoList();
+    List<KeyLabelVo> getArrayVoList();
 }

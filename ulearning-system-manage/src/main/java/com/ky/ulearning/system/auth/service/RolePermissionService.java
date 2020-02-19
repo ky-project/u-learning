@@ -1,9 +1,9 @@
 package com.ky.ulearning.system.auth.service;
 
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 角色权限service - 接口类
@@ -27,7 +27,7 @@ public interface RolePermissionService {
      * @param roleId 角色id
      * @return 组名:权限list
      */
-    Map<String, List<PermissionEntity>> getAssignedPermission(Long roleId);
+    List<KeyLabelVo> getAssignedPermission(Long roleId);
 
     /**
      * 为角色分配权限

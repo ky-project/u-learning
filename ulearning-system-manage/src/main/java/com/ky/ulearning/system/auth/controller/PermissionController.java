@@ -12,9 +12,9 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.vo.PermissionArrayVo;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -135,8 +135,8 @@ public class PermissionController extends BaseController {
     @ApiOperation(value = "查询所有权限数组")
     @PermissionName(source = "permission:arrayList", name = "查询所有权限数组", group = "权限管理")
     @GetMapping(value = "/arrayList")
-    public ResponseEntity<JsonResult<List<PermissionArrayVo>>> arrayList() {
-        List<PermissionArrayVo> permissionArrayVoList = permissionService.getArrayVoList();
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> arrayList() {
+        List<KeyLabelVo> permissionArrayVoList = permissionService.getArrayVoList();
 
         return ResponseEntityUtil.ok(JsonResult.buildData(permissionArrayVoList));
     }

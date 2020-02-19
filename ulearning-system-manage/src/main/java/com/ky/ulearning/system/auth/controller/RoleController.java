@@ -12,6 +12,7 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.RoleDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author luyuhao
@@ -117,10 +117,10 @@ public class RoleController extends BaseController {
     @ApiOperation(value = "查询角色已分配权限", notes = "根据角色id分组查询所拥有的所有权限")
     @PermissionName(source = "role:getAssignedPermission", name = "查询角色已分配权限", group = "角色管理")
     @GetMapping("/getAssignedPermission")
-    public ResponseEntity<JsonResult<Map<String, List<PermissionEntity>>>> getAssignedPermission(Long roleId) {
-        Map<String, List<PermissionEntity>> permissionGroupList = rolePermissionService.getAssignedPermission(roleId);
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAssignedPermission(Long roleId) {
+        List<KeyLabelVo> KeyLabelVoList = rolePermissionService.getAssignedPermission(roleId);
 
-        return ResponseEntityUtil.ok(JsonResult.buildData(permissionGroupList));
+        return ResponseEntityUtil.ok(JsonResult.buildData(KeyLabelVoList));
     }
 
     @Log("角色分配权限")

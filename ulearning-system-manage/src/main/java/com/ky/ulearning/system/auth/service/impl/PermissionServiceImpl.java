@@ -5,9 +5,9 @@ import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.vo.PermissionArrayVo;
 import com.ky.ulearning.system.auth.dao.PermissionDao;
 import com.ky.ulearning.system.auth.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,7 +138,7 @@ public class PermissionServiceImpl extends BaseService implements PermissionServ
 
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
-    public List<PermissionArrayVo> getArrayVoList() {
+    public List<KeyLabelVo> getArrayVoList() {
         return permissionDao.getArrayVoList();
     }
 }

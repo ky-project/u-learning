@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.dao;
 
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RolePermissionEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -61,7 +62,7 @@ public interface RolePermissionDao {
      * @param roleId 角色id
      * @return 返回角色权限对象集合
      */
-    List<PermissionEntity> getAssignedPermissionByRoleId(@Param("roleId") Long roleId);
+    List<KeyLabelVo> getAssignedPermissionByRoleId(@Param("roleId") Long roleId);
 
     /**
      * 根据角色id删除关联记录

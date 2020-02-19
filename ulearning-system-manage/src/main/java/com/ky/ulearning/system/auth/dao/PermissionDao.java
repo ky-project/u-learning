@@ -1,9 +1,9 @@
 package com.ky.ulearning.system.auth.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.PermissionDto;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
-import com.ky.ulearning.spi.system.vo.PermissionArrayVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -109,5 +109,5 @@ public interface PermissionDao {
      *
      * @return 权限vo集合
      */
-    List<PermissionArrayVo> getArrayVoList();
+    List<KeyLabelVo> getArrayVoList();
 }

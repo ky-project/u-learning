@@ -160,7 +160,7 @@
         where valid = 1
     </select>
     <!--查询权限数组vo-->
-    <select id="getArrayVoList" resultType="com.ky.ulearning.spi.system.vo.PermissionArrayVo">
+    <select id="getArrayVoList" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
         SELECT id              AS `key`,
                permission_name AS label
         FROM u_permission

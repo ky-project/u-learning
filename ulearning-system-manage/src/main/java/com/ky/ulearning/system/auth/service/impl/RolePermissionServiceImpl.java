@@ -2,7 +2,7 @@ package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.spi.system.dto.RolePermissionDto;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RolePermissionEntity;
 import com.ky.ulearning.system.auth.dao.PermissionDao;
@@ -11,12 +11,13 @@ import com.ky.ulearning.system.auth.service.RolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,22 +43,8 @@ public class RolePermissionServiceImpl extends BaseService implements RolePermis
     }
 
     @Override
-    public Map<String, List<PermissionEntity>> getAssignedPermission(Long roleId) {
-        List<PermissionEntity> permissionList = rolePermissionDao.getAssignedPermissionByRoleId(roleId);
-        //空值判断
-        if (null == permissionList) {
-            return Collections.emptyMap();
-        }
-        Map<String, List<PermissionEntity>> groupList = new HashMap<>();
-        //遍历权限集合
-        for (PermissionEntity permission : permissionList) {
-            //判断是否需要new集合
-            if (!groupList.containsKey(permission.getPermissionGroup())) {
-                groupList.put(permission.getPermissionGroup(), new ArrayList<>());
-            }
-            groupList.get(permission.getPermissionGroup()).add(permission);
-        }
-        return groupList;
+    public List<KeyLabelVo> getAssignedPermission(Long roleId) {
+        return rolePermissionDao.getAssignedPermissionByRoleId(roleId);
     }
 
     @Override
