@@ -137,4 +137,10 @@
         FROM u_role
         WHERE valid = 1
     </select>
+    <select id="getArrayVoList" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT id        AS `key`,
+               role_name AS label
+        FROM u_role
+        WHERE valid = 1
+    </select>
 </mapper>

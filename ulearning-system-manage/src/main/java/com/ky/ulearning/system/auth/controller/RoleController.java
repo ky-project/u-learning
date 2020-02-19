@@ -133,4 +133,13 @@ public class RoleController extends BaseController {
         rolePermissionService.saveAssignedPermission(roleId, permissionIds, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("权限分配成功"));
     }
+
+    @Log("查询所有角色数组")
+    @ApiOperation(value = "查询所有角色数组")
+    @PermissionName(source = "role:arrayList", name = "查询所有角色数组", group = "角色管理")
+    @GetMapping(value = "/arrayList")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> arrayList() {
+        List<KeyLabelVo> roleArrayVoList = roleService.getArrayVoList();
+        return ResponseEntityUtil.ok(JsonResult.buildData(roleArrayVoList));
+    }
 }

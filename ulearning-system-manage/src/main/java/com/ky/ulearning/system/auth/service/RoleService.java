@@ -2,8 +2,11 @@ package com.ky.ulearning.system.auth.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.RoleDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
+
+import java.util.List;
 
 /**
  * 角色service 接口类
@@ -43,4 +46,11 @@ public interface RoleService {
      * @param roleDto 待更新的角色对象
      */
     void update(RoleDto roleDto);
+
+    /**
+     * 查询所有角色数组
+     *
+     * @return 角色key-label数组
+     */
+    List<KeyLabelVo> getArrayVoList();
 }

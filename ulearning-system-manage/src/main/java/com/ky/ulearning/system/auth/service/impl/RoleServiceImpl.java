@@ -5,6 +5,7 @@ import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.RoleDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.system.auth.dao.RoleDao;
@@ -50,11 +51,11 @@ public class RoleServiceImpl extends BaseService implements RoleService {
     @Transactional(rollbackFor = Throwable.class)
     public void insert(RoleDto roleDto) {
         RoleEntity roleNameExists = roleDao.getByRoleName(roleDto.getRoleName());
-        if(roleNameExists != null){
+        if (roleNameExists != null) {
             throw new EntityExistException("角色名");
         }
         RoleEntity roleSourceExists = roleDao.getByRoleSource(roleDto.getRoleSource());
-        if(roleSourceExists != null){
+        if (roleSourceExists != null) {
             throw new EntityExistException("角色资源名");
         }
         roleDao.insert(roleDto);
@@ -71,13 +72,13 @@ public class RoleServiceImpl extends BaseService implements RoleService {
     @Transactional(rollbackFor = Throwable.class)
     @CacheEvict(allEntries = true)
     public void update(RoleDto roleDto) {
-        if(!StringUtil.isEmpty(roleDto.getRoleName())) {
+        if (!StringUtil.isEmpty(roleDto.getRoleName())) {
             RoleEntity roleNameExists = roleDao.getByRoleName(roleDto.getRoleName());
             if (roleNameExists != null && !roleDto.getId().equals(roleNameExists.getId())) {
                 throw new EntityExistException("角色名");
             }
         }
-        if(!StringUtil.isEmpty(roleDto.getRoleSource())) {
+        if (!StringUtil.isEmpty(roleDto.getRoleSource())) {
             RoleEntity roleSourceExists = roleDao.getByRoleSource(roleDto.getRoleSource());
             if (roleSourceExists != null && !roleDto.getId().equals(roleSourceExists.getId())) {
                 throw new EntityExistException("角色资源名");
@@ -85,5 +86,11 @@ public class RoleServiceImpl extends BaseService implements RoleService {
         }
 
         roleDao.updateById(roleDto);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<KeyLabelVo> getArrayVoList() {
+        return roleDao.getArrayVoList();
     }
 }

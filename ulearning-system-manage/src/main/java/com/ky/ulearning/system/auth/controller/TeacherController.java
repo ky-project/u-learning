@@ -39,8 +39,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -159,10 +161,13 @@ public class TeacherController extends BaseController {
     @ApiOperation("查询教师角色")
     @PermissionName(source = "teacher:getAssignedRole", name = "查询教师角色", group = "教师管理")
     @GetMapping("/getAssignedRole")
-    public ResponseEntity<JsonResult<List<RoleEntity>>> getAssignedRole(Long id) {
+    public ResponseEntity<JsonResult<List<Long>>> getAssignedRole(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), SystemErrorCodeEnum.PARAMETER_EMPTY);
         List<RoleEntity> roleList = teacherRoleService.getRoleByTeaId(id);
-        return ResponseEntityUtil.ok(JsonResult.buildData(roleList));
+        List<Long> roleIdList = Optional.ofNullable(roleList)
+                .map(roleEntities -> roleEntities.stream().map(RoleEntity::getId).collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
+        return ResponseEntityUtil.ok(JsonResult.buildData(roleIdList));
     }
 
     @Log("更新教师信息")

@@ -1,6 +1,7 @@
 package com.ky.ulearning.system.auth.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.RoleDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -88,4 +89,11 @@ public interface RoleDao {
      * @return 角色对象集合
      */
     List<RoleEntity> list();
+
+    /**
+     * 查询所有角色数组
+     *
+     * @return 角色key-label数组
+     */
+    List<KeyLabelVo> getArrayVoList();
 }
