@@ -25,7 +25,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -86,6 +85,8 @@ public class CourseDocumentationController extends BaseController {
         teachingTaskValidUtil.checkTeachingTask(username, courseDocumentationDto.getTeachingTaskId());
         //校验所属文件夹id
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseDocumentationDto.getFileParentId(), username);
+        //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
+        teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseDocumentationDto.getTeachingTaskId(), courseFileEntity.getCourseId());
         //保存文件
         String fileUrl = fastDfsClientWrapper.uploadFile(file);
         //创建课程文件对象
@@ -114,12 +115,14 @@ public class CourseDocumentationController extends BaseController {
         teachingTaskValidUtil.checkTeachingTask(username, courseFileDto.getTeachingTaskId());
         //校验所属文件夹id
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseFileDto.getFileParentId(), username);
+        //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
+        teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseFileDto.getTeachingTaskId(), courseFileEntity.getCourseId());
         courseFileDto.setCourseId(courseFileEntity.getCourseId());
         courseFileDto.setFileType(MicroConstant.FOLDER_TYPE);
         courseFileDto.setUpdateBy(username);
         courseFileDto.setCreateBy(username);
         //保存文件信息
-        courseFileService.save(courseFileDto);
+        courseDocumentationService.save(CourseFileUtil.createCourseDocumentationDtoFolder(username), courseFileDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
@@ -233,7 +236,7 @@ public class CourseDocumentationController extends BaseController {
         CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
         //查询文件
         CourseFileEntity courseFileEntity = courseFileService.getById(courseFileDocumentationDto.getFileId());
-        ValidateHandler.checkParameter(! fastDfsClientWrapper.hasFile(courseFileEntity.getFileUrl()), TeacherErrorCodeEnum.COURSE_FILE_ILLEGAL);
+        ValidateHandler.checkParameter(!fastDfsClientWrapper.hasFile(courseFileEntity.getFileUrl()), TeacherErrorCodeEnum.COURSE_FILE_ILLEGAL);
         byte[] courseFileBytes = fastDfsClientWrapper.download(courseFileEntity.getFileUrl());
         //设置head
         HttpHeaders headers = new HttpHeaders();

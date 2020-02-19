@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.common.constants;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
+import org.bouncycastle.jcajce.provider.symmetric.TEA;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -64,7 +65,9 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_ILLEGAL(HttpStatus.BAD_REQUEST, "该课程不可操作"),
     COURSE_FILE_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件id无效"),
     COURSE_FILE_TYPE_ILLEGAL(HttpStatus.BAD_REQUEST, "操作的课程文件类型错误"),
-    COURSE_FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件已过期")
+    COURSE_FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件已过期"),
+
+    TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误")
     ;
 
     private Integer code;

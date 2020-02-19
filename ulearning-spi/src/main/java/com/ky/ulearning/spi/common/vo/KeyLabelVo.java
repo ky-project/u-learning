@@ -1,19 +1,18 @@
-package com.ky.ulearning.spi.system.vo;
+package com.ky.ulearning.spi.common.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * {@link com.ky.ulearning.spi.system.entity.PermissionEntity}
- * 权限数组vo
+ * key-label数组vo
  *
  * @author luyuhao
- * @since 20/02/17 14:00
+ * @since 20/02/19 20:22
  */
 @Data
-@ApiModel("权限数组vo")
-public class PermissionArrayVo {
+@ApiModel("key-label数组vo")
+public class KeyLabelVo {
 
     /**
      * id
@@ -22,8 +21,8 @@ public class PermissionArrayVo {
     private String key;
 
     /**
-     * 权限名
+     * 数据名
      */
-    @ApiModelProperty("权限名")
+    @ApiModelProperty("数据名")
     private String label;
 }

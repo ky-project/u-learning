@@ -210,4 +210,16 @@ public class TeachingTaskValidUtil {
         checkCourseFileId(courseFileResourceDto.getFileId(), username);
         return courseFileResourceDto;
     }
+
+    /**
+     * 校验teachingTaskId对应的courseId是否与courseId一致
+     *
+     * @param teachingTaskId 教学任务id
+     * @param courseId       课程id
+     */
+    public void checkTeachingTaskIdAndCourseId(Long teachingTaskId, Long courseId) {
+        Long courseIdCheck = teachingTaskService.getCourseIdById(teachingTaskId);
+        ValidateHandler.checkNull(courseIdCheck, TeacherErrorCodeEnum.COURSE_ID_NOT_EXISTS);
+        ValidateHandler.checkParameter(!courseIdCheck.equals(courseId), TeacherErrorCodeEnum.TEACHING_TASK_ID_ERROR);
+    }
 }
