@@ -50,7 +50,7 @@
             file_id
     </sql>
     <!--根据id查询教学资源-->
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getById" parameterType="java.lang.Long" resultMap="CourseFileResourceDtoMap">
         SELECT ucr.id,
                ucr.resource_title,
                ucr.resource_summary,
@@ -69,7 +69,7 @@
                ucf.file_type,
                ucf.file_parent_id
         FROM u_course_file ucf
-                 LEFT JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+                 INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
         WHERE ucf.valid = 1
           AND ucr.id = #{id}
     </select>
@@ -130,7 +130,7 @@
                ucf.file_type,
                ucf.file_parent_id
         FROM u_course_file ucf
-                 LEFT JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+                 INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
         WHERE ucf.valid = 1
           AND ucf.id = #{fileId}
     </select>
@@ -155,7 +155,7 @@
         ucf.file_type,
         ucf.file_parent_id
         FROM u_course_file ucf
-        LEFT JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
         WHERE ucf.valid = 1
         AND ucf.file_parent_id = #{fileParentId}
         <if test="resourceTitle != null and resourceTitle != ''">
@@ -188,4 +188,28 @@
             valid       = #{valid}
         WHERE id = #{id}
     </update>
+    <!--根据父节点id查询所有课程文件教学资源-->
+    <select id="getListByFileParentId" resultMap="CourseFileResourceDtoMap">
+        SELECT ucr.id,
+               ucr.resource_title,
+               ucr.resource_summary,
+               ucr.resource_type,
+               ucr.resource_shared,
+               ucr.valid,
+               ucr.memo,
+               ucr.create_time,
+               ucr.create_by,
+               ucr.update_time,
+               ucr.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+          AND ucf.file_parent_id = #{fileParentId}
+    </select>
 </mapper>

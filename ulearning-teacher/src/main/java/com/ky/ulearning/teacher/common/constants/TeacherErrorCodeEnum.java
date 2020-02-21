@@ -46,6 +46,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     RESOURCE_TYPE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资料类型不能为空"),
     RESOURCE_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资料是否共享不能为空"),
     RESOURCE_PATH_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资源所属文件夹id不能为空"),
+    RESOURCE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料id不能为空"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
@@ -70,8 +71,10 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
 
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     DOCUMENTATION_GET_BY_ID_ERROR(HttpStatus.BAD_REQUEST, "只能查询文件资料"),
-    COURSE_FILE_ROOT_ERROR(HttpStatus.BAD_REQUEST, "课程文件根目录无法操作"),
-    DOUMNENTATION_CNANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "文件资料无法作为文件夹")
+    RESOURCE_GET_BY_ID_ERROR(HttpStatus.BAD_REQUEST, "只能查询教学资源"),
+    COURSE_FILE_ROOT_ERROR(HttpStatus.BAD_REQUEST, "课程/教师根目录无法操作"),
+    DOCUMENTATION_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "文件资料无法作为文件夹"),
+    RESOURCE_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "教学资源无法作为文件夹"),
     ;
 
     private Integer code;

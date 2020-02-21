@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
+import com.ky.ulearning.spi.teacher.dto.CourseResourceDto;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,5 +47,19 @@ public class CourseFileUtil {
         courseDocumentationDto.setUpdateBy(username);
         courseDocumentationDto.setCreateBy(username);
         return courseDocumentationDto;
+    }
+
+    /**
+     * 创建教学资源文件夹对象
+     */
+    public static CourseResourceDto createCourseResourceDtoFolder(String username) {
+        CourseResourceDto courseResourceDto = new CourseResourceDto();
+        courseResourceDto.setResourceTitle(FOLDER_NAME);
+        courseResourceDto.setResourceSummary(FOLDER_NAME);
+        courseResourceDto.setResourceType((short) 0);
+        courseResourceDto.setResourceShared(false);
+        courseResourceDto.setUpdateBy(username);
+        courseResourceDto.setCreateBy(username);
+        return courseResourceDto;
     }
 }

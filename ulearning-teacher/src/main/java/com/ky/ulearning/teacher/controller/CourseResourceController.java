@@ -7,7 +7,6 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
-import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
@@ -29,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,7 +88,8 @@ public class CourseResourceController extends BaseController {
         teachingTaskValidUtil.checkTeachingTask(username, courseResourceDto.getTeachingTaskId());
         //校验所属文件夹id
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseResourceDto.getFileParentId(), username);
-        //TODO 校验teachingId对应的courseId是否与courseFile对应的courseId一致
+        //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
+        teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseResourceDto.getTeachingTaskId(), courseFileEntity.getCourseId());
         //保存文件
         String fileUrl = fastDfsClientWrapper.uploadFile(file);
         //创建课程文件对象
@@ -116,12 +118,15 @@ public class CourseResourceController extends BaseController {
         teachingTaskValidUtil.checkTeachingTask(username, courseFileDto.getTeachingTaskId());
         //校验所属文件夹id
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseFileDto.getFileParentId(), username);
+        ValidateHandler.checkParameter(courseFileEntity.getFileType().equals(MicroConstant.FILE_TYPE), TeacherErrorCodeEnum.RESOURCE_CANNOT_BE_FOLDER);
+        //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
+        teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseFileDto.getTeachingTaskId(), courseFileEntity.getCourseId());
         courseFileDto.setCourseId(courseFileEntity.getCourseId());
         courseFileDto.setFileType(MicroConstant.FOLDER_TYPE);
         courseFileDto.setUpdateBy(username);
         courseFileDto.setCreateBy(username);
         //保存文件信息
-        courseFileService.save(courseFileDto);
+        courseResourceService.save(CourseFileUtil.createCourseResourceDtoFolder(username), courseFileDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
@@ -138,8 +143,7 @@ public class CourseResourceController extends BaseController {
         //获取教学任务对应的课程id
         Long courseId = teachingTaskService.getCourseIdById(teachingTaskId);
         //根据courseId和username查询所属用户的根路径id
-        Long fileId = courseFileService.getByCourseIdAndUsername(courseId, username);
-        CourseFileResourceDto courseFileResourceDto = courseResourceService.getByFileId(fileId);
+        CourseFileResourceDto courseFileResourceDto = courseResourceService.getByCourseIdAndUsername(courseId, username);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileResourceDto));
     }
 
@@ -170,26 +174,22 @@ public class CourseResourceController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //参数校验
         CourseFileResourceDto courseFileResourceDto = teachingTaskValidUtil.checkResourceId(id, username);
+        //无法查询文件夹
+        ValidateHandler.checkParameter((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileResourceDto.getFileType()), TeacherErrorCodeEnum.RESOURCE_GET_BY_ID_ERROR);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileResourceDto));
     }
 
     @Log("更新教学资源")
-    @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "fileSize", "fileExt", "fileType", "fileParentId"})
+    @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "fileSize", "fileExt", "fileType", "fileParentId", "fileId"})
     @ApiOperation(value = "更新教学资源", notes = "只能查询/操作属于自己的教学任务的数据")
     @PostMapping("/update")
     public ResponseEntity<JsonResult> update(CourseFileResourceDto courseFileResourceDto) {
         ValidatorBuilder.build()
-                .ofNull(courseFileResourceDto.getFileId(), TeacherErrorCodeEnum.COURSE_FILE_ID_CANNOT_BE_NULL)
+                .ofNull(courseFileResourceDto.getId(), TeacherErrorCodeEnum.RESOURCE_ID_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
-        teachingTaskValidUtil.checkCourseFileId(courseFileResourceDto.getFileId(), username);
-        //校验文件资料id
-        if (StringUtil.isNotEmpty(courseFileResourceDto.getId())) {
-            teachingTaskValidUtil.checkResourceId(courseFileResourceDto.getId(), username);
-            CourseFileResourceDto courseFileResourceDtoCheck = courseResourceService.getById(courseFileResourceDto.getId());
-            //校验id与fileId是否对应
-            ValidateHandler.checkParameter(!courseFileResourceDtoCheck.getFileId().equals(courseFileResourceDto.getFileId()), TeacherErrorCodeEnum.COURSE_FILE_ID_ILLEGAL);
-        }
+        CourseFileResourceDto courseFileResourceDtoValid = teachingTaskValidUtil.checkResourceId(courseFileResourceDto.getId(), username);
+        courseFileResourceDto.setFileId(courseFileResourceDtoValid.getFileId());
         courseFileResourceDto.setUpdateBy(username);
         courseResourceService.update(courseFileResourceDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
@@ -197,35 +197,64 @@ public class CourseResourceController extends BaseController {
 
     @Log("删除教学资源")
     @ApiOperation(value = "删除教学资源", notes = "只能查询/操作属于自己的教学任务的数据")
-    @GetMapping("/deleteFile")
+    @GetMapping("/delete")
     public ResponseEntity<JsonResult> deleteFile(Long id) {
         ValidateHandler.checkNull(id, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //参数校验
         CourseFileResourceDto courseFileResourceDto = teachingTaskValidUtil.checkResourceId(id, username);
-        //删除文件
-        CourseFileEntity courseFileEntity = courseFileService.getById(courseFileResourceDto.getFileId());
-        fastDfsClientWrapper.deleteFile(courseFileEntity.getFileUrl());
-        //删除数据库表记录
-        courseResourceService.delete(courseFileResourceDto.getId(), courseFileResourceDto.getFileId(), username);
+        //删除文件/文件夹
+        if ((new Integer(MicroConstant.FILE_TYPE)).equals(courseFileResourceDto.getFileType())) {
+            CourseFileEntity courseFileEntity = courseFileService.getById(courseFileResourceDto.getFileId());
+            //删除文件
+            fastDfsClientWrapper.deleteFile(courseFileEntity.getFileUrl());
+            //删除数据库表记录
+            courseResourceService.delete(courseFileResourceDto.getId(), courseFileResourceDto.getFileId(), username);
+        } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileResourceDto.getFileType())) {
+            //课程根目录和教师根目录无法删除
+            ValidateHandler.checkParameter(courseFileResourceDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            ValidateHandler.checkParameter(courseFileService.getById(courseFileResourceDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            //初始化文件总集合
+            List<CourseFileResourceDto> courseFileResourceDtoList = new ArrayList<>();
+            courseFileResourceDtoList.add(courseFileResourceDto);
+            //删除文件夹
+            List<Long> fileParentIdList = new ArrayList<>();
+            fileParentIdList.add(courseFileResourceDto.getFileId());
+            //层级遍历文件夹
+            while (!CollectionUtils.isEmpty(fileParentIdList)) {
+                //查询索引为0的fileParentId对应的所有课程文件资料
+                List<CourseFileResourceDto> tempList = courseResourceService.getListByFileParentId(fileParentIdList.get(0));
+                //移除已查询完成的索引
+                fileParentIdList.remove(0);
+                //若本级无文件，直接结束操作
+                if (CollectionUtils.isEmpty(tempList)) {
+                    continue;
+                }
+                //加入到总集合中
+                courseFileResourceDtoList.addAll(tempList);
+                //遍历改层所有文件
+                for (CourseFileResourceDto fileResourceDto : tempList) {
+                    if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(fileResourceDto.getFileType())) {
+                        fileParentIdList.add(fileResourceDto.getFileId());
+                    }
+                }
+            }
+            //遍历删除课程文件资料/文件夹
+            for (CourseFileResourceDto fileResourceDto : courseFileResourceDtoList) {
+                //如果是文件，先删除文件
+                if ((new Integer(MicroConstant.FILE_TYPE)).equals(fileResourceDto.getFileType())) {
+                    //删除文件
+                    CourseFileEntity courseFileEntity = courseFileService.getById(fileResourceDto.getFileId());
+                    fastDfsClientWrapper.deleteFile(courseFileEntity.getFileUrl());
+                }
+                //删除记录
+                courseResourceService.delete(fileResourceDto.getId(), fileResourceDto.getFileId(), username);
+            }
+        }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
 
-    @Log("删除文件夹")
-    @ApiOperation(value = "删除文件夹", notes = "只能查询/操作属于自己的教学任务的数据")
-    @GetMapping("/deleteFolder")
-    public ResponseEntity<JsonResult> deleteFolder(Long fileId) {
-        ValidateHandler.checkNull(fileId, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
-        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
-        //参数校验
-        CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(fileId, username);
-        ValidateHandler.checkParameter(MicroConstant.FOLDER_TYPE != courseFileEntity.getFileType(), TeacherErrorCodeEnum.COURSE_FILE_TYPE_ILLEGAL);
-        //TODO 删除文件夹和所有子节点
-        courseFileService.delete(fileId, username);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
-    }
-
-    @Log("下载文件资料")
+    @Log("下载教学资源")
     @ApiOperation(value = "下载文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/download")
     public ResponseEntity download(Long id) {
@@ -233,6 +262,8 @@ public class CourseResourceController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //参数校验
         CourseFileResourceDto courseFileResourceDto = teachingTaskValidUtil.checkResourceId(id, username);
+        //无法下载文件夹
+        ValidateHandler.checkParameter((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileResourceDto.getFileType()), TeacherErrorCodeEnum.DOCUMENTATION_GET_BY_ID_ERROR);
         //查询文件
         CourseFileEntity courseFileEntity = courseFileService.getById(courseFileResourceDto.getFileId());
         ValidateHandler.checkParameter(!fastDfsClientWrapper.hasFile(courseFileEntity.getFileUrl()), TeacherErrorCodeEnum.COURSE_FILE_ILLEGAL);
@@ -240,7 +271,7 @@ public class CourseResourceController extends BaseController {
         //设置head
         HttpHeaders headers = new HttpHeaders();
         //文件的属性名
-        headers.setContentDispositionFormData("attachment", new String(courseFileEntity.getFileName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        headers.setContentDispositionFormData("attachment", new String((courseFileEntity.getFileName() + "." + courseFileEntity.getFileExt()).getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
         //响应内容是字节流
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, courseFileBytes);

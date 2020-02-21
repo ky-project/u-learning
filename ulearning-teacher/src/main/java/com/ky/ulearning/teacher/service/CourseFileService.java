@@ -20,15 +20,6 @@ public interface CourseFileService {
     CourseFileEntity getById(Long id);
 
     /**
-     * 根据课程id和工号查询id
-     *
-     * @param courseId 课程id
-     * @param username 工号
-     * @return id
-     */
-    Long getByCourseIdAndUsername(Long courseId, String username);
-
-    /**
      * 添加课程文件
      *
      * @param courseFileDto 课程文件对象

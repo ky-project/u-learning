@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
+import com.ky.ulearning.spi.teacher.dto.CourseResourceDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.teacher.common.utils.CourseFileUtil;
 import com.ky.ulearning.teacher.dao.CourseDocumentationDao;
@@ -128,7 +129,16 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
                 courseDocumentationDao.insert(courseDocumentationDtoFolder);
                 return courseDocumentationDao.getById(courseDocumentationDtoFolder.getId());
             } else {
-                return courseDocumentationDao.getByFileId(teacherCourseFileEntity.getId());
+                CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationDao.getByFileId(teacherCourseFileEntity.getId());
+                //当用户根目录已创建，但文件资料未索引，创建索引
+                if(StringUtil.isEmpty(courseFileDocumentationDto)){
+                    CourseDocumentationDto courseDocumentationDtoFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
+                    courseDocumentationDtoFolder.setFileId(teacherCourseFileEntity.getId());
+                    //插入文件资料对象
+                    courseDocumentationDao.insert(courseDocumentationDtoFolder);
+                    return courseDocumentationDao.getById(courseDocumentationDtoFolder.getId());
+                }
+                return courseFileDocumentationDto;
             }
         }
     }

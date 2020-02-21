@@ -59,4 +59,21 @@ public interface CourseResourceService {
      * @param updateBy 更新者
      */
     void delete(Long id, Long fileId, String updateBy);
+
+    /**
+     * 根据课程id和工号查询id
+     *
+     * @param courseId 课程id
+     * @param username 工号
+     * @return id
+     */
+    CourseFileResourceDto getByCourseIdAndUsername(Long courseId, String username);
+
+    /**
+     * 根据父节点id查询所有课程文件教学资源
+     *
+     * @param fileParentId 父节点id
+     * @return 课程文件教学资源
+     */
+    List<CourseFileResourceDto> getListByFileParentId(Long fileParentId);
 }

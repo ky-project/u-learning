@@ -117,7 +117,7 @@ public class CourseDocumentationController extends BaseController {
         teachingTaskValidUtil.checkTeachingTask(username, courseFileDto.getTeachingTaskId());
         //校验所属文件夹id
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseFileDto.getFileParentId(), username);
-        ValidateHandler.checkParameter(courseFileEntity.getFileType().equals(MicroConstant.FILE_TYPE), TeacherErrorCodeEnum.DOUMNENTATION_CNANNOT_BE_FOLDER);
+        ValidateHandler.checkParameter(courseFileEntity.getFileType().equals(MicroConstant.FILE_TYPE), TeacherErrorCodeEnum.DOCUMENTATION_CANNOT_BE_FOLDER);
         //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
         teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseFileDto.getTeachingTaskId(), courseFileEntity.getCourseId());
         courseFileDto.setCourseId(courseFileEntity.getCourseId());
@@ -210,7 +210,9 @@ public class CourseDocumentationController extends BaseController {
             //删除数据库表记录
             courseDocumentationService.delete(courseFileDocumentationDto.getId(), courseFileDocumentationDto.getFileId(), username);
         } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
+            //课程根目录和教师根目录无法删除
             ValidateHandler.checkParameter(courseFileDocumentationDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            ValidateHandler.checkParameter(courseFileService.getById(courseFileDocumentationDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
             //初始化文件总集合
             List<CourseFileDocumentationDto> courseFileDocumentationDtoList = new ArrayList<>();
             courseFileDocumentationDtoList.add(courseFileDocumentationDto);
@@ -221,6 +223,8 @@ public class CourseDocumentationController extends BaseController {
             while (!CollectionUtils.isEmpty(fileParentIdList)) {
                 //查询索引为0的fileParentId对应的所有课程文件资料
                 List<CourseFileDocumentationDto> tempList = courseDocumentationService.getListByFileParentId(fileParentIdList.get(0));
+                //移除已查询完成的索引
+                fileParentIdList.remove(0);
                 //若本级无文件，直接结束操作
                 if (CollectionUtils.isEmpty(tempList)) {
                     continue;
@@ -233,8 +237,6 @@ public class CourseDocumentationController extends BaseController {
                         fileParentIdList.add(fileDocumentationDto.getFileId());
                     }
                 }
-                //移除已查询完成的索引
-                fileParentIdList.remove(0);
             }
             //遍历删除课程文件资料/文件夹
             for (CourseFileDocumentationDto fileDocumentationDto : courseFileDocumentationDtoList) {
