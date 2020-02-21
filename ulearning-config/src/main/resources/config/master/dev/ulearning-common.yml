@@ -77,3 +77,7 @@ ulearning:
     retention-days: 15
     # 最大清理天数
     max-delete-days: 100
+  # 系统相关变量
+  system:
+    # 是否是开发模式，发布模式需要关闭
+    dev-mode: true

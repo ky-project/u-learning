@@ -5,6 +5,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 /**
  * 服务接受网关传递的登录用户信息拦截器
@@ -18,7 +19,10 @@ public class AccessInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //设置访问用户名
         String username = request.getHeader(MicroConstant.USERNAME);
+        String userId = request.getHeader(MicroConstant.USER_ID);
+
         request.setAttribute(MicroConstant.USERNAME, username);
+        request.setAttribute(MicroConstant.USER_ID, userId);
         return true;
     }
 }

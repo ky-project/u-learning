@@ -29,6 +29,11 @@ public class MicroConstant {
     public static final String USERNAME = "username";
 
     /**
+     * 用户id
+     */
+    public static final String USER_ID = "userId";
+
+    /**
      * 日志类型
      */
     public static final String[] LOG_TYPE = {"INFO", "ERROR"};

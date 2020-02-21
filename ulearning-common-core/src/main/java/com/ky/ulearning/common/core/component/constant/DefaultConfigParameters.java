@@ -45,4 +45,7 @@ public class DefaultConfigParameters {
 
     @Value("${ulearning.log.max-delete-days}")
     private int logMaxDeleteDays;
+
+    @Value("${ulearning.system.dev-mode}")
+    private boolean devMode;
 }

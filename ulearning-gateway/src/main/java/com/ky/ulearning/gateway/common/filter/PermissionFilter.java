@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.filter;
 
+import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
@@ -72,7 +73,7 @@ public class PermissionFilter extends OncePerRequestFilter {
                 adminPermissionCheck(uri);
             } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getTeacherPatterns())) {
                 //访问教师端服务
-                teacherPermissionCheck(uri);
+                teacherPermissionCheck();
             } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getStudentPatterns())) {
                 //访问学生端服务
                 studentPermissionCheck(uri);
@@ -103,6 +104,10 @@ public class PermissionFilter extends OncePerRequestFilter {
      * 学生端服务权限校验
      */
     private void studentPermissionCheck(String uri) {
+        //允许有权限的管理员调用学生端接口
+        if(hasAdminPermission(uri)){
+            return;
+        }
         String sysRole = JwtAccountUtil.getSysRole();
         if (StringUtils.isEmpty(sysRole)
                 || !sysRole.equals(MicroConstant.SYS_ROLE_STUDENT)) {
@@ -113,7 +118,7 @@ public class PermissionFilter extends OncePerRequestFilter {
     /**
      * 教师端服务权限校验
      */
-    private void teacherPermissionCheck(String uri) {
+    private void teacherPermissionCheck() {
         String sysRole = JwtAccountUtil.getSysRole();
         if (StringUtils.isEmpty(sysRole)
                 || !sysRole.equals(MicroConstant.SYS_ROLE_TEACHER)) {
@@ -125,6 +130,15 @@ public class PermissionFilter extends OncePerRequestFilter {
      * 后台端服务权限校验
      */
     private void adminPermissionCheck(String uri) {
+        if(! hasAdminPermission(uri)){
+            warnInfo();
+        }
+    }
+
+    /**
+     * 管理员访问权限验证
+     */
+    private boolean hasAdminPermission(String uri){
         String sysRole = JwtAccountUtil.getSysRole();
         List<RoleEntity> roles = JwtAccountUtil.getRoles();
         List<PermissionEntity> permissions = JwtAccountUtil.getPermissions();
@@ -133,24 +147,23 @@ public class PermissionFilter extends OncePerRequestFilter {
                 || !sysRole.equals(MicroConstant.SYS_ROLE_TEACHER)
                 || Collections.isEmpty(roles)
                 || Collections.isEmpty(permissions)) {
-            warnInfo();
-            return;
+            return false;
         }
         //2. 教师角色中有管理员角色
         if (!roles.stream()
                 .map(RoleEntity::getIsAdmin)
                 .collect(Collectors.toList())
                 .contains(true)) {
-            warnInfo();
-            return;
+            return false;
         }
         //3. 有访问该uri的权限
         if (permissions.stream()
                 .map(PermissionEntity::getPermissionUrl)
                 .collect(Collectors.toList())
                 .stream().noneMatch(s -> UrlUtil.matchUri(uri, s))) {
-            warnInfo();
+            return false;
         }
+        return true;
     }
 
     /**

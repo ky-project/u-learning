@@ -40,6 +40,7 @@ public class HeaderZuulFilter extends ZuulFilter {
         //设置ip和用户账号于请求头中
         ctx.addZuulRequestHeader(MicroConstant.USER_REQUEST_IP, IpUtil.getIP(getRequest()));
         ctx.addZuulRequestHeader(MicroConstant.USERNAME, JwtAccountUtil.getUsername());
+        ctx.addZuulRequestHeader(MicroConstant.USER_ID, String.valueOf(JwtAccountUtil.getId()));
         return null;
     }
 

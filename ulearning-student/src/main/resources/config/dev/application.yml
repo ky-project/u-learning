@@ -1,0 +1,40 @@
+info:
+  build:
+    name: @project.name@
+    description: @project.description@
+    artifactId: @project.artifactId@
+    version: @project.version@
+#服务器配置
+server:
+  port: 14006
+  tomcat:
+    basedir: /tmp/ulearning-logs/${spring.application.name}/tomcat
+    accesslog:
+      enabled: true
+      directory: ./access
+      buffered: false
+      file-date-format: .yyyy-MM-dd
+      pattern: '%h %l %u %t "%r" %s %b %D %{User-Agent}i'
+      prefix: ${spring.application.name}
+      rotate: true
+      suffix: .log
+  servlet:
+    context-path: /${spring.application.name}
+#日志配置
+logging:
+  config: classpath:config/dev/logback.xml
+  file: /tmp/ulearning-logs/student/sys/info.student.log
+#监控配置
+management:
+  health:
+    # 关闭redis检测
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        exclude: shutdown
+  endpoint:
+    health:
+      show-details: always

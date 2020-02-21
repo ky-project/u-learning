@@ -64,4 +64,18 @@ public class BaseDto implements Serializable {
     @ApiModelProperty(hidden = true)
     @JsonIgnore
     private String teaNumber;
+
+    /**
+     * 学生学号
+     */
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    private String stuNumber;
+
+    /**
+     * 用户id
+     */
+    @ApiModelProperty(hidden = true)
+    @JsonIgnore
+    private Long userId;
 }
