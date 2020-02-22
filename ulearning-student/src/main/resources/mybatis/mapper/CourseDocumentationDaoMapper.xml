@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.student.dao.CourseDocumentationDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.CourseDocumentationEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="documentation_title" jdbcType="VARCHAR" property="documentationTitle"/>
+        <result column="documentation_summary" jdbcType="VARCHAR" property="documentationSummary"/>
+        <result column="documentation_category" jdbcType="SMALLINT" property="documentationCategory"/>
+        <result column="documentation_shared" jdbcType="BOOLEAN" property="documentationShared"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="file_id" jdbcType="BIGINT" property="fileId"/>
+    </resultMap>
+    <resultMap id="CourseFileDocumentationDtoMap" type="com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="documentation_title" jdbcType="VARCHAR" property="documentationTitle"/>
+        <result column="documentation_summary" jdbcType="VARCHAR" property="documentationSummary"/>
+        <result column="documentation_category" jdbcType="SMALLINT" property="documentationCategory"/>
+        <result column="documentation_shared" jdbcType="BOOLEAN" property="documentationShared"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="file_id" jdbcType="BIGINT" property="fileId"/>
+
+        <result column="file_name" jdbcType="VARCHAR" property="fileName"/>
+        <result column="file_size" jdbcType="BIGINT" property="fileSize"/>
+        <result column="file_ext" jdbcType="VARCHAR" property="fileExt"/>
+        <result column="file_type" jdbcType="SMALLINT" property="fileType"/>
+        <result column="file_parent_id" jdbcType="BIGINT" property="fileParentId"/>
+    </resultMap>
+</mapper>
