@@ -12,6 +12,10 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     /**
      * 学生端错误状态码
      */
+    TEACHING_TASK_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学任务id不能为空"),
+
+    STUDENT_TEACHING_TASK_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "无法重复选课"),
+    STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "当前未选该课程"),
     ;
 
     private Integer code;

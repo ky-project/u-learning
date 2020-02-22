@@ -13,10 +13,24 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-        <collection property="teacher" resultMap="com.ky.ulearning.system.auth.dao.TeacherDao.BaseResultMap"
-                    ofType="com.ky.ulearning.spi.system.entity.TeacherEntity"/>
-        <collection property="course" resultMap="com.ky.ulearning.system.sys.dao.CourseDao.BaseResultMap"
-                    ofType="com.ky.ulearning.spi.system.entity.CourseEntity"/>
+        <collection property="teacher" ofType="com.ky.ulearning.spi.system.entity.TeacherEntity">
+            <id column="teaId" jdbcType="BIGINT" property="id"/>
+            <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
+            <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
+            <result column="tea_password" jdbcType="VARCHAR" property="teaPassword"/>
+            <result column="tea_gender" jdbcType="VARCHAR" property="teaGender"/>
+            <result column="tea_dept" jdbcType="VARCHAR" property="teaDept"/>
+            <result column="tea_title" jdbcType="VARCHAR" property="teaTitle"/>
+            <result column="tea_phone" jdbcType="VARCHAR" property="teaPhone"/>
+            <result column="tea_email" jdbcType="VARCHAR" property="teaEmail"/>
+            <result column="tea_photo" jdbcType="VARCHAR" property="teaPhoto"/>
+        </collection>
+        <collection property="course" ofType="com.ky.ulearning.spi.system.entity.CourseEntity">
+            <id column="courseId" jdbcType="BIGINT" property="id"/>
+            <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
+            <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+            <result column="course_credit" jdbcType="FLOAT" property="courseCredit"/>
+        </collection>
     </resultMap>
     <resultMap id="TeachingTaskDtoResultMap" type="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -114,17 +128,11 @@
         utt.create_by,
         utt.update_time,
         utt.update_by,
-        uc.id,
+        uc.id AS courseId,
         uc.course_number,
         uc.course_name,
         uc.course_credit,
-        ut.valid,
-        ut.memo,
-        ut.create_time,
-        ut.create_by,
-        ut.update_time,
-        ut.update_by,
-        ut.id,
+        ut.id AS teaId,
         ut.tea_number,
         ut.tea_name,
         ut.tea_password,
@@ -133,14 +141,7 @@
         ut.tea_title,
         ut.tea_phone,
         ut.tea_email,
-        ut.tea_photo,
-        ut.last_login_time,
-        ut.valid,
-        ut.memo,
-        ut.create_time,
-        ut.create_by,
-        ut.update_time,
-        ut.update_by
+        ut.tea_photo
         FROM (
         SELECT
         <include refid="Base_Column_List"/>

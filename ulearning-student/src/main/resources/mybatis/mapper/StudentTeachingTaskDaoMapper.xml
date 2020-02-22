@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.student.dao.StudentTeachingTaskDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="stu_id" jdbcType="BIGINT" property="stuId"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            stu_id,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--根据教学任务id和学生id查询选课信息-->
+    <select id="getByTeachingIdAndStuId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_student_teaching_task
+        WHERE valid = 1
+        AND teaching_task_id = #{teachingTaskId}
+        AND stu_id = #{stuId}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity" useGeneratedKeys="true">
+        insert into u_student_teaching_task (teaching_task_id, stu_id, `valid`,
+                                             memo, create_time, create_by,
+                                             update_time, update_by)
+        values (#{teachingTaskId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT}, 1,
+                #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+                now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <!--删除选课信息-->
+    <update id="deleteByTeachingTaskIdAndStuId">
+        UPDATE u_student_teaching_task
+        SET valid      = 0,
+            update_by  = #{updateBy},
+            update_time= now()
+        WHERE valid = 1
+          AND teaching_task_id = #{teachingTaskId}
+          AND stu_id = #{stuId}
+    </update>
+    <!--获取教学任务数组-->
+    <select id="getTeachingTaskArray" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT utt.id                  AS `key`,
+               utt.teaching_task_alias AS label
+        FROM u_student_teaching_task ustt
+                 INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+        WHERE ustt.valid = 1
+          AND ustt.stu_id = #{stuId}
+    </select>
+</mapper>
