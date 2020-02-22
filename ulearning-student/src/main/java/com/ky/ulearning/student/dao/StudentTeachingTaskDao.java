@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 学生选课dao
@@ -52,4 +53,12 @@ public interface StudentTeachingTaskDao {
      * @return 教学任务数组
      */
     List<KeyLabelVo> getTeachingTaskArray(Long stuId);
+
+    /**
+     * 根据stuId查询对应的教学任务id集合
+     *
+     * @param stuId 学生id
+     * @return 教学任务id集合
+     */
+    Set<Long> getTeachingTaskIdSetByStuId(Long stuId);
 }

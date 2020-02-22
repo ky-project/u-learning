@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author luyuhao
@@ -49,5 +50,10 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
     @Override
     public List<KeyLabelVo> getTeachingTaskArray(Long stuId) {
         return studentTeachingTaskDao.getTeachingTaskArray(stuId);
+    }
+
+    @Override
+    public Set<Long> getTeachingTaskIdSetByStuId(Long stuId) {
+        return studentTeachingTaskDao.getTeachingTaskIdSetByStuId(stuId);
     }
 }

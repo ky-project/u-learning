@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 学生选课service - 接口
@@ -45,4 +46,12 @@ public interface StudentTeachingTaskService {
      * @return 教学任务数组
      */
     List<KeyLabelVo> getTeachingTaskArray(Long stuId);
+
+    /**
+     * 根据stuId查询对应的教学任务id集合
+     *
+     * @param stuId 学生id
+     * @return 教学任务id集合
+     */
+    Set<Long> getTeachingTaskIdSetByStuId(Long stuId);
 }

@@ -61,4 +61,11 @@
         WHERE ustt.valid = 1
           AND ustt.stu_id = #{stuId}
     </select>
+    <!--根据stuId查询对应的教学任务id集合-->
+    <select id="getTeachingTaskIdSetByStuId" resultType="java.lang.Long">
+        SELECT teaching_task_id
+        FROM u_student_teaching_task
+        WHERE valid = 1
+          AND stu_id = #{stuId}
+    </select>
 </mapper>
