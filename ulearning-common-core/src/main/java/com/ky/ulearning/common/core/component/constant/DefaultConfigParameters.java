@@ -48,4 +48,7 @@ public class DefaultConfigParameters {
 
     @Value("${ulearning.system.dev-mode}")
     private boolean devMode;
+
+    @Value("${ulearning.system.suffix}")
+    private String systemSuffix;
 }

@@ -81,3 +81,5 @@ ulearning:
   system:
     # 是否是开发模式，发布模式需要关闭
     dev-mode: true
+    # 项目发布地址前缀
+    suffix: /server

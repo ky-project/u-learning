@@ -67,7 +67,7 @@
     var triggerTime = '${triggerTime?c}';
     var logId = '${logId}';
 </script>
-<script src="${request.contextPath}/static/js/joblog.detail.1.js"></script>
+<script src="${Request["systemSuffix"]}${request.contextPath}/static/js/joblog.detail.1.js"></script>
 
 </body>
 </html>

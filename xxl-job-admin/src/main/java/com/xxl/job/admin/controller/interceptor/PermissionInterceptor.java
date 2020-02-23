@@ -4,6 +4,7 @@ import com.xxl.job.admin.controller.annotation.PermissionLimit;
 import com.xxl.job.admin.core.model.XxlJobUser;
 import com.xxl.job.admin.core.util.I18nUtil;
 import com.xxl.job.admin.service.LoginService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -22,15 +23,21 @@ import javax.servlet.http.HttpServletResponse;
 public class PermissionInterceptor extends HandlerInterceptorAdapter {
 
 	private static final String REQUEST_PROXY = "proxy";
+	private static final String SYSTEM_SUFFIX = "systemSuffix";
 
 	@Resource
 	private LoginService loginService;
 
+	@Value("${ulearning.system.suffix}")
+	private String systemSuffix;
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+		boolean isProxy = ! StringUtils.isEmpty(request.getHeader(LoginService.USERNAME));
 		//通过网关访问
-		request.setAttribute(REQUEST_PROXY, ! StringUtils.isEmpty(request.getHeader(LoginService.USERNAME)));
+		request.setAttribute(REQUEST_PROXY, ! isProxy);
+		request.setAttribute(SYSTEM_SUFFIX, isProxy ? "\\".equals(systemSuffix) ? "" : systemSuffix : "");
 
 		if (!(handler instanceof HandlerMethod)) {
 			return super.preHandle(request, response, handler);
