@@ -54,4 +54,11 @@ public interface StudentTeachingTaskService {
      * @return 教学任务id集合
      */
     Set<Long> getTeachingTaskIdSetByStuId(Long stuId);
+
+    /**
+     * 查询所有教学任务信息
+     *
+     * @return 教学任务id-教学任务名
+     */
+    List<KeyLabelVo> getAllTeachingTaskArray();
 }

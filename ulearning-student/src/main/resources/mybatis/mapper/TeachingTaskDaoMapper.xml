@@ -200,7 +200,7 @@
         </if>
         ) utt
         INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
-        INNER JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
+        INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
         ORDER BY utt.teaching_task_alias desc
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
@@ -235,6 +235,14 @@
         </if>
         ) utt
         INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
-        INNER JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
+        INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
+    </select>
+    <!--查询所有教学任务信息-->
+    <select id="getAllTeachingTaskArray" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT utt.id                                                                     AS `key`,
+               CONCAT('[', utt.term, ']', '[', ut.tea_name, ']', utt.teaching_task_alias) AS label
+        FROM u_teaching_task utt
+                 INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
+        WHERE utt.valid = 1
     </select>
 </mapper>

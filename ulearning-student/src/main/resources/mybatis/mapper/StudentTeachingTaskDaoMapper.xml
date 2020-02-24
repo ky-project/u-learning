@@ -54,10 +54,11 @@
     </update>
     <!--获取教学任务数组-->
     <select id="getTeachingTaskArray" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
-        SELECT utt.id                  AS `key`,
-               utt.teaching_task_alias AS label
+        SELECT utt.id                                                                     AS `key`,
+               CONCAT('[', utt.term, ']', '[', ut.tea_name, ']', utt.teaching_task_alias) AS label
         FROM u_student_teaching_task ustt
                  INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+                 INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
         WHERE ustt.valid = 1
           AND ustt.stu_id = #{stuId}
     </select>

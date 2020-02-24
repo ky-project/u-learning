@@ -1,6 +1,7 @@
 package com.ky.ulearning.student.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -52,4 +53,11 @@ public interface TeachingTaskDao {
      * @return 总记录数
      */
     Integer countSelectedListPage(@Param("teachingTaskDto") TeachingTaskDto teachingTaskDto);
+
+    /**
+     * 查询所有教学任务信息
+     *
+     * @return 教学任务id-教学任务名
+     */
+    List<KeyLabelVo> getAllTeachingTaskArray();
 }

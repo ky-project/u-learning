@@ -111,4 +111,12 @@ public class StudentTeachingTaskController extends BaseController {
         List<KeyLabelVo> keyLabelVoList = studentTeachingTaskService.getTeachingTaskArray(RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class));
         return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
+
+    @Log("查询所有教学任务数组")
+    @ApiOperation(value = "查询所有教学任务数组", notes = "查询所有教学任务数组key-label")
+    @GetMapping("/getAllTeachingTaskArray")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAllTeachingTaskArray() {
+        List<KeyLabelVo> keyLabelVoList = studentTeachingTaskService.getAllTeachingTaskArray();
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
+    }
 }

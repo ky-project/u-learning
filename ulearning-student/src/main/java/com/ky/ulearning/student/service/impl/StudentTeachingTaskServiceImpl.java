@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity;
 import com.ky.ulearning.student.dao.StudentTeachingTaskDao;
+import com.ky.ulearning.student.dao.TeachingTaskDao;
 import com.ky.ulearning.student.service.StudentTeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -26,6 +27,9 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
 
     @Autowired
     private StudentTeachingTaskDao studentTeachingTaskDao;
+
+    @Autowired
+    private TeachingTaskDao teachingTaskDao;
 
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
@@ -55,5 +59,11 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
     @Override
     public Set<Long> getTeachingTaskIdSetByStuId(Long stuId) {
         return studentTeachingTaskDao.getTeachingTaskIdSetByStuId(stuId);
+    }
+
+    @Override
+
+    public List<KeyLabelVo> getAllTeachingTaskArray() {
+        return teachingTaskDao.getAllTeachingTaskArray();
     }
 }
