@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.QuestionDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -69,4 +70,11 @@ public interface CourseQuestionDao {
     void updateValidById(@Param("id") Long id,
                          @Param("updateBy") String updateBy,
                          @Param("valid") Integer valid);
+
+    /**
+     * 查询所有知识模块
+     *
+     * @return 知识模块-知识模块
+     */
+    List<KeyLabelVo> getAllKnowledge();
 }

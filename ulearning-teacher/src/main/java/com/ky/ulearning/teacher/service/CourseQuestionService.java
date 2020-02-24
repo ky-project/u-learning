@@ -2,8 +2,11 @@ package com.ky.ulearning.teacher.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.QuestionDto;
+
+import java.util.List;
 
 /**
  * 试题service - 接口类
@@ -50,4 +53,10 @@ public interface CourseQuestionService {
      * @param updateBy 更新者
      */
     void delete(Long id, String updateBy);
+
+    /**
+     * 查询所有知识模块
+     * @return 知识模块-知识模块
+     */
+    List<KeyLabelVo> getAllKnowledge();
 }

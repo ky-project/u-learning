@@ -3,6 +3,7 @@ package com.ky.ulearning.teacher.service.impl;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.QuestionDto;
@@ -67,5 +68,11 @@ public class CourseQuestionServiceImpl extends BaseService implements CourseQues
     @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id, String updateBy) {
         courseQuestionDao.updateValidById(id, updateBy, 0);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<KeyLabelVo> getAllKnowledge() {
+        return courseQuestionDao.getAllKnowledge();
     }
 }

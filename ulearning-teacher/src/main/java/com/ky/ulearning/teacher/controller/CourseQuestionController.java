@@ -15,6 +15,7 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
 import com.ky.ulearning.spi.teacher.dto.CourseTeachingTaskDto;
 import com.ky.ulearning.spi.teacher.dto.QuestionDto;
@@ -37,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -182,5 +184,13 @@ public class CourseQuestionController extends BaseController {
             fastDfsClientWrapper.deleteFile(courseQuestionDto.getQuestionUrl());
         }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("查询所有知识模块")
+    @ApiOperation(value = "查询所有知识模块")
+    @GetMapping("/getAllKnowledge")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAllKnowledge(){
+        List<KeyLabelVo> keyLabelVoList = courseQuestionService.getAllKnowledge();
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 }

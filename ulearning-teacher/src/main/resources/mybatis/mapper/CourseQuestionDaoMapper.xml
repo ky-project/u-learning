@@ -174,4 +174,14 @@
             update_time = now()
         WHERE id = #{id}
     </update>
+    <!--查询所有知识模块-->
+    <select id="getAllKnowledge" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT ucqqk.question_knowledge AS `key`,
+               ucqqk.question_knowledge AS label
+        FROM (
+                 SELECT DISTINCT question_knowledge
+                 FROM u_course_question
+                 WHERE valid = 1
+             ) ucqqk
+    </select>
 </mapper>
