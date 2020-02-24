@@ -61,7 +61,7 @@
         FROM u_student_teaching_task ustt
         INNER JOIN u_student us ON us.valid = 1 AND ustt.stu_id = us.id
         INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
-        WHERE utt.valid = 1
+        WHERE ustt.valid = 1
         AND utt.id = #{teachingTaskId}
         <if test="studentDto.stuNumber != null and studentDto.stuNumber != ''">
             AND stu_number LIKE CONCAT('%', #{studentDto.stuNumber}, '%')
@@ -95,7 +95,7 @@
         FROM u_student_teaching_task ustt
         INNER JOIN u_student us ON us.valid = 1 AND ustt.stu_id = us.id
         INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
-        WHERE utt.valid = 1
+        WHERE ustt.valid = 1
         AND utt.id = #{teachingTaskId}
         <if test="studentDto.stuNumber != null and studentDto.stuNumber != ''">
             AND stu_number LIKE CONCAT('%', #{studentDto.stuNumber}, '%')
