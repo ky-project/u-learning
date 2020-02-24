@@ -95,13 +95,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 不创建会话
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                //登出设置
-                .logout()
-                .logoutUrl("/auth/logout")
-                .deleteCookies("token", "refresh_token")
-                //登出提示
-                .logoutSuccessUrl("/auth/logout/success")
-                .and()
                 // 过滤请求
                 .authorizeRequests()
                 //放行patterns

@@ -161,14 +161,25 @@ public class AuthController extends BaseController {
     }
 
     /**
-     * 登出成功
-     *
-     * @return 返回用户信息和token
+     * 退出系统
+     * 删除cookie
      */
-    @Log("成功退出系统")
-    @ApiOperation(value = "", hidden = true)
-    @GetMapping(value = "/logout/success")
-    public ResponseEntity logoutSuccess() {
+    @Log("安全退出")
+    @ApiOperation(value = "安全退出")
+    @GetMapping(value = "/logout")
+    public ResponseEntity logout(HttpServletRequest request,
+                                 HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(GatewayConstant.COOKIE_TOKEN)
+                        || cookie.getName().equals(GatewayConstant.COOKIE_REFRESH_TOKEN)) {
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("安全退出"));
     }
 
@@ -186,8 +197,6 @@ public class AuthController extends BaseController {
         long currentTime = System.currentTimeMillis();
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
-//        loginUser.setUsername(loginUser.getUsername().trim());
-//        loginUser.setPassword(loginUser.getPassword().trim());
         // 清除验证码
         redisService.delete(loginUser.getUuid());
         ValidateHandler.checkParameter(StringUtils.isEmpty(code), GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
@@ -540,7 +549,7 @@ public class AuthController extends BaseController {
         //获取uuid对应的dto
         ForgetPasswordDto checkDto = JsonUtil.parseObject(jsonStr, ForgetPasswordDto.class);
         //判断验证码是否正确
-        ValidateHandler.checkParameter(! forgetPasswordDto.getCode().trim().equals(checkDto.getCode()), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
+        ValidateHandler.checkParameter(!forgetPasswordDto.getCode().trim().equals(checkDto.getCode()), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
 
         //参数初始化
         Map<String, Object> param = new HashMap<>(4);
