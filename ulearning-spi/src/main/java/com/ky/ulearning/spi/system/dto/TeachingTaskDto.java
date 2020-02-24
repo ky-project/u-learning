@@ -41,4 +41,10 @@ public class TeachingTaskDto extends BaseDto {
      */
     @ApiModelProperty("开课学期")
     private String term;
+
+    /**
+     * 教师名
+     */
+    @ApiModelProperty("教师名")
+    private String teaName;
 }

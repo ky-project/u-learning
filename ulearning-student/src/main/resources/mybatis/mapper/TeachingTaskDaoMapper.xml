@@ -113,6 +113,11 @@
         ) utt
         INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
         INNER JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
+        <where>
+            <if test="teachingTaskDto.teaName != null and teachingTaskDto.teaName != ''">
+                AND ut.tea_name LIKE CONCAT('%', #{teachingTaskDto.teaName}, '%')
+            </if>
+        </where>
         ORDER BY utt.teaching_task_alias desc
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
@@ -148,6 +153,11 @@
         ) utt
         INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
         INNER JOIN u_teacher ut ON uc.valid = 1 AND utt.tea_id = ut.id
+        <where>
+            <if test="teachingTaskDto.teaName != null and teachingTaskDto.teaName != ''">
+                AND ut.tea_name LIKE CONCAT('%', #{teachingTaskDto.teaName}, '%')
+            </if>
+        </where>
     </select>
     <!--分页查询已选教学任务信息-->
     <select id="listSelectedPage" resultMap="BaseResultMap">
@@ -201,6 +211,11 @@
         ) utt
         INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
         INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
+        <where>
+            <if test="teachingTaskDto.teaName != null and teachingTaskDto.teaName != ''">
+                AND ut.tea_name LIKE CONCAT('%', #{teachingTaskDto.teaName}, '%')
+            </if>
+        </where>
         ORDER BY utt.teaching_task_alias desc
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
@@ -236,6 +251,11 @@
         ) utt
         INNER JOIN u_course uc ON uc.valid = 1 AND utt.course_id = uc.id
         INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
+        <where>
+            <if test="teachingTaskDto.teaName != null and teachingTaskDto.teaName != ''">
+                AND ut.tea_name LIKE CONCAT('%', #{teachingTaskDto.teaName}, '%')
+            </if>
+        </where>
     </select>
     <!--查询所有教学任务信息-->
     <select id="getAllTeachingTaskArray" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
