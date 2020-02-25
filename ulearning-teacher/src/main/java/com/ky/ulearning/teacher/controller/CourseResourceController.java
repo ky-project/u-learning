@@ -78,7 +78,6 @@ public class CourseResourceController extends BaseController {
         ValidatorBuilder.build()
                 .ofNull(file, TeacherErrorCodeEnum.RESOURCE_FILE_CANNOT_BE_NULL)
                 .ofNull(courseResourceDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
-                .ofNull(courseResourceDto.getResourceTitle(), TeacherErrorCodeEnum.RESOURCE_TITLE_CANNOT_BE_NULL)
                 .ofNull(courseResourceDto.getResourceType(), TeacherErrorCodeEnum.RESOURCE_TYPE_CANNOT_BE_NULL)
                 .ofNull(courseResourceDto.getResourceShared(), TeacherErrorCodeEnum.RESOURCE_SHARED_CANNOT_BE_NULL)
                 .ofNull(courseResourceDto.getFileParentId(), TeacherErrorCodeEnum.RESOURCE_PATH_ID_CANNOT_BE_NULL)

@@ -76,7 +76,6 @@ public class CourseDocumentationController extends BaseController {
         ValidatorBuilder.build()
                 .ofNull(file, TeacherErrorCodeEnum.DOCUMENTATION_FILE_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
-                .ofNull(courseDocumentationDto.getDocumentationTitle(), TeacherErrorCodeEnum.DOCUMENTATION_TITLE_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getDocumentationCategory(), TeacherErrorCodeEnum.DOCUMENTATION_CATEGORY_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getDocumentationShared(), TeacherErrorCodeEnum.DOCUMENTATION_SHARED_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getFileParentId(), TeacherErrorCodeEnum.DOCUMENTATION_PATH_ID_CANNOT_BE_NULL)
