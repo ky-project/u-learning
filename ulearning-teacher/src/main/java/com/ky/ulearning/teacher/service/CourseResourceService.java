@@ -76,4 +76,13 @@ public interface CourseResourceService {
      * @return 课程文件教学资源
      */
     List<CourseFileResourceDto> getListByFileParentId(Long fileParentId);
+
+    /**
+     * 根据父节点和文件类型查询课程文件教学资源
+     *
+     * @param fileParentId 父节点id
+     * @param fileType     文件类型
+     * @return 课程文件教学资源
+     */
+    List<CourseFileResourceDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType);
 }

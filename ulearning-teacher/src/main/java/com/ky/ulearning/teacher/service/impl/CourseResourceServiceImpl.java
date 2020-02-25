@@ -17,7 +17,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luyuhao
@@ -123,7 +125,7 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
             } else {
                 CourseFileResourceDto courseFileResourceDto = courseResourceDao.getByFileId(teacherCourseFileEntity.getId());
                 //当用户根目录已创建，但教学资源未索引，创建索引
-                if(StringUtil.isEmpty(courseFileResourceDto)){
+                if (StringUtil.isEmpty(courseFileResourceDto)) {
                     CourseResourceDto courseResourceDtoFolder = CourseFileUtil.createCourseResourceDtoFolder(username);
                     courseResourceDtoFolder.setFileId(teacherCourseFileEntity.getId());
                     //插入教学资源
@@ -152,5 +154,11 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
     @Override
     public List<CourseFileResourceDto> getListByFileParentId(Long fileParentId) {
         return courseResourceDao.getListByFileParentId(fileParentId);
+    }
+
+    @Override
+    public List<CourseFileResourceDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType) {
+        return Optional.ofNullable(courseResourceDao.getListByFileParentIdAndFileType(fileParentId, fileType))
+                .orElse(Collections.emptyList());
     }
 }

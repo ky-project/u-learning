@@ -6,7 +6,6 @@ import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
-import com.ky.ulearning.spi.teacher.dto.CourseResourceDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.teacher.common.utils.CourseFileUtil;
 import com.ky.ulearning.teacher.dao.CourseDocumentationDao;
@@ -18,7 +17,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 文件资料service - 接口类
@@ -94,7 +95,8 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
 
     @Override
     public List<CourseFileDocumentationDto> getListByFileParentId(Long fileParentId) {
-        return courseDocumentationDao.getListByFileParentId(fileParentId);
+        return Optional.ofNullable(courseDocumentationDao.getListByFileParentId(fileParentId))
+                .orElse(Collections.emptyList());
     }
 
     @Override
@@ -131,7 +133,7 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
             } else {
                 CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationDao.getByFileId(teacherCourseFileEntity.getId());
                 //当用户根目录已创建，但文件资料未索引，创建索引
-                if(StringUtil.isEmpty(courseFileDocumentationDto)){
+                if (StringUtil.isEmpty(courseFileDocumentationDto)) {
                     CourseDocumentationDto courseDocumentationDtoFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
                     courseDocumentationDtoFolder.setFileId(teacherCourseFileEntity.getId());
                     //插入文件资料对象
@@ -155,5 +157,11 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
         courseFileDto.setCreateBy("system");
         courseFileDto.setUpdateBy("system");
         return courseFileDto;
+    }
+
+    @Override
+    public List<CourseFileDocumentationDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType) {
+        return Optional.ofNullable(courseDocumentationDao.getListByFileParentIdAndFileType(fileParentId, fileType))
+                .orElse(Collections.emptyList());
     }
 }

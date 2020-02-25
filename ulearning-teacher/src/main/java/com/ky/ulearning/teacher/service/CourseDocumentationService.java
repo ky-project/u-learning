@@ -78,4 +78,13 @@ public interface CourseDocumentationService {
      * @return id
      */
     CourseFileDocumentationDto getByCourseIdAndUsername(Long courseId, String username);
+
+    /**
+     * 根据父节点id和文件类型查询所有课程文件资料
+     *
+     * @param fileParentId 父节点id
+     * @param fileType     文件类型
+     * @return 课程文件资料
+     */
+    List<CourseFileDocumentationDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType);
 }

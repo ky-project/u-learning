@@ -212,4 +212,29 @@
         WHERE ucf.valid = 1
           AND ucf.file_parent_id = #{fileParentId}
     </select>
+    <!--根据父节点和文件类型查询课程文件教学资源-->
+    <select id="getListByFileParentIdAndFileType" resultMap="CourseFileResourceDtoMap">
+        SELECT ucr.id,
+               ucr.resource_title,
+               ucr.resource_summary,
+               ucr.resource_type,
+               ucr.resource_shared,
+               ucr.valid,
+               ucr.memo,
+               ucr.create_time,
+               ucr.create_by,
+               ucr.update_time,
+               ucr.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+          AND ucf.file_type = #{fileType}
+          AND ucf.file_parent_id = #{fileParentId}
+    </select>
 </mapper>

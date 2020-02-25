@@ -5,6 +5,7 @@ import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
@@ -37,8 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author luyuhao
@@ -88,6 +89,13 @@ public class CourseDocumentationController extends BaseController {
         //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
         teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseDocumentationDto.getTeachingTaskId(), courseFileEntity.getCourseId());
         ValidateHandler.checkParameter(courseFileEntity.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+        //同名文件校验 1. 查询文件夹下的所有文件资料;2. 判断是否有同名文件
+        Set<String> fileNameSet = Optional.ofNullable(courseDocumentationService.getListByFileParentIdAndFileType(courseDocumentationDto.getFileParentId(), MicroConstant.FILE_TYPE))
+                .map(courseFileDocumentationDtoList -> courseFileDocumentationDtoList.stream()
+                        .map(CourseFileDocumentationDto::getFileName)
+                        .collect(Collectors.toSet()))
+                .orElse(Collections.emptySet());
+        ValidateHandler.checkParameter(fileNameSet.contains(FileUtil.getFileNameNoEx(file.getOriginalFilename())), TeacherErrorCodeEnum.COURSE_FILE_NAME_ILLEGAL);
         //保存文件
         String fileUrl = fastDfsClientWrapper.uploadFile(file);
         //创建课程文件对象
@@ -119,6 +127,14 @@ public class CourseDocumentationController extends BaseController {
         ValidateHandler.checkParameter(courseFileEntity.getFileType().equals(MicroConstant.FILE_TYPE), TeacherErrorCodeEnum.DOCUMENTATION_CANNOT_BE_FOLDER);
         //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
         teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseFileDto.getTeachingTaskId(), courseFileEntity.getCourseId());
+        //同名文件校验 1. 查询文件夹下的所有文件资料;2. 判断是否有同名文件
+        Set<String> fileNameSet = Optional.ofNullable(courseDocumentationService.getListByFileParentIdAndFileType(courseFileDto.getFileParentId(), MicroConstant.FOLDER_TYPE))
+                .map(courseFileDocumentationDtoList -> courseFileDocumentationDtoList.stream()
+                        .map(CourseFileDocumentationDto::getFileName)
+                        .collect(Collectors.toSet()))
+                .orElse(Collections.emptySet());
+        ValidateHandler.checkParameter(fileNameSet.contains(FileUtil.getFileNameNoEx(courseFileDto.getFileName())), TeacherErrorCodeEnum.COURSE_FILE_NAME_ILLEGAL);
+        //设置基本信息
         courseFileDto.setCourseId(courseFileEntity.getCourseId());
         courseFileDto.setFileType(MicroConstant.FOLDER_TYPE);
         courseFileDto.setUpdateBy(username);
