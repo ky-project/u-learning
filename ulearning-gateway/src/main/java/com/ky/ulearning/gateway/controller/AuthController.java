@@ -300,7 +300,7 @@ public class AuthController extends BaseController {
         //获取用户信息
         logEntity.setLogUsername(JwtAccountUtil.getUsername());
         logEntity.setLogDescription("登录系统");
-        logEntity.setLogModule("com.ky.ulearning.gateway.controller.AuthController.login()");
+        logEntity.setLogModule("/auth/login");
         logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
         logEntity.setLogType("INFO");
         logEntity.setLogParams(loginUser.toString());
