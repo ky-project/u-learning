@@ -63,11 +63,12 @@ public interface CourseResourceService {
     /**
      * 根据课程id和工号查询id
      *
-     * @param courseId 课程id
-     * @param username 工号
+     * @param courseId       课程id
+     * @param username       工号
+     * @param teachingTaskId 教学任务id
      * @return id
      */
-    CourseFileResourceDto getByCourseIdAndUsername(Long courseId, String username);
+    CourseFileResourceDto getByCourseIdAndUsername(Long courseId, String username, Long teachingTaskId);
 
     /**
      * 根据父节点id查询所有课程文件教学资源

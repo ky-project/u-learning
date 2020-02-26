@@ -160,7 +160,7 @@ public class CourseResourceController extends BaseController {
         //获取教学任务对应的课程id
         Long courseId = teachingTaskService.getCourseIdById(teachingTaskId);
         //根据courseId和username查询所属用户的根路径id
-        CourseFileResourceDto courseFileResourceDto = courseResourceService.getByCourseIdAndUsername(courseId, username);
+        CourseFileResourceDto courseFileResourceDto = courseResourceService.getByCourseIdAndUsername(courseId, username, teachingTaskId);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileResourceDto));
     }
 

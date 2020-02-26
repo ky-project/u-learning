@@ -73,11 +73,12 @@ public interface CourseDocumentationService {
     /**
      * 根据课程id和工号查询id
      *
-     * @param courseId 课程id
-     * @param username 工号
+     * @param courseId       课程id
+     * @param username       工号
+     * @param teachingTaskId 教学任务id
      * @return id
      */
-    CourseFileDocumentationDto getByCourseIdAndUsername(Long courseId, String username);
+    CourseFileDocumentationDto getByCourseIdAndUsername(Long courseId, String username, Long teachingTaskId);
 
     /**
      * 根据父节点id和文件类型查询所有课程文件资料

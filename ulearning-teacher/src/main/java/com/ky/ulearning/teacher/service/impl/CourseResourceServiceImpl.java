@@ -3,13 +3,12 @@ package com.ky.ulearning.teacher.service.impl;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
-import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
-import com.ky.ulearning.spi.teacher.dto.CourseResourceDto;
+import com.ky.ulearning.spi.teacher.dto.*;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.teacher.common.utils.CourseFileUtil;
 import com.ky.ulearning.teacher.dao.CourseFileDao;
 import com.ky.ulearning.teacher.dao.CourseResourceDao;
+import com.ky.ulearning.teacher.dao.TeachingTaskDao;
 import com.ky.ulearning.teacher.service.CourseResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -35,6 +34,9 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
 
     @Autowired
     private CourseFileDao courseFileDao;
+
+    @Autowired
+    private TeachingTaskDao teachingTaskDao;
 
     @Override
     @CacheEvict(allEntries = true)
@@ -94,9 +96,10 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
-    public CourseFileResourceDto getByCourseIdAndUsername(Long courseId, String username) {
+    public CourseFileResourceDto getByCourseIdAndUsername(Long courseId, String username, Long teachingTaskId) {
         //获取课程根节点
         CourseFileEntity courseFileEntity = courseFileDao.getByCourseIdAndFileName(courseId, MicroConstant.ROOT_FOLDER);
+        String teachingTaskAlias = teachingTaskDao.getById(teachingTaskId).getTeachingTaskAlias();
         //若课程根目录不存在，初始化
         if (StringUtil.isEmpty(courseFileEntity)) {
             //创建课程根文件夹
@@ -109,7 +112,13 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
             courseResourceDtoFolder.setFileId(teacherCourseFileDto.getId());
             //插入教学资源
             courseResourceDao.insert(courseResourceDtoFolder);
-            return courseResourceDao.getById(courseResourceDtoFolder.getId());
+            //创建教学任务根文件夹
+            CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileDto.getId());
+            courseFileDao.insert(teachingTaskCourseFileDto);
+            CourseResourceDto courseResourceDtoTeachingTaskFolder = CourseFileUtil.createCourseResourceDtoFolder(username);
+            courseResourceDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
+            courseResourceDao.insert(courseResourceDtoTeachingTaskFolder);
+            return courseResourceDao.getById(courseResourceDtoTeachingTaskFolder.getId());
         } else {
             //获取教师根节点
             CourseFileEntity teacherCourseFileEntity = courseFileDao.getByParentIdAndFileName(courseFileEntity.getId(), username);
@@ -121,7 +130,13 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
                 courseResourceDtoFolder.setFileId(teacherCourseFileDto.getId());
                 //插入教学资源
                 courseResourceDao.insert(courseResourceDtoFolder);
-                return courseResourceDao.getById(courseResourceDtoFolder.getId());
+                //创建教学任务根文件夹
+                CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileDto.getId());
+                courseFileDao.insert(teachingTaskCourseFileDto);
+                CourseResourceDto courseResourceDtoTeachingTaskFolder = CourseFileUtil.createCourseResourceDtoFolder(username);
+                courseResourceDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
+                courseResourceDao.insert(courseResourceDtoTeachingTaskFolder);
+                return courseResourceDao.getById(courseResourceDtoTeachingTaskFolder.getId());
             } else {
                 CourseFileResourceDto courseFileResourceDto = courseResourceDao.getByFileId(teacherCourseFileEntity.getId());
                 //当用户根目录已创建，但教学资源未索引，创建索引
@@ -130,9 +145,37 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
                     courseResourceDtoFolder.setFileId(teacherCourseFileEntity.getId());
                     //插入教学资源
                     courseResourceDao.insert(courseResourceDtoFolder);
-                    return courseResourceDao.getById(courseResourceDtoFolder.getId());
+                    //创建教学任务根文件夹
+                    CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileEntity.getId());
+                    courseFileDao.insert(teachingTaskCourseFileDto);
+                    CourseResourceDto courseResourceDtoTeachingTaskFolder = CourseFileUtil.createCourseResourceDtoFolder(username);
+                    courseResourceDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
+                    courseResourceDao.insert(courseResourceDtoTeachingTaskFolder);
+                    return courseResourceDao.getById(courseResourceDtoTeachingTaskFolder.getId());
+                } else{
+                    //查询教学任务文件夹
+                    CourseFileEntity teachingTaskCourseFileEntity = courseFileDao.getByParentIdAndFileName(courseFileResourceDto.getFileId(), teachingTaskAlias);
+                    //教学任务文件夹是否为空
+                    if(StringUtil.isEmpty(teachingTaskCourseFileEntity)){
+                        //创建教学任务文件夹
+                        CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileEntity.getId());
+                        courseFileDao.insert(teachingTaskCourseFileDto);
+                        CourseResourceDto courseResourceDtoTeachingTaskFolder = CourseFileUtil.createCourseResourceDtoFolder(username);
+                        courseResourceDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
+                        courseResourceDao.insert(courseResourceDtoTeachingTaskFolder);
+                        return courseResourceDao.getById(courseResourceDtoTeachingTaskFolder.getId());
+                    } else{
+                        CourseFileResourceDto teachingTaskCourseFileResourceDto = courseResourceDao.getByFileId(teachingTaskCourseFileEntity.getId());
+                        //当教学任务根目录已创建，但文件资料未索引，创建索引
+                        if(StringUtil.isEmpty(teachingTaskCourseFileResourceDto)){
+                            CourseResourceDto courseResourceDto = CourseFileUtil.createCourseResourceDtoFolder(username);
+                            courseResourceDto.setFileId(teachingTaskCourseFileEntity.getId());
+                            courseResourceDao.insert(courseResourceDto);
+                            return courseResourceDao.getById(courseResourceDto.getId());
+                        }
+                        return teachingTaskCourseFileResourceDto;
+                    }
                 }
-                return courseFileResourceDto;
             }
         }
     }
