@@ -4,10 +4,12 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
@@ -203,6 +205,19 @@ public class CourseDocumentationController extends BaseController {
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         CourseFileDocumentationDto courseFileDocumentationDtoValid = teachingTaskValidUtil.checkDocumentationId(courseFileDocumentationDto.getId(), username);
+
+        //同名文件校验 1. 查询文件夹下的所有文件资料;2. 判断是否有同名文件
+        if (StringUtil.isNotEmpty(courseFileDocumentationDto.getFileName())) {
+            List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getListByFileParentIdAndFileType(courseFileDocumentationDtoValid.getFileParentId(), courseFileDocumentationDtoValid.getFileType());
+            for (CourseFileDocumentationDto fileDocumentationDto : courseFileDocumentationDtoList) {
+                if (!fileDocumentationDto.getId().equals(courseFileDocumentationDto.getId())
+                        && fileDocumentationDto.getFileName().equals(courseFileDocumentationDto.getFileName())) {
+                    throw new BadRequestException(TeacherErrorCodeEnum.COURSE_FILE_NAME_ILLEGAL);
+                }
+            }
+        }
+
+        //设置基本属性
         courseFileDocumentationDto.setFileId(courseFileDocumentationDtoValid.getFileId());
         courseFileDocumentationDto.setUpdateBy(username);
         courseDocumentationService.update(courseFileDocumentationDto);

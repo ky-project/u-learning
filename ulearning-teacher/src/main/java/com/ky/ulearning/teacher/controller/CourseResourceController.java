@@ -4,13 +4,14 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
-import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
 import com.ky.ulearning.spi.teacher.dto.CourseResourceDto;
@@ -205,6 +206,19 @@ public class CourseResourceController extends BaseController {
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         CourseFileResourceDto courseFileResourceDtoValid = teachingTaskValidUtil.checkResourceId(courseFileResourceDto.getId(), username);
+
+        //同名文件校验 1. 查询文件夹下的所有文件资料;2. 判断是否有同名文件
+        if (StringUtil.isNotEmpty(courseFileResourceDto.getFileName())) {
+            List<CourseFileResourceDto> courseFileResourceDtoList = courseResourceService.getListByFileParentIdAndFileType(courseFileResourceDtoValid.getFileParentId(), courseFileResourceDtoValid.getFileType());
+            for (CourseFileResourceDto fileResourceDto : courseFileResourceDtoList) {
+                if (!fileResourceDto.getId().equals(courseFileResourceDto.getId())
+                        && fileResourceDto.getFileName().equals(courseFileResourceDto.getFileName())) {
+                    throw new BadRequestException(TeacherErrorCodeEnum.COURSE_FILE_NAME_ILLEGAL);
+                }
+            }
+        }
+
+        //设置基本属性
         courseFileResourceDto.setFileId(courseFileResourceDtoValid.getFileId());
         courseFileResourceDto.setUpdateBy(username);
         courseResourceService.update(courseFileResourceDto);
