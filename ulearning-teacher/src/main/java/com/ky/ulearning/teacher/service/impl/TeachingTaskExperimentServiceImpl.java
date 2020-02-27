@@ -1,10 +1,12 @@
 package com.ky.ulearning.teacher.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
+import com.ky.ulearning.spi.teacher.entity.TeachingTaskExperimentEntity;
 import com.ky.ulearning.teacher.dao.TeachingTaskExperimentDao;
 import com.ky.ulearning.teacher.service.TeachingTaskExperimentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author luyuhao
@@ -32,6 +36,14 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void save(ExperimentDto experimentDto) {
+        //设置order递增
+        //查询所有试验，根据order递减排序
+        List<TeachingTaskExperimentEntity> teachingTaskExperimentEntityList = teachingTaskExperimentDao.listByTeachingTaskId(experimentDto.getTeachingTaskId());
+        if (CollectionUtil.isEmpty(teachingTaskExperimentEntityList)) {
+            experimentDto.setExperimentOrder(1);
+        } else {
+            experimentDto.setExperimentOrder(teachingTaskExperimentEntityList.get(0).getExperimentOrder() + 1);
+        }
         teachingTaskExperimentDao.insert(experimentDto);
     }
 
@@ -57,5 +69,12 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @Transactional(rollbackFor = Throwable.class)
     public void update(ExperimentDto experimentDto) {
         teachingTaskExperimentDao.update(experimentDto);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<TeachingTaskExperimentEntity> listByTeachingTaskId(Long teachingTaskId) {
+        return Optional.ofNullable(teachingTaskExperimentDao.listByTeachingTaskId(teachingTaskId))
+                .orElse(Collections.emptyList());
     }
 }

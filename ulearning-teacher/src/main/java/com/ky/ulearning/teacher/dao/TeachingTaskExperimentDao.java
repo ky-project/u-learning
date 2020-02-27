@@ -3,6 +3,7 @@ package com.ky.ulearning.teacher.dao;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
+import com.ky.ulearning.spi.teacher.entity.TeachingTaskExperimentEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -58,4 +59,12 @@ public interface TeachingTaskExperimentDao {
      * @return 总记录数
      */
     Integer countListPage(@Param("experimentDto") ExperimentDto experimentDto);
+
+    /**
+     * 根据教学任务id查询试验集合
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 试验信息集合
+     */
+    List<TeachingTaskExperimentEntity> listByTeachingTaskId(Long teachingTaskId);
 }

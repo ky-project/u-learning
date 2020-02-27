@@ -1,5 +1,6 @@
 package com.ky.ulearning.spi.teacher.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ky.ulearning.spi.common.dto.BaseDto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,6 +48,7 @@ public class TeachingTaskExperimentDto extends BaseDto {
      * 附件URL
      */
     @ApiModelProperty("附件URL")
+    @JsonIgnore
     private String experimentAttachment;
 
     /**

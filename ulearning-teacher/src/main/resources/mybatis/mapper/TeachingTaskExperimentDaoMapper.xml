@@ -35,19 +35,19 @@
         <result column="term" jdbcType="VARCHAR" property="term"/>
     </resultMap>
     <sql id="Base_Column_List">
-            id,
-            teaching_task_id,
-            experiment_order,
-            experiment_title,
-            experiment_content,
-            experiment_attachment,
-            `valid`,
-            memo,
-            create_time,
-            create_by,
-            update_time,
-            update_by,
-            experiment_attachment_name
+        id,
+        teaching_task_id,
+        experiment_order,
+        experiment_title,
+        experiment_content,
+        experiment_attachment,
+        `valid`,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by,
+        experiment_attachment_name
     </sql>
     <!--根据id查询实验信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="TeachingTaskExperimentDtoResultMap">
@@ -176,5 +176,14 @@
         <if test="experimentDto.experimentAttachmentName != null and experimentDto.experimentAttachmentName != ''">
             AND utte.experiment_attachment_name LIKE #{experimentDto.experimentAttachmentName}
         </if>
+    </select>
+    <!--根据教学任务id查询试验集合-->
+    <select id="listByTeachingTaskId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task_experiment
+        WHERE valid = 1
+        AND teaching_task_id = #{teachingTaskId}
+        ORDER BY experiment_order
     </select>
 </mapper>

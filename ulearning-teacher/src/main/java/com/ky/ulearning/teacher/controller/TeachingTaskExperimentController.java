@@ -93,7 +93,6 @@ public class TeachingTaskExperimentController extends BaseController {
     public ResponseEntity<JsonResult> save(ExperimentDto experimentDto) {
         ValidatorBuilder.build()
                 .on(StringUtil.isEmpty(experimentDto.getTeachingTaskId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
-                .on(StringUtil.isEmpty(experimentDto.getExperimentOrder()), TeacherErrorCodeEnum.EXPERIMENT_ORDER_CANNOT_BE_NULL)
                 .on(StringUtil.isEmpty(experimentDto.getExperimentTitle()), TeacherErrorCodeEnum.EXPERIMENT_TITLE_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
@@ -138,7 +137,7 @@ public class TeachingTaskExperimentController extends BaseController {
         //获取实验信息
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskValidUtil.checkExperimentId(experimentDto.getId(), username);
         //教学任务校验
-        if(StringUtil.isNotEmpty(experimentDto.getTeachingTaskId())){
+        if (StringUtil.isNotEmpty(experimentDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, experimentDto.getTeachingTaskId());
         }
         //设置更新者信息

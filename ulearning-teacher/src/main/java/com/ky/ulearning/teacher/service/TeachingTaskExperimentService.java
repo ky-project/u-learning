@@ -4,6 +4,9 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
+import com.ky.ulearning.spi.teacher.entity.TeachingTaskExperimentEntity;
+
+import java.util.List;
 
 /**
  * 实验service - 接口类
@@ -42,4 +45,12 @@ public interface TeachingTaskExperimentService {
      * @param experimentDto 待更新的实验对象
      */
     void update(ExperimentDto experimentDto);
+
+    /**
+     * 根据教学任务id查询试验集合
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 试验信息集合
+     */
+    List<TeachingTaskExperimentEntity> listByTeachingTaskId(Long teachingTaskId);
 }
