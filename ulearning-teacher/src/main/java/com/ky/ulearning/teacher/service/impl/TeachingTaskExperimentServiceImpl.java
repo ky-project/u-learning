@@ -2,6 +2,7 @@ package com.ky.ulearning.teacher.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
@@ -16,6 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +70,17 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void update(ExperimentDto experimentDto) {
+        //修改实验序号时，需要对后面的实验序号依次+1处理
+        if (StringUtil.isNotEmpty(experimentDto.getExperimentOrder())) {
+            TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentDao.getById(experimentDto.getId());
+            List<ExperimentDto> experimentDtoList = teachingTaskExperimentDao.listDtoByTeachingTaskId(teachingTaskExperimentDto.getTeachingTaskId());
+            for (ExperimentDto experimentDtoTmp : experimentDtoList) {
+                if(experimentDtoTmp.getExperimentOrder() >= experimentDto.getExperimentOrder()){
+                    experimentDtoTmp.setExperimentOrder(experimentDtoTmp.getExperimentOrder());
+                    teachingTaskExperimentDao.update(experimentDtoTmp);
+                }
+            }
+        }
         teachingTaskExperimentDao.update(experimentDto);
     }
 

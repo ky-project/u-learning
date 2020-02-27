@@ -67,4 +67,12 @@ public interface TeachingTaskExperimentDao {
      * @return 试验信息集合
      */
     List<TeachingTaskExperimentEntity> listByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 根据教学任务id查询试验dto集合
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 实验dto集合
+     */
+    List<ExperimentDto> listDtoByTeachingTaskId(Long teachingTaskId);
 }
