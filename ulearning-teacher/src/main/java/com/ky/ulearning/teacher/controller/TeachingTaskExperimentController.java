@@ -89,7 +89,7 @@ public class TeachingTaskExperimentController extends BaseController {
 
     @Log("添加实验")
     @ApiOperation("添加实验")
-    @ApiOperationSupport(ignoreParameters = "id")
+    @ApiOperationSupport(ignoreParameters = {"id", "experimentOrder"})
     @PostMapping("/save")
     public ResponseEntity<JsonResult> save(ExperimentDto experimentDto) {
         ValidatorBuilder.build()
