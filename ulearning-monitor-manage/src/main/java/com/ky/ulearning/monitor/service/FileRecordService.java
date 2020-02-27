@@ -106,4 +106,9 @@ public interface FileRecordService {
      * @return 文件大小总量
      */
     Long getSumFileSize();
+
+    /**
+     * 扫描课程文件表
+     */
+    void scanCourseFileTable();
 }

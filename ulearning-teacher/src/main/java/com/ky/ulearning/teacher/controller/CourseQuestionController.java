@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
@@ -90,7 +91,7 @@ public class CourseQuestionController extends BaseController {
 
         //记录文件
         monitorManageRemoting.addFileRecord(getFileRecordDto(questionUrl, questionFile,
-                MicroConstant.COURSE_QUESTION_TABLE_NAME, null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
+                TableFileEnum.COURSE_QUESTION_TABLE.getTableName(), null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         return ResponseEntityUtil.ok(JsonResult.buildData(map));
     }
 
@@ -189,7 +190,7 @@ public class CourseQuestionController extends BaseController {
     @Log("查询所有知识模块")
     @ApiOperation(value = "查询所有知识模块")
     @GetMapping("/getAllKnowledge")
-    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAllKnowledge(){
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAllKnowledge() {
         List<KeyLabelVo> keyLabelVoList = courseQuestionService.getAllKnowledge();
         return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }

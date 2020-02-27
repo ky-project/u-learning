@@ -9,6 +9,7 @@ import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
@@ -393,7 +394,7 @@ public class AuthController extends BaseController {
                 systemManageRemoting.teacherUpdate(param);
                 //记录文件
                 monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
-                        MicroConstant.TEACHER_TABLE_NAME, jwtAccount.getId(), jwtAccount.getUsername()));
+                        TableFileEnum.TEACHER_TABLE.getTableName(), jwtAccount.getId(), jwtAccount.getUsername()));
             } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
                 //学生身份
                 //获取当前用户信息
@@ -409,7 +410,7 @@ public class AuthController extends BaseController {
                 systemManageRemoting.studentUpdate(param);
                 //记录文件
                 monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
-                        MicroConstant.STUDENT_TABLE_NAME, jwtAccount.getId(), jwtAccount.getUsername()));
+                        TableFileEnum.STUDENT_TABLE.getTableName(), jwtAccount.getId(), jwtAccount.getUsername()));
             } else {
                 return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
             }

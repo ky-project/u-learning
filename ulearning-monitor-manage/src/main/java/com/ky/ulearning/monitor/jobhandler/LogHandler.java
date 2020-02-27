@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.utils.DateUtil;
 import com.ky.ulearning.monitor.service.FileRecordService;
 import com.ky.ulearning.monitor.service.LogHistoryService;
@@ -110,7 +111,7 @@ public class LogHandler extends IJobHandler {
         fileRecordDto.setRecordName(logHistoryDto.getLogHistoryName());
         fileRecordDto.setRecordSize(logHistoryDto.getLogHistorySize());
         fileRecordDto.setRecordType(LOG_FILE_TYPE);
-        fileRecordDto.setRecordTable(MicroConstant.LOG_HISTORY_TABLE_NAME);
+        fileRecordDto.setRecordTable(TableFileEnum.LOG_HISTORY_TABLE.getTableName());
         fileRecordDto.setRecordTableId(logHistoryDto.getId());
         fileRecordDto.setUpdateBy("logHandler");
         fileRecordDto.setCreateBy("logHandler");

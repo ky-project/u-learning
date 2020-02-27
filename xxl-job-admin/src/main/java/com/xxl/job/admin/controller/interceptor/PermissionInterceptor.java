@@ -36,8 +36,8 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 
 		boolean isProxy = ! StringUtils.isEmpty(request.getHeader(LoginService.USERNAME));
 		//通过网关访问
-		request.setAttribute(REQUEST_PROXY, ! isProxy);
-		request.setAttribute(SYSTEM_SUFFIX, isProxy ? "\\".equals(systemSuffix) ? "" : systemSuffix : "");
+		request.setAttribute(REQUEST_PROXY, isProxy);
+		request.setAttribute(SYSTEM_SUFFIX, isProxy ? "/".equals(systemSuffix) ? "" : systemSuffix : "");
 
 		if (!(handler instanceof HandlerMethod)) {
 			return super.preHandle(request, response, handler);

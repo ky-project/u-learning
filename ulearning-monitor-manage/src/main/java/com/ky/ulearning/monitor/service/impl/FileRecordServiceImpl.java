@@ -1,7 +1,7 @@
 package com.ky.ulearning.monitor.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
-import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.monitor.dao.FileRecordDao;
@@ -13,9 +13,6 @@ import com.ky.ulearning.spi.monitor.dto.FileRecordDto;
 import com.ky.ulearning.spi.monitor.entity.FileRecordEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,12 +30,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true, rollbackFor = Throwable.class)
 public class FileRecordServiceImpl extends BaseService implements FileRecordService {
-
-    private static final String TEACHER_TABLE_FILE_COL = "tea_photo";
-    private static final String STUDENT_TABLE_FILE_COL = "stu_photo";
-    private static final String COURSE_QUESTION_TABLE_FILE_COL = "question_URL";
-    private static final String TEACHING_TASK_EXPERIMENT_TABLE_FILE_COL = "experiment_attachment";
-    private static final String TEACHING_TASK_NOTICE_TABLE_FILE_COL = "notice_attachment";
 
     @Autowired
     private FileRecordDao fileRecordDao;
@@ -132,7 +123,7 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
                 fileRecordDto.setRecordUrl(attachment);
                 fileRecordDto.setRecordName(attachmentNameList.get(i));
                 fileRecordDto.setRecordType(FileUtil.getExtensionName(attachment));
-                fileRecordDto.setRecordTable("u_teaching_task_notice");
+                fileRecordDto.setRecordTable(TableFileEnum.TEACHING_TASK_NOTICE_TABLE.getTableName());
                 fileRecordDto.setRecordTableId(teachingTaskNoticeEntity.getId());
                 fileRecordDto.setCreateBy("fileRecordHandler");
                 fileRecordDto.setUpdateBy("fileRecordHandler");
@@ -144,22 +135,30 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public void updateTableIdByTableAndUrl(FileRecordEntity fileRecordEntity) {
-        switch (fileRecordEntity.getRecordTable()) {
+        TableFileEnum tableFileEnum = TableFileEnum.getByTableName(fileRecordEntity.getRecordTable());
+        switch (tableFileEnum) {
             //教师表
-            case MicroConstant.TEACHER_TABLE_NAME:
-                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TEACHER_TABLE_FILE_COL);
+            case TEACHER_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.TEACHER_TABLE.getUrlColumn());
                 break;
-            case MicroConstant.STUDENT_TABLE_NAME:
-                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, STUDENT_TABLE_FILE_COL);
+            //学生表
+            case STUDENT_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.STUDENT_TABLE.getUrlColumn());
                 break;
-            case MicroConstant.COURSE_QUESTION_TABLE_NAME:
-                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, COURSE_QUESTION_TABLE_FILE_COL);
+            //试题表
+            case COURSE_QUESTION_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.COURSE_QUESTION_TABLE.getUrlColumn());
                 break;
-            case MicroConstant.TEACHING_TASK_EXPERIMENT_TABLE_NAME:
-                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TEACHING_TASK_EXPERIMENT_TABLE_FILE_COL);
+            //实验表
+            case TEACHING_TASK_EXPERIMENT_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.TEACHING_TASK_EXPERIMENT_TABLE.getUrlColumn());
                 break;
-            case MicroConstant.TEACHING_TASK_NOTICE_TABLE_NAME:
-                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TEACHING_TASK_NOTICE_TABLE_FILE_COL);
+            //通告表
+            case TEACHING_TASK_NOTICE_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.TEACHING_TASK_NOTICE_TABLE.getUrlColumn());
+                break;
+            case COURSE_FILE_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.COURSE_FILE_TABLE.getUrlColumn());
                 break;
             default:
                 break;
@@ -181,5 +180,11 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     @Override
     public Long getSumFileSize() {
         return fileRecordDao.getSumFileSize();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public void scanCourseFileTable() {
+        fileRecordDao.insertFromCourseFile();
     }
 }

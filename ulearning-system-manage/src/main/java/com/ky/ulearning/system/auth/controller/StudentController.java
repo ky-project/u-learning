@@ -7,6 +7,7 @@ import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
@@ -17,7 +18,6 @@ import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
-import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
@@ -206,7 +206,7 @@ public class StudentController extends BaseController {
         studentService.update(studentDto);
         //记录文件
         monitorManageRemoting.addFileRecord(getFileRecordDto(url, photo,
-                MicroConstant.TEACHER_TABLE_NAME, id,
+                TableFileEnum.TEACHER_TABLE.getTableName(), id,
                 RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));

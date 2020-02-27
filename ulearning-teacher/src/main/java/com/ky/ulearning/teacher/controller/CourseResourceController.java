@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
@@ -108,7 +109,7 @@ public class CourseResourceController extends BaseController {
         //保存文件信息
         courseResourceService.save(courseResourceDto, courseFileDto);
         //监控记录文件上传
-        monitorManageRemoting.add(getFileRecordDto(fileUrl, file, MicroConstant.COURSE_FILE_TABLE_NAME, courseFileDto.getId(), username));
+        monitorManageRemoting.add(getFileRecordDto(fileUrl, file, TableFileEnum.COURSE_FILE_TABLE.getTableName(), courseFileDto.getId(), username));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
@@ -242,8 +243,8 @@ public class CourseResourceController extends BaseController {
             courseResourceService.delete(courseFileResourceDto.getId(), courseFileResourceDto.getFileId(), username);
         } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileResourceDto.getFileType())) {
             //课程根目录和教师根目录无法删除
-            ValidateHandler.checkParameter(courseFileResourceDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
-            ValidateHandler.checkParameter(courseFileService.getById(courseFileResourceDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            ValidateHandler.checkParameter(courseFileResourceDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            ValidateHandler.checkParameter(courseFileService.getById(courseFileResourceDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
             //初始化文件总集合
             List<CourseFileResourceDto> courseFileResourceDtoList = new ArrayList<>();
             courseFileResourceDtoList.add(courseFileResourceDto);

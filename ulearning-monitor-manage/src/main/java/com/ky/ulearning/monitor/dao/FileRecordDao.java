@@ -117,4 +117,9 @@ public interface FileRecordDao {
      * @return 文件大小总量
      */
     Long getSumFileSize();
+
+    /**
+     * 从课程文件表插入文件记录
+     */
+    void insertFromCourseFile();
 }

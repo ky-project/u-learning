@@ -2,6 +2,8 @@ package com.ky.ulearning.monitor.jobhandler;
 
 import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.monitor.service.FileRecordService;
 import com.ky.ulearning.spi.monitor.entity.FileRecordEntity;
@@ -107,17 +109,19 @@ public class FileRecordHandler extends IJobHandler {
      * 1. 对所有含文件的表进行扫描
      */
     private void scanContainFileTables() {
-        XxlJobLogger.log("扫描u_teacher表");
+        XxlJobLogger.log("扫描" + TableFileEnum.TEACHER_TABLE.getTableName() + "表");
         fileRecordService.scanTeacherTable();
-        XxlJobLogger.log("扫描u_student表");
+        XxlJobLogger.log("扫描" + TableFileEnum.STUDENT_TABLE.getTableName() + "表");
         fileRecordService.scanStudentTable();
-        XxlJobLogger.log("扫描u_course_question表");
+        XxlJobLogger.log("扫描" + TableFileEnum.COURSE_QUESTION_TABLE.getTableName() + "表");
         fileRecordService.scanCourseQuestionTable();
-        XxlJobLogger.log("扫描u_teaching_task_experiment表");
+        XxlJobLogger.log("扫描" + TableFileEnum.TEACHING_TASK_EXPERIMENT_TABLE.getTableName() + "表");
         fileRecordService.scanTeachingTaskExperimentTable();
-        XxlJobLogger.log("扫描u_teaching_task_notice表");
+        XxlJobLogger.log("扫描" + TableFileEnum.TEACHING_TASK_NOTICE_TABLE.getTableName() + "表");
         fileRecordService.scanTeachingTaskNoticeTable();
-        XxlJobLogger.log("扫描u_log_history表");
+        XxlJobLogger.log("扫描" + TableFileEnum.LOG_HISTORY_TABLE.getTableName() + "表");
         fileRecordService.scanLogHistoryTable();
+        XxlJobLogger.log("扫描" + TableFileEnum.COURSE_FILE_TABLE.getTableName() + "表");
+        fileRecordService.scanCourseFileTable();
     }
 }

@@ -225,7 +225,7 @@
             SELECT id
             FROM ${fileRecordEntity.recordTable}
             WHERE valid = 1
-              AND ${tableFileCol} LIKE CONCAT('%', #{fileRecordEntity.recordUrl}, '%')
+              AND ${tableFileCol} = #{fileRecordEntity.recordUrl}
             LIMIT 1
         )
         WHERE valid = 1
@@ -274,4 +274,32 @@
         FROM u_file_record
         WHERE valid = 1
     </select>
+    <!--从课程文件表插入文件记录-->
+    <insert id="insertFromCourseFile">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT file_url,
+               CONCAT(file_name, '.', file_ext),
+               file_size,
+               file_ext,
+               'u_course_file',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_course_file
+        WHERE valid = 1
+          AND file_url IS NOT NULL
+          AND file_url != ''
+          AND file_url NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
 </mapper>

@@ -113,7 +113,7 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
         //若课程根目录不存在，初始化
         if (StringUtil.isEmpty(courseFileEntity)) {
             //创建课程根文件夹
-            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENTID);
+            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENT_ID);
             courseFileDao.insert(rootCourseFileDto);
             //创建用户根文件夹
             CourseFileDto teacherCourseFileDto = createFolder(courseId, username, rootCourseFileDto.getId());
@@ -161,11 +161,11 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
                     courseDocumentationDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
                     courseDocumentationDao.insert(courseDocumentationDtoTeachingTaskFolder);
                     return courseDocumentationDao.getById(courseDocumentationDtoTeachingTaskFolder.getId());
-                } else{
+                } else {
                     //查询教学任务文件夹
                     CourseFileEntity teachingTaskCourseFileEntity = courseFileDao.getByParentIdAndFileName(courseFileDocumentationDto.getFileId(), teachingTaskAlias);
                     //教学任务文件夹是否为空
-                    if(StringUtil.isEmpty(teachingTaskCourseFileEntity)){
+                    if (StringUtil.isEmpty(teachingTaskCourseFileEntity)) {
                         //创建教学任务文件夹
                         CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileEntity.getId());
                         courseFileDao.insert(teachingTaskCourseFileDto);
@@ -173,10 +173,10 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
                         courseDocumentationDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
                         courseDocumentationDao.insert(courseDocumentationDtoTeachingTaskFolder);
                         return courseDocumentationDao.getById(courseDocumentationDtoTeachingTaskFolder.getId());
-                    } else{
+                    } else {
                         CourseFileDocumentationDto teachingTaskCourseFileDocumentationDto = courseDocumentationDao.getByFileId(teachingTaskCourseFileEntity.getId());
                         //当教学任务根目录已创建，但文件资料未索引，创建索引
-                        if(StringUtil.isEmpty(teachingTaskCourseFileDocumentationDto)){
+                        if (StringUtil.isEmpty(teachingTaskCourseFileDocumentationDto)) {
                             CourseDocumentationDto courseDocumentationDto = CourseFileUtil.createCourseDocumentationDtoFolder(username);
                             courseDocumentationDto.setFileId(teachingTaskCourseFileEntity.getId());
                             courseDocumentationDao.insert(courseDocumentationDto);

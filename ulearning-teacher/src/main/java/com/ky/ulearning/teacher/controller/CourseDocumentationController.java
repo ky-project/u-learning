@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
@@ -90,7 +91,7 @@ public class CourseDocumentationController extends BaseController {
         CourseFileEntity courseFileEntity = teachingTaskValidUtil.checkCourseFileId(courseDocumentationDto.getFileParentId(), username);
         //校验teachingTaskId对应的courseId是否与courseFile对应的courseId一致
         teachingTaskValidUtil.checkTeachingTaskIdAndCourseId(courseDocumentationDto.getTeachingTaskId(), courseFileEntity.getCourseId());
-        ValidateHandler.checkParameter(courseFileEntity.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+        ValidateHandler.checkParameter(courseFileEntity.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
         //同名文件校验 1. 查询文件夹下的所有文件资料;2. 判断是否有同名文件
         Set<String> fileNameSet = Optional.ofNullable(courseDocumentationService.getListByFileParentIdAndFileType(courseDocumentationDto.getFileParentId(), MicroConstant.FILE_TYPE))
                 .map(courseFileDocumentationDtoList -> courseFileDocumentationDtoList.stream()
@@ -107,7 +108,7 @@ public class CourseDocumentationController extends BaseController {
         //保存文件信息
         courseDocumentationService.save(courseDocumentationDto, courseFileDto);
         //监控记录文件上传
-        monitorManageRemoting.add(getFileRecordDto(fileUrl, file, MicroConstant.COURSE_FILE_TABLE_NAME, courseFileDto.getId(), username));
+        monitorManageRemoting.add(getFileRecordDto(fileUrl, file, TableFileEnum.COURSE_FILE_TABLE.getTableName(), courseFileDto.getId(), username));
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
@@ -241,8 +242,8 @@ public class CourseDocumentationController extends BaseController {
             courseDocumentationService.delete(courseFileDocumentationDto.getId(), courseFileDocumentationDto.getFileId(), username);
         } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
             //课程根目录和教师根目录无法删除
-            ValidateHandler.checkParameter(courseFileDocumentationDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
-            ValidateHandler.checkParameter(courseFileService.getById(courseFileDocumentationDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENTID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            ValidateHandler.checkParameter(courseFileDocumentationDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
+            ValidateHandler.checkParameter(courseFileService.getById(courseFileDocumentationDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
             //初始化文件总集合
             List<CourseFileDocumentationDto> courseFileDocumentationDtoList = new ArrayList<>();
             courseFileDocumentationDtoList.add(courseFileDocumentationDto);

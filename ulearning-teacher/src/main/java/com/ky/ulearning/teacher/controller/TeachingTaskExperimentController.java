@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
@@ -82,7 +83,7 @@ public class TeachingTaskExperimentController extends BaseController {
         String attachmentUrl = fastDfsClientWrapper.uploadFile(attachment);
         //记录文件
         monitorManageRemoting.addFileRecord(getFileRecordDto(attachmentUrl, attachment,
-                MicroConstant.TEACHING_TASK_EXPERIMENT_TABLE_NAME, null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
+                TableFileEnum.TEACHING_TASK_EXPERIMENT_TABLE.getTableName(), null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         return ResponseEntityUtil.ok(JsonResult.buildData(new ExperimentAttachmentVo(attachmentUrl, attachment.getOriginalFilename())));
     }
 

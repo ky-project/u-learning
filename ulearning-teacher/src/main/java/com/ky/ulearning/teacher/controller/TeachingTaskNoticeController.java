@@ -6,6 +6,7 @@ import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
@@ -111,7 +112,7 @@ public class TeachingTaskNoticeController extends BaseController {
             index++;
             //记录文件
             monitorManageRemoting.addFileRecord(getFileRecordDto(noticeAttachmentUrl, attachment,
-                    MicroConstant.TEACHING_TASK_NOTICE_TABLE_NAME, null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
+                    TableFileEnum.TEACHING_TASK_NOTICE_TABLE.getTableName(), null, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class)));
         }
         return ResponseEntityUtil.ok(JsonResult.buildData(new NoticeAttachmentVo(noticeAttachment, noticeAttachmentName)));
     }
@@ -159,7 +160,7 @@ public class TeachingTaskNoticeController extends BaseController {
         //获取原通告对象并校验
         TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskValidUtil.checkNoticeId(teachingTaskNoticeDto.getId(), username);
         //教学任务校验
-        if(StringUtil.isNotEmpty(teachingTaskNoticeDto.getTeachingTaskId())){
+        if (StringUtil.isNotEmpty(teachingTaskNoticeDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, teachingTaskNoticeDto.getTeachingTaskId());
         }
         //设置更新者和教学任务id防止修改

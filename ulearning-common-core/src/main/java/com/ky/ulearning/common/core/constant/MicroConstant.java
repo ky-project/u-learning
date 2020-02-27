@@ -39,41 +39,6 @@ public class MicroConstant {
     public static final String[] LOG_TYPE = {"INFO", "ERROR"};
 
     /**
-     * 教师表名
-     */
-    public static final String TEACHER_TABLE_NAME = "u_teacher";
-
-    /**
-     * 学生表名
-     */
-    public static final String STUDENT_TABLE_NAME = "u_student";
-
-    /**
-     * 课程试题表名
-     */
-    public static final String COURSE_QUESTION_TABLE_NAME = "u_course_question";
-
-    /**
-     * 教学任务实验表名
-     */
-    public static final String TEACHING_TASK_EXPERIMENT_TABLE_NAME = "u_teaching_task_experiment";
-
-    /**
-     * 教学任务通告表名
-     */
-    public static final String TEACHING_TASK_NOTICE_TABLE_NAME = "u_teaching_task_notice";
-
-    /**
-     * 日志历史表名
-     */
-    public static final String LOG_HISTORY_TABLE_NAME = "u_log_history";
-
-    /**
-     * 课程文件表名
-     */
-    public static final String COURSE_FILE_TABLE_NAME = "u_course_file";
-
-    /**
      * 根目录名
      */
     public static final String ROOT_FOLDER = "\\";
@@ -81,7 +46,7 @@ public class MicroConstant {
     /**
      * 根目录的母节点id
      */
-    public static final long ROOT_FOLDER_PARENTID = 0L;
+    public static final long ROOT_FOLDER_PARENT_ID = 0L;
 
     /**
      * 文件夹
