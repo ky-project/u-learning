@@ -69,15 +69,29 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void update(ExperimentDto experimentDto) {
-        //修改实验序号时，需要对后面的实验序号依次+1处理
-        if (StringUtil.isNotEmpty(experimentDto.getExperimentOrder())) {
-            TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentDao.getById(experimentDto.getId());
+        TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentDao.getById(experimentDto.getId());
+        //修改实验序号时，需要对其他记录的实验序号依次处理
+        if (StringUtil.isNotEmpty(experimentDto.getExperimentOrder())
+                && !teachingTaskExperimentDto.getExperimentOrder().equals(experimentDto.getExperimentOrder())) {
             List<ExperimentDto> experimentDtoList = teachingTaskExperimentDao.listDtoByTeachingTaskId(teachingTaskExperimentDto.getTeachingTaskId());
-            for (ExperimentDto experimentDtoTmp : experimentDtoList) {
-                if (experimentDtoTmp.getExperimentOrder() >= experimentDto.getExperimentOrder()
-                        && !experimentDtoTmp.getId().equals(experimentDto.getId())) {
-                    experimentDtoTmp.setExperimentOrder(experimentDtoTmp.getExperimentOrder() + 1);
-                    teachingTaskExperimentDao.update(experimentDtoTmp);
+            //原order>新order，<=原order&&>=新order的记录order++；原order<新order，>=原order&&<=新order的记录order--
+            if (teachingTaskExperimentDto.getExperimentOrder() > experimentDto.getExperimentOrder()) {
+                for (ExperimentDto experimentDtoTmp : experimentDtoList) {
+                    if (experimentDtoTmp.getExperimentOrder() >= experimentDto.getExperimentOrder()
+                            && experimentDtoTmp.getExperimentOrder() <= teachingTaskExperimentDto.getExperimentOrder()
+                            && !experimentDtoTmp.getId().equals(experimentDto.getId())) {
+                        experimentDtoTmp.setExperimentOrder(experimentDtoTmp.getExperimentOrder() + 1);
+                        teachingTaskExperimentDao.update(experimentDtoTmp);
+                    }
+                }
+            } else{
+                for (ExperimentDto experimentDtoTmp : experimentDtoList) {
+                    if (experimentDtoTmp.getExperimentOrder() <= experimentDto.getExperimentOrder()
+                            && experimentDtoTmp.getExperimentOrder() >= teachingTaskExperimentDto.getExperimentOrder()
+                            && !experimentDtoTmp.getId().equals(experimentDto.getId())) {
+                        experimentDtoTmp.setExperimentOrder(experimentDtoTmp.getExperimentOrder() - 1);
+                        teachingTaskExperimentDao.update(experimentDtoTmp);
+                    }
                 }
             }
         }
