@@ -27,6 +27,7 @@ public enum  FileTypeEnum {
     AVI("52494646"),
     ZIP("504b0304"),
     RAR("52617221"),
+    TXT("bfedb4f8"),
     /** 待测 */
     TIF("49492a00"),
     BMP("424d"),

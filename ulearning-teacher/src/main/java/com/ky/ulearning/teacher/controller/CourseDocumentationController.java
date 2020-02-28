@@ -3,6 +3,7 @@ package com.ky.ulearning.teacher.controller;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.constant.TableFileEnum;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
@@ -79,6 +80,8 @@ public class CourseDocumentationController extends BaseController {
     public ResponseEntity<JsonResult> saveFile(MultipartFile file, CourseDocumentationDto courseDocumentationDto) throws IOException {
         ValidatorBuilder.build()
                 .ofNull(file, TeacherErrorCodeEnum.DOCUMENTATION_FILE_CANNOT_BE_NULL)
+                //文件类型篡改校验
+                .on(!FileUtil.fileTypeCheck(file), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
                 .ofNull(courseDocumentationDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getDocumentationCategory(), TeacherErrorCodeEnum.DOCUMENTATION_CATEGORY_CANNOT_BE_NULL)
                 .ofNull(courseDocumentationDto.getDocumentationShared(), TeacherErrorCodeEnum.DOCUMENTATION_SHARED_CANNOT_BE_NULL)

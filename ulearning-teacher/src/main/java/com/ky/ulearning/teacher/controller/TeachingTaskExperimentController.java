@@ -73,10 +73,10 @@ public class TeachingTaskExperimentController extends BaseController {
     public ResponseEntity<JsonResult<ExperimentAttachmentVo>> uploadAttachment(MultipartFile attachment) throws IOException {
         ValidateHandler.checkParameter(attachment == null, TeacherErrorCodeEnum.EXPERIMENT_ATTACHMENT_CANNOT_BE_NULL);
         ValidatorBuilder.build()
-                //文件类型篡改校验
-                .on(!FileUtil.fileTypeCheck(attachment), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
                 //文件类型校验
                 .on(!FileUtil.fileTypeRuleCheck(attachment, FileUtil.ATTACHMENT_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                //文件类型篡改校验
+                .on(!FileUtil.fileTypeCheck(attachment), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
                 //文件大小校验
                 .on(attachment.getSize() > defaultConfigParameters.getExperimentAttachmentMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
                 .doValidate().checkResult();

@@ -15,7 +15,7 @@ public enum CommonErrorCodeEnum implements BaseEnum {
      */
     FILE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件不能为空!"),
     FILE_TYPE_TAMPER(HttpStatus.BAD_REQUEST, "文件类型篡改!"),
-    FILE_TYPE_ERROR(HttpStatus.BAD_REQUEST, "文件类型不规范!"),
+    FILE_TYPE_ERROR(HttpStatus.BAD_REQUEST, "文件类型不支持!"),
     FILE_SIZE_ERROR(HttpStatus.BAD_REQUEST, "文件过大!"),
     OLD_PASSWORD_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "旧密码不能为空"),
     NEW_PASSWORD_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "新密码不能为空"),

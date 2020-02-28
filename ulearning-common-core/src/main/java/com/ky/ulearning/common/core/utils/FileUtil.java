@@ -56,7 +56,7 @@ public class FileUtil {
             //音频
             "mp4", "mp3", ".avi",
             //文档
-            "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf",
+            "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf", "txt",
             //压缩文件
             "zip", "rar"};
 
@@ -248,9 +248,10 @@ public class FileUtil {
      * rar:  526172211a0700cf9073
      * pptx: 504b0304140006000800
      * ppt:  d0cf11e0a1b11ae10000
+     * txt:  bfedb4f8b5c7c2bca3ba
      */
     public static void main(String[] args) throws IOException {
-        String filePath = "D:\\Mydata\\STU\\Java\\资料\\Java视频\\Java从入门到精通（第4版）（配光盘）9787302444541\\PPT\\第14章\\01 集合类概述.ppt";
+        String filePath = "F:\\desktopTmp\\信息\\上网信息.txt";
         File file = new File(filePath);
         FileInputStream input = new FileInputStream(file);
 
@@ -261,5 +262,6 @@ public class FileUtil {
         //获取当前文件的流
         String typeString = bytesToHexFileTypeString(buffer);
         System.out.println(typeString);
+        System.out.println(fileTypeCheck(multipartFile));
     }
 }

@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.utils.DateUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.monitor.dao.LogDao;
 import com.ky.ulearning.monitor.service.LogService;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -38,7 +39,10 @@ public class LogServiceImpl extends BaseService implements LogService {
     @Override
     @Transactional(rollbackFor = Throwable.class)
     public void insert(LogEntity logEntity) {
-        logDao.insert(logEntity);
+        if (StringUtil.isNotEmpty(logEntity.getLogUsername())
+                || StringUtil.isNotEmpty(logEntity.getLogIp())) {
+            logDao.insert(logEntity);
+        }
     }
 
     @Override
