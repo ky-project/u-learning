@@ -17,7 +17,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -75,8 +74,9 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
             TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentDao.getById(experimentDto.getId());
             List<ExperimentDto> experimentDtoList = teachingTaskExperimentDao.listDtoByTeachingTaskId(teachingTaskExperimentDto.getTeachingTaskId());
             for (ExperimentDto experimentDtoTmp : experimentDtoList) {
-                if(experimentDtoTmp.getExperimentOrder() >= experimentDto.getExperimentOrder()){
-                    experimentDtoTmp.setExperimentOrder(experimentDtoTmp.getExperimentOrder());
+                if (experimentDtoTmp.getExperimentOrder() >= experimentDto.getExperimentOrder()
+                        && !experimentDtoTmp.getId().equals(experimentDto.getId())) {
+                    experimentDtoTmp.setExperimentOrder(experimentDtoTmp.getExperimentOrder() + 1);
                     teachingTaskExperimentDao.update(experimentDtoTmp);
                 }
             }
