@@ -52,4 +52,10 @@ public class CourseQuestionEntity extends BaseEntity {
      */
     @ApiModelProperty("试题类型 1：选择题，2：判断题，3：多选题，4：填空题，5：简答题")
     private Integer questionType;
+
+    /**
+     * 试题选项，"|#|"分隔
+     */
+    @ApiModelProperty("试题选项，'|#|'分隔")
+    private String questionOption;
 }

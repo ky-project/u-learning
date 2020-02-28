@@ -54,6 +54,12 @@ public class QuestionDto extends BaseDto {
     private Integer questionType;
 
     /**
+     * 试题选项，"|#|"分隔
+     */
+    @ApiModelProperty("试题选项，'|#|'分隔")
+    private String questionOption;
+
+    /**
      * 教学任务ID
      */
     @ApiModelProperty("教学任务ID")
