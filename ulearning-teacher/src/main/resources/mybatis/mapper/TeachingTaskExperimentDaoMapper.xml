@@ -211,4 +211,12 @@
         AND teaching_task_id = #{teachingTaskId}
         ORDER BY experiment_order DESC
     </select>
+    <update id="delete">
+        UPDATE u_teaching_task_experiment
+        SET update_time = now(),
+            update_by   = #{updateBy},
+            valid       = 0
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>

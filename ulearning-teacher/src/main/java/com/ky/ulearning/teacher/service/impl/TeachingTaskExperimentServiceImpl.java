@@ -90,4 +90,11 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
         return Optional.ofNullable(teachingTaskExperimentDao.listByTeachingTaskId(teachingTaskId))
                 .orElse(Collections.emptyList());
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void delete(Long id, String updateBy) {
+        teachingTaskExperimentDao.delete(id, updateBy);
+    }
 }

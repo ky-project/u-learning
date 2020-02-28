@@ -182,4 +182,23 @@ public class TeachingTaskExperimentController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, attachmentBytes);
     }
+
+    @Log("删除实验")
+    @ApiOperation("删除实验")
+    @GetMapping("/delete")
+    public ResponseEntity<JsonResult> delete(Long id) {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //获取实验信息
+        TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskValidUtil.checkExperimentId(id, username);
+        //删除实验
+        teachingTaskExperimentService.delete(id, username);
+        //判断是否需要删除原图片
+        if (StringUtil.isNotEmpty(teachingTaskExperimentDto.getExperimentAttachment())) {
+            fastDfsClientWrapper.deleteFile(teachingTaskExperimentDto.getExperimentAttachment());
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
 }

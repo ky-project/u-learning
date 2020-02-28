@@ -75,4 +75,12 @@ public interface TeachingTaskExperimentDao {
      * @return 实验dto集合
      */
     List<ExperimentDto> listDtoByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 删除实验
+     *
+     * @param id       实验id
+     * @param updateBy 更新者
+     */
+    void delete(@Param("id") Long id, @Param("updateBy") String updateBy);
 }

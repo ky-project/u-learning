@@ -53,4 +53,12 @@ public interface TeachingTaskExperimentService {
      * @return 试验信息集合
      */
     List<TeachingTaskExperimentEntity> listByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 删除实验
+     *
+     * @param id       实验id
+     * @param updateBy 更新者
+     */
+    void delete(Long id, String updateBy);
 }
