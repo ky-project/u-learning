@@ -21,7 +21,7 @@ import java.util.Set;
  * @since 20/02/22 14:41
  */
 @Service
-@CacheConfig(cacheNames = "studentTeachingTask")
+//@CacheConfig(cacheNames = "studentTeachingTask")
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
 public class StudentTeachingTaskServiceImpl extends BaseService implements StudentTeachingTaskService {
 
@@ -32,20 +32,17 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
     private TeachingTaskDao teachingTaskDao;
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public StudentTeachingTaskEntity getByTeachingIdAndStuId(Long teachingTaskId, Long stuId) {
         return studentTeachingTaskDao.getByTeachingIdAndStuId(teachingTaskId, stuId);
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void insert(StudentTeachingTaskEntity studentTeachingTaskEntity) {
         studentTeachingTaskDao.insert(studentTeachingTaskEntity);
     }
 
     @Override
-    @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void deleteByTeachingTaskIdAndStuId(Long teachingTaskId, Long stuId, String updateBy) {
         studentTeachingTaskDao.deleteByTeachingTaskIdAndStuId(teachingTaskId, stuId, updateBy);
@@ -62,7 +59,6 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
     }
 
     @Override
-
     public List<KeyLabelVo> getAllTeachingTaskArray() {
         return teachingTaskDao.getAllTeachingTaskArray();
     }

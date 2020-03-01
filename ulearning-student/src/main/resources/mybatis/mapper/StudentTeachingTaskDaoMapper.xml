@@ -26,12 +26,20 @@
     </sql>
     <!--根据教学任务id和学生id查询选课信息-->
     <select id="getByTeachingIdAndStuId" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM u_student_teaching_task
-        WHERE valid = 1
-        AND teaching_task_id = #{teachingTaskId}
-        AND stu_id = #{stuId}
+        SELECT ustt.id,
+               ustt.teaching_task_id,
+               ustt.stu_id,
+               ustt.`valid`,
+               ustt.memo,
+               ustt.create_time,
+               ustt.create_by,
+               ustt.update_time,
+               ustt.update_by
+        FROM u_student_teaching_task ustt
+                 INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+        WHERE ustt.valid = 1
+          AND ustt.teaching_task_id = #{teachingTaskId}
+          AND ustt.stu_id = #{stuId}
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity" useGeneratedKeys="true">
@@ -64,9 +72,10 @@
     </select>
     <!--根据stuId查询对应的教学任务id集合-->
     <select id="getTeachingTaskIdSetByStuId" resultType="java.lang.Long">
-        SELECT teaching_task_id
-        FROM u_student_teaching_task
-        WHERE valid = 1
-          AND stu_id = #{stuId}
+        SELECT ustt.teaching_task_id
+        FROM u_student_teaching_task ustt
+                 INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+        WHERE ustt.valid = 1
+          AND ustt.stu_id = #{stuId}
     </select>
 </mapper>
