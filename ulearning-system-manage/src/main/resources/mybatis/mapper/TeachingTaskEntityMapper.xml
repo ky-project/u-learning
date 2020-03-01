@@ -206,6 +206,14 @@
         SET valid     = #{valid},
             update_by = #{updateBy}
         WHERE valid = 1
-        AND id = #{id}
+          AND id = #{id}
+    </update>
+    <!--根据课程id更新有效位-->
+    <update id="updateValidByCourseId">
+        UPDATE u_teaching_task
+        SET update_time = now(),
+            update_by   = #{updaterBy}
+        WHERE valid = 1
+          AND course_id = #{courseId}
     </update>
 </mapper>

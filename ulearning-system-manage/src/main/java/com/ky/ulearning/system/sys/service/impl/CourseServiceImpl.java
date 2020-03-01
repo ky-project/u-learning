@@ -9,6 +9,7 @@ import com.ky.ulearning.spi.system.dto.CourseDto;
 import com.ky.ulearning.spi.system.entity.CourseEntity;
 import com.ky.ulearning.spi.system.vo.CourseVo;
 import com.ky.ulearning.system.sys.dao.CourseDao;
+import com.ky.ulearning.system.sys.dao.TeachingTaskDao;
 import com.ky.ulearning.system.sys.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -33,6 +34,9 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     @Autowired
     private CourseDao courseDao;
 
+    @Autowired
+    private TeachingTaskDao teachingTaskDao;
+
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<CourseEntity> pageCourseList(CourseDto courseDto, PageParam pageParam) {
@@ -52,7 +56,7 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     public void insert(CourseDto courseDto) {
         //编号不可相同
         CourseEntity courseNumberExists = courseDao.getByCourseNumber(courseDto.getCourseNumber());
-        if(courseNumberExists != null){
+        if (courseNumberExists != null) {
             throw new EntityExistException("课程编号");
         }
 
@@ -70,9 +74,9 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     @Transactional(rollbackFor = Throwable.class)
     public void update(CourseDto courseDto) {
         //编号不可相同
-        if(! StringUtil.isEmpty(courseDto.getCourseNumber())) {
+        if (!StringUtil.isEmpty(courseDto.getCourseNumber())) {
             CourseEntity courseNumberExists = courseDao.getByCourseNumber(courseDto.getCourseNumber());
-            if (courseNumberExists != null && ! courseDto.getId().equals(courseNumberExists.getId())) {
+            if (courseNumberExists != null && !courseDto.getId().equals(courseNumberExists.getId())) {
                 throw new EntityExistException("课程编号");
             }
         }
@@ -84,6 +88,7 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id, String updaterBy) {
         courseDao.updateValidById(id, 0, updaterBy);
+        teachingTaskDao.updateValidByCourseId(id, 0, updaterBy);
     }
 
     @Override

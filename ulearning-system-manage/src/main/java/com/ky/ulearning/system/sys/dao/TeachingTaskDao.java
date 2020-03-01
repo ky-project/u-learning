@@ -82,4 +82,15 @@ public interface TeachingTaskDao {
      * @param updateBy 更新者
      */
     void updateValidById(@Param("id") Long id, @Param("valid") Integer valid, @Param("updateBy") String updateBy);
+
+    /**
+     * 根据课程id更新有效位
+     *
+     * @param courseId  课程id
+     * @param valid     有效位的值
+     * @param updaterBy 更新者
+     */
+    void updateValidByCourseId(@Param("courseId") Long courseId,
+                               @Param("valid") Integer valid,
+                               @Param("updaterBy") String updaterBy);
 }
