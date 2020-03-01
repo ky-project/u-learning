@@ -17,10 +17,9 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author luyuhao
@@ -205,5 +204,79 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
     public List<CourseFileResourceDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType) {
         return Optional.ofNullable(courseResourceDao.getListByFileParentIdAndFileType(fileParentId, fileType))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateShared(Long id, Boolean resourceShared, String updateBy) {
+        CourseFileResourceDto courseFileResourceDto = courseResourceDao.getById(id);
+        //文件/文件夹分别处理
+        if ((new Integer(MicroConstant.FILE_TYPE)).equals(courseFileResourceDto.getFileType())) {
+            //文件处理
+            if (resourceShared) {
+                //分享，向上遍历更新
+                upShared(courseFileResourceDto.getFileParentId(), resourceShared, updateBy);
+            }
+        } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileResourceDto.getFileType())) {
+            //文件夹处理
+            if (resourceShared) {
+                //分享，向上/下遍历更新
+                upShared(courseFileResourceDto.getFileParentId(), resourceShared, updateBy);
+                downShared(courseFileResourceDto.getFileId(), resourceShared, updateBy);
+            } else {
+                //取消分享，向下遍历
+                downShared(courseFileResourceDto.getFileId(), resourceShared, updateBy);
+            }
+        }
+        //更新当前文件资料
+        courseResourceDao.updateSharedById(id, resourceShared, updateBy);
+    }
+
+    /**
+     * 向上层遍历修改共享值
+     */
+    private void upShared(Long fileParentId, Boolean resourceShared, String updateBy) {
+        List<Long> idList = new ArrayList<>();
+        while (true) {
+            CourseFileResourceDto courseFileResourceDto = courseResourceDao.getByFileId(fileParentId);
+            if (StringUtil.isEmpty(courseFileResourceDto)
+                    || courseFileResourceDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID)) {
+                break;
+            }
+            fileParentId = courseFileResourceDto.getFileParentId();
+            idList.add(courseFileResourceDto.getId());
+        }
+        if (!CollectionUtils.isEmpty(idList)) {
+            //更新共享值
+            courseResourceDao.updateSharedByIds(idList, resourceShared, updateBy);
+        }
+    }
+
+    /**
+     * 向下层遍历修改共享值
+     */
+    private void downShared(Long fileId, Boolean resourceShared, String updateBy) {
+        List<Long> idList = new ArrayList<>();
+        List<Long> fileParenIdList = new LinkedList<>();
+        fileParenIdList.add(fileId);
+        while (!CollectionUtils.isEmpty(fileParenIdList)) {
+            List<CourseFileResourceDto> courseFileResourceDtoList = courseResourceDao.getListByFileParentId(fileParenIdList.get(0));
+            fileParenIdList.remove(0);
+            if (CollectionUtils.isEmpty(courseFileResourceDtoList)) {
+                continue;
+            }
+            for (CourseFileResourceDto courseFileResourceDto : courseFileResourceDtoList) {
+                //文件夹加入队列继续遍历
+                if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileResourceDto.getFileType())) {
+                    fileParenIdList.add(courseFileResourceDto.getFileId());
+                }
+                idList.add(courseFileResourceDto.getId());
+            }
+        }
+        if (!CollectionUtils.isEmpty(idList)) {
+            //更新共享值
+            courseResourceDao.updateSharedByIds(idList, resourceShared, updateBy);
+        }
     }
 }

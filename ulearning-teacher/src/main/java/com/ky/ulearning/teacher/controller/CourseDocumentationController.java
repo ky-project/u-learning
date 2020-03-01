@@ -26,6 +26,7 @@ import com.ky.ulearning.teacher.service.CourseDocumentationService;
 import com.ky.ulearning.teacher.service.CourseFileService;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -200,7 +201,7 @@ public class CourseDocumentationController extends BaseController {
     }
 
     @Log("更新文件资料")
-    @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "fileSize", "fileExt", "fileType", "fileParentId", "fileId"})
+    @ApiOperationSupport(ignoreParameters = {"teachingTaskId", "fileSize", "fileExt", "fileType", "fileParentId", "fileId", "documentationShared"})
     @ApiOperation(value = "更新文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
     @PostMapping("/update")
     public ResponseEntity<JsonResult> update(CourseFileDocumentationDto courseFileDocumentationDto) {
@@ -237,6 +238,31 @@ public class CourseDocumentationController extends BaseController {
         //参数校验
         CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
         //删除文件/文件夹
+        deleteCourseFile(courseFileDocumentationDto, username);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("批量删除文件资料")
+    @ApiOperation(value = "批量删除文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/batchDelete")
+    public ResponseEntity<JsonResult> batchDelete(String ids) {
+        ValidateHandler.checkNull(ids, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        String[] idArr = ids.split(",");
+        for (String idStr : idArr) {
+            Long id = Long.parseLong(idStr);
+            //参数校验
+            CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+            //删除文件/文件夹
+            deleteCourseFile(courseFileDocumentationDto, username);
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    /**
+     * 删除文件/文件夹
+     */
+    private void deleteCourseFile(CourseFileDocumentationDto courseFileDocumentationDto, String username) {
         if ((new Integer(MicroConstant.FILE_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
             CourseFileEntity courseFileEntity = courseFileService.getById(courseFileDocumentationDto.getFileId());
             //删除文件
@@ -251,7 +277,7 @@ public class CourseDocumentationController extends BaseController {
             List<CourseFileDocumentationDto> courseFileDocumentationDtoList = new ArrayList<>();
             courseFileDocumentationDtoList.add(courseFileDocumentationDto);
             //删除文件夹
-            List<Long> fileParentIdList = new ArrayList<>();
+            List<Long> fileParentIdList = new LinkedList<>();
             fileParentIdList.add(courseFileDocumentationDto.getFileId());
             //层级遍历文件夹
             while (!CollectionUtils.isEmpty(fileParentIdList)) {
@@ -284,7 +310,6 @@ public class CourseDocumentationController extends BaseController {
                 courseDocumentationService.delete(fileDocumentationDto.getId(), fileDocumentationDto.getFileId(), username);
             }
         }
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
 
     @Log("下载文件资料")
@@ -296,7 +321,7 @@ public class CourseDocumentationController extends BaseController {
         //参数校验
         CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
         //无法下载文件夹
-        ValidateHandler.checkParameter((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType()), TeacherErrorCodeEnum.DOCUMENTATION_GET_BY_ID_ERROR);
+        ValidateHandler.checkParameter((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType()), TeacherErrorCodeEnum.COURSE_FOLDER_CANNOT_DOWNLOAD);
         //查询文件
         CourseFileEntity courseFileEntity = courseFileService.getById(courseFileDocumentationDto.getFileId());
         ValidateHandler.checkParameter(!fastDfsClientWrapper.hasFile(courseFileEntity.getFileUrl()), TeacherErrorCodeEnum.COURSE_FILE_ILLEGAL);
@@ -308,5 +333,43 @@ public class CourseDocumentationController extends BaseController {
         //响应内容是字节流
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, courseFileBytes);
+    }
+
+    @Log("分享文件资料")
+    @ApiOperation(value = "分享文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @PostMapping("/updateShared")
+    public ResponseEntity<JsonResult> updateShared(Long id, Boolean documentationShared) {
+        ValidatorBuilder.build()
+                .ofNull(id, TeacherErrorCodeEnum.DOCUMENTATION_ID_CANNOT_BE_NULL)
+                .ofNull(documentationShared, TeacherErrorCodeEnum.DOCUMENTATION_SHARED_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+        //若修改了分享字段，进行更新
+        if(! documentationShared.equals(courseFileDocumentationDto.getDocumentationShared())){
+            courseDocumentationService.updateShared(id, documentationShared, username);
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
+    }
+
+    @Log("批量分享文件资料")
+    @ApiOperation(value = "批量分享文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
+    @PostMapping("/batchUpdateShared")
+    public ResponseEntity<JsonResult> batchUpdateShared(String ids, Boolean documentationShared) {
+        ValidatorBuilder.build()
+                .ofNull(ids, TeacherErrorCodeEnum.DOCUMENTATION_ID_CANNOT_BE_NULL)
+                .ofNull(documentationShared, TeacherErrorCodeEnum.DOCUMENTATION_SHARED_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        String[] idArr = ids.split(",");
+        for (String idStr : idArr) {
+            Long id = Long.parseLong(idStr);
+            CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+            //若修改了分享字段，进行更新
+            if(! documentationShared.equals(courseFileDocumentationDto.getDocumentationShared())){
+                courseDocumentationService.updateShared(id, documentationShared, username);
+            }
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
     }
 }

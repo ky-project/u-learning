@@ -83,4 +83,26 @@ public interface CourseResourceDao {
      * @return 课程文件教学资源
      */
     List<CourseFileResourceDto> getListByFileParentIdAndFileType(@Param("fileParentId") Long fileParentId, @Param("fileType") Integer fileType);
+
+    /**
+     * 根据id更新分享值
+     *
+     * @param id             id
+     * @param resourceShared 分享值
+     * @param updateBy       更新者
+     */
+    void updateSharedById(@Param("id") Long id,
+                          @Param("resourceShared") Boolean resourceShared,
+                          @Param("updateBy") String updateBy);
+
+    /**
+     * 根据id集合更新分享值
+     *
+     * @param idList         id集合
+     * @param resourceShared 分享值
+     * @param updateBy       更新者
+     */
+    void updateSharedByIds(@Param("idList") List<Long> idList,
+                           @Param("resourceShared") Boolean resourceShared,
+                           @Param("updateBy") String updateBy);
 }

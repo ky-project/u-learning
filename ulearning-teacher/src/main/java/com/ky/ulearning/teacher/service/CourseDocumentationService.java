@@ -88,4 +88,13 @@ public interface CourseDocumentationService {
      * @return 课程文件资料
      */
     List<CourseFileDocumentationDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType);
+
+    /**
+     * 分享课程文件资料
+     *
+     * @param id                  id
+     * @param documentationShared 是否共享
+     * @param updateBy            更新者
+     */
+    void updateShared(Long id, Boolean documentationShared, String updateBy);
 }

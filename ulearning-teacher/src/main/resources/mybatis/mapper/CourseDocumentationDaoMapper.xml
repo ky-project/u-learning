@@ -99,9 +99,6 @@
             <if test="documentationCategory != null">
                 documentation_category = #{documentationCategory,jdbcType=SMALLINT},
             </if>
-            <if test="documentationShared != null">
-                documentation_shared = #{documentationShared,jdbcType=BOOLEAN},
-            </if>
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
@@ -239,4 +236,25 @@
           AND ucf.file_type = #{fileType}
           AND ucf.file_parent_id = #{fileParentId}
     </select>
+    <!--根据id更新分享值-->
+    <update id="updateSharedByIds">
+        UPDATE u_course_documentation
+        SET update_time = now(),
+        update_by = #{updateBy},
+        documentation_shared = #{documentationShared}
+        WHERE valid = 1
+        AND id IN
+        <foreach collection="idList" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+    <!--根据id更新分享值-->
+    <update id="updateSharedById">
+        UPDATE u_course_documentation
+        SET update_time          = now(),
+            update_by            = #{updateBy},
+            documentation_shared = #{documentationShared}
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>

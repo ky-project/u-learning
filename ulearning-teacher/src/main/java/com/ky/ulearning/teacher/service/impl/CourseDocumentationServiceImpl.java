@@ -17,10 +17,9 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 文件资料service - 接口类
@@ -207,5 +206,78 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
     public List<CourseFileDocumentationDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType) {
         return Optional.ofNullable(courseDocumentationDao.getListByFileParentIdAndFileType(fileParentId, fileType))
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateShared(Long id, Boolean documentationShared, String updateBy) {
+        CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationDao.getById(id);
+        //文件/文件夹分别处理
+        if ((new Integer(MicroConstant.FILE_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
+            //文件处理
+            if (documentationShared) {
+                //分享，向上遍历更新
+                upShared(courseFileDocumentationDto.getFileParentId(), documentationShared, updateBy);
+            }
+        } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
+            //文件夹处理
+            if (documentationShared) {
+                //分享，向上/下遍历更新
+                upShared(courseFileDocumentationDto.getFileParentId(), documentationShared, updateBy);
+                downShared(courseFileDocumentationDto.getFileId(), documentationShared, updateBy);
+            } else {
+                //取消分享，向下遍历
+                downShared(courseFileDocumentationDto.getFileId(), documentationShared, updateBy);
+            }
+        }
+        //更新当前文件资料
+        courseDocumentationDao.updateSharedById(id, documentationShared, updateBy);
+    }
+
+    /**
+     * 向上层遍历修改共享值
+     */
+    private void upShared(Long fileParentId, Boolean documentationShared, String updateBy) {
+        List<Long> idList = new ArrayList<>();
+        while (true) {
+            CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationDao.getByFileId(fileParentId);
+            if (StringUtil.isEmpty(courseFileDocumentationDto) || courseFileDocumentationDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID)) {
+                break;
+            }
+            fileParentId = courseFileDocumentationDto.getFileParentId();
+            idList.add(courseFileDocumentationDto.getId());
+        }
+        if (!CollectionUtils.isEmpty(idList)) {
+            //更新共享值
+            courseDocumentationDao.updateSharedByIds(idList, documentationShared, updateBy);
+        }
+    }
+
+    /**
+     * 向下层遍历修改共享值
+     */
+    private void downShared(Long fileId, Boolean documentationShared, String updateBy) {
+        List<Long> idList = new ArrayList<>();
+        List<Long> fileParenIdList = new LinkedList<>();
+        fileParenIdList.add(fileId);
+        while (!CollectionUtils.isEmpty(fileParenIdList)) {
+            List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationDao.getListByFileParentId(fileParenIdList.get(0));
+            fileParenIdList.remove(0);
+            if (CollectionUtils.isEmpty(courseFileDocumentationDtoList)) {
+                continue;
+            }
+            for (CourseFileDocumentationDto courseFileDocumentationDto : courseFileDocumentationDtoList) {
+                //文件夹加入队列继续遍历
+                if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
+                    fileParenIdList.add(courseFileDocumentationDto.getFileId());
+                }
+                idList.add(courseFileDocumentationDto.getId());
+            }
+        }
+        if (!CollectionUtils.isEmpty(idList)) {
+            //更新共享值
+            courseDocumentationDao.updateSharedByIds(idList, documentationShared, updateBy);
+        }
     }
 }

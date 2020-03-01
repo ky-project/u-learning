@@ -86,4 +86,13 @@ public interface CourseResourceService {
      * @return 课程文件教学资源
      */
     List<CourseFileResourceDto> getListByFileParentIdAndFileType(Long fileParentId, Integer fileType);
+
+    /**
+     * 更新教学资源分享值
+     *
+     * @param id             id
+     * @param resourceShared 是否分享
+     * @param updateBy       更新者
+     */
+    void updateShared(Long id, Boolean resourceShared, String updateBy);
 }

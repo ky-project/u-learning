@@ -47,6 +47,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     RESOURCE_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资料是否共享不能为空"),
     RESOURCE_PATH_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资源所属文件夹id不能为空"),
     RESOURCE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料id不能为空"),
+    COURSE_FOLDER_CANNOT_DOWNLOAD(HttpStatus.BAD_REQUEST, "文件夹下载暂时不支持"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),

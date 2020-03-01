@@ -98,9 +98,6 @@
             <if test="resourceType != null">
                 resource_type = #{resourceType,jdbcType=SMALLINT},
             </if>
-            <if test="resourceShared != null">
-                resource_shared = #{resourceShared,jdbcType=BOOLEAN},
-            </if>
             <if test="memo != null and memo != ''">
                 memo = #{memo,jdbcType=VARCHAR},
             </if>
@@ -237,4 +234,25 @@
           AND ucf.file_type = #{fileType}
           AND ucf.file_parent_id = #{fileParentId}
     </select>
+    <!--根据id更新分享值-->
+    <update id="updateSharedById">
+        UPDATE u_course_resource
+        SET update_by       = #{updateBy},
+            update_time     = now(),
+            resource_shared = #{resourceShared}
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
+    <!--根据id集合更新分享值-->
+    <update id="updateSharedByIds">
+        UPDATE u_course_resource
+        SET update_by = #{updateBy},
+        update_time = now(),
+        resource_shared = #{resourceShared}
+        WHERE valid = 1
+        AND id IN
+        <foreach collection="idList" item="id" separator="," close=")" open="(">
+            #{id}
+        </foreach>
+    </update>
 </mapper>
