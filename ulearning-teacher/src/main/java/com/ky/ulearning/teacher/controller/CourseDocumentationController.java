@@ -165,6 +165,7 @@ public class CourseDocumentationController extends BaseController {
         Long courseId = teachingTaskService.getCourseIdById(teachingTaskId);
         //根据courseId和username查询所属用户的根路径id
         CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationService.getByCourseIdAndUsername(courseId, username, teachingTaskId);
+        courseFileDocumentationDto.setFileName(courseFileDocumentationDto.getFileName().split("#")[0]);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
     }
 
@@ -411,6 +412,16 @@ public class CourseDocumentationController extends BaseController {
         teachingTaskValidUtil.checkTeachingTask(username, courseFileDocumentationDto.getTeachingTaskId());
         //获取文件资料集合
         List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getSharedList(courseFileDocumentationDto);
+        //将教学任务fileName去除#
+        CourseFileDocumentationDto pre1 = courseDocumentationService.getByFileId(courseFileDocumentationDto.getFileParentId());
+        if(StringUtil.isNotEmpty(pre1)){
+            CourseFileEntity pre2 = courseFileService.getById(pre1.getFileParentId());
+            if(StringUtil.isNotEmpty(pre2) && (new Long(MicroConstant.ROOT_FOLDER_PARENT_ID).equals(pre2.getFileParentId()))){
+                for (CourseFileDocumentationDto fileDocumentationDto : courseFileDocumentationDtoList) {
+                    fileDocumentationDto.setFileName(fileDocumentationDto.getFileName().split("#")[0]);
+                }
+            }
+        }
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDtoList));
     }
 }
