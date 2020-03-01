@@ -65,6 +65,13 @@ public class LogAspect {
                 && StringUtil.isEmpty(logEntity.getLogIp())) {
             return result;
         }
+
+        //若是分页查询，只记录查询第一页的日志，其余查询不记录
+        if(logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)){
+            if(! logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)){
+                return result;
+            }
+        }
         //添加日志
         add(logEntity);
         return result;

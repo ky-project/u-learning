@@ -16,6 +16,16 @@ import java.util.Optional;
 public class AopUtil {
 
     /**
+     * 分页查询参数
+     */
+    public static final String PAGE_PARAM = "pageParam";
+
+    /**
+     * 查询第一页参数
+     */
+    public static final String FIRST_PAGE_PARAM = "currentPage=1";
+
+    /**
      * 创建日志对象
      *
      * @param joinPoint    切点
