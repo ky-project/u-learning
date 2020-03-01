@@ -257,4 +257,51 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--查询共享区文件资料列表-->
+    <select id="getSharedList" resultMap="CourseFileDocumentationDtoMap"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto">
+        SELECT ucd.id,
+        ucd.documentation_title,
+        ucd.documentation_summary,
+        ucd.documentation_category,
+        ucd.documentation_shared,
+        ucd.valid,
+        ucd.memo,
+        ucd.create_time,
+        ucd.create_by,
+        ucd.update_time,
+        ucd.update_by,
+        ucf.id AS file_id,
+        ucf.file_name,
+        ucf.file_size,
+        ucf.file_ext,
+        ucf.file_type,
+        ucf.file_parent_id
+        FROM u_course_file ucf
+        INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+        WHERE ucf.valid = 1
+        AND ucf.file_parent_id = #{fileParentId}
+        AND ucd.documentation_shared = 1
+        <if test="documentationTitle != null and documentationTitle != ''">
+            AND ucd.documentation_title LIKE CONCAT('%', #{documentationTitle} , '%')
+        </if>
+        <if test="documentationSummary != null and documentationSummary != ''">
+            AND ucd.documentation_summary LIKE CONCAT('%', #{documentationSummary} , '%')
+        </if>
+        <if test="documentationCategory != null">
+            AND ucd.documentation_category = #{documentationCategory}
+        </if>
+        <if test="documentationShared != null">
+            AND ucd.documentation_shared = #{documentationShared}
+        </if>
+        <if test="fileName != null and fileName != ''">
+            AND ucf.file_name LIKE CONCAT('%', #{fileName} , '%')
+        </if>
+        <if test="fileExt != null and fileExt != ''">
+            AND ucf.file_ext LIKE CONCAT('%', #{fileExt} , '%')
+        </if>
+        <if test="fileType != null">
+            AND ucf.file_type = #{fileType,jdbcType=INTEGER}
+        </if>
+    </select>
 </mapper>

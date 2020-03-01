@@ -319,7 +319,14 @@ public class CourseDocumentationController extends BaseController {
         ValidateHandler.checkNull(id, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //参数校验
-        CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
+        CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationService.getById(id);
+        //空值校验
+        ValidateHandler.checkNull(courseFileDocumentationDto, TeacherErrorCodeEnum.DOCUMENTATION_NOT_EXISTS);
+        //若为非共享文件，进行可操作验证
+        if(! courseFileDocumentationDto.getDocumentationShared()){
+            //校验课程文件id
+            teachingTaskValidUtil.checkCourseFileId(courseFileDocumentationDto.getFileId(), username);
+        }
         //无法下载文件夹
         ValidateHandler.checkParameter((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType()), TeacherErrorCodeEnum.COURSE_FOLDER_CANNOT_DOWNLOAD);
         //查询文件
@@ -371,5 +378,39 @@ public class CourseDocumentationController extends BaseController {
             }
         }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
+    }
+
+    @Log("查询文件资料分享区根节点id")
+    @ApiOperation(value = "查询文件资料分享区根节点id", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/getSharedRootFolder")
+    public ResponseEntity<JsonResult<Long>> getSharedRootFolder(Long teachingTaskId) {
+        ValidatorBuilder.build()
+                .ofNull(teachingTaskId, TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //校验教学任务id
+        teachingTaskValidUtil.checkTeachingTask(username, teachingTaskId);
+        //获取教学任务对应的课程id
+        Long courseId = teachingTaskService.getCourseIdById(teachingTaskId);
+        //根据courseId和username查询所属用户的根路径id
+        Long fileId = courseDocumentationService.getSharedByCourseId(courseId);
+        return ResponseEntityUtil.ok(JsonResult.buildData(fileId));
+    }
+
+    @Log("查询文件资料分享区列表")
+    @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
+    @ApiOperation(value = "查询文件资料分享区列表", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/sharedList")
+    public ResponseEntity<JsonResult<List<CourseFileDocumentationDto>>> sharedList(CourseFileDocumentationDto courseFileDocumentationDto) {
+        ValidatorBuilder.build()
+                .ofNull(courseFileDocumentationDto.getTeachingTaskId(), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .ofNull(courseFileDocumentationDto.getFileParentId(), TeacherErrorCodeEnum.DOCUMENTATION_PATH_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //校验教学任务id
+        teachingTaskValidUtil.checkTeachingTask(username, courseFileDocumentationDto.getTeachingTaskId());
+        //获取文件资料集合
+        List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getSharedList(courseFileDocumentationDto);
+        return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDtoList));
     }
 }

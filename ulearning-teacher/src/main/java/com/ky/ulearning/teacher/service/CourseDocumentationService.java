@@ -97,4 +97,20 @@ public interface CourseDocumentationService {
      * @param updateBy            更新者
      */
     void updateShared(Long id, Boolean documentationShared, String updateBy);
+
+    /**
+     * 根据课程id查询分享区根节点
+     *
+     * @param courseId 课程id
+     * @return 文件资料根节点对象
+     */
+    Long getSharedByCourseId(Long courseId);
+
+    /**
+     * 查询共享区文件资料列表
+     *
+     * @param courseFileDocumentationDto 查询条件
+     * @return 文件资料列表
+     */
+    List<CourseFileDocumentationDto> getSharedList(CourseFileDocumentationDto courseFileDocumentationDto);
 }

@@ -103,4 +103,12 @@ public interface CourseDocumentationDao {
     void updateSharedById(@Param("id") Long id,
                           @Param("documentationShared") Boolean documentationShared,
                           @Param("updateBy") String updateBy);
+
+    /**
+     * 查询共享区文件资料列表
+     *
+     * @param courseFileDocumentationDto 查询条件
+     * @return 文件资料列表
+     */
+    List<CourseFileDocumentationDto> getSharedList(CourseFileDocumentationDto courseFileDocumentationDto);
 }

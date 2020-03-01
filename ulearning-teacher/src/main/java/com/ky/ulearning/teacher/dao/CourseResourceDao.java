@@ -105,4 +105,12 @@ public interface CourseResourceDao {
     void updateSharedByIds(@Param("idList") List<Long> idList,
                            @Param("resourceShared") Boolean resourceShared,
                            @Param("updateBy") String updateBy);
+
+    /**
+     * 查询分享区教学资源列表
+     *
+     * @param courseFileResourceDto 查询条件
+     * @return 教学资源集合
+     */
+    List<CourseFileResourceDto> getSharedList(CourseFileResourceDto courseFileResourceDto);
 }

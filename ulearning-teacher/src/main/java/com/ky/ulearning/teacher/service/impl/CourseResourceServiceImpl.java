@@ -279,4 +279,25 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
             courseResourceDao.updateSharedByIds(idList, resourceShared, updateBy);
         }
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public Long getSharedByCourseId(Long courseId) {
+        //获取课程根节点
+        CourseFileEntity courseFileEntity = courseFileDao.getByCourseIdAndFileName(courseId, MicroConstant.ROOT_FOLDER);
+        //若课程根目录不存在，初始化
+        if (StringUtil.isEmpty(courseFileEntity)) {
+            //创建课程根文件夹
+            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENT_ID);
+            courseFileDao.insert(rootCourseFileDto);
+            return rootCourseFileDto.getId();
+        }
+        return courseFileEntity.getId();
+    }
+
+    @Override
+    public List<CourseFileResourceDto> getSharedList(CourseFileResourceDto courseFileResourceDto) {
+        return courseResourceDao.getSharedList(courseFileResourceDto);
+    }
 }

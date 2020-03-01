@@ -95,4 +95,20 @@ public interface CourseResourceService {
      * @param updateBy       更新者
      */
     void updateShared(Long id, Boolean resourceShared, String updateBy);
+
+    /**
+     * 根据课程id查询课程文件根目录id
+     *
+     * @param courseId 课程id
+     * @return 课程文件id
+     */
+    Long getSharedByCourseId(Long courseId);
+
+    /**
+     * 查询分享区教学资源列表
+     *
+     * @param courseFileResourceDto 查询条件
+     * @return 教学资源集合
+     */
+    List<CourseFileResourceDto> getSharedList(CourseFileResourceDto courseFileResourceDto);
 }

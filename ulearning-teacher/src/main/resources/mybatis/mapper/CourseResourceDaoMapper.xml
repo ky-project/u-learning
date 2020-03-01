@@ -255,4 +255,52 @@
             #{id}
         </foreach>
     </update>
+    <!--查询分享区教学资源列表-->
+    <select id="getSharedList" resultMap="CourseFileResourceDtoMap"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto">
+        SELECT ucr.id,
+        ucr.resource_title,
+        ucr.resource_summary,
+        ucr.resource_type,
+        ucr.resource_shared,
+        ucr.valid,
+        ucr.memo,
+        ucr.create_time,
+        ucr.create_by,
+        ucr.update_time,
+        ucr.update_by,
+        ucf.id AS file_id,
+        ucf.file_name,
+        ucf.file_size,
+        ucf.file_ext,
+        ucf.file_type,
+        ucf.file_parent_id
+        FROM u_course_file ucf
+        INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+        AND ucf.file_parent_id = #{fileParentId}
+        AND ucr.resource_shared = 1
+        <if test="resourceTitle != null and resourceTitle != ''">
+            AND resource_title LIKE CONCAT('%', #{resourceTitle} , '%')
+        </if>
+        <if test="resourceSummary != null and resourceSummary != ''">
+            AND resource_summary LIKE CONCAT('%', #{resourceSummary} , '%')
+        </if>
+        <if test="resourceType != null">
+            AND resource_type = #{resourceType}
+        </if>
+        <if test="resourceShared != null">
+            AND resource_shared = #{resourceShared}
+        </if>
+        <if test="fileName != null and fileName != ''">
+            AND ucf.file_name LIKE CONCAT('%', #{fileName} , '%')
+        </if>
+        <if test="fileExt != null and fileExt != ''">
+            AND ucf.file_ext LIKE CONCAT('%', #{fileExt} , '%')
+        </if>
+        <if test="fileType != null">
+            AND ucf.file_type = #{fileType,jdbcType=INTEGER}
+        </if>
+
+    </select>
 </mapper>
