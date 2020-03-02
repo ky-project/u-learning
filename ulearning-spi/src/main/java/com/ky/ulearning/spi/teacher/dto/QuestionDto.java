@@ -60,6 +60,12 @@ public class QuestionDto extends BaseDto {
     private String questionOption;
 
     /**
+     * 试题难度 0：无级别，1：容易，2：较易，3：一般，4：较难，5：困难
+     */
+    @ApiModelProperty("试题难度 0：无级别，1：容易，2：较易，3：一般，4：较难，5：困难")
+    private Integer questionDifficulty;
+
+    /**
      * 教学任务ID
      */
     @ApiModelProperty("教学任务ID")

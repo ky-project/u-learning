@@ -16,6 +16,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
+        <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
     </resultMap>
     <resultMap id="CourseQuestionDtoResultMap" type="com.ky.ulearning.spi.teacher.dto.CourseQuestionDto">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -35,6 +36,7 @@
         <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
         <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
         <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
+        <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -50,7 +52,8 @@
             create_by,
             update_time,
             update_by,
-            question_option
+            question_option,
+            question_difficulty
     </sql>
     <!--根据id查询试题-->
     <select id="getById" parameterType="java.lang.Long" resultMap="CourseQuestionDtoResultMap">
@@ -68,6 +71,7 @@
                ucq.update_time,
                ucq.update_by,
                ucq.question_option,
+               ucq.question_difficulty,
                uc.course_credit,
                uc.course_name,
                uc.course_number
@@ -82,12 +86,13 @@
         insert into u_course_question (course_id, question_text, question_URL,
                                        question_key, question_knowledge, question_type,
                                        `valid`, memo, create_time,
-                                       create_by, update_time, update_by, question_option)
+                                       create_by, update_time, update_by, question_option, question_difficulty)
         values (#{courseId,jdbcType=BIGINT}, #{questionText,jdbcType=VARCHAR}, #{questionUrl,jdbcType=VARCHAR},
                 #{questionKey,jdbcType=VARCHAR}, #{questionKnowledge,jdbcType=VARCHAR},
                 #{questionType,jdbcType=SMALLINT},
                 1, #{memo,jdbcType=VARCHAR}, now(),
-                #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, #{questionOption,jdbcType=VARCHAR})
+                #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, #{questionOption,jdbcType=VARCHAR},
+                #{questionDifficulty})
     </insert>
     <!--更新试题-->
     <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.QuestionDto">
@@ -121,6 +126,9 @@
             <if test="questionOption != null and questionOption != ''">
                 question_option = #{questionOption,jdbcType=VARCHAR},
             </if>
+            <if test="questionDifficulty != null">
+                question_difficulty = #{questionDifficulty,jdbcType=INTEGER},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -128,7 +136,7 @@
     <select id="listPage" resultMap="CourseQuestionDtoResultMap">
         SELECT ucq.id, ucq.course_id, ucq.question_text, ucq.question_URL, ucq.question_key, ucq.question_knowledge,
         ucq.question_type, ucq.valid, ucq.memo, ucq.create_time, ucq.create_by, ucq.update_time, ucq.update_by,
-        ucq.question_option,
+        ucq.question_option, ucq.question_difficulty,
         uc.course_credit, uc.course_name, uc.course_number
         FROM u_course_question ucq
         INNER JOIN u_course uc ON uc.valid = 1 AND ucq.course_id = uc.id
