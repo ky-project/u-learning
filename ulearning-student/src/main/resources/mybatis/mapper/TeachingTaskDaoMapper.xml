@@ -47,6 +47,7 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
 
         <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
+        <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -287,7 +288,8 @@
                utt.create_by,
                utt.update_time,
                utt.update_by,
-               ut.tea_name
+               ut.tea_name,
+               ut.tea_number
         FROM u_teaching_task utt
                  INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
         WHERE utt.valid = 1

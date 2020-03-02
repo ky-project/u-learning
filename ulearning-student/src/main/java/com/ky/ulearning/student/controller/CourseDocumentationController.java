@@ -52,6 +52,7 @@ public class CourseDocumentationController extends BaseController {
         studentTeachingTaskUtil.selectedTeachingTask(teachingTaskId, stuId);
         //根据courseId和username查询所属用户的根路径id
         CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationService.getByTeachingTaskId(teachingTaskId);
+        courseFileDocumentationDto.setFileName(courseFileDocumentationDto.getFileName().split("#")[0]);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
     }
 }

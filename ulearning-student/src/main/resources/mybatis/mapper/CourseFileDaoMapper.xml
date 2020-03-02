@@ -18,4 +18,31 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+
+    <sql id="Base_Column_List">
+            id,
+            course_id,
+            file_url,
+            file_name,
+            file_size,
+            file_ext,
+            file_type,
+            file_parent_id,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+
+    <!--根据courseId和文件名查询课程文件信息-->
+    <select id="getByCourseIdAndFileName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_course_file
+        WHERE valid = 1
+        AND course_id = #{courseId}
+        AND file_name = #{fileName}
+    </select>
 </mapper>
