@@ -22,4 +22,12 @@ public interface CourseFileDao {
      */
     CourseFileEntity getByCourseIdAndFileName(@Param("courseId") Long courseId,
                                               @Param("fileName") String fileName);
+
+    /**
+     * 根据id查询课程文件信息
+     *
+     * @param id 课程文件id
+     * @return 课程文件对象
+     */
+    CourseFileEntity getById(Long id);
 }

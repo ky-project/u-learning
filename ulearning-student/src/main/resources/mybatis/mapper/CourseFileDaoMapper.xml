@@ -45,4 +45,12 @@
         AND course_id = #{courseId}
         AND file_name = #{fileName}
     </select>
+    <!--根据id查询课程文件信息-->
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_course_file
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
 </mapper>

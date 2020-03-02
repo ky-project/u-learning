@@ -15,15 +15,20 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     TEACHING_TASK_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学任务id不能为空"),
     ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "id不能为空"),
     NOTICE_ATTACHMENT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "通告附件不能为空"),
+    DOCUMENTATION_PARENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料父节点id不能为空"),
 
     NOTICE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告不存在"),
     NOTICE_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告附件不存在"),
     COURSE_DOCUMENTATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师无分享的文件资料"),
+    COURSE_FILE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程文件不存在"),
+    COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
 
     STUDENT_TEACHING_TASK_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "无法重复选课"),
     STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "当前未选该课程"),
     TEACHING_TASK_NOTICE_ILLEGAL(HttpStatus.BAD_REQUEST, "当前未选该课程，无法访问该通告"),
-    NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "通告附件已失效")
+    NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "通告附件已失效"),
+
+    TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     ;
 
     private Integer code;

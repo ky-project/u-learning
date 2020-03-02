@@ -14,12 +14,15 @@ import com.ky.ulearning.student.service.CourseDocumentationService;
 import com.ky.ulearning.student.service.TeachingTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author luyuhao
@@ -55,4 +58,24 @@ public class CourseDocumentationController extends BaseController {
         courseFileDocumentationDto.setFileName(courseFileDocumentationDto.getFileName().split("#")[0]);
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
     }
+
+    @Log("查询文件资料列表")
+    @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
+    @ApiOperation(value = "查询文件资料列表", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/list")
+    public ResponseEntity<JsonResult<List<CourseFileDocumentationDto>>> list(CourseFileDocumentationDto courseFileDocumentationDto) {
+        ValidatorBuilder.build()
+                .ofNull(courseFileDocumentationDto.getTeachingTaskId(), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .ofNull(courseFileDocumentationDto.getFileParentId(), StudentErrorCodeEnum.DOCUMENTATION_PARENT_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
+        //校验教学任务id
+        studentTeachingTaskUtil.selectedTeachingTask(courseFileDocumentationDto.getTeachingTaskId(), stuId);
+        //校验课程文件
+        studentTeachingTaskUtil.checkCourseFileId(courseFileDocumentationDto.getFileParentId(), courseFileDocumentationDto.getTeachingTaskId());
+        //获取文件资料集合
+        List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getList(courseFileDocumentationDto);
+        return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDtoList));
+    }
+
 }

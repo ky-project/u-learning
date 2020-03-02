@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author luyuhao
  * @since 20/02/22 20:36
@@ -22,4 +24,12 @@ public interface CourseDocumentationDao {
      */
     CourseFileDocumentationDto getByCourseIdAndFileName(@Param("courseId") Long courseId,
                                                         @Param("fileName") String fileName);
+
+    /**
+     * 查询文件资料集合
+     *
+     * @param courseFileDocumentationDto 筛选对象
+     * @return 返回课程文件资料集合
+     */
+    List<CourseFileDocumentationDto> getList(CourseFileDocumentationDto courseFileDocumentationDto);
 }

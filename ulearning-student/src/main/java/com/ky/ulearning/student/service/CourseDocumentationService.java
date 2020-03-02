@@ -2,6 +2,8 @@ package com.ky.ulearning.student.service;
 
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 
+import java.util.List;
+
 /**
  * @author luyuhao
  * @since 20/02/22 20:35
@@ -15,4 +17,12 @@ public interface CourseDocumentationService {
      * @return 课程文件资料对象
      */
     CourseFileDocumentationDto getByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 查询文件资料集合
+     *
+     * @param courseFileDocumentationDto 筛选对象
+     * @return 返回课程文件资料集合
+     */
+    List<CourseFileDocumentationDto> getList(CourseFileDocumentationDto courseFileDocumentationDto);
 }
