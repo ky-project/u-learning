@@ -248,10 +248,10 @@ public class FileUtil {
      * rar:  526172211a0700cf9073
      * pptx: 504b0304140006000800
      * ppt:  d0cf11e0a1b11ae10000
-     * txt:  bfedb4f8b5c7c2bca3ba
+     * txt:  00000000000000000000
      */
     public static void main(String[] args) throws IOException {
-        String filePath = "F:\\desktopTmp\\信息\\上网信息.txt";
+        String filePath = "D:\\data\\desktop\\test.txt";
         File file = new File(filePath);
         FileInputStream input = new FileInputStream(file);
 

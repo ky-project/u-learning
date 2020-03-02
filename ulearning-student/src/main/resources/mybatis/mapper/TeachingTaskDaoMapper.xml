@@ -45,20 +45,22 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+
+        <result column="tea_name" jdbcType="VARCHAR" property="teaName"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-            id,
-            course_id,
-            tea_id,
-            teaching_task_alias,
-            term,
-            `valid`,
-            memo,
-            create_time,
-            create_by,
-            update_time,
-            update_by
+        id,
+        course_id,
+        tea_id,
+        teaching_task_alias,
+        term,
+        `valid`,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by
     </sql>
 
     <!--分页查询未选教学任务信息-->
@@ -264,5 +266,31 @@
         FROM u_teaching_task utt
                  INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
         WHERE utt.valid = 1
+    </select>
+    <!--根据教学任务id查询课程id-->
+    <select id="getCourseIdById" resultType="java.lang.Long">
+        SELECT course_id
+        FROM u_teaching_task
+        WHERE valid = 1
+          AND id = #{id}
+    </select>
+    <!--根据id查询教学任务dto对象-->
+    <select id="getDtoById" resultMap="TeachingTaskDtoResultMap">
+        SELECT utt.id,
+               utt.course_id,
+               utt.tea_id,
+               utt.teaching_task_alias,
+               utt.term,
+               utt.valid,
+               utt.memo,
+               utt.create_time,
+               utt.create_by,
+               utt.update_time,
+               utt.update_by,
+               ut.tea_name
+        FROM u_teaching_task utt
+                 INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
+        WHERE utt.valid = 1
+          AND utt.id = #{id}
     </select>
 </mapper>

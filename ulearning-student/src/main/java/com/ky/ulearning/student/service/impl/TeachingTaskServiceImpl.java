@@ -9,6 +9,7 @@ import com.ky.ulearning.student.dao.TeachingTaskDao;
 import com.ky.ulearning.student.service.TeachingTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,5 +51,11 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
                 //设置查询结果
                 .setContent(teacherList);
         return setPageBeanProperties(pageBean, pageParam);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public Long getCourseIdById(Long id) {
+        return teachingTaskDao.getCourseIdById(id);
     }
 }

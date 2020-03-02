@@ -30,4 +30,12 @@ public interface TeachingTaskService {
      * @return 封装教学任务信息的分页对象
      */
     PageBean<TeachingTaskEntity> pageSelectedList(TeachingTaskDto teachingTaskDto, PageParam pageParam);
+
+    /**
+     * 根据教学任务id查询课程id
+     *
+     * @param id 教学任务id
+     * @return 课程id
+     */
+    Long getCourseIdById(Long id);
 }

@@ -18,6 +18,7 @@ public enum StudentErrorCodeEnum implements BaseEnum {
 
     NOTICE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告不存在"),
     NOTICE_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告附件不存在"),
+    NOTICE_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告附件不存在"),
 
     STUDENT_TEACHING_TASK_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "无法重复选课"),
     STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "当前未选该课程"),

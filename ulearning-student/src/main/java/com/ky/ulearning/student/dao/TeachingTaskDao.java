@@ -60,4 +60,20 @@ public interface TeachingTaskDao {
      * @return 教学任务id-教学任务名
      */
     List<KeyLabelVo> getAllTeachingTaskArray();
+
+    /**
+     * 根据教学任务id查询课程id
+     *
+     * @param id 教学任务id
+     * @return 课程id
+     */
+    Long getCourseIdById(Long id);
+
+    /**
+     * 根据id查询教学任务dto对象
+     *
+     * @param id 教学任务id
+     * @return 教学任务dto对象
+     */
+    TeachingTaskDto getDtoById(Long id);
 }
