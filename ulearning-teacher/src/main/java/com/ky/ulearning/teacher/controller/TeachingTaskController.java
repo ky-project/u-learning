@@ -142,7 +142,6 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseTeachingTaskDto));
     }
 
-    @Log("获取教师所有的教学任务")
     @ApiOperation(value = "获取教师所有的教学任务")
     @GetMapping("/getAll")
     public ResponseEntity<JsonResult<List<TeachingTaskVo>>> getAll(){

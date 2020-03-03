@@ -39,21 +39,21 @@
         <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
     </resultMap>
     <sql id="Base_Column_List">
-            id,
-            course_id,
-            question_text,
-            question_URL,
-            question_key,
-            question_knowledge,
-            question_type,
-            `valid`,
-            memo,
-            create_time,
-            create_by,
-            update_time,
-            update_by,
-            question_option,
-            question_difficulty
+        id,
+        course_id,
+        question_text,
+        question_URL,
+        question_key,
+        question_knowledge,
+        question_type,
+        `valid`,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by,
+        question_option,
+        question_difficulty
     </sql>
     <!--根据id查询试题-->
     <select id="getById" parameterType="java.lang.Long" resultMap="CourseQuestionDtoResultMap">
@@ -198,6 +198,18 @@
                  SELECT DISTINCT question_knowledge
                  FROM u_course_question
                  WHERE valid = 1
+             ) ucqqk
+    </select>
+    <!--根据课程id查询知识模块-->
+    <select id="getKnowledgeByCourseId" parameterType="java.lang.Long"
+            resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT ucqqk.question_knowledge AS `key`,
+               ucqqk.question_knowledge AS label
+        FROM (
+                 SELECT DISTINCT question_knowledge
+                 FROM u_course_question
+                 WHERE valid = 1
+                   AND course_id = #{courseId}
              ) ucqqk
     </select>
 </mapper>

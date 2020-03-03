@@ -187,11 +187,22 @@ public class CourseQuestionController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
 
-    @Log("查询所有知识模块")
     @ApiOperation(value = "查询所有知识模块")
     @GetMapping("/getAllKnowledge")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAllKnowledge() {
         List<KeyLabelVo> keyLabelVoList = courseQuestionService.getAllKnowledge();
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
+    }
+
+    @ApiOperation(value = "根据教学任务id查询知识模块")
+    @GetMapping("/getKnowledgeByTeachingTaskId")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getKnowledgeByTeachingTaskId(Long teachingTaskId) {
+        ValidatorBuilder.build()
+                .ofNull(teachingTaskId, TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskId);
+        Long courseId = teachingTaskService.getCourseIdById(teachingTaskId);
+        List<KeyLabelVo> keyLabelVoList = courseQuestionService.getKnowledgeByCourseId(courseId);
         return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 }

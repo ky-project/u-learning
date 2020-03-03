@@ -77,4 +77,12 @@ public interface CourseQuestionDao {
      * @return 知识模块-知识模块
      */
     List<KeyLabelVo> getAllKnowledge();
+
+    /**
+     * 根据课程id查询知识模块
+     *
+     * @param courseId 课程id
+     * @return 知识模块-知识模块
+     */
+    List<KeyLabelVo> getKnowledgeByCourseId(Long courseId);
 }

@@ -75,4 +75,9 @@ public class CourseQuestionServiceImpl extends BaseService implements CourseQues
     public List<KeyLabelVo> getAllKnowledge() {
         return courseQuestionDao.getAllKnowledge();
     }
+
+    @Override
+    public List<KeyLabelVo> getKnowledgeByCourseId(Long courseId) {
+        return courseQuestionDao.getKnowledgeByCourseId(courseId);
+    }
 }
