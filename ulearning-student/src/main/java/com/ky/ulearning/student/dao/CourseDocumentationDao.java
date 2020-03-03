@@ -32,4 +32,12 @@ public interface CourseDocumentationDao {
      * @return 返回课程文件资料集合
      */
     List<CourseFileDocumentationDto> getList(CourseFileDocumentationDto courseFileDocumentationDto);
+
+    /**
+     * 根据id查询文件资料
+     *
+     * @param id 文件资料id
+     * @return 文件资料实体类
+     */
+    CourseFileDocumentationDto getById(Long id);
 }

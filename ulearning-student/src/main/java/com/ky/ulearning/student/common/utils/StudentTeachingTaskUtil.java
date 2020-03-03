@@ -78,4 +78,16 @@ public class StudentTeachingTaskUtil {
         ValidateHandler.checkNull(courseIdCheck, StudentErrorCodeEnum.COURSE_ID_NOT_EXISTS);
         ValidateHandler.checkParameter(!courseIdCheck.equals(courseId), StudentErrorCodeEnum.TEACHING_TASK_ID_ERROR);
     }
+
+    /**
+     * 验证学生是否有操作文件的权限
+     */
+    public CourseFileEntity checkCourseFileIdByStuId(Long fileId, Long stuId) {
+        CourseFileEntity courseFileEntity = courseFileService.getById(fileId);
+        ValidateHandler.checkNull(courseFileEntity, StudentErrorCodeEnum.COURSE_FILE_NOT_EXISTS);
+        //根据学生id查询该学生选的所有教学任务所对应的courseId
+        Set<Long> courseIdSet = studentTeachingTaskService.getCourseIdSetByStuId(stuId);
+        ValidateHandler.checkParameter(!courseIdSet.contains(courseFileEntity.getCourseId()), StudentErrorCodeEnum.COURSE_FILE_ILLEGAL);
+        return courseFileEntity;
+    }
 }
