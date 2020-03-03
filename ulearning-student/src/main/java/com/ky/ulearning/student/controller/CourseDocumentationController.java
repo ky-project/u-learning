@@ -47,13 +47,9 @@ public class CourseDocumentationController extends BaseController {
     private StudentTeachingTaskUtil studentTeachingTaskUtil;
 
     @Autowired
-    private TeachingTaskService teachingTaskService;
-
-    @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
 
-    @Log("查询教学资源根节点")
-    @ApiOperation(value = "查询教学资源根节点", notes = "只能查看/操作已选教学任务的通告数据")
+    @ApiOperation(value = "查询文件资料根节点", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getRootFolder")
     public ResponseEntity<JsonResult<CourseFileDocumentationDto>> getRootFolder(Long teachingTaskId) {
         ValidatorBuilder.build()
@@ -70,7 +66,7 @@ public class CourseDocumentationController extends BaseController {
 
     @Log("查询文件资料列表")
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
-    @ApiOperation(value = "查询文件资料列表", notes = "只能查看/操作已选教学任务的通告数据")
+    @ApiOperation(value = "查询文件资料列表", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/list")
     public ResponseEntity<JsonResult<List<CourseFileDocumentationDto>>> list(CourseFileDocumentationDto courseFileDocumentationDto) {
         ValidatorBuilder.build()
@@ -88,7 +84,7 @@ public class CourseDocumentationController extends BaseController {
     }
 
     @Log("下载文件资料")
-    @ApiOperation(value = "下载文件资料", notes = "只能查看/操作已选教学任务的通告数据")
+    @ApiOperation(value = "下载文件资料", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/download")
     public ResponseEntity download(Long id) {
         ValidateHandler.checkNull(id, StudentErrorCodeEnum.ID_CANNOT_BE_NULL);
