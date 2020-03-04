@@ -31,6 +31,8 @@ management:
     # 关闭redis检测
     redis:
       enabled: false
+    mail:
+      enabled: false
   endpoints:
     web:
       exposure:
