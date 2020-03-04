@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.controller;
 
+import com.ky.ulearning.common.core.annotation.DeleteUserRedis;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
@@ -92,6 +93,7 @@ public class RoleController extends BaseController {
     }
 
     @Log("删除角色")
+    @DeleteUserRedis
     @ApiOperation(value = "删除角色")
     @PermissionName(source = "role:delete", name = "删除角色", group = "角色管理")
     @GetMapping("/delete")
@@ -102,6 +104,7 @@ public class RoleController extends BaseController {
     }
 
     @Log("更新角色")
+    @DeleteUserRedis
     @ApiOperation(value = "更新角色")
     @PermissionName(source = "role:update", name = "更新角色", group = "角色管理")
     @PostMapping("/update")
@@ -118,12 +121,13 @@ public class RoleController extends BaseController {
     @PermissionName(source = "role:getAssignedPermission", name = "查询角色已分配权限", group = "角色管理")
     @GetMapping("/getAssignedPermission")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAssignedPermission(Long roleId) {
-        List<KeyLabelVo> KeyLabelVoList = rolePermissionService.getAssignedPermission(roleId);
+        List<KeyLabelVo> keyLabelVoList = rolePermissionService.getAssignedPermission(roleId);
 
-        return ResponseEntityUtil.ok(JsonResult.buildData(KeyLabelVoList));
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 
     @Log("角色分配权限")
+    @DeleteUserRedis
     @ApiOperation(value = "角色分配权限")
     @ApiImplicitParam(name = "permissionIds", value = "权限id字符串，逗号分隔")
     @PermissionName(source = "role:saveAssignedPermission", name = "角色分配权限", group = "角色管理")

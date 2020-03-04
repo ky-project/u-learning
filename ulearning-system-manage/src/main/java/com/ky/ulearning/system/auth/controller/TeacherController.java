@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.controller;
 
+import com.ky.ulearning.common.core.annotation.DeleteUserRedis;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
@@ -100,6 +101,7 @@ public class TeacherController extends BaseController {
     }
 
     @Log("教师删除")
+    @DeleteUserRedis
     @ApiOperation(value = "教师删除")
     @PermissionName(source = "teacher:delete", name = "教师删除", group = "教师管理")
     @GetMapping("/delete")
@@ -172,6 +174,7 @@ public class TeacherController extends BaseController {
     }
 
     @Log("更新教师信息")
+    @DeleteUserRedis
     @ApiOperation(value = "更新教师信息")
     @PermissionName(source = "teacher:update", name = "更新教师信息", group = "教师管理")
     @PostMapping("/update")
@@ -188,6 +191,7 @@ public class TeacherController extends BaseController {
     }
 
     @Log("分配教师角色")
+    @DeleteUserRedis
     @ApiOperation("分配教师角色")
     @ApiImplicitParam(name = "roleIds", value = "角色ids字符串，逗号分隔")
     @PermissionName(source = "teacher:saveAssignedRole", name = "分配教师角色", group = "教师管理")
@@ -224,6 +228,7 @@ public class TeacherController extends BaseController {
     }
 
     @Log("上传头像")
+    @DeleteUserRedis
     @ApiOperation("上传头像")
     @PermissionName(source = "teacher:uploadPhoto", name = "上传头像", group = "教师管理")
     @PostMapping("/uploadPhoto")
@@ -262,6 +267,7 @@ public class TeacherController extends BaseController {
     }
 
     @Log("更新密码")
+    @DeleteUserRedis
     @ApiOperation("更新密码")
     @PermissionName(source = "teacher:updatePassword", name = "更新密码", group = "教师管理")
     @PostMapping("/updatePassword")

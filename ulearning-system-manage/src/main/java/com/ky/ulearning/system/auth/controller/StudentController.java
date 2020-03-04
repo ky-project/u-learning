@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.controller;
 
+import com.ky.ulearning.common.core.annotation.DeleteUserRedis;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
@@ -101,6 +102,7 @@ public class StudentController extends BaseController {
     }
 
     @Log("删除学生")
+    @DeleteUserRedis
     @ApiOperation(value = "删除学生")
     @PermissionName(source = "student:delete", name = "删除学生", group = "学生管理")
     @GetMapping("/delete")
@@ -111,6 +113,7 @@ public class StudentController extends BaseController {
     }
 
     @Log("学生更新")
+    @DeleteUserRedis
     @ApiOperation(value = "学生更新")
     @PermissionName(source = "student:update", name = "学生更新", group = "学生管理")
     @PostMapping("/update")
@@ -147,6 +150,7 @@ public class StudentController extends BaseController {
     }
 
     @Log("更新密码")
+    @DeleteUserRedis
     @ApiOperation("更新密码")
     @PermissionName(source = "student:updatePassword", name = "更新密码", group = "学生管理")
     @PostMapping("/updatePassword")
@@ -175,6 +179,7 @@ public class StudentController extends BaseController {
     }
 
     @Log("上传头像")
+    @DeleteUserRedis
     @ApiOperation("上传头像")
     @PermissionName(source = "student:uploadPhoto", name = "上传头像", group = "学生管理")
     @PostMapping("/uploadPhoto")
