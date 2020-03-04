@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.student.dao.TeachingTaskExperimentDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.TeachingTaskExperimentEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="experiment_order" jdbcType="SMALLINT" property="experimentOrder"/>
+        <result column="experiment_title" jdbcType="VARCHAR" property="experimentTitle"/>
+        <result column="experiment_content" jdbcType="VARCHAR" property="experimentContent"/>
+        <result column="experiment_attachment" jdbcType="VARCHAR" property="experimentAttachment"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+    </resultMap>
+    <resultMap id="TeachingTaskExperimentDtoResultMap"
+               type="com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="experiment_order" jdbcType="SMALLINT" property="experimentOrder"/>
+        <result column="experiment_title" jdbcType="VARCHAR" property="experimentTitle"/>
+        <result column="experiment_content" jdbcType="VARCHAR" property="experimentContent"/>
+        <result column="experiment_attachment" jdbcType="VARCHAR" property="experimentAttachment"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+    </resultMap>
+    <resultMap id="ExperimentDtoResultMap"
+               type="com.ky.ulearning.spi.teacher.dto.ExperimentDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="experiment_order" jdbcType="SMALLINT" property="experimentOrder"/>
+        <result column="experiment_title" jdbcType="VARCHAR" property="experimentTitle"/>
+        <result column="experiment_content" jdbcType="VARCHAR" property="experimentContent"/>
+        <result column="experiment_attachment" jdbcType="VARCHAR" property="experimentAttachment"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            experiment_order,
+            experiment_title,
+            experiment_content,
+            experiment_attachment,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            experiment_attachment_name
+    </sql>
+</mapper>
