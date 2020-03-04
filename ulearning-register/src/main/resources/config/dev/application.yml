@@ -18,9 +18,9 @@ eureka:
   server:
     enable-self-preservation: true
   instance:
-    hostname: localhost
+    hostname: wyf.darren1112.com
   client:
-    register-with-eureka: false
+    register-with-eureka: true
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
