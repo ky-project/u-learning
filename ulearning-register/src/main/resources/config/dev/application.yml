@@ -27,3 +27,13 @@ eureka:
 
 logging:
   config: classpath:config/dev/logback.xml
+
+#监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
