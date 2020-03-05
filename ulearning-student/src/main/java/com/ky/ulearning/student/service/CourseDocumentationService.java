@@ -25,4 +25,12 @@ public interface CourseDocumentationService {
      * @return 返回课程文件资料集合
      */
     List<CourseFileDocumentationDto> getList(CourseFileDocumentationDto courseFileDocumentationDto);
+
+    /**
+     * 根据id查询课程文件资料对象
+     *
+     * @param id 文件资料id
+     * @return 课程文件资料对象
+     */
+    CourseFileDocumentationDto getById(Long id);
 }

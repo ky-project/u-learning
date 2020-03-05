@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * redis封装工具类
@@ -32,6 +33,22 @@ public class RedisClientWrapper {
         if (!CollectionUtils.isEmpty(keys)) {
             redisTemplate.delete(keys);
         }
+    }
+
+    /**
+     * 根据前缀匹配所有key
+     */
+    public Set<Object> getKeysByPrefix(String prefix) {
+        Set<Object> keys = redisTemplate.keys(prefix + "*");
+        return Optional.ofNullable(keys)
+                .orElse(Collections.emptySet());
+    }
+
+    /**
+     * 批量删除缓存
+     */
+    public void batchDeleteByPrefix(String prefix){
+        redisTemplate.delete(getKeysByPrefix(prefix));
     }
 
     /**

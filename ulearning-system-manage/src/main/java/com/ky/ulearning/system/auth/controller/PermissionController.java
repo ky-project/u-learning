@@ -1,5 +1,6 @@
 package com.ky.ulearning.system.auth.controller;
 
+import com.ky.ulearning.common.core.annotation.DeleteUserRedis;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
@@ -84,6 +85,7 @@ public class PermissionController extends BaseController {
     }
 
     @Log("删除权限")
+    @DeleteUserRedis
     @ApiOperation("删除权限")
     @PermissionName(source = "permission:delete", name = "删除权限", group = "权限管理")
     @GetMapping("/delete")
@@ -96,6 +98,7 @@ public class PermissionController extends BaseController {
     }
 
     @Log("更新权限")
+    @DeleteUserRedis
     @ApiOperation("更新权限")
     @PermissionName(source = "permission:update", name = "更新权限", group = "权限管理")
     @PostMapping("/update")

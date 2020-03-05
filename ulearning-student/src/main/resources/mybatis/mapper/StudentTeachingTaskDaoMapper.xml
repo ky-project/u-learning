@@ -78,4 +78,12 @@
         WHERE ustt.valid = 1
           AND ustt.stu_id = #{stuId}
     </select>
+    <!--根据学生id查询学生所选的所有教学任务对应的课程id-->
+    <select id="getCourseIdSetByStuId" resultType="java.lang.Long">
+        SELECT utt.course_id
+        FROM u_student_teaching_task ustt
+                 INNER JOIN u_teaching_task utt ON utt.valid = 1 AND ustt.teaching_task_id = utt.id
+        WHERE ustt.valid = 1
+          AND ustt.stu_id = #{stuId}
+    </select>
 </mapper>

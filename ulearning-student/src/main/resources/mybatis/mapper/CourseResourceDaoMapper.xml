@@ -50,4 +50,98 @@
             update_by,
             file_id
     </sql>
+    <!--根据课程id和文件名查询教学资源对象-->
+    <select id="getByCourseIdAndFileName" resultMap="CourseFileResourceDtoMap">
+        SELECT ucr.id,
+               ucr.resource_title,
+               ucr.resource_summary,
+               ucr.resource_type,
+               ucr.resource_shared,
+               ucr.valid,
+               ucr.memo,
+               ucr.create_time,
+               ucr.create_by,
+               ucr.update_time,
+               ucr.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+          AND ucf.course_id = #{courseId}
+          AND ucf.file_name = #{fileName}
+    </select>
+    <select id="getList" resultMap="CourseFileResourceDtoMap"
+            parameterType="com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto">
+        SELECT ucr.id,
+        ucr.resource_title,
+        ucr.resource_summary,
+        ucr.resource_type,
+        ucr.resource_shared,
+        ucr.valid,
+        ucr.memo,
+        ucr.create_time,
+        ucr.create_by,
+        ucr.update_time,
+        ucr.update_by,
+        ucf.id AS file_id,
+        ucf.file_name,
+        ucf.file_size,
+        ucf.file_ext,
+        ucf.file_type,
+        ucf.file_parent_id
+        FROM u_course_file ucf
+        INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+        AND ucf.file_parent_id = #{fileParentId}
+        <if test="resourceTitle != null and resourceTitle != ''">
+            AND resource_title LIKE CONCAT('%', #{resourceTitle} , '%')
+        </if>
+        <if test="resourceSummary != null and resourceSummary != ''">
+            AND resource_summary LIKE CONCAT('%', #{resourceSummary} , '%')
+        </if>
+        <if test="resourceType != null">
+            AND resource_type = #{resourceType}
+        </if>
+        <if test="resourceShared != null">
+            AND resource_shared = #{resourceShared}
+        </if>
+        <if test="fileName != null and fileName != ''">
+            AND ucf.file_name LIKE CONCAT('%', #{fileName} , '%')
+        </if>
+        <if test="fileExt != null and fileExt != ''">
+            AND ucf.file_ext LIKE CONCAT('%', #{fileExt} , '%')
+        </if>
+        <if test="fileType != null">
+            AND ucf.file_type = #{fileType,jdbcType=INTEGER}
+        </if>
+    </select>
+    <!--根据id查询教学资源信息-->
+    <select id="getById" resultMap="CourseFileResourceDtoMap">
+        SELECT ucr.id,
+               ucr.resource_title,
+               ucr.resource_summary,
+               ucr.resource_type,
+               ucr.resource_shared,
+               ucr.valid,
+               ucr.memo,
+               ucr.create_time,
+               ucr.create_by,
+               ucr.update_time,
+               ucr.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
+        WHERE ucf.valid = 1
+          AND ucr.id = #{id}
+    </select>
 </mapper>

@@ -107,4 +107,28 @@
             AND ucf.file_type = #{fileType,jdbcType=INTEGER}
         </if>
     </select>
+    <!--根据id查询文件资料-->
+    <select id="getById" resultMap="CourseFileDocumentationDtoMap">
+        SELECT ucd.id,
+               ucd.documentation_title,
+               ucd.documentation_summary,
+               ucd.documentation_category,
+               ucd.documentation_shared,
+               ucd.valid,
+               ucd.memo,
+               ucd.create_time,
+               ucd.create_by,
+               ucd.update_time,
+               ucd.update_by,
+               ucf.id AS file_id,
+               ucf.file_name,
+               ucf.file_size,
+               ucf.file_ext,
+               ucf.file_type,
+               ucf.file_parent_id
+        FROM u_course_file ucf
+                 INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
+        WHERE ucf.valid = 1
+          AND ucd.id = #{id}
+    </select>
 </mapper>

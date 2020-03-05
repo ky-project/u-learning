@@ -62,4 +62,9 @@ public class StudentTeachingTaskServiceImpl extends BaseService implements Stude
     public List<KeyLabelVo> getAllTeachingTaskArray() {
         return teachingTaskDao.getAllTeachingTaskArray();
     }
+
+    @Override
+    public Set<Long> getCourseIdSetByStuId(Long stuId) {
+        return studentTeachingTaskDao.getCourseIdSetByStuId(stuId);
+    }
 }

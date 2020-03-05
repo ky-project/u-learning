@@ -63,4 +63,9 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
     public List<CourseFileDocumentationDto> getList(CourseFileDocumentationDto courseFileDocumentationDto) {
         return courseDocumentationDao.getList(courseFileDocumentationDto);
     }
+
+    @Override
+    public CourseFileDocumentationDto getById(Long id) {
+        return courseDocumentationDao.getById(id);
+    }
 }

@@ -18,12 +18,22 @@ eureka:
   server:
     enable-self-preservation: true
   instance:
-    hostname: localhost
+    hostname: wyf.darren1112.com
   client:
-    register-with-eureka: false
+    register-with-eureka: true
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 
 logging:
   config: classpath:config/dev/logback.xml
+
+#监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

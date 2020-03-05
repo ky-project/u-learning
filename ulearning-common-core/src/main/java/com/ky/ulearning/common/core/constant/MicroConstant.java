@@ -58,4 +58,14 @@ public class MicroConstant {
      */
     public static final int FILE_TYPE = 1;
 
+    /**
+     * 登录用户信息存于redis中的前缀
+     */
+    public static final String LOGIN_USER_REDIS_PREFIX = "loginUser::";
+
+    /**
+     * 登录用户信息存于redis的有效期
+     */
+    public static final long LOGIN_USER_REDIS_EXPIRE = 7200;
+
 }

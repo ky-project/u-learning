@@ -1,7 +1,11 @@
 package com.ky.ulearning.gateway.common.security;
 
+import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.JsonUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.conversion.UserContextJwtAccountMapper;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
@@ -31,8 +35,22 @@ public class JwtAccountDetailsService implements UserDetailsService {
     @Autowired
     private UserContextJwtAccountMapper userContextJwtAccountMapper;
 
+    @Autowired
+    private RedisClientWrapper redisClientWrapper;
+
+    /**
+     * 1. 先从缓存中获取
+     * 2. 缓存未命中再去调用接口
+     *
+     * 任何修改学生、教师、教师角色、角色、角色权限和权限表的操作都会清空该缓存
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        //从缓存中获取
+        Object result = redisClientWrapper.get(MicroConstant.LOGIN_USER_REDIS_PREFIX + username);
+        if(StringUtil.isNotEmpty(result)){
+            return JsonUtil.parseObject(result.toString(), JwtAccount.class);
+        }
         //教师账号
         UserContext teacher = teacherLogin(username);
         //学生登录
@@ -59,6 +77,8 @@ public class JwtAccountDetailsService implements UserDetailsService {
             jwtAccount = userContextJwtAccountMapper.toDto(student);
             jwtAccount.setAuthorities(Collections.emptyList());
         }
+        //设置进缓存
+        redisClientWrapper.set(MicroConstant.LOGIN_USER_REDIS_PREFIX + username, JsonUtil.toJsonString(jwtAccount), MicroConstant.LOGIN_USER_REDIS_EXPIRE);
         return jwtAccount;
     }
 
