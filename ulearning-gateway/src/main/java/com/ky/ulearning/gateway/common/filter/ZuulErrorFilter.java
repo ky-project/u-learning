@@ -48,7 +48,6 @@ public class ZuulErrorFilter extends SendErrorFilter {
         RequestContext ctx = getRequestContext();
         if (ctx.getThrowable() != null) {
             Throwable throwable = ctx.getThrowable();
-            log.error(throwable.getMessage() + "已被拦截处理", throwable);
 
             //阻止SendErrorFilter
             ctx.set(SEND_ERROR_FILTER_RAN, true);
