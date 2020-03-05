@@ -71,6 +71,9 @@ public class RedisConfig extends CachingConfigurerSupport {
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.teacher.entity");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.teacher.dto");
         ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.teacher.vo");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.student.vo");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.student.dto");
+        ParserConfig.getGlobalInstance().addAccept("com.ky.ulearning.spi.student.entity");
 
         //使用StringRedisSerializer来序列化和反序列化redis的key
         redisTemplate.setKeySerializer(new StringRedisSerializer());

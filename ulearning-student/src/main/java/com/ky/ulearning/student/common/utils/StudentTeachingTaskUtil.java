@@ -1,14 +1,13 @@
 package com.ky.ulearning.student.common.utils;
 
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
+import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
+import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
-import com.ky.ulearning.student.service.CourseFileService;
-import com.ky.ulearning.student.service.StudentTeachingTaskService;
-import com.ky.ulearning.student.service.TeachingTaskNoticeService;
-import com.ky.ulearning.student.service.TeachingTaskService;
+import com.ky.ulearning.student.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +33,12 @@ public class StudentTeachingTaskUtil {
 
     @Autowired
     private TeachingTaskService teachingTaskService;
+
+    @Autowired
+    private TeachingTaskExperimentService teachingTaskExperimentService;
+
+    @Autowired
+    private ExperimentResultService experimentResultService;
 
     /**
      * 验证学生是否已经选修该课程
@@ -89,5 +94,26 @@ public class StudentTeachingTaskUtil {
         Set<Long> courseIdSet = studentTeachingTaskService.getCourseIdSetByStuId(stuId);
         ValidateHandler.checkParameter(!courseIdSet.contains(courseFileEntity.getCourseId()), StudentErrorCodeEnum.COURSE_FILE_ILLEGAL);
         return courseFileEntity;
+    }
+
+    /**
+     * 验证学生是否有操作实验的权限
+     */
+    public TeachingTaskExperimentDto checkExperimentId(Long experimentId, Long stuId) {
+        TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentService.getById(experimentId);
+        //校验
+        ValidateHandler.checkParameter(teachingTaskExperimentDto == null, StudentErrorCodeEnum.EXPERIMENT_NOT_EXISTS);
+        selectedTeachingTask(teachingTaskExperimentDto.getTeachingTaskId(), stuId);
+        return teachingTaskExperimentDto;
+    }
+
+    /**
+     * 验证学生是否有操作实验结果的权限
+     */
+    public ExperimentResultEntity checkExperimentResultId(Long experimentResultId, Long stuId) {
+        ExperimentResultEntity experimentResultEntity = experimentResultService.getById(experimentResultId);
+        ValidateHandler.checkNull(experimentResultEntity, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
+        checkExperimentId(experimentResultEntity.getExperimentId(), stuId);
+        return experimentResultEntity;
     }
 }
