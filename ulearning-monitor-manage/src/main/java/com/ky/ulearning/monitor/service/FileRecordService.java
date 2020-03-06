@@ -111,4 +111,9 @@ public interface FileRecordService {
      * 扫描课程文件表
      */
     void scanCourseFileTable();
+
+    /**
+     * 扫描实验结果表
+     */
+    void scanExperimentResultTable();
 }

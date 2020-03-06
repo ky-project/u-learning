@@ -123,5 +123,7 @@ public class FileRecordHandler extends IJobHandler {
         fileRecordService.scanLogHistoryTable();
         XxlJobLogger.log("扫描" + TableFileEnum.COURSE_FILE_TABLE.getTableName() + "表");
         fileRecordService.scanCourseFileTable();
+        XxlJobLogger.log("扫描" + TableFileEnum.EXPERIMENT_RESULT_TABLE.getTableName() + "表");
+        fileRecordService.scanExperimentResultTable();
     }
 }

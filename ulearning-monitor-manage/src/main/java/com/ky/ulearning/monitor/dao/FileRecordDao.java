@@ -122,4 +122,9 @@ public interface FileRecordDao {
      * 从课程文件表插入文件记录
      */
     void insertFromCourseFile();
+
+    /**
+     * 从实验结果表插入文件记录
+     */
+    void insertFromExperimentResult();
 }

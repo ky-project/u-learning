@@ -16,6 +16,7 @@ public enum TableFileEnum {
     TEACHING_TASK_NOTICE_TABLE("u_teaching_task_notice", "notice_attachment"),
     LOG_HISTORY_TABLE("u_log_history", "log_history_url"),
     COURSE_FILE_TABLE("u_course_file", "file_url"),
+    EXPERIMENT_RESULT_TABLE("u_experiment_result", "experiment_URL"),
     NULL_TABLE("null", "null")
     ;
 

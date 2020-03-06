@@ -157,8 +157,13 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
             case TEACHING_TASK_NOTICE_TABLE:
                 fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.TEACHING_TASK_NOTICE_TABLE.getUrlColumn());
                 break;
+            //课程文件表
             case COURSE_FILE_TABLE:
                 fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.COURSE_FILE_TABLE.getUrlColumn());
+                break;
+                //实验结果表
+            case EXPERIMENT_RESULT_TABLE:
+                fileRecordDao.updateTableIdByTableAndUrl(fileRecordEntity, TableFileEnum.EXPERIMENT_RESULT_TABLE.getUrlColumn());
                 break;
             default:
                 break;
@@ -186,5 +191,11 @@ public class FileRecordServiceImpl extends BaseService implements FileRecordServ
     @Transactional(rollbackFor = Throwable.class)
     public void scanCourseFileTable() {
         fileRecordDao.insertFromCourseFile();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public void scanExperimentResultTable() {
+        fileRecordDao.insertFromExperimentResult();
     }
 }

@@ -302,4 +302,32 @@
             WHERE valid = 1
         )
     </insert>
+    <!--从实验结果表插入文件记录-->
+    <insert id="insertFromExperimentResult">
+        INSERT INTO u_file_record (record_url, record_name, record_size,
+                                   record_type, record_table, record_table_id,
+                                   `valid`, memo, create_time,
+                                   create_by, update_time, update_by)
+        SELECT experiment_URL,
+               experiment_attachment_name,
+               null,
+               SUBSTRING_INDEX(experiment_URL, '.', -1),
+               'u_experiment_result',
+               id,
+               1,
+               null,
+               now(),
+               'fileRecordHandler',
+               now(),
+               'fileRecordHandler'
+        FROM u_experiment_result
+        WHERE valid = 1
+          AND experiment_URL IS NOT NULL
+          AND experiment_URL != ''
+          AND experiment_URL NOT IN (
+            SELECT record_url
+            FROM u_file_record
+            WHERE valid = 1
+        )
+    </insert>
 </mapper>
