@@ -50,6 +50,24 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
     </resultMap>
+    <resultMap id="StudentTeachingTaskExperimentDtoResultMap"
+               type="com.ky.ulearning.spi.student.dto.StudentTeachingTaskExperimentDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="experiment_order" jdbcType="SMALLINT" property="experimentOrder"/>
+        <result column="experiment_title" jdbcType="VARCHAR" property="experimentTitle"/>
+        <result column="experiment_content" jdbcType="VARCHAR" property="experimentContent"/>
+        <result column="experiment_attachment" jdbcType="VARCHAR" property="experimentAttachment"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
+        <result column="term" jdbcType="VARCHAR" property="term"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             teaching_task_id,
@@ -66,7 +84,7 @@
             experiment_attachment_name
     </sql>
     <!--分页查询实验信息-->
-    <select id="listPage" resultMap="TeachingTaskExperimentDtoResultMap">
+    <select id="listPage" resultMap="StudentTeachingTaskExperimentDtoResultMap">
         SELECT utte.id,
         utte.teaching_task_id,
         utte.experiment_order,

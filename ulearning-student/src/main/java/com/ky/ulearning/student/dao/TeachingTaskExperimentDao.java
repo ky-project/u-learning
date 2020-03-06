@@ -1,6 +1,7 @@
 package com.ky.ulearning.student.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.student.dto.StudentTeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -26,8 +27,8 @@ public interface TeachingTaskExperimentDao {
      * @param pageParam     分页参数
      * @return 返回实验信息集合
      */
-    List<TeachingTaskExperimentDto> listPage(@Param("experimentDto") ExperimentDto experimentDto,
-                                             @Param("pageParam") PageParam pageParam);
+    List<StudentTeachingTaskExperimentDto> listPage(@Param("experimentDto") ExperimentDto experimentDto,
+                                                    @Param("pageParam") PageParam pageParam);
 
     /**
      * 分页查询实验信息 - 总记录数

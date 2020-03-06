@@ -12,6 +12,7 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.student.dto.StudentTeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
@@ -56,11 +57,11 @@ public class TeachingTaskExperimentController extends BaseController {
     @ApiOperation(value = "分页查询实验", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "experimentAttachment"})
     @GetMapping("/pageExperimentList")
-    public ResponseEntity<JsonResult<PageBean<TeachingTaskExperimentDto>>> pageNotSelectedList(PageParam pageParam, ExperimentDto experimentDto) {
+    public ResponseEntity<JsonResult<PageBean<StudentTeachingTaskExperimentDto >>> pageNotSelectedList(PageParam pageParam, ExperimentDto experimentDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(experimentDto.getTeachingTaskId()), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         studentTeachingTaskUtil.selectedTeachingTask(experimentDto.getTeachingTaskId(), stuId);
-        PageBean<TeachingTaskExperimentDto> pageBean = teachingTaskExperimentService.pageList(experimentDto, setPageParam(pageParam));
+        PageBean<StudentTeachingTaskExperimentDto > pageBean = teachingTaskExperimentService.pageList(experimentDto, setPageParam(pageParam), stuId);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 

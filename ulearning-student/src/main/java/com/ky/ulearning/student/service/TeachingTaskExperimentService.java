@@ -2,6 +2,7 @@ package com.ky.ulearning.student.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.student.dto.StudentTeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 
@@ -18,9 +19,10 @@ public interface TeachingTaskExperimentService {
      *
      * @param pageParam     分页参数
      * @param experimentDto 筛选条件
+     * @param stuId         学生id
      * @return 返回封装实验信息的分页对象
      */
-    PageBean<TeachingTaskExperimentDto> pageList(ExperimentDto experimentDto, PageParam pageParam);
+    PageBean<StudentTeachingTaskExperimentDto> pageList(ExperimentDto experimentDto, PageParam pageParam, Long stuId);
 
     /**
      * 根据id查询实验信息
