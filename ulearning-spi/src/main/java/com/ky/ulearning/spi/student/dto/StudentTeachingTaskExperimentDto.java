@@ -74,4 +74,10 @@ public class StudentTeachingTaskExperimentDto extends BaseDto {
      */
     @ApiModelProperty("实验结果 0：未提交 1：已提交 2：已批改")
     private Integer experimentStatus;
+
+    /**
+     * 附件大小
+     */
+    @ApiModelProperty(value = "附件大小", hidden = true)
+    private Long experimentAttachmentSize;
 }

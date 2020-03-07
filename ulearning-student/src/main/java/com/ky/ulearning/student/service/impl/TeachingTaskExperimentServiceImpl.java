@@ -1,6 +1,8 @@
 package com.ky.ulearning.student.service.impl;
 
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
@@ -40,17 +42,28 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @Autowired
     private ExperimentResultDao experimentResultDao;
 
+    @Autowired
+    private FastDfsClientWrapper fastDfsClientWrapper;
+
     @Override
     public PageBean<StudentTeachingTaskExperimentDto> pageList(ExperimentDto experimentDto, PageParam pageParam, Long stuId) {
         List<StudentTeachingTaskExperimentDto> studentTeachingTaskExperimentDtoList = Optional.ofNullable(teachingTaskExperimentDao.listPage(experimentDto, pageParam))
                 .orElse(Collections.emptyList());
-        //判断是否已提交该实验结果
+        //判断是否已提交该实验结果和计算附件大小
         for (StudentTeachingTaskExperimentDto studentTeachingTaskExperimentDto : studentTeachingTaskExperimentDtoList) {
             ExperimentResultEntity experimentResultEntity = experimentResultDao.getByExperimentIdAndStuId(studentTeachingTaskExperimentDto.getId(), stuId);
             if (StringUtil.isEmpty(experimentResultEntity)) {
                 studentTeachingTaskExperimentDto.setExperimentStatus(MicroConstant.EXPERIMENT_STATUS[0]);
             } else {
                 studentTeachingTaskExperimentDto.setExperimentStatus(StringUtil.isNotEmpty(experimentResultEntity.getExperimentScore()) || StringUtil.isNotEmpty(experimentResultEntity.getExperimentAdvice()) ? MicroConstant.EXPERIMENT_STATUS[2] : MicroConstant.EXPERIMENT_STATUS[1]);
+            }
+            //计算附件大小
+            if (StringUtil.isNotEmpty(studentTeachingTaskExperimentDto.getExperimentAttachment())) {
+                FileInfo fileInfo = fastDfsClientWrapper.getFileInfo(studentTeachingTaskExperimentDto.getExperimentAttachment());
+                if (fileInfo == null) {
+                    continue;
+                }
+                studentTeachingTaskExperimentDto.setExperimentAttachmentSize(fileInfo.getFileSize());
             }
         }
 
