@@ -1,7 +1,9 @@
 package com.ky.ulearning.teacher.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
@@ -33,6 +35,9 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @Autowired
     private TeachingTaskExperimentDao teachingTaskExperimentDao;
 
+    @Autowired
+    private FastDfsClientWrapper fastDfsClientWrapper;
+
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
@@ -55,13 +60,24 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
 
     @Override
     public PageBean<TeachingTaskExperimentDto> pageList(PageParam pageParam, ExperimentDto experimentDto) {
-        List<TeachingTaskExperimentDto> teacherList = teachingTaskExperimentDao.listPage(experimentDto, pageParam);
+        List<TeachingTaskExperimentDto> teachingTaskExperimentDtoList = teachingTaskExperimentDao.listPage(experimentDto, pageParam);
+
+        //计算附件大小
+        for (TeachingTaskExperimentDto teachingTaskExperimentDto : teachingTaskExperimentDtoList) {
+            if (StringUtil.isNotEmpty(teachingTaskExperimentDto.getExperimentAttachment())) {
+                FileInfo fileInfo = fastDfsClientWrapper.getFileInfo(teachingTaskExperimentDto.getExperimentAttachment());
+                if (fileInfo == null) {
+                    continue;
+                }
+                teachingTaskExperimentDto.setExperimentAttachmentSize(fileInfo.getFileSize());
+            }
+        }
 
         PageBean<TeachingTaskExperimentDto> pageBean = new PageBean<>();
         //设置总记录数
         pageBean.setTotal(teachingTaskExperimentDao.countListPage(experimentDto))
                 //设置查询结果
-                .setContent(teacherList);
+                .setContent(teachingTaskExperimentDtoList);
         return setPageBeanProperties(pageBean, pageParam);
     }
 
@@ -84,7 +100,7 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
                         teachingTaskExperimentDao.update(experimentDtoTmp);
                     }
                 }
-            } else{
+            } else {
                 for (ExperimentDto experimentDtoTmp : experimentDtoList) {
                     if (experimentDtoTmp.getExperimentOrder() <= experimentDto.getExperimentOrder()
                             && experimentDtoTmp.getExperimentOrder() >= teachingTaskExperimentDto.getExperimentOrder()
