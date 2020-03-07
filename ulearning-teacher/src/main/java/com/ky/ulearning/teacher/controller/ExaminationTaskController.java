@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
@@ -11,6 +12,9 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
+import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
@@ -22,6 +26,7 @@ import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,7 +65,8 @@ public class ExaminationTaskController extends BaseController {
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         teachingTaskValidUtil.checkTeachingTask(username, examinationTaskDto.getTeachingTaskId());
-        //TODO 试题参数校验
+        //试题参数校验
+        ValidateHandler.checkParameter(!checkExaminationParam(examinationTaskDto.getExaminationParameters()), TeacherErrorCodeEnum.EXAMINATION_PARAMETERS_ILLEGAL);
         examinationTaskDto.setUpdateBy(username);
         examinationTaskDto.setCreateBy(username);
         examinationTaskService.save(examinationTaskDto);
@@ -99,12 +105,12 @@ public class ExaminationTaskController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         teachingTaskValidUtil.checkExaminationId(examinationTaskDto.getId(), username);
         //教学任务校验
-        if(StringUtil.isNotEmpty(examinationTaskDto.getTeachingTaskId())) {
+        if (StringUtil.isNotEmpty(examinationTaskDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, examinationTaskDto.getTeachingTaskId());
         }
-        //TODO 试题参数校验
-        if(StringUtil.isNotEmpty(examinationTaskDto.getExaminationParameters())){
-
+        //题参数校验
+        if (StringUtil.isNotEmpty(examinationTaskDto.getExaminationParameters())) {
+            ValidateHandler.checkParameter(!checkExaminationParam(examinationTaskDto.getExaminationParameters()), TeacherErrorCodeEnum.EXAMINATION_PARAMETERS_ILLEGAL);
         }
         examinationTaskDto.setUpdateBy(username);
         examinationTaskService.update(examinationTaskDto);
@@ -121,6 +127,44 @@ public class ExaminationTaskController extends BaseController {
         teachingTaskValidUtil.checkExaminationId(id, username);
         examinationTaskService.delete(id, username);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    /**
+     * 验证试题参数是否正确
+     */
+    private boolean checkExaminationParam(String examinationParameters) {
+        try {
+            ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationParameters, ExaminationParamVo.class);
+            //验证知识点
+            if (CollectionUtils.isEmpty(examinationParamVo.getQuestionKnowledges())) {
+                return false;
+            } else {
+                for (KeyLabelVo questionKnowledge : examinationParamVo.getQuestionKnowledges()) {
+                    if (StringUtil.isEmpty(questionKnowledge.getKey()) || StringUtil.isEmpty(questionKnowledge.getLabel())) {
+                        return false;
+                    }
+                }
+            }
+            //验证难度
+            if (StringUtil.isEmpty(examinationParamVo.getQuestionDifficulty())) {
+                return false;
+            }
+            //验证题型
+            if (CollectionUtils.isEmpty(examinationParamVo.getQuantity())) {
+                return false;
+            } else {
+                for (QuantityVo quantityVo : examinationParamVo.getQuantity()) {
+                    if (StringUtil.isEmpty(quantityVo.getAmount())
+                            || StringUtil.isEmpty(quantityVo.getGrade())
+                            || StringUtil.isEmpty(quantityVo.getQuestionType())) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

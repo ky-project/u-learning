@@ -90,7 +90,7 @@ public class JsonUtil {
         return JSONObject.parseObject(toJsonString(t));
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         FileRecordDto fileRecordDto = new FileRecordDto();
         fileRecordDto.setRecordUrl("http://darren1112.com:8888/group1/M00/00/00/L18Ofl476WWAAxZ0AAB5tEHATng086.jpg");
         fileRecordDto.setRecordName("fh8.jpg");

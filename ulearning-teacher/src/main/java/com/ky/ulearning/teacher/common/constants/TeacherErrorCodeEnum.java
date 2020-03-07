@@ -70,13 +70,15 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_TYPE_ILLEGAL(HttpStatus.BAD_REQUEST, "操作的课程文件类型错误"),
     COURSE_FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件已过期"),
     COURSE_FILE_NAME_ILLEGAL(HttpStatus.BAD_REQUEST, "文件名已存在"),
+    EXAMINATION_PARAMETERS_ILLEGAL(HttpStatus.BAD_REQUEST, "参数格式错误"),
 
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     DOCUMENTATION_GET_BY_ID_ERROR(HttpStatus.BAD_REQUEST, "只能查询文件资料"),
     RESOURCE_GET_BY_ID_ERROR(HttpStatus.BAD_REQUEST, "只能查询教学资源"),
     COURSE_FILE_ROOT_ERROR(HttpStatus.BAD_REQUEST, "课程/教师根目录无法操作"),
     DOCUMENTATION_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "文件资料无法作为文件夹"),
-    RESOURCE_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "教学资源无法作为文件夹");
+    RESOURCE_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "教学资源无法作为文件夹"),
+    ;
 
     private Integer code;
     private String message;
