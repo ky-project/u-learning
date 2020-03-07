@@ -29,7 +29,7 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
 
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
-    public ExaminationTaskEntity getByExperimentIdAndStuId(Long experimentId, Long stuId) {
+    public ExperimentResultEntity getByExperimentIdAndStuId(Long experimentId, Long stuId) {
         return experimentResultDao.getByExperimentIdAndStuId(experimentId, stuId);
     }
 

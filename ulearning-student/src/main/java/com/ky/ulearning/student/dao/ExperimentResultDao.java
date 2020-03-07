@@ -46,6 +46,6 @@ public interface ExperimentResultDao {
      * @param stuId        学生id
      * @return 实验结果
      */
-    ExaminationTaskEntity getByExperimentIdAndStuId(@Param("experimentId") Long experimentId,
+    ExperimentResultEntity getByExperimentIdAndStuId(@Param("experimentId") Long experimentId,
                                                     @Param("stuId") Long stuId);
 }

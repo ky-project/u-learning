@@ -68,4 +68,6 @@ public class MicroConstant {
      */
     public static final long LOGIN_USER_REDIS_EXPIRE = 7200;
 
+    public static final int[] EXPERIMENT_STATUS = {0, 1, 2};
+
 }

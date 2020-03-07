@@ -72,6 +72,6 @@ public class StudentTeachingTaskExperimentDto extends BaseDto {
     /**
      * 是否已提交实验结果
      */
-    @ApiModelProperty("是否已提交实验结果")
-    private Boolean isCommitResult;
+    @ApiModelProperty("实验结果 0：未提交 1：已提交 2：已批改")
+    private Integer experimentStatus;
 }

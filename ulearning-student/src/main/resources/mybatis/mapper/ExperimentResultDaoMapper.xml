@@ -119,7 +119,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
     <!--根据实验id和学生id查询实验结果-->
-    <select id="getByExperimentIdAndStuId" resultType="com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity">
+    <select id="getByExperimentIdAndStuId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM u_experiment_result

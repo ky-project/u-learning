@@ -19,7 +19,7 @@ public interface ExperimentResultService {
      * @param stuId        学生id
      * @return 实验结果
      */
-    ExaminationTaskEntity getByExperimentIdAndStuId(Long experimentId, Long stuId);
+    ExperimentResultEntity getByExperimentIdAndStuId(Long experimentId, Long stuId);
 
     /**
      * 添加实验结果

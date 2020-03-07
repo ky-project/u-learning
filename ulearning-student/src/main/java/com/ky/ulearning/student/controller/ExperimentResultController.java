@@ -69,8 +69,8 @@ public class ExperimentResultController extends BaseController {
         //验证权限
         studentTeachingTaskUtil.checkExperimentId(experimentResultDto.getExperimentId(), stuId);
         //查询是否已提交
-        ExaminationTaskEntity examinationTaskEntity = experimentResultService.getByExperimentIdAndStuId(experimentResultDto.getExperimentId(), stuId);
-        ValidateHandler.checkParameter(StringUtil.isNotEmpty(examinationTaskEntity), StudentErrorCodeEnum.EXPERIMENT_RESULT_ILLEGAL);
+        ExperimentResultEntity experimentResultEntity = experimentResultService.getByExperimentIdAndStuId(experimentResultDto.getExperimentId(), stuId);
+        ValidateHandler.checkParameter(StringUtil.isNotEmpty(experimentResultEntity), StudentErrorCodeEnum.EXPERIMENT_RESULT_ILLEGAL);
         ValidateHandler.checkParameter(StringUtil.isEmpty(file) && StringUtil.isEmpty(experimentResultDto.getExperimentResult()), StudentErrorCodeEnum.EXPERIMENT_RESULT_CANNOT_BE_NULL);
         //创建对象
         experimentResultDto.setCreateBy(stuName);
