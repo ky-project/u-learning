@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.student.dao.CourseQuestionDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.CourseQuestionEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
+        <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
+        <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
+    </resultMap>
+    <resultMap id="CourseQuestionDtoResultMap" type="com.ky.ulearning.spi.teacher.dto.CourseQuestionDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="course_id" jdbcType="BIGINT" property="courseId"/>
+        <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
+        <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="course_number" jdbcType="VARCHAR" property="courseNumber"/>
+        <result column="course_name" jdbcType="VARCHAR" property="courseName"/>
+        <result column="course_credit" jdbcType="SMALLINT" property="courseCredit"/>
+        <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
+        <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
+    </resultMap>
+    <resultMap id="CourseQuestionVoResultMap" type="com.ky.ulearning.spi.common.vo.CourseQuestionVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
+        <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+        <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
+        <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
+        <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            course_id,
+            question_text,
+            question_URL,
+            question_key,
+            question_knowledge,
+            question_type,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            question_option,
+            question_difficulty
+    </sql>
+    <!--根据知识点和试题难度查询所有试题-->
+    <select id="getByKnowledgeAndDifficulty" resultMap="CourseQuestionVoResultMap">
+        SELECT id, question_text, question_URL, question_type, question_option, question_difficulty, question_knowledge
+        FROM u_course_question
+        WHERE valid = 1
+        AND course_id = #{courseId}
+        AND (question_difficulty &lt;= #{questionDifficulty} OR question_difficulty IS NULL)
+        <if test="questionKnowledges != null and questionKnowledges.size() != 0">
+            AND question_knowledge IN
+            <foreach collection="questionKnowledges" item="questionKnowledge" open="(" close=")" separator=",">
+                #{questionKnowledge.key}
+            </foreach>
+        </if>
+    </select>
+</mapper>

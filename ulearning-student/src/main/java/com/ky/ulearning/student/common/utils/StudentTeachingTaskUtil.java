@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
+import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.StudentTeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
@@ -39,6 +40,9 @@ public class StudentTeachingTaskUtil {
 
     @Autowired
     private ExperimentResultService experimentResultService;
+
+    @Autowired
+    private ExaminationTaskService examinationTaskService;
 
     /**
      * 验证学生是否已经选修该课程
@@ -115,5 +119,16 @@ public class StudentTeachingTaskUtil {
         ValidateHandler.checkNull(experimentResultEntity, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
         checkExperimentId(experimentResultEntity.getExperimentId(), stuId);
         return experimentResultEntity;
+    }
+
+    /**
+     * 验证学生是否有操作测试的权限
+     */
+    public ExaminationTaskEntity checkExaminationId(Long examinationId, Long stuId) {
+        ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(examinationId);
+        //校验
+        ValidateHandler.checkParameter(examinationTaskEntity == null, StudentErrorCodeEnum.EXAMINATION_NOT_EXISTS);
+        selectedTeachingTask(examinationTaskEntity.getTeachingTaskId(), stuId);
+        return examinationTaskEntity;
     }
 }

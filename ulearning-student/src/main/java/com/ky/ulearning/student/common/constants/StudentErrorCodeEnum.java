@@ -19,6 +19,7 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     RESOURCE_PARENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资源父节点id不能为空"),
     EXPERIMENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验id不能为空"),
     EXPERIMENT_RESULT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验结果和实验附件不能都为空"),
+    EXAMINATION_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务id不能为空"),
 
     NOTICE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告不存在"),
     NOTICE_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告附件不存在"),
@@ -31,6 +32,7 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     EXPERIMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验不存在"),
     EXPERIMENT_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验附件不存在"),
     EXPERIMENT_RESULT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验结果不存在"),
+    EXAMINATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "测试任务不存在"),
 
     STUDENT_TEACHING_TASK_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "无法重复选课"),
     STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL(HttpStatus.BAD_REQUEST, "当前未选该课程"),

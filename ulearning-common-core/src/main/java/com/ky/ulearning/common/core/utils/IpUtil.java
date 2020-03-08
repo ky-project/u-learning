@@ -90,7 +90,7 @@ public class IpUtil {
             }
             return address.equals(REGION) ? "内网IP" : address;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return "";
     }

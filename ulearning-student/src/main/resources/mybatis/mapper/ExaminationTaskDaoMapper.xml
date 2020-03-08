@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ky.ulearning.student.dao.ExaminationTaskDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="examination_name" jdbcType="VARCHAR" property="examinationName"/>
+        <result column="examination_duration" jdbcType="SMALLINT" property="examinationDuration"/>
+        <result column="examination_state" jdbcType="SMALLINT" property="examinationState"/>
+        <result column="examination_parameters" jdbcType="VARCHAR" property="examinationParameters"/>
+        <result column="examination_show_result" jdbcType="BOOLEAN" property="examinationShowResult"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            teaching_task_id,
+            examination_name,
+            examination_duration,
+            examination_state,
+            examination_parameters,
+            examination_show_result,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <!--分页查询测试任务-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
+        AND teaching_task_id = #{examinationTaskDto.teachingTaskId}
+        <if test="examinationTaskDto.examinationName != null and examinationTaskDto.examinationName != ''">
+            AND examination_name LIKE CONCAT('%', #{examinationTaskDto.examinationName}, '%')
+        </if>
+        <if test="examinationTaskDto.examinationDuration != null">
+            AND examination_duration = #{examinationTaskDto.examinationDuration}
+        </if>
+        <if test="examinationTaskDto.examinationState != null">
+            AND examination_state = #{examinationTaskDto.examinationState}
+        </if>
+        <if test="examinationTaskDto.examinationParameters != null and examinationTaskDto.examinationParameters != ''">
+            AND examination_parameters LIKE CONCAT('%', #{examinationTaskDto.examinationParameters}, '%')
+        </if>
+        <if test="examinationTaskDto.examinationShowResult != null">
+            AND examination_show_result = #{examinationTaskDto.examinationShowResult}
+        </if>
+        order by examination_state ASC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询测试任务 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
+        AND teaching_task_id = #{examinationTaskDto.teachingTaskId}
+        <if test="examinationTaskDto.examinationName != null and examinationTaskDto.examinationName != ''">
+            AND examination_name LIKE CONCAT('%', #{examinationTaskDto.examinationName}, '%')
+        </if>
+        <if test="examinationTaskDto.examinationDuration != null">
+            AND examination_duration = #{examinationTaskDto.examinationDuration}
+        </if>
+        <if test="examinationTaskDto.examinationState != null">
+            AND examination_state = #{examinationTaskDto.examinationState}
+        </if>
+        <if test="examinationTaskDto.examinationParameters != null and examinationTaskDto.examinationParameters != ''">
+            AND examination_parameters LIKE CONCAT('%', #{examinationTaskDto.examinationParameters}, '%')
+        </if>
+        <if test="examinationTaskDto.examinationShowResult != null">
+            AND examination_show_result = #{examinationTaskDto.examinationShowResult}
+        </if>
+    </select>
+    <!--根据id查询测试任务-->
+    <select id="getById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_teaching_task_examination_task
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+</mapper>

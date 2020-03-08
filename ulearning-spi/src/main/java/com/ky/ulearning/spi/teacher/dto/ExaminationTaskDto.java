@@ -34,13 +34,13 @@ public class ExaminationTaskDto extends BaseDto {
      * 测试时长
      */
     @ApiModelProperty("测试时长（分钟）")
-    private Short examinationDuration;
+    private Integer examinationDuration;
 
     /**
      * 任务状态
      */
     @ApiModelProperty("任务状态，1：未发布 2：未开始 3：进行中 4：已结束")
-    private Short examinationState;
+    private Integer examinationState;
 
     /**
      * 试题参数
