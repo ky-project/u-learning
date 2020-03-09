@@ -62,7 +62,7 @@ public class ExperimentResultController extends BaseController {
 
     @Log("提交实验结果")
     @ApiOperation(value = "提交实验结果", notes = "只能查看/操作已选教学任务的数据")
-    @ApiOperationSupport(ignoreParameters = {"id", "experimentUrl", "experimentScore", "experimentAdvice", "experimentAttachmentName", "experimentShared"})
+    @ApiOperationSupport(ignoreParameters = {"id", "stuId", "experimentCommitTime", "experimentUrl", "experimentScore", "experimentAdvice", "experimentAttachmentName", "experimentShared"})
     @PostMapping("/submitExperimentResult")
     public ResponseEntity<JsonResult> submitExperimentResult(MultipartFile file, ExperimentResultDto experimentResultDto) throws IOException {
         ValidateHandler.checkNull(experimentResultDto.getExperimentId(), StudentErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
