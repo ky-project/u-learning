@@ -45,7 +45,7 @@ public class ExperimentResultController extends BaseController {
 
     @Log("分页查询实验结果")
     @ApiOperation(value = "分页查询实验结果", notes = "只能查看/操作已选教学任务的数据")
-    @ApiOperationSupport(ignoreParameters = {"experimentUrl"})
+    @ApiOperationSupport(ignoreParameters = {"id", "experimentUrl"})
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<ExperimentResultDto>>> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto) {
         ValidateHandler.checkNull(experimentResultDto.getExperimentId(), TeacherErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
