@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.common.utils;
 
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
+import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
@@ -56,6 +57,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private CourseResourceService courseResourceService;
+
+    @Autowired
+    private ExperimentResultService experimentResultService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -221,5 +225,19 @@ public class TeachingTaskValidUtil {
         Long courseIdCheck = teachingTaskService.getCourseIdById(teachingTaskId);
         ValidateHandler.checkNull(courseIdCheck, TeacherErrorCodeEnum.COURSE_ID_NOT_EXISTS);
         ValidateHandler.checkParameter(!courseIdCheck.equals(courseId), TeacherErrorCodeEnum.TEACHING_TASK_ID_ERROR);
+    }
+
+    /**
+     * 校验是否有操作实验结果的权限
+     *
+     * @param experimentResultId 实验结果id
+     * @param username           教师工号
+     * @return 实验结果对象
+     */
+    public ExperimentResultDto checkExperimentResultId(Long experimentResultId, String username) {
+        ExperimentResultDto experimentResultDto = experimentResultService.getById(experimentResultId);
+        ValidateHandler.checkNull(experimentResultDto, TeacherErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
+        checkExperimentId(experimentResultDto.getExperimentId(), username);
+        return experimentResultDto;
     }
 }

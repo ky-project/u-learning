@@ -30,7 +30,7 @@ public class ExperimentResultDto extends BaseDto {
     /**
      * 学生id
      */
-    @ApiModelProperty(value = "学生id", hidden = true)
+    @ApiModelProperty(value = "学生id")
     private Long stuId;
 
     /**
@@ -42,7 +42,7 @@ public class ExperimentResultDto extends BaseDto {
     /**
      * 提交时间
      */
-    @ApiModelProperty(value = "提交时间", hidden = true)
+    @ApiModelProperty(value = "提交时间")
     private Date experimentCommitTime;
 
     /**

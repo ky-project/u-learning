@@ -48,6 +48,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     RESOURCE_PATH_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资源所属文件夹id不能为空"),
     RESOURCE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料id不能为空"),
     COURSE_FOLDER_CANNOT_DOWNLOAD(HttpStatus.BAD_REQUEST, "文件夹下载暂时不支持"),
+    EXPERIMENT_RESULT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验结果id不能为空"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
@@ -61,6 +62,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     DOCUMENTATION_NOT_EXISTS(HttpStatus.BAD_REQUEST, "文件资料不存在"),
     COURSE_FILE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程文件不存在"),
     RESOURCE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教学资源不存在"),
+    EXPERIMENT_RESULT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验结果不存在"),
 
     NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),
@@ -71,6 +73,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_ILLEGAL(HttpStatus.BAD_REQUEST, "课程文件已过期"),
     COURSE_FILE_NAME_ILLEGAL(HttpStatus.BAD_REQUEST, "文件名已存在"),
     EXAMINATION_PARAMETERS_ILLEGAL(HttpStatus.BAD_REQUEST, "参数格式错误"),
+    MARK_RESULT_ILLEGAL(HttpStatus.BAD_REQUEST, "批改无效，成绩或反馈至少提交一项"),
 
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     DOCUMENTATION_GET_BY_ID_ERROR(HttpStatus.BAD_REQUEST, "只能查询文件资料"),
@@ -78,7 +81,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_ROOT_ERROR(HttpStatus.BAD_REQUEST, "课程/教师根目录无法操作"),
     DOCUMENTATION_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "文件资料无法作为文件夹"),
     RESOURCE_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "教学资源无法作为文件夹"),
-    ;
+   ;
 
     private Integer code;
     private String message;

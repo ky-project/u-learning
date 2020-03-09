@@ -58,29 +58,17 @@
             experiment_attachment_name,
             experiment_shared
     </sql>
-    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getById" parameterType="java.lang.Long" resultMap="ExperimentResultDtoMap">
         select
         <include refid="Base_Column_List"/>
         from u_experiment_result
         where valid =1
         AND id = #{id,jdbcType=BIGINT}
     </select>
-    <update id="update" parameterType="com.ky.ulearning.spi.student.dto.ExperimentResultDto">
+    <update id="update" parameterType="com.ky.ulearning.spi.student.entity.ExperimentResultEntity">
         update u_experiment_result
         <set>
             update_time = now(),
-            <if test="experimentCommitState != null">
-                experiment_commit_state = #{experimentCommitState,jdbcType=BOOLEAN},
-            </if>
-            <if test="experimentCommitTime != null">
-                experiment_commit_time = #{experimentCommitTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="experimentResult != null">
-                experiment_result = #{experimentResult,jdbcType=VARCHAR},
-            </if>
-            <if test="experimentUrl != null">
-                experiment_URL = #{experimentUrl,jdbcType=VARCHAR},
-            </if>
             <if test="experimentScore != null">
                 experiment_score = #{experimentScore,jdbcType=FLOAT},
             </if>
@@ -92,9 +80,6 @@
             </if>
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},
-            </if>
-            <if test="experimentAttachmentName != null">
-                experiment_attachment_name = #{experimentAttachmentName,jdbcType=VARCHAR},
             </if>
             <if test="experimentShared != null">
                 experiment_shared = #{experimentShared,jdbcType=BOOLEAN},
@@ -110,5 +95,67 @@
         WHERE valid = 1
         AND stu_id = #{stuId}
         AND experiment_id = #{experimentId}
+    </select>
+    <!--分页查询实验结果-->
+    <select id="listPage" resultMap="ExperimentResultDtoMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_experiment_result
+        WHERE valid = 1
+        AND experiment_id = #{experimentResultDto.experimentId}
+        <if test="experimentResultDto.stuId != null">
+            AND stu_id = #{experimentResultDto.stuId}
+        </if>
+        <if test="experimentResultDto.experimentCommitTime != null">
+            AND DATE(experiment_commit_time) = #{experimentResultDto.experimentCommitTime}
+        </if>
+        <if test="experimentResultDto.experimentResult != null and experimentResultDto.experimentResult != ''">
+            And experiment_result LIKE CONCAT('%', #{experimentResultDto.experimentResult} , '%')
+        </if>
+        <if test="experimentResultDto.experimentScore != null">
+            AND experiment_score = #{experimentResultDto.experimentScore}
+        </if>
+        <if test="experimentResultDto.experimentAdvice != null and experimentResultDto.experimentAdvice != ''">
+            AND experiment_advice LIKE CONCAT('%', #{experimentResultDto.experimentAdvice} , '%')
+        </if>
+        <if test="experimentResultDto.experimentAttachmentName != null and experimentResultDto.experimentAttachmentName != ''">
+            AND experiment_attachment_name LIKE CONCAT('%', #{experimentResultDto.experimentAttachmentName} , '%')
+        </if>
+        <if test="experimentResultDto.experimentShared != null">
+            AND experiment_shared = #{experimentResultDto.experimentShared}
+        </if>
+        ORDER BY experiment_commit_time ASC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询实验结果 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM u_experiment_result
+        WHERE valid = 1
+        AND experiment_id = #{experimentResultDto.experimentId}
+        <if test="experimentResultDto.stuId != null">
+            AND stu_id = #{experimentResultDto.stuId}
+        </if>
+        <if test="experimentResultDto.experimentCommitTime != null">
+            AND DATE(experiment_commit_time) = #{experimentResultDto.experimentCommitTime}
+        </if>
+        <if test="experimentResultDto.experimentResult != null and experimentResultDto.experimentResult != ''">
+            And experiment_result LIKE CONCAT('%', #{experimentResultDto.experimentResult} , '%')
+        </if>
+        <if test="experimentResultDto.experimentScore != null">
+            AND experiment_score = #{experimentResultDto.experimentScore}
+        </if>
+        <if test="experimentResultDto.experimentAdvice != null and experimentResultDto.experimentAdvice != ''">
+            AND experiment_advice LIKE CONCAT('%', #{experimentResultDto.experimentAdvice} , '%')
+        </if>
+        <if test="experimentResultDto.experimentAttachmentName != null and experimentResultDto.experimentAttachmentName != ''">
+            AND experiment_attachment_name LIKE CONCAT('%', #{experimentResultDto.experimentAttachmentName} , '%')
+        </if>
+        <if test="experimentResultDto.experimentShared != null">
+            AND experiment_shared = #{experimentResultDto.experimentShared}
+        </if>
     </select>
 </mapper>

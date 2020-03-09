@@ -1,10 +1,13 @@
 package com.ky.ulearning.teacher.dao;
 
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 实验结果dao
@@ -22,14 +25,14 @@ public interface ExperimentResultDao {
      * @param id id
      * @return 实验结果对象
      */
-    ExperimentResultEntity getById(Long id);
+    ExperimentResultDto getById(Long id);
 
     /**
      * 更新实验结果
      *
-     * @param experimentResultDto 待更新的对象
+     * @param experimentResultEntity 待更新的对象
      */
-    void update(ExperimentResultDto experimentResultDto);
+    void update(ExperimentResultEntity experimentResultEntity);
 
     /**
      * 根据实验id和学生id查询实验结果
@@ -40,4 +43,22 @@ public interface ExperimentResultDao {
      */
     ExperimentResultEntity getByExperimentIdAndStuId(@Param("experimentId") Long experimentId,
                                                      @Param("stuId") Long stuId);
+
+    /**
+     * 分页查询实验结果
+     *
+     * @param experimentResultDto 筛选条件
+     * @param pageParam           分页参数
+     * @return 实验结果集合
+     */
+    List<ExperimentResultDto> listPage(@Param("experimentResultDto") ExperimentResultDto experimentResultDto,
+                                       @Param("pageParam") PageParam pageParam);
+
+    /**
+     * 分页查询实验结果 - 总记录数
+     *
+     * @param experimentResultDto 筛选条件
+     * @return 总记录数
+     */
+    Integer countListPage(@Param("experimentResultDto")ExperimentResultDto experimentResultDto);
 }
