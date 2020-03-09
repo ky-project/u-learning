@@ -81,10 +81,10 @@ public class ExperimentResultController extends BaseController {
         experimentResultDto.setExperimentCommitState(true);
         experimentResultDto.setExperimentCommitTime(new Date());
         //上传附件
-        if(StringUtil.isNotEmpty(file)){
+        if (StringUtil.isNotEmpty(file)) {
             ValidatorBuilder.build()
-                    .on(! FileUtil.fileTypeRuleCheck(file, FileUtil.ATTACHMENT_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
-                    .on(! FileUtil.fileTypeCheck(file), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
+                    .on(!FileUtil.fileTypeRuleCheck(file, FileUtil.ATTACHMENT_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                    .on(!FileUtil.fileTypeCheck(file), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
                     //文件大小校验
                     .on(file.getSize() > defaultConfigParameters.getExperimentAttachmentMaxSize(), CommonErrorCodeEnum.FILE_SIZE_ERROR)
                     .doValidate().checkResult();
@@ -96,17 +96,19 @@ public class ExperimentResultController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("提交成功"));
     }
 
-    @Log("根据id查询实验结果")
-    @ApiOperation(value = "根据id查询实验结果", notes = "只能查看/操作已选教学任务的数据")
-    @GetMapping("/getById")
-    public ResponseEntity<JsonResult<ExperimentResultDto>> getById(Long id){
-        ValidateHandler.checkNull(id, StudentErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
+    @Log("根据实验id查询实验结果")
+    @ApiOperation(value = "根据实验id查询实验结果", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/getByExperimentId")
+    public ResponseEntity<JsonResult<ExperimentResultDto>> getByExperimentId(Long experimentId) {
+        ValidateHandler.checkNull(experimentId, StudentErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //验证权限
-        ExperimentResultEntity experimentResultEntity = studentTeachingTaskUtil.checkExperimentResultId(id, stuId);
+        studentTeachingTaskUtil.checkExperimentId(experimentId, stuId);
+        ExperimentResultEntity experimentResultEntity = experimentResultService.getByExperimentIdAndStuId(experimentId, stuId);
+        ValidateHandler.checkNull(experimentResultEntity, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
         ExperimentResultDto experimentResultDto = new ExperimentResultDto();
         BeanUtils.copyProperties(experimentResultEntity, experimentResultDto);
-        if(StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())){
+        if (StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())) {
             FileInfo fileInfo = fastDfsClientWrapper.getFileInfo(experimentResultDto.getExperimentUrl());
             experimentResultDto.setExperimentAttachmentSize(fileInfo.getFileSize());
         }
