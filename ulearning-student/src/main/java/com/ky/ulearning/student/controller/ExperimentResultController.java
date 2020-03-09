@@ -1,5 +1,6 @@
 package com.ky.ulearning.student.controller;
 
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
@@ -24,6 +25,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -97,12 +99,18 @@ public class ExperimentResultController extends BaseController {
     @Log("根据id查询实验结果")
     @ApiOperation(value = "根据id查询实验结果", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getById")
-    public ResponseEntity<JsonResult<ExperimentResultEntity>> getById(Long id){
+    public ResponseEntity<JsonResult<ExperimentResultDto>> getById(Long id){
         ValidateHandler.checkNull(id, StudentErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //验证权限
         ExperimentResultEntity experimentResultEntity = studentTeachingTaskUtil.checkExperimentResultId(id, stuId);
-        return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultEntity));
+        ExperimentResultDto experimentResultDto = new ExperimentResultDto();
+        BeanUtils.copyProperties(experimentResultEntity, experimentResultDto);
+        if(StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())){
+            FileInfo fileInfo = fastDfsClientWrapper.getFileInfo(experimentResultDto.getExperimentUrl());
+            experimentResultDto.setExperimentAttachmentSize(fileInfo.getFileSize());
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDto));
     }
 }
 
