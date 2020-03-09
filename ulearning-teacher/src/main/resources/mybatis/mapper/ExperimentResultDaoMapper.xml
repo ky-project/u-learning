@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.ExperimentResultDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.student.entity.ExperimentResultEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="experiment_id" jdbcType="BIGINT" property="experimentId"/>
+        <result column="stu_id" jdbcType="BIGINT" property="stuId"/>
+        <result column="experiment_commit_state" jdbcType="BOOLEAN" property="experimentCommitState"/>
+        <result column="experiment_commit_time" jdbcType="TIMESTAMP" property="experimentCommitTime"/>
+        <result column="experiment_result" jdbcType="VARCHAR" property="experimentResult"/>
+        <result column="experiment_URL" jdbcType="VARCHAR" property="experimentUrl"/>
+        <result column="experiment_score" jdbcType="FLOAT" property="experimentScore"/>
+        <result column="experiment_advice" jdbcType="VARCHAR" property="experimentAdvice"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="experiment_shared" jdbcType="BOOLEAN" property="experimentShared"/>
+    </resultMap>
+    <resultMap id="ExperimentResultDtoMap" type="com.ky.ulearning.spi.student.dto.ExperimentResultDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="experiment_id" jdbcType="BIGINT" property="experimentId"/>
+        <result column="stu_id" jdbcType="BIGINT" property="stuId"/>
+        <result column="experiment_commit_state" jdbcType="BOOLEAN" property="experimentCommitState"/>
+        <result column="experiment_commit_time" jdbcType="TIMESTAMP" property="experimentCommitTime"/>
+        <result column="experiment_result" jdbcType="VARCHAR" property="experimentResult"/>
+        <result column="experiment_URL" jdbcType="VARCHAR" property="experimentUrl"/>
+        <result column="experiment_score" jdbcType="FLOAT" property="experimentScore"/>
+        <result column="experiment_advice" jdbcType="VARCHAR" property="experimentAdvice"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="experiment_shared" jdbcType="BOOLEAN" property="experimentShared"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            experiment_id,
+            stu_id,
+            experiment_commit_state,
+            experiment_commit_time,
+            experiment_result,
+            experiment_URL,
+            experiment_score,
+            experiment_advice,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            experiment_attachment_name,
+            experiment_shared
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_experiment_result
+        where valid =1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <update id="update" parameterType="com.ky.ulearning.spi.student.dto.ExperimentResultDto">
+        update u_experiment_result
+        <set>
+            update_time = now(),
+            <if test="experimentCommitState != null">
+                experiment_commit_state = #{experimentCommitState,jdbcType=BOOLEAN},
+            </if>
+            <if test="experimentCommitTime != null">
+                experiment_commit_time = #{experimentCommitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="experimentResult != null">
+                experiment_result = #{experimentResult,jdbcType=VARCHAR},
+            </if>
+            <if test="experimentUrl != null">
+                experiment_URL = #{experimentUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="experimentScore != null">
+                experiment_score = #{experimentScore,jdbcType=FLOAT},
+            </if>
+            <if test="experimentAdvice != null">
+                experiment_advice = #{experimentAdvice,jdbcType=VARCHAR},
+            </if>
+            <if test="memo != null">
+                memo = #{memo,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="experimentAttachmentName != null">
+                experiment_attachment_name = #{experimentAttachmentName,jdbcType=VARCHAR},
+            </if>
+            <if test="experimentShared != null">
+                experiment_shared = #{experimentShared,jdbcType=BOOLEAN},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--根据实验id和学生id查询实验结果-->
+    <select id="getByExperimentIdAndStuId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_experiment_result
+        WHERE valid = 1
+        AND stu_id = #{stuId}
+        AND experiment_id = #{experimentId}
+    </select>
+</mapper>
