@@ -49,7 +49,7 @@ public interface TeachingTaskNoticeDao {
      * @param teachingTaskNoticeDto 筛选参数
      * @return 返回封装通知对象的分页对象
      */
-    List<TeachingTaskNoticeEntity> listPage(@Param("teachingTaskNoticeDto") TeachingTaskNoticeDto teachingTaskNoticeDto,
+    List<TeachingTaskNoticeDto> listPage(@Param("teachingTaskNoticeDto") TeachingTaskNoticeDto teachingTaskNoticeDto,
                                             @Param("pageParam") PageParam pageParam);
 
     /**

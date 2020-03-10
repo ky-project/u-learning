@@ -1,5 +1,6 @@
 package com.ky.ulearning.teacher.controller;
 
+import com.google.common.base.Joiner;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
@@ -25,6 +26,8 @@ import com.ky.ulearning.teacher.remoting.MonitorManageRemoting;
 import com.ky.ulearning.teacher.service.TeachingTaskNoticeService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -72,12 +75,12 @@ public class TeachingTaskNoticeController extends BaseController {
     @ApiOperation(value = "分页查询通告", notes = "只能查看自己教学任务的通告")
     @ApiOperationSupport(ignoreParameters = {"id", "noticeAttachment"})
     @GetMapping("/pageList")
-    public ResponseEntity<JsonResult<PageBean<TeachingTaskNoticeEntity>>> pageList(PageParam pageParam,
+    public ResponseEntity<JsonResult<PageBean<TeachingTaskNoticeDto>>> pageList(PageParam pageParam,
                                                                                    TeachingTaskNoticeDto teachingTaskNoticeDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teachingTaskNoticeDto.getTeachingTaskId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         //权限校验
         teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskNoticeDto.getTeachingTaskId());
-        PageBean<TeachingTaskNoticeEntity> pageBean = teachingTaskNoticeService.pageList(setPageParam(pageParam), teachingTaskNoticeDto);
+        PageBean<TeachingTaskNoticeDto> pageBean = teachingTaskNoticeService.pageList(setPageParam(pageParam), teachingTaskNoticeDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
@@ -140,11 +143,21 @@ public class TeachingTaskNoticeController extends BaseController {
     @Log("根据id查询通告")
     @ApiOperation(value = "根据id查询通告", notes = "只能查看自己教学任务的通告")
     @GetMapping("/getById")
-    public ResponseEntity<JsonResult<TeachingTaskNoticeEntity>> getById(Long id) {
+    public ResponseEntity<JsonResult<TeachingTaskNoticeDto>> getById(Long id) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
         //权限校验
         TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskValidUtil.checkNoticeId(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
-        return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskNoticeEntity));
+        //计算文件大小
+        TeachingTaskNoticeDto teachingTaskNoticeDto = new TeachingTaskNoticeDto();
+        if(StringUtil.isNotEmpty(teachingTaskNoticeEntity)){
+            BeanUtils.copyProperties(teachingTaskNoticeEntity, teachingTaskNoticeDto);
+            if (StringUtil.isNotEmpty(teachingTaskNoticeDto.getNoticeAttachment())) {
+                String[] fileUrlArray = StringUtils.split(teachingTaskNoticeDto.getNoticeAttachment(), ",");
+                List<Long> fileSizeList = fastDfsClientWrapper.getFileSizeList(fileUrlArray);
+                teachingTaskNoticeDto.setNoticeAttachmentSize(Joiner.on(",").join(fileSizeList));
+            }
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskNoticeDto));
     }
 
     @Log("修改通告")

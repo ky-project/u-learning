@@ -18,6 +18,23 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="notice_attachment_name" jdbcType="VARCHAR" property="noticeAttachmentName"/>
     </resultMap>
+    <resultMap id="TeachingTaskNoticeDtoMap" type="com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="teaching_task_id" jdbcType="BIGINT" property="teachingTaskId"/>
+        <result column="notice_title" jdbcType="VARCHAR" property="noticeTitle"/>
+        <result column="notice_content" jdbcType="VARCHAR" property="noticeContent"/>
+        <result column="notice_attachment" jdbcType="VARCHAR" property="noticeAttachment"/>
+        <result column="notice_shared" jdbcType="BOOLEAN" property="noticeShared"/>
+        <result column="notice_post_time" jdbcType="TIMESTAMP" property="noticePostTime"/>
+        <result column="notice_keywords" jdbcType="VARCHAR" property="noticeKeywords"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="notice_attachment_name" jdbcType="VARCHAR" property="noticeAttachmentName"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             teaching_task_id,
@@ -99,7 +116,7 @@
         AND id = #{id,jdbcType=BIGINT}
     </update>
     <!--分页查询通告内容-->
-    <select id="listPage" resultMap="BaseResultMap">
+    <select id="listPage" resultMap="TeachingTaskNoticeDtoMap">
         SELECT uttn.id,
         uttn.teaching_task_id,
         uttn.notice_title,

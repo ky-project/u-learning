@@ -20,7 +20,7 @@ public interface TeachingTaskNoticeService {
      * @param teachingTaskNoticeDto 筛选参数
      * @return 返回封装通知对象的分页对象
      */
-    PageBean<TeachingTaskNoticeEntity> pageList(PageParam pageParam, TeachingTaskNoticeDto teachingTaskNoticeDto);
+    PageBean<TeachingTaskNoticeDto> pageList(PageParam pageParam, TeachingTaskNoticeDto teachingTaskNoticeDto);
 
     /**
      * 插入通告记录

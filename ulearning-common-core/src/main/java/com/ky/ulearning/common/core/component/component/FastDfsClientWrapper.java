@@ -10,11 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -135,5 +138,49 @@ public class FastDfsClientWrapper {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 获取文件大小
+     *
+     * @param fileUrl 文件url
+     * @return 文件大小
+     */
+    public Long getFileSize(String fileUrl) {
+        return Optional.ofNullable(getFileInfo(fileUrl))
+                .map(FileInfo::getFileSize)
+                .orElse(0L);
+    }
+
+    /**
+     * 获取文件大小集合
+     *
+     * @param fileUrlList 文件url集合
+     * @return 文件大小集合
+     */
+    public List<Long> getFileSizeList(List<String> fileUrlList) {
+        List<Long> fileSizeList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(fileUrlList)) {
+            for (String url : fileUrlList) {
+                fileSizeList.add(getFileSize(url));
+            }
+        }
+        return fileSizeList;
+    }
+
+    /**
+     * 获取文件大小集合
+     *
+     * @param fileUrlArray 文件url数组
+     * @return 文件大小集合
+     */
+    public List<Long> getFileSizeList(String[] fileUrlArray) {
+        List<Long> fileSizeList = new ArrayList<>();
+        if (fileUrlArray != null && fileUrlArray.length > 0) {
+            for (String url : fileUrlArray) {
+                fileSizeList.add(getFileSize(url));
+            }
+        }
+        return fileSizeList;
     }
 }

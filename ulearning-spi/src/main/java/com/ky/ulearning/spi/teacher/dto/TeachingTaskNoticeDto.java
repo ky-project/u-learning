@@ -66,4 +66,10 @@ public class TeachingTaskNoticeDto extends BaseDto {
      */
     @ApiModelProperty("附件名")
     private String noticeAttachmentName;
+
+    /**
+     * 附件大小
+     */
+    @ApiModelProperty(value = "附件大小", hidden = true)
+    private String noticeAttachmentSize;
 }
