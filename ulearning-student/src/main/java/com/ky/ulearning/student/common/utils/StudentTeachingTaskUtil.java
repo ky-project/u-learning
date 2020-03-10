@@ -53,6 +53,15 @@ public class StudentTeachingTaskUtil {
     }
 
     /**
+     * 验证学生是否有操作教学任务的权限
+     */
+    public StudentTeachingTaskEntity checkTeachingTaskId(Long teachingTaskId, Long stuId) {
+        StudentTeachingTaskEntity studentTeachingTaskEntity = studentTeachingTaskService.getByTeachingIdAndStuId(teachingTaskId, stuId);
+        ValidateHandler.checkNull(studentTeachingTaskEntity, StudentErrorCodeEnum.STUDENT_TEACHING_TASK_NOT_EXISTS);
+        return studentTeachingTaskEntity;
+    }
+
+    /**
      * 验证学生是否有操作通告的权限
      */
     public TeachingTaskNoticeEntity checkNoticeId(Long noticeId, Long stuId) {
@@ -107,7 +116,7 @@ public class StudentTeachingTaskUtil {
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentService.getById(experimentId);
         //校验
         ValidateHandler.checkParameter(teachingTaskExperimentDto == null, StudentErrorCodeEnum.EXPERIMENT_NOT_EXISTS);
-        selectedTeachingTask(teachingTaskExperimentDto.getTeachingTaskId(), stuId);
+        checkTeachingTaskId(teachingTaskExperimentDto.getTeachingTaskId(), stuId);
         return teachingTaskExperimentDto;
     }
 
@@ -128,7 +137,7 @@ public class StudentTeachingTaskUtil {
         ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(examinationId);
         //校验
         ValidateHandler.checkParameter(examinationTaskEntity == null, StudentErrorCodeEnum.EXAMINATION_NOT_EXISTS);
-        selectedTeachingTask(examinationTaskEntity.getTeachingTaskId(), stuId);
+        checkTeachingTaskId(examinationTaskEntity.getTeachingTaskId(), stuId);
         return examinationTaskEntity;
     }
 }

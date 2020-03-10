@@ -60,7 +60,7 @@ public class TeachingTaskExperimentController extends BaseController {
     public ResponseEntity<JsonResult<PageBean<StudentTeachingTaskExperimentDto >>> pageNotSelectedList(PageParam pageParam, ExperimentDto experimentDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(experimentDto.getTeachingTaskId()), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
-        studentTeachingTaskUtil.selectedTeachingTask(experimentDto.getTeachingTaskId(), stuId);
+        studentTeachingTaskUtil.checkTeachingTaskId(experimentDto.getTeachingTaskId(), stuId);
         PageBean<StudentTeachingTaskExperimentDto > pageBean = teachingTaskExperimentService.pageList(experimentDto, setPageParam(pageParam), stuId);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }

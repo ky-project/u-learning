@@ -57,7 +57,7 @@ public class CourseDocumentationController extends BaseController {
                 .doValidate().checkResult();
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //校验教学任务id
-        studentTeachingTaskUtil.selectedTeachingTask(teachingTaskId, stuId);
+        studentTeachingTaskUtil.checkTeachingTaskId(teachingTaskId, stuId);
         //根据courseId和username查询所属用户的根路径id
         CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationService.getByTeachingTaskId(teachingTaskId);
         courseFileDocumentationDto.setFileName(courseFileDocumentationDto.getFileName().split("#")[0]);
@@ -75,7 +75,7 @@ public class CourseDocumentationController extends BaseController {
                 .doValidate().checkResult();
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //校验教学任务id
-        studentTeachingTaskUtil.selectedTeachingTask(courseFileDocumentationDto.getTeachingTaskId(), stuId);
+        studentTeachingTaskUtil.checkTeachingTaskId(courseFileDocumentationDto.getTeachingTaskId(), stuId);
         //校验课程文件
         studentTeachingTaskUtil.checkCourseFileId(courseFileDocumentationDto.getFileParentId(), courseFileDocumentationDto.getTeachingTaskId());
         //获取文件资料集合

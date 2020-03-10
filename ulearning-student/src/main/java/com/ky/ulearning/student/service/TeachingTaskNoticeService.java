@@ -2,6 +2,7 @@ package com.ky.ulearning.student.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 
 import java.util.Set;
@@ -15,11 +16,11 @@ public interface TeachingTaskNoticeService {
     /**
      * 分页查询通告内容
      *
-     * @param pageParam      分页参数
-     * @param teachingTaskId 教学任务id
+     * @param pageParam             分页参数
+     * @param teachingTaskNoticeDto 查询条件
      * @return 返回封装通知对象的分页对象
      */
-    PageBean<TeachingTaskNoticeEntity> pageList(PageParam pageParam, Long teachingTaskId);
+    PageBean<TeachingTaskNoticeDto> pageList(PageParam pageParam, TeachingTaskNoticeDto teachingTaskNoticeDto);
 
     /**
      * 根据教学任务id集合查询所有通告id集合

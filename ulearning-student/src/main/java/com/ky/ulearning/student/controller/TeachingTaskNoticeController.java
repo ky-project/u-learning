@@ -12,6 +12,7 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
@@ -52,13 +53,13 @@ public class TeachingTaskNoticeController extends BaseController {
     @ApiOperation(value = "分页查询通告", notes = "只能查看/操作已选教学任务的通告")
     @ApiOperationSupport(ignoreParameters = {"id", "noticeAttachment"})
     @GetMapping("/pageList")
-    public ResponseEntity<JsonResult<PageBean<TeachingTaskNoticeEntity>>> pageList(PageParam pageParam, Long teachingTaskId) {
+    public ResponseEntity<JsonResult<PageBean<TeachingTaskNoticeDto>>> pageList(PageParam pageParam, TeachingTaskNoticeDto teachingTaskNoticeDto) {
         ValidatorBuilder.build()
-                .ofNull(teachingTaskId, StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
-                .on(!studentTeachingTaskUtil.selectedTeachingTask(teachingTaskId, RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class)), StudentErrorCodeEnum.STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL)
+                .ofNull(teachingTaskNoticeDto.getTeachingTaskId(), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .on(!studentTeachingTaskUtil.selectedTeachingTask(teachingTaskNoticeDto.getTeachingTaskId(), RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class)), StudentErrorCodeEnum.STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL)
                 .doValidate().checkResult();
         //验证是否选课
-        PageBean<TeachingTaskNoticeEntity> pageBean = teachingTaskNoticeService.pageList(setPageParam(pageParam), teachingTaskId);
+        PageBean<TeachingTaskNoticeDto> pageBean = teachingTaskNoticeService.pageList(setPageParam(pageParam), teachingTaskNoticeDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 

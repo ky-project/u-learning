@@ -1,6 +1,7 @@
 package com.ky.ulearning.student.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.teacher.dto.TeachingTaskNoticeDto;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,19 +24,19 @@ public interface TeachingTaskNoticeDao {
     /**
      * 分页查询通告内容
      *
-     * @param pageParam      分页参数
-     * @param teachingTaskId 教学任务id
+     * @param pageParam             分页参数
+     * @param teachingTaskNoticeDto 查询条件
      * @return 返回封装通知对象的分页对象
      */
-    List<TeachingTaskNoticeEntity> listPage(@Param("teachingTaskId") Long teachingTaskId, @Param("pageParam") PageParam pageParam);
+    List<TeachingTaskNoticeDto> listPage(@Param("teachingTaskNoticeDto") TeachingTaskNoticeDto teachingTaskNoticeDto, @Param("pageParam") PageParam pageParam);
 
     /**
      * 分页查询通告内容 - 总记录数
      *
-     * @param teachingTaskId 教学任务id
+     * @param teachingTaskNoticeDto 查询条件
      * @return 总记录数
      */
-    Integer countListPage(@Param("teachingTaskId") Long teachingTaskId);
+    Integer countListPage(@Param("teachingTaskNoticeDto") TeachingTaskNoticeDto teachingTaskNoticeDto);
 
     /**
      * 根据教学任务id集合查询所有通告id集合

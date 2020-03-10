@@ -57,7 +57,7 @@ public class CourseResourceController extends BaseController {
                 .doValidate().checkResult();
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //校验教学任务id
-        studentTeachingTaskUtil.selectedTeachingTask(teachingTaskId, stuId);
+        studentTeachingTaskUtil.checkTeachingTaskId(teachingTaskId, stuId);
         //根据courseId和username查询所属用户的根路径id
         CourseFileResourceDto courseFileResourceDto = courseResourceService.getByTeachingTaskId(teachingTaskId);
         courseFileResourceDto.setFileName(courseFileResourceDto.getFileName().split("#")[0]);
@@ -75,7 +75,7 @@ public class CourseResourceController extends BaseController {
                 .doValidate().checkResult();
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //校验教学任务id
-        studentTeachingTaskUtil.selectedTeachingTask(courseFileResourceDto.getTeachingTaskId(), stuId);
+        studentTeachingTaskUtil.checkTeachingTaskId(courseFileResourceDto.getTeachingTaskId(), stuId);
         //校验课程文件
         studentTeachingTaskUtil.checkCourseFileId(courseFileResourceDto.getFileParentId(), courseFileResourceDto.getTeachingTaskId());
         //获取文件资料集合

@@ -49,7 +49,7 @@ public class ExaminationTaskController extends BaseController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(examinationTaskDto.getTeachingTaskId()), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //权限校验
-        studentTeachingTaskUtil.selectedTeachingTask(examinationTaskDto.getTeachingTaskId(), stuId);
+        studentTeachingTaskUtil.checkTeachingTaskId(examinationTaskDto.getTeachingTaskId(), stuId);
         PageBean<ExaminationTaskEntity> pageBean = examinationTaskService.pageExaminationTaskList(examinationTaskDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
