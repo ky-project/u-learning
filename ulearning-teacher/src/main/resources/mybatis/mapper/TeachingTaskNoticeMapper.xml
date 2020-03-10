@@ -133,7 +133,6 @@
         uttn.update_by,
         uttn.notice_attachment_name
         FROM u_teaching_task_notice uttn
-        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND uttn.teaching_task_id = utt.id
         WHERE uttn.valid = 1
         AND uttn.teaching_task_id = #{teachingTaskNoticeDto.teachingTaskId}
         <if test="teachingTaskNoticeDto.noticeTitle != null and teachingTaskNoticeDto.noticeTitle != ''">
@@ -163,7 +162,6 @@
     <select id="countListPage" resultType="java.lang.Integer">
         SELECT COUNT(1)
         FROM u_teaching_task_notice uttn
-        INNER JOIN u_teaching_task utt ON utt.valid = 1 AND uttn.teaching_task_id = utt.id
         WHERE uttn.valid = 1
         AND uttn.teaching_task_id = #{teachingTaskNoticeDto.teachingTaskId}
         <if test="teachingTaskNoticeDto.noticeTitle != null and teachingTaskNoticeDto.noticeTitle != ''">

@@ -41,6 +41,7 @@ public class TeachingTaskNoticeServiceImpl extends BaseService implements Teachi
     private FastDfsClientWrapper fastDfsClientWrapper;
 
     @Override
+    @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<TeachingTaskNoticeDto> pageList(PageParam pageParam, TeachingTaskNoticeDto teachingTaskNoticeDto) {
         List<TeachingTaskNoticeDto> teacherList = Optional.ofNullable(teachingTaskNoticeDao.listPage(teachingTaskNoticeDto, pageParam))
                 .orElse(Collections.emptyList());
@@ -90,7 +91,7 @@ public class TeachingTaskNoticeServiceImpl extends BaseService implements Teachi
      * @param noticeAttachment 附件
      * @return 大小字符串
      */
-    public String calAttachmentSize(String noticeAttachment) {
+    private String calAttachmentSize(String noticeAttachment) {
         if (StringUtil.isNotEmpty(noticeAttachment)) {
             String[] fileUrlArray = StringUtils.split(noticeAttachment, ",");
             List<Long> fileSizeList = fastDfsClientWrapper.getFileSizeList(fileUrlArray);
