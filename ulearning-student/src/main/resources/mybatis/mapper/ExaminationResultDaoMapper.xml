@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.student.dao.ExaminationResultDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.student.entity.ExaminationResultEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="examining_id" jdbcType="BIGINT" property="examiningId"/>
+        <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
+        <result column="student_score" jdbcType="FLOAT" property="studentScore"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            question_id,
+            examining_id,
+            student_answer,
+            student_score,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from u_examination_result
+        where valid = 1
+        AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.student.entity.ExaminationResultEntity" useGeneratedKeys="true">
+        insert into u_examination_result (question_id, examining_id, student_answer,
+                                          student_score, `valid`, memo,
+                                          create_time, create_by, update_time,
+                                          update_by)
+        values (#{questionId,jdbcType=BIGINT}, #{examiningId,jdbcType=BIGINT}, #{studentAnswer,jdbcType=VARCHAR},
+                #{studentScore,jdbcType=FLOAT}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR})
+    </insert>
+    <update id="update"
+            parameterType="com.ky.ulearning.spi.student.entity.ExaminationResultEntity">
+        update u_examination_result
+        <set>
+            update_time = now(),
+            <if test="studentAnswer != null">
+                student_answer = #{studentAnswer,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <!--批量新增测试结果-->
+    <select id="batchInsert">
+        insert into u_examination_result (question_id, examining_id, student_answer,
+        student_score, `valid`, memo,
+        create_time, create_by, update_time,
+        update_by)
+        values
+        <foreach collection="examinationResultDtoList" separator="," item="examinationResultDto">
+            (#{examinationResultDto.questionId,jdbcType=BIGINT}, #{examinationResultDto.examiningId,jdbcType=BIGINT},
+            #{examinationResultDto.studentAnswer,jdbcType=VARCHAR},
+            #{examinationResultDto.studentScore,jdbcType=FLOAT}, 1, #{examinationResultDto.memo,jdbcType=VARCHAR},
+            now(), #{examinationResultDto.createBy,jdbcType=VARCHAR}, now(),
+            #{examinationResultDto.updateBy,jdbcType=VARCHAR})
+        </foreach>
+    </select>
+    <!--根据学生测试id查询所有课程试题-->
+    <select id="getCourseQuestionVoByExaminingId"
+            resultMap="com.ky.ulearning.student.dao.CourseQuestionDao.CourseQuestionVoResultMap">
+        SELECT ucq.id,
+               ucq.question_text,
+               ucq.question_URL,
+               ucq.question_type,
+               ucq.question_option,
+               ucq.question_difficulty,
+               ucq.question_knowledge
+        FROM u_examination_result uer
+                 INNER JOIN u_course_question ucq ON ucq.valid = 1 AND uer.question_id = ucq.id
+        WHERE uer.valid = 1
+          AND examining_id = #{examiningId}
+    </select>
+</mapper>

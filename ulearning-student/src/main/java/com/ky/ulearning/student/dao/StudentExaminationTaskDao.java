@@ -3,6 +3,7 @@ package com.ky.ulearning.student.dao;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -37,4 +38,13 @@ public interface StudentExaminationTaskDao {
      */
     void update(StudentExaminationTaskDto studentExaminationTaskDto);
 
+    /**
+     * 根据测试任务id和学生id查询学生测试信息
+     *
+     * @param examinationTaskId 测试任务id
+     * @param stuId             学生id
+     * @return 学生测试信息
+     */
+    StudentExaminationTaskEntity getByExaminationTaskIdAndStuId(@Param("examinationTaskId") Long examinationTaskId,
+                                                                @Param("stuId") Long stuId);
 }

@@ -4,19 +4,18 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
-import com.ky.ulearning.common.core.utils.IpUtil;
-import com.ky.ulearning.common.core.utils.JsonUtil;
-import com.ky.ulearning.common.core.utils.RequestHolderUtil;
-import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.*;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
 import com.ky.ulearning.student.service.CourseQuestionService;
+import com.ky.ulearning.student.service.ExaminationResultService;
 import com.ky.ulearning.student.service.StudentExaminationTaskService;
 import com.ky.ulearning.student.service.TeachingTaskService;
 import io.swagger.annotations.Api;
@@ -46,6 +45,9 @@ public class StudentExaminationTaskController extends BaseController {
     private StudentExaminationTaskService studentExaminationTaskService;
 
     @Autowired
+    private ExaminationResultService examinationResultService;
+
+    @Autowired
     private CourseQuestionService courseQuestionService;
 
     @Autowired
@@ -64,19 +66,29 @@ public class StudentExaminationTaskController extends BaseController {
 
         ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
         Long courseId = teachingTaskService.getCourseIdById(examinationTaskEntity.getTeachingTaskId());
-        //TODO 验证学生是否已开始测试
+        //验证学生是否已开始测试
+        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
+        if(StringUtil.isNotEmpty(studentExaminationTaskEntity)){
+            //已开始测试，从库中查询测试题目
+            Map<Integer, List<CourseQuestionVo>> courseQuestionVoMapList = examinationResultService.getCourseQuestionVoByExaminingId(studentExaminationTaskEntity.getId());
+            //TODO 验证题目数量
+            //TODO 重新测试处理
+            //TODO 设置每题分数
+            return ResponseEntityUtil.ok(JsonResult.buildData(courseQuestionVoMapList));
+        }
         //第一次进入测试
         //获取学生ip
         String ip = RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP);
         String cityInfo = IpUtil.getCityInfo(ip);
         ip = cityInfo + "(" + ip + ")";
         StudentExaminationTaskDto studentExaminationTaskDto = initInsertDto(examinationTaskId, stuId, examinationTaskEntity.getExaminationDuration(), stuNumber, ip);
-        //TODO 测试完成打开
-//        studentExaminationTaskService.add(studentExaminationTaskDto);
+        studentExaminationTaskService.add(studentExaminationTaskDto);
         //开始组题
         ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
-        //TODO 将组卷结果添加到测试结果表中进行保存
-        return ResponseEntityUtil.ok(JsonResult.buildData(randomTestPaper(examinationParamVo, courseId)));
+        //将组卷结果添加到测试结果表中进行保存
+        Map<Integer, List<CourseQuestionVo>> resMap = randomTestPaper(examinationParamVo, courseId);
+        examinationResultService.batchInsert(resMap, studentExaminationTaskDto.getId());
+        return ResponseEntityUtil.ok(JsonResult.buildData(resMap));
     }
 
     /**

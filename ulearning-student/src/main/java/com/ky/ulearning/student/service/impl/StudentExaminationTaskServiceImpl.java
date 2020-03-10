@@ -2,11 +2,13 @@ package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import com.ky.ulearning.student.dao.StudentExaminationTaskDao;
 import com.ky.ulearning.student.service.StudentExaminationTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +31,11 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
     @Transactional(rollbackFor = Throwable.class)
     public void add(StudentExaminationTaskDto studentExaminationTaskDto) {
         studentExaminationTaskDao.insert(studentExaminationTaskDto);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public StudentExaminationTaskEntity getByExaminationTaskIdAndStuId(Long examinationTaskId, Long stuId) {
+        return studentExaminationTaskDao.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
     }
 }

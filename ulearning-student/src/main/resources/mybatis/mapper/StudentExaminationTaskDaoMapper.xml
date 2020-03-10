@@ -99,4 +99,13 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+    <!--根据测试任务id和学生id查询学生测试信息-->
+    <select id="getByExaminationTaskIdAndStuId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_student_examination_task
+        WHERE valid = 1
+        AND examination_task_id = #{examinationTaskId}
+        AND stu_id = #{stuId}
+    </select>
 </mapper>
