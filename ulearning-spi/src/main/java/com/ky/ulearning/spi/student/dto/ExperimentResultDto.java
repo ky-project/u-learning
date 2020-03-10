@@ -87,4 +87,10 @@ public class ExperimentResultDto extends BaseDto {
      */
     @ApiModelProperty(value = "文件大小", hidden = true)
     private Long experimentAttachmentSize;
+
+    /**
+     * 已批改
+     */
+    @ApiModelProperty(value = "已批改", hidden = true)
+    private Boolean isCorrected;
 }

@@ -46,6 +46,7 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
             if (StringUtil.isNotEmpty(resultDto.getExperimentUrl())) {
                 resultDto.setExperimentAttachmentSize(fastDfsClientWrapper.getFileInfo(resultDto.getExperimentUrl()).getFileSize());
             }
+            resultDto.setIsCorrected(StringUtil.isNotEmpty(resultDto.getExperimentAdvice()) || StringUtil.isNotEmpty(resultDto.getExperimentScore()));
         }
 
         PageBean<ExperimentResultDto> pageBean = new PageBean<>();
@@ -60,8 +61,11 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     @Cacheable(keyGenerator = "keyGenerator")
     public ExperimentResultDto getById(Long id) {
         ExperimentResultDto experimentResultDto = experimentResultDao.getById(id);
-        if (StringUtil.isNotEmpty(experimentResultDto) && StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())) {
-            experimentResultDto.setExperimentAttachmentSize(fastDfsClientWrapper.getFileInfo(experimentResultDto.getExperimentUrl()).getFileSize());
+        if (StringUtil.isNotEmpty(experimentResultDto)) {
+            if (StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())) {
+                experimentResultDto.setExperimentAttachmentSize(fastDfsClientWrapper.getFileInfo(experimentResultDto.getExperimentUrl()).getFileSize());
+            }
+            experimentResultDto.setIsCorrected(StringUtil.isNotEmpty(experimentResultDto.getExperimentAdvice()) || StringUtil.isNotEmpty(experimentResultDto.getExperimentScore()));
         }
         return experimentResultDto;
     }
