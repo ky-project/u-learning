@@ -38,15 +38,19 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     private FastDfsClientWrapper fastDfsClientWrapper;
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
     public PageBean<ExperimentResultDto> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto) {
         List<ExperimentResultDto> resultList = Optional.ofNullable(experimentResultDao.listPage(experimentResultDto, pageParam))
                 .orElse(Collections.emptyList());
-        for (ExperimentResultDto resultDto : resultList) {
+        for (int i = 0; i < resultList.size(); i++) {
+            ExperimentResultDto resultDto = resultList.get(i);
             if (StringUtil.isNotEmpty(resultDto.getExperimentUrl())) {
                 resultDto.setExperimentAttachmentSize(fastDfsClientWrapper.getFileInfo(resultDto.getExperimentUrl()).getFileSize());
             }
             resultDto.setIsCorrected(StringUtil.isNotEmpty(resultDto.getExperimentAdvice()) || StringUtil.isNotEmpty(resultDto.getExperimentScore()));
+            if (StringUtil.isNotEmpty(experimentResultDto.getIsCorrected())
+                    && !experimentResultDto.getIsCorrected().equals(resultDto.getIsCorrected())) {
+                resultList.remove(i--);
+            }
         }
 
         PageBean<ExperimentResultDto> pageBean = new PageBean<>();

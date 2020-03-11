@@ -91,6 +91,18 @@ public class ExperimentResultDto extends BaseDto {
     /**
      * 已批改
      */
-    @ApiModelProperty(value = "已批改", hidden = true)
+    @ApiModelProperty("已批改")
     private Boolean isCorrected;
+
+    /**
+     * 学号
+     */
+    @ApiModelProperty("学号")
+    private String stuNumber;
+
+    /**
+     * 姓名
+     */
+    @ApiModelProperty("姓名")
+    private String stuName;
 }
