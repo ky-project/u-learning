@@ -1,14 +1,18 @@
 package com.ky.ulearning.student.controller;
 
+import cn.hutool.core.date.DateTime;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
+import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
+import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
@@ -18,8 +22,7 @@ import com.ky.ulearning.student.service.CourseQuestionService;
 import com.ky.ulearning.student.service.ExaminationResultService;
 import com.ky.ulearning.student.service.StudentExaminationTaskService;
 import com.ky.ulearning.student.service.TeachingTaskService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -71,9 +74,15 @@ public class StudentExaminationTaskController extends BaseController {
 
         //验证学生是否已开始测试
         StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
-        if(StringUtil.isNotEmpty(studentExaminationTaskEntity)){
+        if (StringUtil.isNotEmpty(studentExaminationTaskEntity)) {
             //已开始测试，从库中查询测试题目并设置每题分数
             Map<Integer, List<CourseQuestionVo>> courseQuestionVoMapList = examinationResultService.getCourseQuestionVoByExaminingId(studentExaminationTaskEntity.getId(), examinationParamVo.getQuantity());
+            //更新状态变更时间
+            StudentExaminationTaskDto studentExaminationTaskDto = new StudentExaminationTaskDto();
+            studentExaminationTaskDto.setId(studentExaminationTaskEntity.getId());
+            studentExaminationTaskDto.setUpdateBy("system");
+            studentExaminationTaskDto.setExaminingStateSwitchTime(new Date());
+            studentExaminationTaskService.update(studentExaminationTaskDto);
             return ResponseEntityUtil.ok(JsonResult.buildData(courseQuestionVoMapList));
         }
         //第一次进入测试
@@ -102,6 +111,23 @@ public class StudentExaminationTaskController extends BaseController {
         studentExaminationTaskDto.setUpdateBy(stuNumber);
         studentExaminationTaskDto.setExaminingHostIp(ip);
         return studentExaminationTaskDto;
+    }
+
+    @Log("临时保存测试结果")
+    @ApiOperation(value = "临时保存测试结果", notes = "只能查看/操作已选教学任务的数据")
+    @PostMapping("/tempSave")
+    public ResponseEntity<JsonResult> tempSave(ExaminationResultSaveDto examinationResultSaveDto) {
+        ValidatorBuilder.build()
+                .ofNull(examinationResultSaveDto.getQuestionIds(), StudentErrorCodeEnum.QUESTION_ID_CANNOT_BE_NULL)
+                .ofNull(examinationResultSaveDto.getExaminationTaskId(), StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
+        String stuNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+
+        ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationResultSaveDto.getExaminationTaskId(), stuId);
+        //TODO 更新剩余时间和状态变更时间
+        //TODO 更新测试结果
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("保存成功"));
     }
 
     /**

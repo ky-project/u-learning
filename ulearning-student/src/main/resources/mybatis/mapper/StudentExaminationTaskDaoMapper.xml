@@ -34,20 +34,20 @@
             update_by
     </sql>
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="Base_Column_List"/>
-        from u_student_examination_task
-        where valid = 1
+        FROM u_student_examination_task
+        WHERE valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto" useGeneratedKeys="true">
-        insert into u_student_examination_task (examination_task_id, stu_id, examining_hostIP,
+        INSERT INTO u_student_examination_task (examination_task_id, stu_id, examining_hostIP,
                                                 examining_login_time, examining_remain_time,
                                                 examining_state, examining_state_switch_time,
                                                 `valid`, memo, create_time,
                                                 create_by, update_time, update_by)
-        values (#{examinationTaskId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT}, #{examiningHostIp,jdbcType=VARCHAR},
+        VALUES (#{examinationTaskId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT}, #{examiningHostIp,jdbcType=VARCHAR},
                 now(), #{examiningRemainTime,jdbcType=SMALLINT},
                 1, now(),
                 1, #{memo,jdbcType=VARCHAR}, now(),
@@ -55,19 +55,11 @@
     </insert>
     <update id="update"
             parameterType="com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto">
-        update u_student_examination_task
+        UPDATE u_student_examination_task
         <set>
-            <if test="examinationTaskId != null">
-                examination_task_id = #{examinationTaskId,jdbcType=BIGINT},
-            </if>
-            <if test="stuId != null">
-                stu_id = #{stuId,jdbcType=BIGINT},
-            </if>
+            update_time = now(),
             <if test="examiningHostIp != null">
                 examining_hostIP = #{examiningHostip,jdbcType=VARCHAR},
-            </if>
-            <if test="examiningLoginTime != null">
-                examining_login_time = #{examiningLoginTime,jdbcType=TIMESTAMP},
             </if>
             <if test="examiningRemainTime != null">
                 examining_remain_time = #{examiningRemainTime,jdbcType=SMALLINT},
@@ -78,26 +70,14 @@
             <if test="examiningStateSwitchTime != null">
                 examining_state_switch_time = #{examiningStateSwitchTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="valid != null">
-                `valid` = #{valid,jdbcType=BOOLEAN},
-            </if>
             <if test="memo != null">
                 memo = #{memo,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null">
-                create_by = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
     <!--根据测试任务id和学生id查询学生测试信息-->
     <select id="getByExaminationTaskIdAndStuId" resultMap="BaseResultMap">

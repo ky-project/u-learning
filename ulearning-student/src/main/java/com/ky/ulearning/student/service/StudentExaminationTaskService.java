@@ -26,4 +26,11 @@ public interface StudentExaminationTaskService {
      * @return 学生测试信息
      */
     StudentExaminationTaskEntity getByExaminationTaskIdAndStuId(Long examinationTaskId, Long stuId);
+
+    /**
+     * 更新学生测试信息
+     *
+     * @param studentExaminationTaskDto 待更新的对象
+     */
+    void update(StudentExaminationTaskDto studentExaminationTaskDto);
 }

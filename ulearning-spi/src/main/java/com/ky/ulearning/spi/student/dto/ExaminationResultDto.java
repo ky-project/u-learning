@@ -39,6 +39,6 @@ public class ExaminationResultDto extends BaseDto {
     /**
      * 得分
      */
-    @ApiModelProperty("得分")
+    @ApiModelProperty(value = "得分",hidden = true)
     private Double studentScore;
 }

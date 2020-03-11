@@ -38,4 +38,11 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
     public StudentExaminationTaskEntity getByExaminationTaskIdAndStuId(Long examinationTaskId, Long stuId) {
         return studentExaminationTaskDao.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
     }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void update(StudentExaminationTaskDto studentExaminationTaskDto) {
+        studentExaminationTaskDao.update(studentExaminationTaskDto);
+    }
 }

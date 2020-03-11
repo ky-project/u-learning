@@ -20,6 +20,8 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     EXPERIMENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验id不能为空"),
     EXPERIMENT_RESULT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验结果和实验附件不能都为空"),
     EXAMINATION_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务id不能为空"),
+    QUESTION_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "试题id不能为空"),
+    EXAMINATION_RESULT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试结果不能为空"),
 
     NOTICE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告不存在"),
     NOTICE_ATTACHMENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "通告附件不存在"),
