@@ -66,14 +66,14 @@ public class StudentExaminationTaskController extends BaseController {
 
         ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
         Long courseId = teachingTaskService.getCourseIdById(examinationTaskEntity.getTeachingTaskId());
+        //获取组题参数
+        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
+
         //验证学生是否已开始测试
         StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
         if(StringUtil.isNotEmpty(studentExaminationTaskEntity)){
-            //已开始测试，从库中查询测试题目
-            Map<Integer, List<CourseQuestionVo>> courseQuestionVoMapList = examinationResultService.getCourseQuestionVoByExaminingId(studentExaminationTaskEntity.getId());
-            //TODO 验证题目数量
-            //TODO 重新测试处理
-            //TODO 设置每题分数
+            //已开始测试，从库中查询测试题目并设置每题分数
+            Map<Integer, List<CourseQuestionVo>> courseQuestionVoMapList = examinationResultService.getCourseQuestionVoByExaminingId(studentExaminationTaskEntity.getId(), examinationParamVo.getQuantity());
             return ResponseEntityUtil.ok(JsonResult.buildData(courseQuestionVoMapList));
         }
         //第一次进入测试
@@ -84,9 +84,8 @@ public class StudentExaminationTaskController extends BaseController {
         StudentExaminationTaskDto studentExaminationTaskDto = initInsertDto(examinationTaskId, stuId, examinationTaskEntity.getExaminationDuration(), stuNumber, ip);
         studentExaminationTaskService.add(studentExaminationTaskDto);
         //开始组题
-        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
-        //将组卷结果添加到测试结果表中进行保存
         Map<Integer, List<CourseQuestionVo>> resMap = randomTestPaper(examinationParamVo, courseId);
+        //将组卷结果添加到测试结果表中进行保存
         examinationResultService.batchInsert(resMap, studentExaminationTaskDto.getId());
         return ResponseEntityUtil.ok(JsonResult.buildData(resMap));
     }
@@ -132,6 +131,7 @@ public class StudentExaminationTaskController extends BaseController {
                 }
 
                 if (courseQuestionVoTmpList.size() >= quantityVo.getAmount()) {
+                    courseQuestionVoList.remove(i--);
                     continue;
                 }
                 //设置试题分数

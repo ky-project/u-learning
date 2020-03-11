@@ -2,6 +2,7 @@ package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.student.dao.ExaminationResultDao;
@@ -51,17 +52,27 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
     }
 
     @Override
-    public Map<Integer, List<CourseQuestionVo>> getCourseQuestionVoByExaminingId(Long examiningId) {
+    public Map<Integer, List<CourseQuestionVo>> getCourseQuestionVoByExaminingId(Long examiningId, List<QuantityVo> quantityVoList) {
         List<CourseQuestionVo> courseQuestionVoList = Optional.ofNullable(examinationResultDao.getCourseQuestionVoByExaminingId(examiningId))
                 .orElse(Collections.emptyList());
         Map<Integer, List<CourseQuestionVo>> resMap = new HashMap<>();
-        for (CourseQuestionVo courseQuestionVo : courseQuestionVoList) {
-            List<CourseQuestionVo> tmpList = resMap.get(courseQuestionVo.getQuestionType());
+        for (QuantityVo quantityVo : quantityVoList) {
+            List<CourseQuestionVo> tmpList = resMap.get(quantityVo.getQuestionType());
             if(CollectionUtils.isEmpty(tmpList)){
                 tmpList = new ArrayList<>();
-                resMap.put(courseQuestionVo.getQuestionType(), tmpList);
+                resMap.put(quantityVo.getQuestionType(), tmpList);
             }
-            tmpList.add(courseQuestionVo);
+            for(int i = 0; i < courseQuestionVoList.size(); i++){
+                CourseQuestionVo courseQuestionVo = courseQuestionVoList.get(i);
+                if (!courseQuestionVo.getQuestionType().equals(quantityVo.getQuestionType())) {
+                    continue;
+                }
+                //设置试题分数
+                courseQuestionVo.setGrade(quantityVo.getGrade());
+                //加入临时试题集合
+                tmpList.add(courseQuestionVo);
+                courseQuestionVoList.remove(i--);
+            }
         }
         return resMap;
     }
