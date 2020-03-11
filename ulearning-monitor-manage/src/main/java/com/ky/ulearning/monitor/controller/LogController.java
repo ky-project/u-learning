@@ -65,6 +65,7 @@ public class LogController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(logTypeList));
     }
 
+    @ApiOperation(value = "查询近n天的访问量")
     @PermissionName(source = "log:getDaysTraffic", name = "查询近n天的访问量", group = "日志管理")
     @GetMapping("/getDaysTraffic")
     public ResponseEntity<JsonResult<List<TrafficVo>>> getDaysTraffic(Integer days) {
@@ -73,6 +74,7 @@ public class LogController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(userNumberList));
     }
 
+    @ApiOperation(value = "查询前n条日志")
     @PermissionName(source = "log:getTop", name = "查询前n条日志", group = "日志管理")
     @GetMapping("/getTop")
     public ResponseEntity<JsonResult<List<LogEntity>>> getTopTwentyLog(Integer topNumber) {
