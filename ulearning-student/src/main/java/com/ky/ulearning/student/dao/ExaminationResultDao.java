@@ -55,4 +55,11 @@ public interface ExaminationResultDao {
      * @return 试题分类map
      */
     List<CourseQuestionVo> getCourseQuestionVoByExaminingId(Long examiningId);
+
+    /**
+     * 根据试题id和测试id批量更新
+     *
+     * @param examinationResultDto 待更新的测试结果
+     */
+    void updateByQuestionIdAndExaminingId(@Param("examinationResultDto") ExaminationResultDto examinationResultDto);
 }

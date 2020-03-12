@@ -38,6 +38,7 @@
         <include refid="Base_Column_List"/>
         FROM u_teaching_task_examination_task
         WHERE valid = 1
+        AND examination_state != 1
         AND teaching_task_id = #{examinationTaskDto.teachingTaskId}
         <if test="examinationTaskDto.examinationName != null and examinationTaskDto.examinationName != ''">
             AND examination_name LIKE CONCAT('%', #{examinationTaskDto.examinationName}, '%')
@@ -54,9 +55,9 @@
         <if test="examinationTaskDto.examinationShowResult != null">
             AND examination_show_result = #{examinationTaskDto.examinationShowResult}
         </if>
-        order by examination_state ASC
+        ORDER BY examination_state ASC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--分页查询测试任务 - 总记录数-->
@@ -65,6 +66,7 @@
         COUNT(1)
         FROM u_teaching_task_examination_task
         WHERE valid = 1
+        AND examination_state != 1
         AND teaching_task_id = #{examinationTaskDto.teachingTaskId}
         <if test="examinationTaskDto.examinationName != null and examinationTaskDto.examinationName != ''">
             AND examination_name LIKE CONCAT('%', #{examinationTaskDto.examinationName}, '%')

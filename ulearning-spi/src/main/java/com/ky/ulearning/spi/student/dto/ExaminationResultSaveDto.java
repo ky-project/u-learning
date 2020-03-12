@@ -30,4 +30,10 @@ public class ExaminationResultSaveDto {
      */
     @ApiModelProperty("测试任务id")
     private Long examinationTaskId;
+
+    /**
+     * 测试ID
+     */
+    @ApiModelProperty(value = "测试ID",hidden = true)
+    private Long examiningId;
 }

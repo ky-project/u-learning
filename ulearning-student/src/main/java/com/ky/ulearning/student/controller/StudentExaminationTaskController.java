@@ -3,6 +3,7 @@ package com.ky.ulearning.student.controller;
 import cn.hutool.core.date.DateTime;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
@@ -68,6 +69,7 @@ public class StudentExaminationTaskController extends BaseController {
         String stuNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
 
         ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
+        ValidateHandler.checkParameter(! CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
         Long courseId = teachingTaskService.getCourseIdById(examinationTaskEntity.getTeachingTaskId());
         //获取组题参数
         ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
@@ -75,6 +77,8 @@ public class StudentExaminationTaskController extends BaseController {
         //验证学生是否已开始测试
         StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
         if (StringUtil.isNotEmpty(studentExaminationTaskEntity)) {
+            //验证是否还有剩余测试时间
+            ValidateHandler.checkParameter(studentExaminationTaskEntity.getExaminingRemainTime() <= 0 || studentExaminationTaskEntity.getExaminingState() == 2, StudentErrorCodeEnum.STUDENT_EXAMINATION_END);
             //已开始测试，从库中查询测试题目并设置每题分数
             Map<Integer, List<CourseQuestionVo>> courseQuestionVoMapList = examinationResultService.getCourseQuestionVoByExaminingId(studentExaminationTaskEntity.getId(), examinationParamVo.getQuantity());
             //更新状态变更时间
@@ -125,8 +129,37 @@ public class StudentExaminationTaskController extends BaseController {
         String stuNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
 
         ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationResultSaveDto.getExaminationTaskId(), stuId);
-        //TODO 更新剩余时间和状态变更时间
-        //TODO 更新测试结果
+        ValidateHandler.checkParameter(! CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
+
+        //查询学生测试信息
+        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationResultSaveDto.getExaminationTaskId(), stuId);
+        ValidateHandler.checkNull(studentExaminationTaskEntity, StudentErrorCodeEnum.STUDENT_EXAMINATION_TASK_ILLEGAL);
+        ValidateHandler.checkParameter(studentExaminationTaskEntity.getExaminingRemainTime() <= 0 || studentExaminationTaskEntity.getExaminingState() == 2, StudentErrorCodeEnum.STUDENT_EXAMINATION_END);
+
+        //获取当前ip信息
+        String ip = RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP);
+        String cityInfo = IpUtil.getCityInfo(ip);
+        ip = cityInfo + "(" + ip + ")";
+
+        //更新剩余时间和状态变更时间
+        Integer remainTime = studentExaminationTaskEntity.getExaminingRemainTime();
+        Date examiningStateSwitchTime = studentExaminationTaskEntity.getExaminingStateSwitchTime();
+        int subMin = DateUtil.diffDateMin(examiningStateSwitchTime, new Date());
+        int newRemainTime = remainTime - subMin;
+        //设置待更新的对象
+        StudentExaminationTaskDto studentExaminationTaskDto = new StudentExaminationTaskDto();
+        studentExaminationTaskDto.setId(studentExaminationTaskEntity.getId());
+        studentExaminationTaskDto.setUpdateBy(stuNumber);
+        studentExaminationTaskDto.setExaminingRemainTime(newRemainTime);
+        studentExaminationTaskDto.setExaminingStateSwitchTime(new Date());
+        studentExaminationTaskDto.setExaminingHostIp(ip);
+        studentExaminationTaskDto.setExaminingState(newRemainTime > 0 ? 1 : 2);
+
+        studentExaminationTaskService.update(studentExaminationTaskDto);
+        //TODO 若结束，则直接计算成绩
+        //更新测试结果
+        examinationResultSaveDto.setExaminingId(studentExaminationTaskEntity.getId());
+        examinationResultService.batchUpdate(examinationResultSaveDto);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("保存成功"));
     }
 

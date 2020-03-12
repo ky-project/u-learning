@@ -1,9 +1,11 @@
 package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
+import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.student.dao.ExaminationResultDao;
 import com.ky.ulearning.student.service.ExaminationResultService;
@@ -58,11 +60,11 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
         Map<Integer, List<CourseQuestionVo>> resMap = new HashMap<>();
         for (QuantityVo quantityVo : quantityVoList) {
             List<CourseQuestionVo> tmpList = resMap.get(quantityVo.getQuestionType());
-            if(CollectionUtils.isEmpty(tmpList)){
+            if (CollectionUtils.isEmpty(tmpList)) {
                 tmpList = new ArrayList<>();
                 resMap.put(quantityVo.getQuestionType(), tmpList);
             }
-            for(int i = 0; i < courseQuestionVoList.size(); i++){
+            for (int i = 0; i < courseQuestionVoList.size(); i++) {
                 CourseQuestionVo courseQuestionVo = courseQuestionVoList.get(i);
                 if (!courseQuestionVo.getQuestionType().equals(quantityVo.getQuestionType())) {
                     continue;
@@ -75,5 +77,26 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
             }
         }
         return resMap;
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void batchUpdate(ExaminationResultSaveDto examinationResultSaveDto) {
+        String[] questionIdArray = examinationResultSaveDto.getQuestionIds().split(CommonConstant.COURSE_QUESTION_SEPARATE);
+        String[] studentAnswerArray = examinationResultSaveDto.getStudentAnswers().split(CommonConstant.COURSE_QUESTION_SEPARATE);
+        List<ExaminationResultDto> examinationResultDtoList = new ArrayList<>();
+        for (int i = 0; i < questionIdArray.length; i++) {
+            ExaminationResultDto examinationResultDto = new ExaminationResultDto();
+            examinationResultDto.setQuestionId(Long.parseLong(questionIdArray[i]));
+            examinationResultDto.setExaminingId(examinationResultSaveDto.getExaminingId());
+            examinationResultDto.setStudentAnswer(studentAnswerArray[i]);
+            examinationResultDtoList.add(examinationResultDto);
+        }
+        if (!CollectionUtils.isEmpty(examinationResultDtoList)) {
+            for (ExaminationResultDto examinationResultDto : examinationResultDtoList) {
+                examinationResultDao.updateByQuestionIdAndExaminingId(examinationResultDto);
+            }
+        }
     }
 }

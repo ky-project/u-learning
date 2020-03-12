@@ -59,7 +59,7 @@
         <set>
             update_time = now(),
             <if test="examiningHostIp != null">
-                examining_hostIP = #{examiningHostip,jdbcType=VARCHAR},
+                examining_hostIP = #{examiningHostIp,jdbcType=VARCHAR},
             </if>
             <if test="examiningRemainTime != null">
                 examining_remain_time = #{examiningRemainTime,jdbcType=SMALLINT},

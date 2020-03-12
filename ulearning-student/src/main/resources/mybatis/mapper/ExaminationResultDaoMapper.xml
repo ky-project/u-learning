@@ -28,26 +28,26 @@
             update_by
     </sql>
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="Base_Column_List"/>
-        from u_examination_result
-        where valid = 1
+        FROM u_examination_result
+        WHERE valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.student.entity.ExaminationResultEntity" useGeneratedKeys="true">
-        insert into u_examination_result (question_id, examining_id, student_answer,
+        INSERT INTO u_examination_result (question_id, examining_id, student_answer,
                                           student_score, `valid`, memo,
                                           create_time, create_by, update_time,
                                           update_by)
-        values (#{questionId,jdbcType=BIGINT}, #{examiningId,jdbcType=BIGINT}, #{studentAnswer,jdbcType=VARCHAR},
+        VALUES (#{questionId,jdbcType=BIGINT}, #{examiningId,jdbcType=BIGINT}, #{studentAnswer,jdbcType=VARCHAR},
                 #{studentScore,jdbcType=FLOAT}, 1, #{memo,jdbcType=VARCHAR},
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
                 #{updateBy,jdbcType=VARCHAR})
     </insert>
     <update id="update"
             parameterType="com.ky.ulearning.spi.student.entity.ExaminationResultEntity">
-        update u_examination_result
+        UPDATE u_examination_result
         <set>
             update_time = now(),
             <if test="studentAnswer != null">
@@ -57,15 +57,16 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE valid = 1
+        AND id = #{id,jdbcType=BIGINT}
     </update>
     <!--批量新增测试结果-->
     <select id="batchInsert">
-        insert into u_examination_result (question_id, examining_id, student_answer,
+        INSERT INTO u_examination_result (question_id, examining_id, student_answer,
         student_score, `valid`, memo,
         create_time, create_by, update_time,
         update_by)
-        values
+        VALUES
         <foreach collection="examinationResultDtoList" separator="," item="examinationResultDto">
             (#{examinationResultDto.questionId,jdbcType=BIGINT}, #{examinationResultDto.examiningId,jdbcType=BIGINT},
             #{examinationResultDto.studentAnswer,jdbcType=VARCHAR},
@@ -89,4 +90,21 @@
         WHERE uer.valid = 1
           AND examining_id = #{examiningId}
     </select>
+    <!--根据试题id和测试id批量更新-->
+    <update id="updateByQuestionIdAndExaminingId">
+        UPDATE u_examination_result
+        <set>
+            update_time = now(),
+            update_by = 'system',
+            <if test="examinationResultDto.studentAnswer != null">
+                student_answer = #{examinationResultDto.studentAnswer},
+            </if>
+            <if test="examinationResultDto.studentScore != null">
+                student_score = #{examinationResultDto.studentScore},
+            </if>
+        </set>
+        WHERE valid =1
+        AND question_id = #{examinationResultDto.questionId}
+        AND examining_id = #{examinationResultDto.examiningId};
+    </update>
 </mapper>

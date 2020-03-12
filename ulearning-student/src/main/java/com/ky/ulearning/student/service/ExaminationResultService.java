@@ -2,6 +2,7 @@ package com.ky.ulearning.student.service;
 
 import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
+import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
@@ -32,4 +33,11 @@ public interface ExaminationResultService {
      * @return 试题分类map
      */
     Map<Integer, List<CourseQuestionVo>> getCourseQuestionVoByExaminingId(Long examiningId, List<QuantityVo> quantityVoList);
+
+    /**
+     * 批量更新测试结果
+     *
+     * @param examinationResultSaveDto 待更新的测试结果对象
+     */
+    void batchUpdate(ExaminationResultSaveDto examinationResultSaveDto);
 }
