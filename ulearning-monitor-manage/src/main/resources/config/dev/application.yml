@@ -6,7 +6,7 @@ info:
     version: @project.version@
 #服务器配置
 server:
-  port: 8082
+  port: 14004
   tomcat:
     basedir: /tmp/ulearning-logs/${spring.application.name}/tomcat
     accesslog:

@@ -18,7 +18,7 @@ spring:
 eureka:
   instance:
     # 所部署服务器域名
-    hostname: ky.darren1112.com
+    hostname: darren1112.com
     home-page-url-path: /${spring.application.name}
     lease-expiration-duration-in-seconds: 90
     lease-renewal-interval-in-seconds: 30

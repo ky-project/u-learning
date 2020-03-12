@@ -13,7 +13,7 @@ spring:
     admin:
       ui:
         title: U-Learning 服务监控
-        public-url: http://127.0.0.1:14004
+        public-url: http://127.0.0.1:8082
 #服务注册中心配置
 eureka:
   instance:
