@@ -1,4 +1,4 @@
-package com.ky.ulearning.system.common.aspect;
+package com.ky.ulearning.common.core.component.aspect;
 
 import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;

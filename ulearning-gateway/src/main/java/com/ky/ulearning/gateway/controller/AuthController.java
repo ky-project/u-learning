@@ -3,9 +3,11 @@ package com.ky.ulearning.gateway.controller;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.ky.ulearning.common.core.annotation.DeleteUserRedis;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
@@ -101,6 +103,9 @@ public class AuthController extends BaseController {
     @Autowired
     private SendMailUtil sendMailUtil;
 
+    @Autowired
+    private RedisClientWrapper redisClientWrapper;
+
     @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
     @GetMapping(value = "/permissionInfo")
     public ResponseEntity<JsonResult<List<PermissionEntity>>> getPermissionInfo() {
@@ -165,11 +170,13 @@ public class AuthController extends BaseController {
      * 退出系统
      * 删除cookie
      */
-    @Log("安全退出")
     @ApiOperation(value = "安全退出")
     @GetMapping(value = "/logout")
     public ResponseEntity logout(HttpServletRequest request,
                                  HttpServletResponse response) {
+        String username = JwtAccountUtil.getUsername();
+        long currentTime = System.currentTimeMillis();
+        redisClientWrapper.delete(MicroConstant.LOGIN_USER_REDIS_PREFIX + username);
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -180,6 +187,13 @@ public class AuthController extends BaseController {
                     response.addCookie(cookie);
                 }
             }
+        }
+        //登录日志
+        try {
+            //保存log信息
+            logRecord("{}", currentTime, username, "安全退出", "/auth/logout");
+        } catch (Exception e) {
+            log.error("监控系统未启动");
         }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("安全退出"));
     }
@@ -250,10 +264,11 @@ public class AuthController extends BaseController {
         //登录日志
         try {
             //保存log信息
-            logRecord(loginUser, currentTime);
+            logRecord(loginUser.toString(), currentTime, loginUser.getUsername(), "登录系统", "/auth/login");
         } catch (Exception e) {
             log.error("监控系统未启动");
         }
+        redisClientWrapper.delete(MicroConstant.LOGIN_USER_REDIS_PREFIX + loginUser.getUsername());
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(map, "登录成功"));
     }
 
@@ -295,16 +310,16 @@ public class AuthController extends BaseController {
         response.addCookie(refreshTokenCookie);
     }
 
-    private void logRecord(LoginUser loginUser, long currentTime) {
+    private void logRecord(String params, long currentTime, String username, String description, String module) {
         //设置log属性
         LogEntity logEntity = new LogEntity();
         //获取用户信息
-        logEntity.setLogUsername(JwtAccountUtil.getUsername());
-        logEntity.setLogDescription("登录系统");
-        logEntity.setLogModule("/auth/login");
+        logEntity.setLogUsername(username);
+        logEntity.setLogDescription(description);
+        logEntity.setLogModule(module);
         logEntity.setLogIp(IpUtil.getIP(RequestHolderUtil.getHttpServletRequest()));
         logEntity.setLogType("INFO");
-        logEntity.setLogParams(loginUser.toString());
+        logEntity.setLogParams(params);
         logEntity.setLogTime(System.currentTimeMillis() - currentTime);
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
         logEntity.setCreateBy("system");
@@ -323,7 +338,7 @@ public class AuthController extends BaseController {
     public ResponseEntity<JsonResult> updateInfo(TeacherDto teacherDto, StudentDto studentDto) {
         JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
         ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
-
+        redisClientWrapper.delete(MicroConstant.LOGIN_USER_REDIS_PREFIX + jwtAccount.getUsername());
         String sysRole = jwtAccount.getSysRole();
         Map<String, Object> param = new HashMap<>(16);
         param.put("id", jwtAccount.getId());
@@ -358,6 +373,7 @@ public class AuthController extends BaseController {
     }
 
     @Log("上传头像")
+    @DeleteUserRedis
     @ApiOperation("上传头像")
     @PostMapping("/uploadPhoto")
     public ResponseEntity<JsonResult> uploadPhoto(MultipartFile photo) {
@@ -423,6 +439,7 @@ public class AuthController extends BaseController {
 
     @Log("修改密码")
     @ApiOperation("修改密码")
+    @DeleteUserRedis
     @ApiOperationSupport(ignoreParameters = "id")
     @PostMapping("/updatePassword")
     public ResponseEntity<JsonResult> updatePassword(PasswordUpdateDto passwordUpdateDto) {
@@ -533,6 +550,7 @@ public class AuthController extends BaseController {
     }
 
     @Log("通过邮箱修改密码")
+    @DeleteUserRedis
     @ApiOperation(value = "通过邮箱修改密码", notes = "忘记密码时使用")
     @ApiOperationSupport(ignoreParameters = {"email"})
     @PostMapping("/updatePwdByEmail")
