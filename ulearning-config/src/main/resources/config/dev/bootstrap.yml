@@ -14,7 +14,7 @@ spring:
 eureka:
   instance:
     # 所部署服务器域名
-    hostname: wyf.darren1112.com
+    hostname: darren1112.com
   client:
     serviceUrl:
       # 注册中心url

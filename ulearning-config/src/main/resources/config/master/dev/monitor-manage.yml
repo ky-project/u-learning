@@ -3,7 +3,7 @@ xxl:
   job:
     accessToken:
     admin:
-      addresses: http://ky.darren1112.com:8082/xxl-job-admin
+      addresses: http://www.darren1112.com:14007/xxl-job-admin
     executor:
       appname: ${spring.application.name}
       # 双网卡时需要指定可通信ip
