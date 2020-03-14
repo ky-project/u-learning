@@ -163,6 +163,14 @@ public class StudentExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("保存成功"));
     }
 
+    @Log("提交测试结果")
+    @ApiOperation(value = "提交测试结果", notes = "只能查看/操作已选教学任务的数据")
+    @PostMapping("/submit")
+    public ResponseEntity<JsonResult> submit(ExaminationResultSaveDto examinationResultSaveDto) {
+
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("提交成功"));
+    }
+
     /**
      * 随机组卷
      *
