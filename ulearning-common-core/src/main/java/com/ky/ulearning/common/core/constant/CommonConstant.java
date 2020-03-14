@@ -1,5 +1,9 @@
 package com.ky.ulearning.common.core.constant;
 
+import io.swagger.models.auth.In;
+
+import java.util.Map;
+
 /**
  * 业务通用常量
  *
@@ -14,4 +18,7 @@ public class CommonConstant {
     public static final Integer[] EXAMINATION_STATE = {1, 2, 3, 4};
 
     public static final String COURSE_QUESTION_SEPARATE = "\\|#\\|";
+
+    public static final String DRUID_STAT_WEB_URI = "/weburi.json";
+
 }

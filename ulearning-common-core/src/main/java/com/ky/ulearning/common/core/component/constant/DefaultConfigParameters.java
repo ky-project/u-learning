@@ -4,6 +4,8 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * @author luyuhao
  * @date 19/12/17 00:24
@@ -51,4 +53,7 @@ public class DefaultConfigParameters {
 
     @Value("${ulearning.system.suffix}")
     private String systemSuffix;
+
+    @Value("#{${ulearning.system.module-map}}")
+    private Map<Integer, String> moduleMap;
 }

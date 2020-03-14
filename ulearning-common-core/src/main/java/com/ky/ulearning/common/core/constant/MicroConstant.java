@@ -1,5 +1,8 @@
 package com.ky.ulearning.common.core.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 服务统一通用常量
  *
@@ -68,6 +71,9 @@ public class MicroConstant {
      */
     public static final long LOGIN_USER_REDIS_EXPIRE = 7200;
 
+    /**
+     * 实验状态 0：未提交 1：已提交 2：已批改
+     */
     public static final int[] EXPERIMENT_STATUS = {0, 1, 2};
 
 }
