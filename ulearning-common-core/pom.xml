@@ -128,6 +128,10 @@
             <version>5.1.7.RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
         <!-- Test End -->
     </dependencies>
 

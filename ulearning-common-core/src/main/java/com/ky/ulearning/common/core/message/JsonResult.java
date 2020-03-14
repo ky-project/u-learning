@@ -13,7 +13,7 @@ import java.io.Serializable;
  * 统一返回json格式
  *
  * @author luyuhao
- * @date 2019/12/5 9:36
+ * @since 2019/12/5 9:36
  */
 @ApiModel("统一响应类")
 @Data
