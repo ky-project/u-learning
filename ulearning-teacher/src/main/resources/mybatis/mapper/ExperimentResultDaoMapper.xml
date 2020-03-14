@@ -41,6 +41,7 @@
 
         <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
         <result column="stu_number" jdbcType="VARCHAR" property="stuNumber"/>
+        <result column="experiment_title" jdbcType="VARCHAR" property="experimentTitle"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -105,9 +106,10 @@
         uer.id, uer.experiment_id, uer.stu_id, uer.experiment_commit_state, uer.experiment_commit_time,
         uer.experiment_result, uer.experiment_URL, uer.experiment_score, uer.experiment_advice, uer.valid, uer.memo,
         uer.create_time, uer.create_by, uer.update_time, uer.update_by, uer.experiment_attachment_name,
-        uer.experiment_shared, us.stu_number, us.stu_name
+        uer.experiment_shared, us.stu_number, us.stu_name, utte.experiment_title
         FROM u_experiment_result uer
         INNER JOIN u_student us ON us.valid = 1 AND uer.stu_id = us.id
+        INNER JOIN u_teaching_task_experiment utte ON uer.experiment_id = utte.id AND utte.valid = 1
         WHERE uer.valid = 1
         AND uer.experiment_id = #{experimentResultDto.experimentId}
         <if test="experimentResultDto.stuId != null">
@@ -136,6 +138,9 @@
         </if>
         <if test="experimentResultDto.stuNumber != null and experimentResultDto.stuNumber != ''">
             AND us.stu_number LIKE CONCAT('%', #{experimentResultDto.stuNumber}, '%')
+        </if>
+        <if test="experimentResultDto.experimentTitle != null and experimentResultDto.experimentTitle != ''">
+            AND utte.experiment_title LIKE concat('%', #{experimentResultDto.experimentTitle}, '%')
         </if>
         ORDER BY uer.experiment_commit_time ASC
         <if test="pageParam.startIndex != null and pageParam.pageSize">

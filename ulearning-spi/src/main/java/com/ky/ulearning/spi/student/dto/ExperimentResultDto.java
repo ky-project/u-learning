@@ -105,4 +105,10 @@ public class ExperimentResultDto extends BaseDto {
      */
     @ApiModelProperty("姓名")
     private String stuName;
+
+    /**
+     * 标题
+     */
+    @ApiModelProperty("标题")
+    private String experimentTitle;
 }
