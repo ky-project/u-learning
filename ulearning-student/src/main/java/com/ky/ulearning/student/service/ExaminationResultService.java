@@ -22,7 +22,6 @@ public interface ExaminationResultService {
      * @param resMap      试题map
      * @param examiningId 学生测试id
      */
-    @Async
     void batchInsert(Map<Integer, List<CourseQuestionVo>> resMap, Long examiningId);
 
     /**
@@ -40,4 +39,13 @@ public interface ExaminationResultService {
      * @param examinationResultSaveDto 待更新的测试结果对象
      */
     void batchUpdate(ExaminationResultSaveDto examinationResultSaveDto);
+
+    /**
+     * 异步加载
+     * 计算结果
+     *
+     * @param examiningId 学生测试id
+     */
+    @Async
+    void calculationResult(Long examiningId);
 }

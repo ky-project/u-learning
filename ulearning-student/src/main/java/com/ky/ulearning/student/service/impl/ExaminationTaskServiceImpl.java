@@ -3,6 +3,7 @@ package com.ky.ulearning.student.service.impl;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.dao.ExaminationTaskDao;
@@ -46,5 +47,11 @@ public class ExaminationTaskServiceImpl extends BaseService implements Examinati
     @Cacheable(keyGenerator = "keyGenerator")
     public ExaminationTaskEntity getById(Long id) {
         return examinationTaskDao.getById(id);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId) {
+        return examinationTaskDao.getExaminationTaskArr(teachingTaskId);
     }
 }

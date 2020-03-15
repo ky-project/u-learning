@@ -10,6 +10,7 @@ import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
@@ -24,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author luyuhao
@@ -46,7 +49,7 @@ public class ExaminationTaskController extends BaseController {
     @ApiOperationSupport(ignoreParameters = {"id", "examinationParameters"})
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<ExaminationTaskEntity>>> pageList(PageParam pageParam, ExaminationTaskDto examinationTaskDto) {
-        ValidateHandler.checkParameter(StringUtil.isEmpty(examinationTaskDto.getTeachingTaskId()), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
+        ValidateHandler.checkNull(examinationTaskDto.getTeachingTaskId(), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //权限校验
         studentTeachingTaskUtil.checkTeachingTaskId(examinationTaskDto.getTeachingTaskId(), stuId);
@@ -62,5 +65,17 @@ public class ExaminationTaskController extends BaseController {
         //权限校验
         ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(id, RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class));
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationTaskEntity));
+    }
+
+    @Log("查询所有测试任务数组")
+    @ApiOperation(value = "查询所有测试任务数组", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/getExaminationTaskArr")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getExaminationTaskArr(Long teachingTaskId) {
+        ValidateHandler.checkNull(teachingTaskId, StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
+        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
+        //权限校验
+        studentTeachingTaskUtil.checkTeachingTaskId(teachingTaskId, stuId);
+        List<KeyLabelVo> keyLabelVoList = examinationTaskService.getExaminationTaskArr(teachingTaskId);
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 }

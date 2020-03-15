@@ -1,13 +1,17 @@
 package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
-import com.ky.ulearning.common.core.constant.CommonConstant;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
-import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
+import com.ky.ulearning.spi.student.dto.QuestionAnswerDto;
+import com.ky.ulearning.spi.student.entity.ExaminationResultEntity;
+import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import com.ky.ulearning.student.dao.ExaminationResultDao;
+import com.ky.ulearning.student.dao.StudentExaminationTaskDao;
 import com.ky.ulearning.student.service.ExaminationResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -17,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 测试结果service - 实现
@@ -33,10 +36,16 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
     @Autowired
     private ExaminationResultDao examinationResultDao;
 
+    @Autowired
+    private StudentExaminationTaskDao studentExaminationTaskDao;
+
     @Override
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void batchInsert(Map<Integer, List<CourseQuestionVo>> resMap, Long examiningId) {
+        //先清除原有的组卷题目
+        examinationResultDao.deleteByExaminingId(examiningId);
+
         List<ExaminationResultDto> examinationResultDtoList = new ArrayList<>();
         for (List<CourseQuestionVo> courseQuestionVoList : resMap.values()) {
             for (CourseQuestionVo courseQuestionVo : courseQuestionVoList) {
@@ -83,19 +92,48 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
     @CacheEvict(allEntries = true)
     @Transactional(rollbackFor = Throwable.class)
     public void batchUpdate(ExaminationResultSaveDto examinationResultSaveDto) {
-        String[] questionIdArray = examinationResultSaveDto.getQuestionIds().split(CommonConstant.COURSE_QUESTION_SEPARATE);
-        String[] studentAnswerArray = examinationResultSaveDto.getStudentAnswers().split(CommonConstant.COURSE_QUESTION_SEPARATE);
         List<ExaminationResultDto> examinationResultDtoList = new ArrayList<>();
-        for (int i = 0; i < questionIdArray.length; i++) {
+        for (QuestionAnswerDto tmp : examinationResultSaveDto.getQuestionAnswerDtoList()) {
             ExaminationResultDto examinationResultDto = new ExaminationResultDto();
-            examinationResultDto.setQuestionId(Long.parseLong(questionIdArray[i]));
+            examinationResultDto.setQuestionId(tmp.getQuestionId());
             examinationResultDto.setExaminingId(examinationResultSaveDto.getExaminingId());
-            examinationResultDto.setStudentAnswer(studentAnswerArray[i]);
+            examinationResultDto.setStudentAnswer(tmp.getStudentAnswer());
             examinationResultDtoList.add(examinationResultDto);
         }
         if (!CollectionUtils.isEmpty(examinationResultDtoList)) {
             for (ExaminationResultDto examinationResultDto : examinationResultDtoList) {
                 examinationResultDao.updateByQuestionIdAndExaminingId(examinationResultDto);
+            }
+        }
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void calculationResult(Long examiningId) {
+        //查询所有测试结果
+        List<ExaminationResultDto> examinationResultDtoList = Optional.ofNullable(examinationResultDao.listByExaminingId(examiningId)).orElse(Collections.emptyList());
+        //查询组卷参数
+        String examinationParameters = studentExaminationTaskDao.getExaminationParametersById(examiningId);
+        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationParameters, ExaminationParamVo.class);
+        //抽取类型-分值
+        Map<Integer, Double> quantityMap = new HashMap<>();
+        for (QuantityVo quantityVo : examinationParamVo.getQuantity()) {
+            quantityMap.put(quantityVo.getQuestionType(), quantityVo.getGrade());
+        }
+
+        //计算成绩
+        List<ExaminationResultDto> resList = new ArrayList<>();
+        for (ExaminationResultDto examinationResultDto : examinationResultDtoList) {
+            ExaminationResultDto temp = new ExaminationResultDto();
+            temp.setId(examinationResultDto.getId());
+            temp.setStudentScore(examinationResultDto.getStudentAnswer().equals(examinationResultDto.getQuestionKey()) ? quantityMap.get(examinationResultDto.getQuestionType()) : 0.0);
+            resList.add(temp);
+        }
+        //批量更新测试结果
+        if (!CollectionUtils.isEmpty(resList)) {
+            for (ExaminationResultDto examinationResultDto : resList) {
+                examinationResultDao.update(examinationResultDto);
             }
         }
     }

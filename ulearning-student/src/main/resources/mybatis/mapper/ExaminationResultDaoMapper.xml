@@ -14,6 +14,22 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <resultMap id="ExaminationResultDtoMap" type="com.ky.ulearning.spi.student.dto.ExaminationResultDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="examining_id" jdbcType="BIGINT" property="examiningId"/>
+        <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
+        <result column="student_score" jdbcType="FLOAT" property="studentScore"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             question_id,
@@ -46,15 +62,16 @@
                 #{updateBy,jdbcType=VARCHAR})
     </insert>
     <update id="update"
-            parameterType="com.ky.ulearning.spi.student.entity.ExaminationResultEntity">
+            parameterType="com.ky.ulearning.spi.student.dto.ExaminationResultDto">
         UPDATE u_examination_result
         <set>
             update_time = now(),
+            update_by = 'system',
             <if test="studentAnswer != null">
                 student_answer = #{studentAnswer,jdbcType=VARCHAR},
             </if>
-            <if test="updateBy != null">
-                update_by = #{updateBy,jdbcType=VARCHAR},
+            <if test="studentScore != null">
+                student_score = #{studentScore,jdbcType=DOUBLE},
             </if>
         </set>
         WHERE valid = 1
@@ -106,5 +123,34 @@
         WHERE valid =1
         AND question_id = #{examinationResultDto.questionId}
         AND examining_id = #{examinationResultDto.examiningId};
+    </update>
+    <!--根据学生测试id查询所有测试结果-->
+    <select id="listByExaminingId" resultMap="ExaminationResultDtoMap">
+        SELECT uer.id,
+               uer.question_id,
+               uer.examining_id,
+               uer.student_answer,
+               uer.student_score,
+               uer.`valid`,
+               uer.memo,
+               uer.create_time,
+               uer.create_by,
+               uer.update_time,
+               uer.update_by,
+               ucq.question_key,
+               ucq.question_type
+        FROM u_examination_result uer
+                 INNER JOIN u_course_question ucq ON uer.question_id = ucq.id AND uer.valid = 1
+        WHERE uer.valid = 1
+          AND uer.examining_id = #{examiningId}
+    </select>
+    <!--根据学生测试id删除所有测试结果-->
+    <update id="deleteByExaminingId">
+        UPDATE u_examination_result
+        SET valid       = 0,
+            update_time = now(),
+            update_by   = 'system'
+        WHERE valid = 1
+          AND examining_id = #{examiningId}
     </update>
 </mapper>

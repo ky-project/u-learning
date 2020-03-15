@@ -1,9 +1,5 @@
 package com.ky.ulearning.common.core.constant;
 
-import io.swagger.models.auth.In;
-
-import java.util.Map;
-
 /**
  * 业务通用常量
  *

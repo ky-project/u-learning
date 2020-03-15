@@ -47,4 +47,12 @@ public interface StudentExaminationTaskDao {
      */
     StudentExaminationTaskEntity getByExaminationTaskIdAndStuId(@Param("examinationTaskId") Long examinationTaskId,
                                                                 @Param("stuId") Long stuId);
+
+    /**
+     * 根据id查询测试任务参数
+     *
+     * @param id 学生测试id
+     * @return 测试任务参数
+     */
+    String getExaminationParametersById(Long id);
 }

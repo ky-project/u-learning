@@ -46,7 +46,7 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     EXPERIMENT_RESULT_ILLEGAL(HttpStatus.BAD_REQUEST, "实验结果已提交，无法重复提交"),
     EXAMINATION_TASK_ILLEGAL(HttpStatus.BAD_REQUEST, "测试任务未开始或已结束"),
-    STUDENT_EXAMINATION_TASK_ILLEGAL(HttpStatus.BAD_REQUEST, "您还未开始实验"),
+    STUDENT_EXAMINATION_TASK_ILLEGAL(HttpStatus.BAD_REQUEST, "您还未开始测试"),
 
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     COURSE_FOLDER_CANNOT_DOWNLOAD(HttpStatus.BAD_REQUEST, "暂不支持文件夹下载"),

@@ -88,4 +88,13 @@
         AND examination_task_id = #{examinationTaskId}
         AND stu_id = #{stuId}
     </select>
+    <!--根据id查询测试任务参数-->
+    <select id="getExaminationParametersById" resultType="java.lang.String">
+        SELECT uttet.examination_parameters
+        FROM u_student_examination_task uset
+                 INNER JOIN u_teaching_task_examination_task uttet
+                            ON uset.examination_task_id = uttet.id AND uttet.valid = 1
+        WHERE uset.valid = 1
+          AND uset.id = #{id}
+    </select>
 </mapper>

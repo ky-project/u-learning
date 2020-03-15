@@ -86,10 +86,18 @@
     </select>
     <!--根据id查询测试任务-->
     <select id="getById" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="Base_Column_List"/>
-        from u_teaching_task_examination_task
-        where valid = 1
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
         AND id = #{id,jdbcType=BIGINT}
+    </select>
+    <!--根据教学任务id查询测试任务数组-->
+    <select id="getExaminationTaskArr" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT id               AS `key`,
+               examination_name AS `label`
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
+          AND teaching_task_id = #{teachingTaskId}
     </select>
 </mapper>

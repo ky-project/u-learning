@@ -62,4 +62,19 @@ public interface ExaminationResultDao {
      * @param examinationResultDto 待更新的测试结果
      */
     void updateByQuestionIdAndExaminingId(@Param("examinationResultDto") ExaminationResultDto examinationResultDto);
+
+    /**
+     * 根据学生测试id查询所有测试结果
+     *
+     * @param examiningId 学生测试id
+     * @return 测试结果集合
+     */
+    List<ExaminationResultDto> listByExaminingId(Long examiningId);
+
+    /**
+     * 根据学生测试id删除所有测试结果
+     *
+     * @param examiningId 学生测试id
+     */
+    void deleteByExaminingId(Long examiningId);
 }

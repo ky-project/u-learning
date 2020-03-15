@@ -6,12 +6,12 @@ import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.spi.common.vo.DruidWebUriVo;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
@@ -24,14 +24,14 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@Api(hidden = true)
+@ApiIgnore
 @RequestMapping(value = "/druidStat")
 public class DruidStatController {
 
     private DruidStatService druidStatService = DruidStatService.getInstance();
 
     @GetMapping("/apiStat")
-    public ResponseEntity<JsonResult<List<DruidWebUriVo>>> getApiStat(){
+    public ResponseEntity<JsonResult<List<DruidWebUriVo>>> getApiStat() {
         String service = druidStatService.service(CommonConstant.DRUID_STAT_WEB_URI);
         Map res = JsonUtil.parseObject(service, Map.class);
         Object contentJson = res.get("Content");

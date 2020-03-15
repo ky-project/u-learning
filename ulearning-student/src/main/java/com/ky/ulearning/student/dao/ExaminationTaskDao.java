@@ -1,6 +1,7 @@
 package com.ky.ulearning.student.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -45,4 +46,12 @@ public interface ExaminationTaskDao {
      * @return 测试任务对象
      */
     ExaminationTaskEntity getById(Long id);
+
+    /**
+     * 根据教学任务id查询测试任务数组
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 测试任务数组
+     */
+    List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId);
 }

@@ -28,10 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -69,7 +66,7 @@ public class StudentExaminationTaskController extends BaseController {
         String stuNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
 
         ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
-        ValidateHandler.checkParameter(! CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
+        ValidateHandler.checkParameter(!CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
         Long courseId = teachingTaskService.getCourseIdById(examinationTaskEntity.getTeachingTaskId());
         //获取组题参数
         ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
@@ -117,22 +114,22 @@ public class StudentExaminationTaskController extends BaseController {
         return studentExaminationTaskDto;
     }
 
-    @Log("临时保存测试结果")
-    @ApiOperation(value = "临时保存测试结果", notes = "只能查看/操作已选教学任务的数据")
-    @PostMapping("/tempSave")
-    public ResponseEntity<JsonResult> tempSave(ExaminationResultSaveDto examinationResultSaveDto) {
-        ValidatorBuilder.build()
-                .ofNull(examinationResultSaveDto.getQuestionIds(), StudentErrorCodeEnum.QUESTION_ID_CANNOT_BE_NULL)
-                .ofNull(examinationResultSaveDto.getExaminationTaskId(), StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL)
-                .doValidate().checkResult();
+    @Log("保存/提交测试结果")
+    @ApiOperation(value = "保存/提交测试结果", notes = "只能查看/操作已选教学任务的数据")
+    @PostMapping("/submitResult")
+    public ResponseEntity<JsonResult<Boolean>> submitResult(@RequestBody ExaminationResultSaveDto examinationResultSaveDto) {
+        ValidateHandler.checkParameter(CollectionUtils.isEmpty(examinationResultSaveDto.getQuestionAnswerDtoList()), StudentErrorCodeEnum.EXAMINATION_RESULT_CANNOT_BE_NULL);
+        //测试任务id
+        Long examinationTaskId = examinationResultSaveDto.getExaminationTaskId();
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         String stuNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
 
-        ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationResultSaveDto.getExaminationTaskId(), stuId);
-        ValidateHandler.checkParameter(! CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
+        //获取测试任务
+        ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
+        ValidateHandler.checkParameter(!CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
 
         //查询学生测试信息
-        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationResultSaveDto.getExaminationTaskId(), stuId);
+        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
         ValidateHandler.checkNull(studentExaminationTaskEntity, StudentErrorCodeEnum.STUDENT_EXAMINATION_TASK_ILLEGAL);
         ValidateHandler.checkParameter(studentExaminationTaskEntity.getExaminingRemainTime() <= 0 || studentExaminationTaskEntity.getExaminingState() == 2, StudentErrorCodeEnum.STUDENT_EXAMINATION_END);
 
@@ -153,22 +150,45 @@ public class StudentExaminationTaskController extends BaseController {
         studentExaminationTaskDto.setExaminingRemainTime(newRemainTime);
         studentExaminationTaskDto.setExaminingStateSwitchTime(new Date());
         studentExaminationTaskDto.setExaminingHostIp(ip);
-        studentExaminationTaskDto.setExaminingState(newRemainTime > 0 ? 1 : 2);
+        studentExaminationTaskDto.setExaminingState(newRemainTime <= 0 || examinationResultSaveDto.getIsSubmit() ? 2 : 1);
 
         studentExaminationTaskService.update(studentExaminationTaskDto);
-        //TODO 若结束，则直接计算成绩
         //更新测试结果
         examinationResultSaveDto.setExaminingId(studentExaminationTaskEntity.getId());
         examinationResultService.batchUpdate(examinationResultSaveDto);
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("保存成功"));
+
+        //若结束或交卷，计算成绩
+        boolean isOver = studentExaminationTaskDto.getExaminingState() != 1;
+        if(isOver || examinationResultSaveDto.getIsSubmit()){
+            examinationResultService.calculationResult(studentExaminationTaskEntity.getId());
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(! isOver, "保存成功"));
     }
 
-    @Log("提交测试结果")
-    @ApiOperation(value = "提交测试结果", notes = "只能查看/操作已选教学任务的数据")
-    @PostMapping("/submit")
-    public ResponseEntity<JsonResult> submit(ExaminationResultSaveDto examinationResultSaveDto) {
+    @Log("重新组卷")
+    @ApiOperation(value = "重新组卷", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/regroup")
+    public ResponseEntity<JsonResult<Map<Integer, List<CourseQuestionVo>>>> regroup(Long examinationTaskId) {
+        ValidateHandler.checkNull(examinationTaskId, StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
+        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
 
-        return ResponseEntityUtil.ok(JsonResult.buildMsg("提交成功"));
+        ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
+        ValidateHandler.checkParameter(!CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState()), StudentErrorCodeEnum.EXAMINATION_TASK_ILLEGAL);
+        Long courseId = teachingTaskService.getCourseIdById(examinationTaskEntity.getTeachingTaskId());
+        //获取组题参数
+        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
+
+        //验证学生是否已开始测试
+        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
+        ValidateHandler.checkNull(studentExaminationTaskEntity, StudentErrorCodeEnum.STUDENT_EXAMINATION_TASK_ILLEGAL);
+        //验证是否还有剩余测试时间
+        ValidateHandler.checkParameter(studentExaminationTaskEntity.getExaminingRemainTime() <= 0 || studentExaminationTaskEntity.getExaminingState() == 2, StudentErrorCodeEnum.STUDENT_EXAMINATION_END);
+
+        //开始组题
+        Map<Integer, List<CourseQuestionVo>> resMap = randomTestPaper(examinationParamVo, courseId);
+        //将组卷结果添加到测试结果表中进行保存
+        examinationResultService.batchInsert(resMap, studentExaminationTaskEntity.getId());
+        return ResponseEntityUtil.ok(JsonResult.buildData(resMap));
     }
 
     /**
