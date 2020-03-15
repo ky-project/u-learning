@@ -1,8 +1,12 @@
 package com.ky.ulearning.student.service.impl;
 
+import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
+import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.dao.ExperimentResultDao;
 import com.ky.ulearning.student.service.ExperimentResultService;
@@ -12,6 +16,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 实验结果service - 接口
@@ -27,6 +34,9 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     @Autowired
     private ExperimentResultDao experimentResultDao;
 
+    @Autowired
+    private FastDfsClientWrapper fastDfsClientWrapper;
+
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
     public ExperimentResultEntity getByExperimentIdAndStuId(Long experimentId, Long stuId) {
@@ -41,8 +51,35 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     }
 
     @Override
-    @Cacheable(keyGenerator =  "keyGenerator")
+    @Cacheable(keyGenerator = "keyGenerator")
     public ExperimentResultEntity getById(Long id) {
         return experimentResultDao.getById(id);
+    }
+
+    @Override
+    public ExperimentResultDto getDetailByExperimentIdAndStuId(Long experimentId, Long stuId) {
+        ExperimentResultDto experimentResultDto = experimentResultDao.getDetailByExperimentIdAndStuId(experimentId, stuId);
+        if (Objects.isNull(experimentResultDto)) {
+            return null;
+        }
+        //设置附件大小
+        if (StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())) {
+            FileInfo fileInfo = fastDfsClientWrapper.getFileInfo(experimentResultDto.getExperimentUrl());
+            experimentResultDto.setExperimentAttachmentSize(fileInfo.getFileSize());
+        }
+        //设置是否已批改
+        experimentResultDto.setIsCorrected(Objects.nonNull(experimentResultDto.getExperimentScore()) || Objects.nonNull(experimentResultDto.getExperimentAdvice()));
+        //获取该实验的所有记录，根据分数降序排序
+        List<ExperimentResultDto> experimentDtoList =  experimentResultDao.listByScoreDesc(experimentId);
+        int ranking = 1;
+        for (ExperimentResultDto resultDto : experimentDtoList) {
+            if(resultDto.getId().equals(experimentResultDto.getId())){
+                break;
+            }
+            ranking++;
+        }
+        experimentResultDto.setRanking(ranking);
+        experimentResultDto.setSubmitNumber(experimentDtoList.size());
+        return experimentResultDto;
     }
 }

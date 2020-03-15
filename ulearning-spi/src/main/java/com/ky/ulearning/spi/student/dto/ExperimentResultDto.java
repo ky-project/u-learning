@@ -111,4 +111,16 @@ public class ExperimentResultDto extends BaseDto {
      */
     @ApiModelProperty("标题")
     private String experimentTitle;
+
+    /**
+     * 排名
+     */
+    @ApiModelProperty(value = "排名", hidden = true)
+    private Integer ranking;
+
+    /**
+     * 提交人数
+     */
+    @ApiModelProperty(value = "提交人数", hidden = true)
+    private Integer submitNumber;
 }

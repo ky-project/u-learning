@@ -2,10 +2,13 @@ package com.ky.ulearning.student.dao;
 
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
+import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * 实验结果dao
@@ -47,5 +50,23 @@ public interface ExperimentResultDao {
      * @return 实验结果
      */
     ExperimentResultEntity getByExperimentIdAndStuId(@Param("experimentId") Long experimentId,
-                                                    @Param("stuId") Long stuId);
+                                                     @Param("stuId") Long stuId);
+
+    /**
+     * 查询实验结果详细信息
+     *
+     * @param experimentId 实验id
+     * @param stuId        学生id
+     * @return 实验结果
+     */
+    ExperimentResultDto getDetailByExperimentIdAndStuId(@Param("experimentId") Long experimentId,
+                                                        @Param("stuId") Long stuId);
+
+    /**
+     * 根据实验id，查询所有实验结果并根据分数降序排序
+     *
+     * @param experimentId 实验id
+     * @return 实验结果集合
+     */
+    List<ExperimentResultDto> listByScoreDesc(Long experimentId);
 }

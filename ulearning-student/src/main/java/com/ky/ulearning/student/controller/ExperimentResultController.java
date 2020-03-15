@@ -104,14 +104,11 @@ public class ExperimentResultController extends BaseController {
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //验证权限
         studentTeachingTaskUtil.checkExperimentId(experimentId, stuId);
-        ExperimentResultEntity experimentResultEntity = experimentResultService.getByExperimentIdAndStuId(experimentId, stuId);
-        ValidateHandler.checkNull(experimentResultEntity, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
-        ExperimentResultDto experimentResultDto = new ExperimentResultDto();
-        BeanUtils.copyProperties(experimentResultEntity, experimentResultDto);
-        if (StringUtil.isNotEmpty(experimentResultDto.getExperimentUrl())) {
-            FileInfo fileInfo = fastDfsClientWrapper.getFileInfo(experimentResultDto.getExperimentUrl());
-            experimentResultDto.setExperimentAttachmentSize(fileInfo.getFileSize());
-        }
+
+        //查询实验结果
+        ExperimentResultDto experimentResultDto = experimentResultService.getDetailByExperimentIdAndStuId(experimentId, stuId);
+        ValidateHandler.checkNull(experimentResultDto, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
+
         return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDto));
     }
 }

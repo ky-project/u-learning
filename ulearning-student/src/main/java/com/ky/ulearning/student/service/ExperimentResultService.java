@@ -2,7 +2,6 @@ package com.ky.ulearning.student.service;
 
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
-import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 
 /**
  * 实验结果service - 接口
@@ -35,4 +34,13 @@ public interface ExperimentResultService {
      * @return 实验结果
      */
     ExperimentResultEntity getById(Long id);
+
+    /**
+     * 查询实验结果详细信息
+     *
+     * @param experimentId 实验id
+     * @param stuId        学生id
+     * @return 实验结果
+     */
+    ExperimentResultDto getDetailByExperimentIdAndStuId(Long experimentId, Long stuId);
 }
