@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.ExaminationResultDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.student.entity.ExaminationResultEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="examining_id" jdbcType="BIGINT" property="examiningId"/>
+        <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
+        <result column="student_score" jdbcType="FLOAT" property="studentScore"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <resultMap id="ExaminationResultDtoMap" type="com.ky.ulearning.spi.student.dto.ExaminationResultDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_id" jdbcType="BIGINT" property="questionId"/>
+        <result column="examining_id" jdbcType="BIGINT" property="examiningId"/>
+        <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
+        <result column="student_score" jdbcType="FLOAT" property="studentScore"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            question_id,
+            examining_id,
+            student_answer,
+            student_score,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+</mapper>

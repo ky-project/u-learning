@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.teacher.dao.StudentExaminationTaskDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="examination_task_id" jdbcType="BIGINT" property="examinationTaskId"/>
+        <result column="stu_id" jdbcType="BIGINT" property="stuId"/>
+        <result column="examining_hostIP" jdbcType="VARCHAR" property="examiningHostIp"/>
+        <result column="examining_login_time" jdbcType="TIMESTAMP" property="examiningLoginTime"/>
+        <result column="examining_remain_time" jdbcType="SMALLINT" property="examiningRemainTime"/>
+        <result column="examining_state" jdbcType="SMALLINT" property="examiningState"/>
+        <result column="examining_state_switch_time" jdbcType="TIMESTAMP" property="examiningStateSwitchTime"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            examination_task_id,
+            stu_id,
+            examining_hostIP,
+            examining_login_time,
+            examining_remain_time,
+            examining_state,
+            examining_state_switch_time,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
+    </sql>
+</mapper>
