@@ -23,7 +23,7 @@ public class AopUtil {
     /**
      * 查询第一页参数
      */
-    public static final String FIRST_PAGE_PARAM = "currentPage=1";
+    public static final String FIRST_PAGE_PARAM = "currentPage=1,";
 
     /**
      * 创建日志对象
