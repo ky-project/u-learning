@@ -1,6 +1,5 @@
 package com.ky.ulearning.student.controller;
 
-import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
@@ -16,8 +15,6 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
-import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
-import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
 import com.ky.ulearning.student.service.ExperimentResultService;
@@ -25,7 +22,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.util.Date;
 
