@@ -46,6 +46,8 @@
         <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
         <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
         <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+
+        <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
