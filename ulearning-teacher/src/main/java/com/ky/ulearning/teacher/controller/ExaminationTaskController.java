@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 测试任务controller
  *
@@ -127,6 +129,16 @@ public class ExaminationTaskController extends BaseController {
         teachingTaskValidUtil.checkExaminationId(id, username);
         examinationTaskService.delete(id, username);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
+    }
+
+    @Log("根据教学任务id查询测试任务数组")
+    @ApiOperation(value = "根据教学任务id查询测试任务数组", notes = "只能查询/操作属于自己的教学任务的数据")
+    @GetMapping("/getArrByTeachingTaskId")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getArrByTeachingTaskId(Long teachingTaskId) {
+        ValidateHandler.checkNull(teachingTaskId, TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
+        teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskId);
+        List<KeyLabelVo> keyLabelVoList = examinationTaskService.getArrByTeachingTaskId(teachingTaskId);
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 
     /**

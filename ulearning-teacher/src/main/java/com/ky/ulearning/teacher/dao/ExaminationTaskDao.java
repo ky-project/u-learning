@@ -2,6 +2,7 @@ package com.ky.ulearning.teacher.dao;
 
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -70,4 +71,20 @@ public interface ExaminationTaskDao {
     void updateValidById(@Param("id") Long id,
                          @Param("updateBy") String updateBy,
                          @Param("valid") Integer valid);
+
+    /**
+     * 根据教学任务id查询测试任务数组
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 测试任务数组
+     */
+    List<KeyLabelVo> getArrByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 根据id查询组卷参数
+     *
+     * @param id id
+     * @return 组卷参数
+     */
+    String getExaminationParameters(Long id);
 }

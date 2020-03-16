@@ -2,8 +2,11 @@ package com.ky.ulearning.teacher.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
+
+import java.util.List;
 
 /**
  * 测试任务service - 接口类
@@ -51,4 +54,20 @@ public interface ExaminationTaskService {
      * @param updateBy 更新者
      */
     void delete(Long id, String updateBy);
+
+    /**
+     * 根据教学任务id查询测试任务数组
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 测试任务数组
+     */
+    List<KeyLabelVo> getArrByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 根据id查询组卷参数
+     *
+     * @param id id
+     * @return 组卷参数
+     */
+    String getExaminationParameters(Long id);
 }

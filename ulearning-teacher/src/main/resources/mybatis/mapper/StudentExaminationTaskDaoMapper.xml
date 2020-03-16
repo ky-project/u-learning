@@ -17,6 +17,25 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
+    <resultMap id="StudentExaminationTaskDtoMap" type="com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="examination_task_id" jdbcType="BIGINT" property="examinationTaskId"/>
+        <result column="stu_id" jdbcType="BIGINT" property="stuId"/>
+        <result column="examining_hostIP" jdbcType="VARCHAR" property="examiningHostIp"/>
+        <result column="examining_login_time" jdbcType="TIMESTAMP" property="examiningLoginTime"/>
+        <result column="examining_remain_time" jdbcType="SMALLINT" property="examiningRemainTime"/>
+        <result column="examining_state" jdbcType="SMALLINT" property="examiningState"/>
+        <result column="examining_state_switch_time" jdbcType="TIMESTAMP" property="examiningStateSwitchTime"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+
+        <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
+        <result column="stu_number" jdbcType="VARCHAR" property="stuNumber"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             examination_task_id,
@@ -33,4 +52,80 @@
             update_time,
             update_by
     </sql>
+    <!--分页查询学生测试-->
+    <select id="listPage" resultMap="StudentExaminationTaskDtoMap">
+        SELECT uset.id, uset.examination_task_id, uset.stu_id, uset.examining_hostIP, uset.examining_login_time,
+        uset.examining_remain_time, uset.examining_state, uset.examining_state_switch_time, uset.valid, uset.memo,
+        uset.create_time, uset.create_by, uset.update_time, uset.update_by,
+        us.stu_name,us.stu_number
+        FROM u_student_examination_task uset
+        INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+        WHERE uset.valid = 1
+        AND uset.examination_task_id = #{studentExaminationTaskDto.examinationTaskId}
+        <if test="studentExaminationTaskDto.examiningHostIp != null and studentExaminationTaskDto.examiningHostIp != ''">
+            AND examining_hostIP LIKE concat('%', #{studentExaminationTaskDto.examiningHostIp}, '%')
+        </if>
+        <if test="studentExaminationTaskDto.examiningLoginTime != null">
+            AND DATE(examining_login_time) = #{studentExaminationTaskDto.examiningLoginTime}
+        </if>
+        <if test="studentExaminationTaskDto.examiningRemainTime != null">
+            AND DATE(examining_remain_time) = #{studentExaminationTaskDto.examiningRemainTime}
+        </if>
+        <if test="studentExaminationTaskDto.examiningState != null">
+            AND examining_state = #{studentExaminationTaskDto.examiningState}
+        </if>
+        <if test="studentExaminationTaskDto.examiningStateSwitchTime != null">
+            AND examining_state_switch_time = #{studentExaminationTaskDto.examiningStateSwitchTime}
+        </if>
+        <if test="studentExaminationTaskDto.stuNumber != null and studentExaminationTaskDto.stuNumber != ''">
+            AND stu_number LIKE concat('%', #{studentExaminationTaskDto.stuNumber}, '%')
+        </if>
+        <if test="studentExaminationTaskDto.stuName != null and studentExaminationTaskDto.stuName != ''">
+            AND stu_name LIKE concat('%', #{studentExaminationTaskDto.stuName}, '%')
+        </if>
+        ORDER BY examining_state ASC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询学生测试 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_student_examination_task uset
+        INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+        WHERE uset.valid = 1
+        AND uset.examination_task_id = #{studentExaminationTaskDto.examinationTaskId}
+        <if test="studentExaminationTaskDto.examiningHostIp != null and studentExaminationTaskDto.examiningHostIp != ''">
+            AND examining_hostIP LIKE concat('%', #{studentExaminationTaskDto.examiningHostIp}, '%')
+        </if>
+        <if test="studentExaminationTaskDto.examiningLoginTime != null">
+            AND DATE(examining_login_time) = #{studentExaminationTaskDto.examiningLoginTime}
+        </if>
+        <if test="studentExaminationTaskDto.examiningRemainTime != null">
+            AND DATE(examining_remain_time) = #{studentExaminationTaskDto.examiningRemainTime}
+        </if>
+        <if test="studentExaminationTaskDto.examiningState != null">
+            AND examining_state = #{studentExaminationTaskDto.examiningState}
+        </if>
+        <if test="studentExaminationTaskDto.examiningStateSwitchTime != null">
+            AND examining_state_switch_time = #{studentExaminationTaskDto.examiningStateSwitchTime}
+        </if>
+        <if test="studentExaminationTaskDto.stuNumber != null and studentExaminationTaskDto.stuNumber != ''">
+            AND stu_number LIKE concat('%', #{studentExaminationTaskDto.stuNumber}, '%')
+        </if>
+        <if test="studentExaminationTaskDto.stuName != null and studentExaminationTaskDto.stuName != ''">
+            AND stu_name LIKE concat('%', #{studentExaminationTaskDto.stuName}, '%')
+        </if>
+    </select>
+    <!--根据id查询学生测试信息-->
+    <select id="getById" resultMap="StudentExaminationTaskDtoMap">
+        SELECT uset.id, uset.examination_task_id, uset.stu_id, uset.examining_hostIP, uset.examining_login_time,
+               uset.examining_remain_time, uset.examining_state, uset.examining_state_switch_time, uset.valid, uset.memo,
+               uset.create_time, uset.create_by, uset.update_time, uset.update_by,
+               us.stu_name,us.stu_number
+        FROM u_student_examination_task uset
+                 INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+        WHERE uset.valid = 1
+          AND uset.id = #{id}
+    </select>
 </mapper>

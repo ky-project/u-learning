@@ -3,6 +3,7 @@ package com.ky.ulearning.teacher.service.impl;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.teacher.dao.ExaminationTaskDao;
@@ -68,5 +69,17 @@ public class ExaminationTaskServiceImpl extends BaseService implements Examinati
     @Transactional(rollbackFor = Throwable.class)
     public void delete(Long id, String updateBy) {
         examinationTaskDao.updateValidById(id, updateBy, 0);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public List<KeyLabelVo> getArrByTeachingTaskId(Long teachingTaskId) {
+        return examinationTaskDao.getArrByTeachingTaskId(teachingTaskId);
+    }
+
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public String getExaminationParameters(Long id) {
+        return examinationTaskDao.getExaminationParameters(id);
     }
 }

@@ -2,8 +2,12 @@ package com.ky.ulearning.teacher.common.utils;
 
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
+import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
-import com.ky.ulearning.spi.teacher.dto.*;
+import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
+import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
+import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
+import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
@@ -57,6 +61,9 @@ public class TeachingTaskValidUtil {
 
     @Autowired
     private ExperimentResultService experimentResultService;
+
+    @Autowired
+    private StudentExaminationTaskService studentExaminationTaskService;
 
     /**
      * 校验教师是否有操作教学任务的权限
@@ -236,5 +243,20 @@ public class TeachingTaskValidUtil {
         ValidateHandler.checkNull(experimentResultDto, TeacherErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
         checkExperimentId(experimentResultDto.getExperimentId(), username);
         return experimentResultDto;
+    }
+
+    /**
+     * 校验是否有操作学生测试的权限
+     *
+     * @param examiningId 学生测试id
+     * @param username    教师工号
+     * @return 学生测试对象
+     */
+    public StudentExaminationTaskDto checkExaminingId(Long examiningId, String username) {
+        StudentExaminationTaskDto studentExaminationTaskDto = studentExaminationTaskService.getById(examiningId);
+        //验证
+        ValidateHandler.checkNull(studentExaminationTaskDto, TeacherErrorCodeEnum.STUDENT_EXAMINATION_TASK_ID_ILLEGAL);
+        checkExaminationId(studentExaminationTaskDto.getExaminationTaskId(), username);
+        return studentExaminationTaskDto;
     }
 }

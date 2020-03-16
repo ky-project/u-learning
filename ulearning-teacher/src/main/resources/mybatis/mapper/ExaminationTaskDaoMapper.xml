@@ -32,20 +32,20 @@
             update_by
     </sql>
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="Base_Column_List"/>
-        from u_teaching_task_examination_task
-        where valid = 1
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto" useGeneratedKeys="true">
-        insert into u_teaching_task_examination_task (teaching_task_id, examination_name, examination_duration,
+        INSERT INTO u_teaching_task_examination_task (teaching_task_id, examination_name, examination_duration,
                                                       examination_state, examination_parameters,
                                                       examination_show_result, `valid`, memo,
                                                       create_time, create_by, update_time,
                                                       update_by)
-        values (#{teachingTaskId,jdbcType=BIGINT}, #{examinationName,jdbcType=VARCHAR},
+        VALUES (#{teachingTaskId,jdbcType=BIGINT}, #{examinationName,jdbcType=VARCHAR},
                 #{examinationDuration,jdbcType=SMALLINT},
                 #{examinationState,jdbcType=SMALLINT}, #{examinationParameters,jdbcType=VARCHAR},
                 #{examinationShowResult,jdbcType=BOOLEAN}, 1, #{memo,jdbcType=VARCHAR},
@@ -53,7 +53,7 @@
                 #{updateBy,jdbcType=VARCHAR})
     </insert>
     <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto">
-        update u_teaching_task_examination_task
+        UPDATE u_teaching_task_examination_task
         <set>
             update_time = now(),
             <if test="teachingTaskId != null">
@@ -81,7 +81,7 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
     <!--分页查询测试任务-->
     <select id="listPage" resultMap="BaseResultMap">
@@ -105,9 +105,9 @@
         <if test="examinationTaskDto.examinationShowResult != null">
             AND examination_show_result = #{examinationTaskDto.examinationShowResult}
         </if>
-        order by update_time desc
+        ORDER BY update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--分页查询测试任务 - 总记录数-->
@@ -142,4 +142,20 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--根据教学任务id查询测试任务数组-->
+    <select id="getArrByTeachingTaskId" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT id                AS `key`,
+               examination_name  AS `label`,
+               examination_state AS `condition`
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
+          AND teaching_task_id = #{teachingTaskId}
+    </select>
+    <!--根据id查询组卷参数-->
+    <select id="getExaminationParameters" resultType="java.lang.String">
+        SELECT examination_parameters
+        FROM u_teaching_task_examination_task
+        WHERE valid = 1
+          AND id = #{id}
+    </select>
 </mapper>

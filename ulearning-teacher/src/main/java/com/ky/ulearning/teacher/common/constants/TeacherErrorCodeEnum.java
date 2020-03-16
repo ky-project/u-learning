@@ -1,7 +1,6 @@
 package com.ky.ulearning.teacher.common.constants;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
-import org.bouncycastle.jcajce.provider.symmetric.TEA;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -49,6 +48,8 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     RESOURCE_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料id不能为空"),
     COURSE_FOLDER_CANNOT_DOWNLOAD(HttpStatus.BAD_REQUEST, "文件夹下载暂时不支持"),
     EXPERIMENT_RESULT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验结果id不能为空"),
+    EXAMINATION_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务id不能为空"),
+    STUDENT_EXAMINATION_TASK_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "学生测试id不能为空"),
 
     TEA_NUMBER_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师工号不存在"),
     COURSE_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程id不存在"),
@@ -74,6 +75,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_NAME_ILLEGAL(HttpStatus.BAD_REQUEST, "文件名已存在"),
     EXAMINATION_PARAMETERS_ILLEGAL(HttpStatus.BAD_REQUEST, "参数格式错误"),
     MARK_RESULT_ILLEGAL(HttpStatus.BAD_REQUEST, "批改无效，成绩或反馈至少提交一项"),
+    STUDENT_EXAMINATION_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "学生未进行测试"),
 
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     DOCUMENTATION_GET_BY_ID_ERROR(HttpStatus.BAD_REQUEST, "只能查询文件资料"),
@@ -81,7 +83,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_ROOT_ERROR(HttpStatus.BAD_REQUEST, "课程/教师根目录无法操作"),
     DOCUMENTATION_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "文件资料无法作为文件夹"),
     RESOURCE_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "教学资源无法作为文件夹"),
-   ;
+    ;
 
     private Integer code;
     private String message;
