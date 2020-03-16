@@ -94,8 +94,9 @@
     </select>
     <!--根据教学任务id查询测试任务数组-->
     <select id="getExaminationTaskArr" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
-        SELECT id               AS `key`,
-               examination_name AS `label`
+        SELECT id                AS `key`,
+               examination_name  AS `label`,
+               examination_state AS `condition`
         FROM u_teaching_task_examination_task
         WHERE valid = 1
           AND teaching_task_id = #{teachingTaskId}

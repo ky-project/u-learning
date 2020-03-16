@@ -25,4 +25,10 @@ public class KeyLabelVo {
      */
     @ApiModelProperty("数据名")
     private String label;
+
+    /**
+     * 额外条件
+     */
+    @ApiModelProperty("额外条件")
+    private Object condition;
 }
