@@ -16,6 +16,7 @@ import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
+import com.ky.ulearning.spi.student.vo.ExaminationResultVo;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
@@ -60,7 +61,7 @@ public class StudentExaminationTaskController extends BaseController {
     @Log("开始测试")
     @ApiOperation(value = "开始测试", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/startExaminationTask")
-    public ResponseEntity<JsonResult<Map<Integer, List<CourseQuestionVo>>>> startExaminationTask(Long examinationTaskId) {
+    public ResponseEntity<JsonResult<ExaminationResultVo>> startExaminationTask(Long examinationTaskId) {
         ValidateHandler.checkNull(examinationTaskId, StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         String stuNumber = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
@@ -84,7 +85,11 @@ public class StudentExaminationTaskController extends BaseController {
             studentExaminationTaskDto.setUpdateBy("system");
             studentExaminationTaskDto.setExaminingStateSwitchTime(new Date());
             studentExaminationTaskService.update(studentExaminationTaskDto);
-            return ResponseEntityUtil.ok(JsonResult.buildData(courseQuestionVoMapList));
+            //创建待返回的数据结构
+            ExaminationResultVo examinationResultVo = new ExaminationResultVo();
+            examinationResultVo.setExaminingRemainTime(studentExaminationTaskEntity.getExaminingRemainTime());
+            examinationResultVo.setCourseQuestion(courseQuestionVoMapList);
+            return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultVo));
         }
         //第一次进入测试
         //获取学生ip
@@ -97,7 +102,12 @@ public class StudentExaminationTaskController extends BaseController {
         Map<Integer, List<CourseQuestionVo>> resMap = randomTestPaper(examinationParamVo, courseId);
         //将组卷结果添加到测试结果表中进行保存
         examinationResultService.batchInsert(resMap, studentExaminationTaskDto.getId());
-        return ResponseEntityUtil.ok(JsonResult.buildData(resMap));
+
+        //创建待返回的数据结构
+        ExaminationResultVo examinationResultVo = new ExaminationResultVo();
+        examinationResultVo.setExaminingRemainTime(examinationTaskEntity.getExaminationDuration());
+        examinationResultVo.setCourseQuestion(resMap);
+        return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultVo));
     }
 
     /**
@@ -168,7 +178,7 @@ public class StudentExaminationTaskController extends BaseController {
     @Log("重新组卷")
     @ApiOperation(value = "重新组卷", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/regroup")
-    public ResponseEntity<JsonResult<Map<Integer, List<CourseQuestionVo>>>> regroup(Long examinationTaskId) {
+    public ResponseEntity<JsonResult<ExaminationResultVo>> regroup(Long examinationTaskId) {
         ValidateHandler.checkNull(examinationTaskId, StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
 
@@ -188,7 +198,11 @@ public class StudentExaminationTaskController extends BaseController {
         Map<Integer, List<CourseQuestionVo>> resMap = randomTestPaper(examinationParamVo, courseId);
         //将组卷结果添加到测试结果表中进行保存
         examinationResultService.batchInsert(resMap, studentExaminationTaskEntity.getId());
-        return ResponseEntityUtil.ok(JsonResult.buildData(resMap));
+        //创建待返回的数据结构
+        ExaminationResultVo examinationResultVo = new ExaminationResultVo();
+        examinationResultVo.setExaminingRemainTime(studentExaminationTaskEntity.getExaminingRemainTime());
+        examinationResultVo.setCourseQuestion(resMap);
+        return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultVo));
     }
 
     /**

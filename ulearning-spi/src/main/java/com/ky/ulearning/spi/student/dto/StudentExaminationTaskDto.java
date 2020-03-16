@@ -64,4 +64,16 @@ public class StudentExaminationTaskDto extends BaseDto {
     @ApiModelProperty("状态变更时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date examiningStateSwitchTime;
+
+    /**
+     * 学号
+     */
+    @ApiModelProperty("学号")
+    private String stuNumber;
+
+    /**
+     * 姓名
+     */
+    @ApiModelProperty("姓名")
+    private String stuName;
 }
