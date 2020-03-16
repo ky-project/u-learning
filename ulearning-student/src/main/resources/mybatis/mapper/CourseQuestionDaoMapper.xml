@@ -38,7 +38,7 @@
         <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
         <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
     </resultMap>
-    <resultMap id="CourseQuestionVoResultMap" type="com.ky.ulearning.spi.common.vo.CourseQuestionVo">
+    <resultMap id="CourseQuestionVoResultMap" type="com.ky.ulearning.spi.student.vo.CourseQuestionVo">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
         <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>

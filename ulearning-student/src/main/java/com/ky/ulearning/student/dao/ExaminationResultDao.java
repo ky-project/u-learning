@@ -1,6 +1,6 @@
 package com.ky.ulearning.student.dao;
 
-import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.entity.ExaminationResultEntity;
 import org.apache.ibatis.annotations.Mapper;

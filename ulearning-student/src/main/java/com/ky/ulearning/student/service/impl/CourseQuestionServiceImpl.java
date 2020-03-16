@@ -1,7 +1,7 @@
 package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
-import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.student.dao.CourseQuestionDao;
 import com.ky.ulearning.student.service.CourseQuestionService;

@@ -1,6 +1,5 @@
 package com.ky.ulearning.spi.student.vo;
 
-import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

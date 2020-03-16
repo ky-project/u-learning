@@ -1,4 +1,4 @@
-package com.ky.ulearning.spi.common.vo;
+package com.ky.ulearning.spi.student.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;

@@ -1,6 +1,6 @@
 package com.ky.ulearning.student.service;
 
-import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import org.springframework.scheduling.annotation.Async;

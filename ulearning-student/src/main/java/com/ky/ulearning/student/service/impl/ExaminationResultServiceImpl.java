@@ -2,14 +2,12 @@ package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.utils.JsonUtil;
-import com.ky.ulearning.spi.common.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import com.ky.ulearning.spi.student.dto.QuestionAnswerDto;
-import com.ky.ulearning.spi.student.entity.ExaminationResultEntity;
-import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import com.ky.ulearning.student.dao.ExaminationResultDao;
 import com.ky.ulearning.student.dao.StudentExaminationTaskDao;
 import com.ky.ulearning.student.service.ExaminationResultService;
