@@ -1,8 +1,11 @@
 package com.ky.ulearning.student.service;
 
-import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
+import com.ky.ulearning.spi.student.vo.CourseQuestionViewVo;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.ExaminationResultViewVo;
+import com.ky.ulearning.spi.teacher.vo.CourseQuestionDetailVo;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
@@ -48,4 +51,13 @@ public interface ExaminationResultService {
      */
     @Async
     void calculationResult(Long examiningId);
+
+    /**
+     * 根据学生测试id查询所有课程试题
+     *
+     * @param examiningId    学生测试id
+     * @param quantityVoList 题目信息voList
+     * @return 试题分类map
+     */
+    ExaminationResultViewVo getCourseQuestionDetailVoByExaminingId(Long examiningId, List<QuantityVo> quantityVoList);
 }

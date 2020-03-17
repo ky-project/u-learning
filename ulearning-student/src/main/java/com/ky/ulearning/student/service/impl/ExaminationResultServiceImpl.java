@@ -2,12 +2,14 @@ package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.utils.JsonUtil;
-import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import com.ky.ulearning.spi.student.dto.QuestionAnswerDto;
+import com.ky.ulearning.spi.student.vo.CourseQuestionViewVo;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.ExaminationResultViewVo;
 import com.ky.ulearning.student.dao.ExaminationResultDao;
 import com.ky.ulearning.student.dao.StudentExaminationTaskDao;
 import com.ky.ulearning.student.service.ExaminationResultService;
@@ -134,5 +136,43 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
                 examinationResultDao.update(examinationResultDto);
             }
         }
+    }
+
+    @Override
+    public ExaminationResultViewVo getCourseQuestionDetailVoByExaminingId(Long examiningId, List<QuantityVo> quantityVoList) {
+        ExaminationResultViewVo examinationResultViewVo = new ExaminationResultViewVo();
+        //查询测试结果
+        List<CourseQuestionViewVo> courseQuestionVoList = Optional.ofNullable(examinationResultDao.getCourseQuestionDetailVoByExaminingId(examiningId))
+                .orElse(Collections.emptyList());
+
+        //遍历获取基本数据
+        double totalScore = 0.0;
+        double stuTotalScore = 0.0;
+        Map<Integer, List<CourseQuestionViewVo>> resMap = new HashMap<>();
+        for (QuantityVo quantityVo : quantityVoList) {
+            List<CourseQuestionViewVo> tmpList = resMap.get(quantityVo.getQuestionType());
+            if (CollectionUtils.isEmpty(tmpList)) {
+                tmpList = new ArrayList<>();
+                resMap.put(quantityVo.getQuestionType(), tmpList);
+            }
+            for (int i = 0; i < courseQuestionVoList.size(); i++) {
+                CourseQuestionViewVo courseQuestionDetailVo = courseQuestionVoList.get(i);
+                if (!courseQuestionDetailVo.getQuestionType().equals(quantityVo.getQuestionType())) {
+                    continue;
+                }
+                //设置试题分数
+                courseQuestionDetailVo.setGrade(quantityVo.getGrade());
+                totalScore += quantityVo.getGrade();
+                stuTotalScore += Optional.ofNullable(courseQuestionDetailVo.getStudentScore()).orElse(0.0);
+                //加入临时试题集合
+                tmpList.add(courseQuestionDetailVo);
+                courseQuestionVoList.remove(i--);
+            }
+        }
+        examinationResultViewVo.setTotalScore(totalScore);
+        examinationResultViewVo.setStuTotalScore(stuTotalScore);
+        examinationResultViewVo.setCourseQuestion(resMap);
+
+        return examinationResultViewVo;
     }
 }

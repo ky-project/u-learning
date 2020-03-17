@@ -97,4 +97,16 @@
         WHERE uset.valid = 1
           AND uset.id = #{id}
     </select>
+    <!--根据测试任务id查询学生测试基本信息-->
+    <select id="getBaseInfoByExaminationTaskId"
+            resultType="com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo">
+        SELECT uset.id,
+               coalesce(sum(uer.student_score), 0) AS stuTotalScore
+        FROM u_student_examination_task uset
+                 INNER JOIN u_examination_result uer ON uset.id = uer.examining_id AND uer.valid = 1
+        WHERE uset.valid = 1
+          AND uset.examining_state = 2
+        GROUP BY uset.id
+        ORDER BY stuTotalScore DESC
+    </select>
 </mapper>

@@ -30,6 +30,20 @@
         <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
         <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
     </resultMap>
+
+    <resultMap id="CourseQuestionViewVoMap" type="com.ky.ulearning.spi.student.vo.CourseQuestionViewVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="question_text" jdbcType="VARCHAR" property="questionText"/>
+        <result column="question_URL" jdbcType="VARCHAR" property="questionUrl"/>
+        <result column="question_type" jdbcType="SMALLINT" property="questionType"/>
+        <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
+        <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
+        <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+
+        <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
+        <result column="student_score" jdbcType="FLOAT" property="studentScore"/>
+    </resultMap>
     <sql id="Base_Column_List">
             id,
             question_id,
@@ -154,4 +168,21 @@
         WHERE valid = 1
           AND examining_id = #{examiningId}
     </update>
+    <!--根据学生测试id查询所有课程试题-->
+    <select id="getCourseQuestionDetailVoByExaminingId" resultMap="CourseQuestionViewVoMap">
+        SELECT ucq.id,
+               ucq.question_text,
+               ucq.question_URL,
+               ucq.question_type,
+               ucq.question_option,
+               ucq.question_difficulty,
+               ucq.question_knowledge,
+               ucq.question_key,
+               uer.student_score,
+               uer.student_answer
+        FROM u_examination_result uer
+                 INNER JOIN u_course_question ucq ON ucq.valid = 1 AND uer.question_id = ucq.id
+        WHERE uer.valid = 1
+          AND examining_id = #{examiningId}
+    </select>
 </mapper>

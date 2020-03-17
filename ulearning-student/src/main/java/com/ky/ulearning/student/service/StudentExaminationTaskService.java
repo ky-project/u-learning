@@ -2,6 +2,9 @@ package com.ky.ulearning.student.service;
 
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
+import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
+
+import java.util.List;
 
 /**
  * 学生测试service - 接口
@@ -33,4 +36,12 @@ public interface StudentExaminationTaskService {
      * @param studentExaminationTaskDto 待更新的对象
      */
     void update(StudentExaminationTaskDto studentExaminationTaskDto);
+
+    /**
+     * 根据测试任务id查询学生测试基本信息
+     *
+     * @param examinationTaskId 测试任务id
+     * @return 学生基本信息
+     */
+    List<StudentExaminationTaskBaseInfoVo> getBaseInfoByExaminationTaskId(Long examinationTaskId);
 }

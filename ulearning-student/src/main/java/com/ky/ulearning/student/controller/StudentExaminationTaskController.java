@@ -7,13 +7,15 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
-import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
+import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
+import com.ky.ulearning.spi.student.vo.ExaminationResultViewVo;
 import com.ky.ulearning.spi.student.vo.ExaminationResultVo;
+import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
@@ -21,7 +23,8 @@ import com.ky.ulearning.student.service.CourseQuestionService;
 import com.ky.ulearning.student.service.ExaminationResultService;
 import com.ky.ulearning.student.service.StudentExaminationTaskService;
 import com.ky.ulearning.student.service.TeachingTaskService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -122,7 +125,7 @@ public class StudentExaminationTaskController extends BaseController {
     }
 
     @Log("保存/提交测试结果")
-    @ApiOperation(value = "保存/提交测试结果", notes = "只能查看/操作已选教学任务的数据")
+    @ApiOperation(value = "保存/提交测试结果", notes = "只能查看/操作已选教学任务的数据【注】该接口只接收json格式参数")
     @PostMapping("/submitResult")
     public ResponseEntity<JsonResult<Boolean>> submitResult(@RequestBody ExaminationResultSaveDto examinationResultSaveDto) {
         ValidateHandler.checkParameter(CollectionUtils.isEmpty(examinationResultSaveDto.getQuestionAnswerDtoList()), StudentErrorCodeEnum.EXAMINATION_RESULT_CANNOT_BE_NULL);
@@ -166,10 +169,10 @@ public class StudentExaminationTaskController extends BaseController {
 
         //若结束或交卷，计算成绩
         boolean isOver = studentExaminationTaskDto.getExaminingState() != 1;
-        if(isOver || examinationResultSaveDto.getIsSubmit()){
+        if (isOver || examinationResultSaveDto.getIsSubmit()) {
             examinationResultService.calculationResult(studentExaminationTaskEntity.getId());
         }
-        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(! isOver, "保存成功"));
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(!isOver, "保存成功"));
     }
 
     @Log("重新组卷")
@@ -266,5 +269,42 @@ public class StudentExaminationTaskController extends BaseController {
             }
         });
         return courseQuestionVoList;
+    }
+
+    @Log("查询测试结果明细")
+    @ApiOperation(value = "查询测试结果明细", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/getExaminationDetail")
+    public ResponseEntity<JsonResult<ExaminationResultViewVo>> getExaminationDetail(Long examinationTaskId) {
+        ValidateHandler.checkNull(examinationTaskId, StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
+        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
+
+        ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
+        //获取组题参数
+        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
+
+        //验证学生是否已完成测试
+        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
+        ValidateHandler.checkParameter(Objects.isNull(studentExaminationTaskEntity) || !studentExaminationTaskEntity.getExaminingState().equals(2), StudentErrorCodeEnum.STUDENT_EXAMINATION_TASK_ILLEGAL);
+
+        //获取学生测试结果
+        ExaminationResultViewVo examinationResultViewVo = examinationResultService.getCourseQuestionDetailVoByExaminingId(studentExaminationTaskEntity.getId(), examinationParamVo.getQuantity());
+        examinationResultViewVo.setExaminationShowResult(examinationTaskEntity.getExaminationShowResult());
+        if (!examinationTaskEntity.getExaminationShowResult()) {
+            examinationResultViewVo.setCourseQuestion(null);
+        }
+
+        //获取学生测试信息，计算排名和提交人数
+        List<StudentExaminationTaskBaseInfoVo> studentExaminationTaskBaseInfoVoList = studentExaminationTaskService.getBaseInfoByExaminationTaskId(examinationTaskId);
+        examinationResultViewVo.setSubmitNumber(studentExaminationTaskBaseInfoVoList.size());
+        int index = 1;
+        for (StudentExaminationTaskBaseInfoVo studentExaminationTaskBaseInfoVo : studentExaminationTaskBaseInfoVoList) {
+            if (studentExaminationTaskBaseInfoVo.getStuTotalScore() <= examinationResultViewVo.getStuTotalScore()) {
+                break;
+            }
+            index++;
+        }
+        examinationResultViewVo.setRanking(index);
+
+        return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultViewVo));
     }
 }
