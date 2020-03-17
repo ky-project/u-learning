@@ -31,11 +31,10 @@ public class ExaminationTaskServiceImpl extends BaseService implements Examinati
     private ExaminationTaskDao examinationTaskDao;
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
-    public PageBean<ExaminationTaskEntity> pageExaminationTaskList(ExaminationTaskDto examinationTaskDto, PageParam pageParam) {
-        List<ExaminationTaskEntity> resultList = examinationTaskDao.listPage(examinationTaskDto, pageParam);
+    public PageBean<ExaminationTaskDto> pageExaminationTaskList(ExaminationTaskDto examinationTaskDto, PageParam pageParam) {
+        List<ExaminationTaskDto> resultList = examinationTaskDao.listPage(examinationTaskDto, pageParam);
 
-        PageBean<ExaminationTaskEntity> pageBean = new PageBean<>();
+        PageBean<ExaminationTaskDto> pageBean = new PageBean<>();
         //设置总记录数
         pageBean.setTotal(examinationTaskDao.countListPage(examinationTaskDto))
                 //设置查询结果

@@ -28,7 +28,7 @@ public interface ExaminationTaskDao {
      * @param pageParam          分页参数
      * @return 测试任务集合
      */
-    List<ExaminationTaskEntity> listPage(@Param("examinationTaskDto") ExaminationTaskDto examinationTaskDto,
+    List<ExaminationTaskDto> listPage(@Param("examinationTaskDto") ExaminationTaskDto examinationTaskDto,
                                          @Param("pageParam") PageParam pageParam);
 
     /**

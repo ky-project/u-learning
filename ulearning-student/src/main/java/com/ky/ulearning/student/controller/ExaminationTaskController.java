@@ -48,12 +48,14 @@ public class ExaminationTaskController extends BaseController {
     @ApiOperation(value = "分页查询测试任务", notes = "只能查询/操作属于自己的教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "examinationParameters"})
     @GetMapping("/pageList")
-    public ResponseEntity<JsonResult<PageBean<ExaminationTaskEntity>>> pageList(PageParam pageParam, ExaminationTaskDto examinationTaskDto) {
+    public ResponseEntity<JsonResult<PageBean<ExaminationTaskDto>>> pageList(PageParam pageParam, ExaminationTaskDto examinationTaskDto) {
         ValidateHandler.checkNull(examinationTaskDto.getTeachingTaskId(), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //权限校验
         studentTeachingTaskUtil.checkTeachingTaskId(examinationTaskDto.getTeachingTaskId(), stuId);
-        PageBean<ExaminationTaskEntity> pageBean = examinationTaskService.pageExaminationTaskList(examinationTaskDto, setPageParam(pageParam));
+
+        examinationTaskDto.setUserId(stuId);
+        PageBean<ExaminationTaskDto> pageBean = examinationTaskService.pageExaminationTaskList(examinationTaskDto, setPageParam(pageParam));
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 

@@ -23,7 +23,7 @@ public interface ExaminationTaskService {
      * @param pageParam          分页参数
      * @return 封装测试任务的分页对象
      */
-    PageBean<ExaminationTaskEntity> pageExaminationTaskList(ExaminationTaskDto examinationTaskDto, PageParam pageParam);
+    PageBean<ExaminationTaskDto> pageExaminationTaskList(ExaminationTaskDto examinationTaskDto, PageParam pageParam);
 
     /**
      * 根据id查询测试任务

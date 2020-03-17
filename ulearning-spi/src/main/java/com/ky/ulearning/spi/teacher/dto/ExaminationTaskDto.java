@@ -53,4 +53,10 @@ public class ExaminationTaskDto extends BaseDto {
      */
     @ApiModelProperty("是否反馈测试结果")
     private Boolean examinationShowResult;
+
+    /**
+     * 测试状态
+     */
+    @ApiModelProperty(value = "测试状态 1：进行中 2：已完成", hidden = true)
+    private Integer examiningState;
 }
