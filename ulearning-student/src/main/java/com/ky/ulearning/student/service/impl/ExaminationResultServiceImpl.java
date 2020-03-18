@@ -1,7 +1,9 @@
 package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.utils.JsonUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
@@ -78,6 +80,17 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
                 }
                 //设置试题分数
                 courseQuestionVo.setGrade(quantityVo.getGrade());
+                //若填空题且学生答案为空，则按填空数量补充|#|
+                if (StringUtil.isEmpty(courseQuestionVo.getStudentAnswer())
+                        && quantityVo.getQuestionType().equals(4)
+                        && courseQuestionVo.getQuestionKey().contains(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE)){
+                    String[] split = courseQuestionVo.getQuestionKey().split(CommonConstant.COURSE_QUESTION_SEPARATE);
+                    String stuAnswer = "";
+                    for(int  j = 0; j < split.length - 1; j++){
+                        stuAnswer += CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE;
+                    }
+                    courseQuestionVo.setStudentAnswer(stuAnswer);
+                }
                 //加入临时试题集合
                 tmpList.add(courseQuestionVo);
                 courseQuestionVoList.remove(i--);

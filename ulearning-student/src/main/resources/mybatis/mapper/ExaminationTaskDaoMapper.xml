@@ -121,10 +121,9 @@
                uttet.examination_state AS `condition`
         FROM u_teaching_task_examination_task uttet
                  LEFT JOIN u_student_examination_task uset
-                           ON uttet.id = uset.examination_task_id AND uset.valid = 1
+                           ON uttet.id = uset.examination_task_id AND uset.valid = 1 AND stu_id = #{stuId}
         WHERE uttet.valid = 1
           AND uttet.teaching_task_id = #{teachingTaskId}
-          AND stu_id = #{stuId}
-          AND uset.examining_state != 2
+          AND (uset.examining_state = 1 OR uset.examining_state IS NULL)
     </select>
 </mapper>

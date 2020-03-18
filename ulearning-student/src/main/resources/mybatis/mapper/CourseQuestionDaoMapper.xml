@@ -46,6 +46,7 @@
         <result column="question_option" jdbcType="VARCHAR" property="questionOption"/>
         <result column="question_difficulty" jdbcType="SMALLINT" property="questionDifficulty"/>
         <result column="question_knowledge" jdbcType="VARCHAR" property="questionKnowledge"/>
+        <result column="question_key" jdbcType="VARCHAR" property="questionKey"/>
 
         <result column="student_answer" jdbcType="VARCHAR" property="studentAnswer"/>
     </resultMap>
@@ -68,11 +69,14 @@
     </sql>
     <!--根据知识点和试题难度查询所有试题-->
     <select id="getByKnowledgeAndDifficulty" resultMap="CourseQuestionVoResultMap">
-        SELECT id, question_text, question_URL, question_type, question_option, question_difficulty, question_knowledge
+        SELECT id, question_text, question_URL, question_type, question_option, question_difficulty, question_knowledge,
+        question_key
         FROM u_course_question
         WHERE valid = 1
         AND course_id = #{courseId}
-        AND (question_difficulty &lt;= #{questionDifficulty} OR question_difficulty IS NULL)
+        <if test="questionDifficulty != 0">
+            AND (question_difficulty &lt;= #{questionDifficulty} OR question_difficulty IS NULL)
+        </if>
         <if test="questionKnowledges != null and questionKnowledges.size() != 0">
             AND question_knowledge IN
             <foreach collection="questionKnowledges" item="questionKnowledge" open="(" close=")" separator=",">

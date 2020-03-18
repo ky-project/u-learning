@@ -238,6 +238,17 @@ public class StudentExaminationTaskController extends BaseController {
                 }
                 //设置试题分数
                 courseQuestionVo.setGrade(quantityVo.getGrade());
+                //若填空题且学生答案为空，则按填空数量补充|#|
+                if (StringUtil.isEmpty(courseQuestionVo.getStudentAnswer())
+                        && quantityVo.getQuestionType().equals(4)
+                        && courseQuestionVo.getQuestionKey().contains(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE)){
+                    String[] split = courseQuestionVo.getQuestionKey().split(CommonConstant.COURSE_QUESTION_SEPARATE);
+                    String stuAnswer = "";
+                    for(int  j = 0; j < split.length - 1; j++){
+                        stuAnswer += CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE;
+                    }
+                    courseQuestionVo.setStudentAnswer(stuAnswer);
+                }
                 //加入临时试题集合
                 courseQuestionVoTmpList.add(courseQuestionVo);
                 courseQuestionVoList.remove(i--);

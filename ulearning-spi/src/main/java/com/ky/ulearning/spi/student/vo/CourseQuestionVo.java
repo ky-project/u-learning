@@ -67,6 +67,13 @@ public class CourseQuestionVo {
     private Integer randomOrder;
 
     /**
+     * 参考答案
+     */
+    @JsonIgnore
+    @ApiModelProperty(hidden = true)
+    private String questionKey;
+
+    /**
      * 知识模块
      */
     @ApiModelProperty("知识模块")

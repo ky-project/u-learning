@@ -69,8 +69,8 @@ public class ExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationTaskEntity));
     }
 
-    @Log("查询所有测试任务数组")
-    @ApiOperation(value = "查询所有测试任务数组", notes = "只能查询/操作属于自己的教学任务的数据")
+    @Log("查询所有未完成测试任务数组")
+    @ApiOperation(value = "查询所有未完成测试任务数组", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getExaminationTaskArr")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getExaminationTaskArr(Long teachingTaskId) {
         ValidateHandler.checkNull(teachingTaskId, StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);

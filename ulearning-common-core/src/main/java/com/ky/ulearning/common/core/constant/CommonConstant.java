@@ -13,7 +13,15 @@ public class CommonConstant {
      */
     public static final Integer[] EXAMINATION_STATE = {1, 2, 3, 4};
 
+    /**
+     * 答案分割符-split使用
+     */
     public static final String COURSE_QUESTION_SEPARATE = "\\|#\\|";
+
+    /**
+     * 答案分割符-判断使用
+     */
+    public static final String COURSE_QUESTION_SEPARATE_JUDGE = "|#|";
 
     public static final String DRUID_STAT_WEB_URI = "/weburi.json";
 

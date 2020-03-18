@@ -116,7 +116,8 @@
                ucq.question_option,
                ucq.question_difficulty,
                ucq.question_knowledge,
-               uer.student_answer
+               uer.student_answer,
+               ucq.question_key
         FROM u_examination_result uer
                  INNER JOIN u_course_question ucq ON ucq.valid = 1 AND uer.question_id = ucq.id
         WHERE uer.valid = 1
