@@ -49,8 +49,7 @@ public class ExaminationTaskServiceImpl extends BaseService implements Examinati
     }
 
     @Override
-    @Cacheable(keyGenerator = "keyGenerator")
-    public List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId) {
-        return examinationTaskDao.getExaminationTaskArr(teachingTaskId);
+    public List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId, Long stuId) {
+        return examinationTaskDao.getExaminationTaskArr(teachingTaskId, stuId);
     }
 }

@@ -77,7 +77,7 @@ public class ExaminationTaskController extends BaseController {
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         //权限校验
         studentTeachingTaskUtil.checkTeachingTaskId(teachingTaskId, stuId);
-        List<KeyLabelVo> keyLabelVoList = examinationTaskService.getExaminationTaskArr(teachingTaskId);
+        List<KeyLabelVo> keyLabelVoList = examinationTaskService.getExaminationTaskArr(teachingTaskId, stuId);
         return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 }

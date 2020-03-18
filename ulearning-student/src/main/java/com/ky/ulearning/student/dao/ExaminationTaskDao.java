@@ -29,7 +29,7 @@ public interface ExaminationTaskDao {
      * @return 测试任务集合
      */
     List<ExaminationTaskDto> listPage(@Param("examinationTaskDto") ExaminationTaskDto examinationTaskDto,
-                                         @Param("pageParam") PageParam pageParam);
+                                      @Param("pageParam") PageParam pageParam);
 
     /**
      * 分页查询测试任务 - 总记录数
@@ -51,7 +51,9 @@ public interface ExaminationTaskDao {
      * 根据教学任务id查询测试任务数组
      *
      * @param teachingTaskId 教学任务id
+     * @param stuId          学生id
      * @return 测试任务数组
      */
-    List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId);
+    List<KeyLabelVo> getExaminationTaskArr(@Param("teachingTaskId") Long teachingTaskId,
+                                           @Param("stuId") Long stuId);
 }

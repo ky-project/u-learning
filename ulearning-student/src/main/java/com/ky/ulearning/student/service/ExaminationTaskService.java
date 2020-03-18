@@ -37,7 +37,8 @@ public interface ExaminationTaskService {
      * 根据教学任务id查询测试任务数组
      *
      * @param teachingTaskId 教学任务id
+     * @param stuId          学生id
      * @return 测试任务数组
      */
-    List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId);
+    List<KeyLabelVo> getExaminationTaskArr(Long teachingTaskId, Long stuId);
 }
