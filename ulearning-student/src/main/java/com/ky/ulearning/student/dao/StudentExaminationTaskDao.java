@@ -1,12 +1,15 @@
 package com.ky.ulearning.student.dao;
 
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
+import com.ky.ulearning.spi.student.vo.ExaminationResultViewVo;
 import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,4 +69,26 @@ public interface StudentExaminationTaskDao {
      * @return 学生基本信息
      */
     List<StudentExaminationTaskBaseInfoVo> getBaseInfoByExaminationTaskId(Long examinationTaskId);
+
+    /**
+     * 分页查询学生测试结果
+     *
+     * @param pageParam  分页条件
+     * @param submitTime 提交时间
+     * @param stuId      学生id
+     * @return 测试结果集合
+     */
+    List<ExaminationResultViewVo> listPage(@Param("pageParam") PageParam pageParam,
+                                           @Param("submitTime") Date submitTime,
+                                           @Param("stuId") Long stuId);
+
+    /**
+     * 分页查询学生测试结果 - 总记录数
+     *
+     * @param submitTime 提交时间
+     * @param stuId      学生id
+     * @return 总记录数
+     */
+    Integer countListPage(@Param("submitTime") Date submitTime,
+                          @Param("stuId") Long stuId);
 }

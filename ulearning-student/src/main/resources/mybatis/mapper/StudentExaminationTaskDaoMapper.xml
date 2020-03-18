@@ -106,7 +106,37 @@
                  INNER JOIN u_examination_result uer ON uset.id = uer.examining_id AND uer.valid = 1
         WHERE uset.valid = 1
           AND uset.examining_state = 2
+          AND uset.examination_task_id = #{examinationTaskId}
         GROUP BY uset.id
         ORDER BY stuTotalScore DESC
+    </select>
+    <!--分页查询学生测试结果-->
+    <select id="listPage" resultType="com.ky.ulearning.spi.student.vo.ExaminationResultViewVo">
+        SELECT uset.id, uset.examination_task_id AS examinationTaskId,
+        uttet.examination_name AS examinationName,
+        uset.examining_state_switch_time AS examiningStateSwitchTime,
+        uttet.examination_parameters AS examinationParameters, uttet.examination_show_result AS examinationShowResult
+        FROM u_student_examination_task uset
+        INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
+        WHERE uset.valid = 1
+        AND uset.stu_id = #{stuId}
+        <if test="submitTime != null">
+            AND date(uset.examining_state_switch_time) = #{submitTime}
+        </if>
+        ORDER BY uset.examining_state_switch_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询学生测试结果 - 总记录数-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_student_examination_task uset
+        INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
+        WHERE uset.valid = 1
+        AND uset.stu_id = #{stuId}
+        <if test="submitTime != null">
+            AND date(uset.examining_state_switch_time) = #{submitTime}
+        </if>
     </select>
 </mapper>

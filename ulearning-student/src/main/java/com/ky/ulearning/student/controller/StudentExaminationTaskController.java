@@ -7,6 +7,8 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.*;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
 import com.ky.ulearning.spi.student.dto.ExaminationResultSaveDto;
@@ -15,7 +17,6 @@ import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
 import com.ky.ulearning.spi.student.vo.CourseQuestionVo;
 import com.ky.ulearning.spi.student.vo.ExaminationResultViewVo;
 import com.ky.ulearning.spi.student.vo.ExaminationResultVo;
-import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
@@ -271,40 +272,11 @@ public class StudentExaminationTaskController extends BaseController {
         return courseQuestionVoList;
     }
 
-    @Log("查询测试结果明细")
-    @ApiOperation(value = "查询测试结果明细", notes = "只能查看/操作已选教学任务的数据")
-    @GetMapping("/getExaminationDetail")
-    public ResponseEntity<JsonResult<ExaminationResultViewVo>> getExaminationDetail(Long examinationTaskId) {
-        ValidateHandler.checkNull(examinationTaskId, StudentErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
-        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
-
-        ExaminationTaskEntity examinationTaskEntity = studentTeachingTaskUtil.checkExaminationId(examinationTaskId, stuId);
-        //获取组题参数
-        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
-
-        //验证学生是否已完成测试
-        StudentExaminationTaskEntity studentExaminationTaskEntity = studentExaminationTaskService.getByExaminationTaskIdAndStuId(examinationTaskId, stuId);
-        ValidateHandler.checkParameter(Objects.isNull(studentExaminationTaskEntity) || !studentExaminationTaskEntity.getExaminingState().equals(2), StudentErrorCodeEnum.STUDENT_EXAMINATION_TASK_ILLEGAL);
-
-        //获取学生测试结果
-        ExaminationResultViewVo examinationResultViewVo = examinationResultService.getCourseQuestionDetailVoByExaminingId(studentExaminationTaskEntity.getId(), examinationParamVo.getQuantity());
-        examinationResultViewVo.setExaminationShowResult(examinationTaskEntity.getExaminationShowResult());
-        if (!examinationTaskEntity.getExaminationShowResult()) {
-            examinationResultViewVo.setCourseQuestion(null);
-        }
-
-        //获取学生测试信息，计算排名和提交人数
-        List<StudentExaminationTaskBaseInfoVo> studentExaminationTaskBaseInfoVoList = studentExaminationTaskService.getBaseInfoByExaminationTaskId(examinationTaskId);
-        examinationResultViewVo.setSubmitNumber(studentExaminationTaskBaseInfoVoList.size());
-        int index = 1;
-        for (StudentExaminationTaskBaseInfoVo studentExaminationTaskBaseInfoVo : studentExaminationTaskBaseInfoVoList) {
-            if (studentExaminationTaskBaseInfoVo.getStuTotalScore() <= examinationResultViewVo.getStuTotalScore()) {
-                break;
-            }
-            index++;
-        }
-        examinationResultViewVo.setRanking(index);
-
-        return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultViewVo));
+    @Log("分页查询测试结果明细")
+    @ApiOperation(value = "分页查询测试结果明细", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/pageList")
+    public ResponseEntity<JsonResult<PageBean<ExaminationResultViewVo>>> pageList(PageParam pageParam, Date submitTime) {
+        PageBean<ExaminationResultViewVo> resultViewVoPageBean = studentExaminationTaskService.pageList(setPageParam(pageParam), submitTime, RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class));
+        return ResponseEntityUtil.ok(JsonResult.buildData(resultViewVoPageBean));
     }
 }

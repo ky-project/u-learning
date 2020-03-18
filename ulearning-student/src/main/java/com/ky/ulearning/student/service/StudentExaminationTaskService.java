@@ -1,9 +1,13 @@
 package com.ky.ulearning.student.service;
 
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
+import com.ky.ulearning.spi.student.vo.ExaminationResultViewVo;
 import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,4 +48,14 @@ public interface StudentExaminationTaskService {
      * @return 学生基本信息
      */
     List<StudentExaminationTaskBaseInfoVo> getBaseInfoByExaminationTaskId(Long examinationTaskId);
+
+    /**
+     * 分页查询学生测试结果
+     *
+     * @param pageParam  分页条件
+     * @param submitTime 提交时间
+     * @param stuId      学生id
+     * @return 测试结果分页对象
+     */
+    PageBean<ExaminationResultViewVo> pageList(PageParam pageParam, Date submitTime, Long stuId);
 }
