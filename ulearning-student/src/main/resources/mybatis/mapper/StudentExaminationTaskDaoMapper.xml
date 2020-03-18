@@ -120,6 +120,7 @@
         INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
         WHERE uset.valid = 1
         AND uset.stu_id = #{stuId}
+        AND uset.examining_state = 2
         <if test="submitTime != null">
             AND date(uset.examining_state_switch_time) = #{submitTime}
         </if>
@@ -135,6 +136,7 @@
         INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
         WHERE uset.valid = 1
         AND uset.stu_id = #{stuId}
+        AND uset.examining_state = 2
         <if test="submitTime != null">
             AND date(uset.examining_state_switch_time) = #{submitTime}
         </if>
