@@ -73,22 +73,30 @@ public interface StudentExaminationTaskDao {
     /**
      * 分页查询学生测试结果
      *
-     * @param pageParam  分页条件
-     * @param submitTime 提交时间
-     * @param stuId      学生id
+     * @param pageParam       分页条件
+     * @param submitTime      提交时间
+     * @param stuId           学生id
+     * @param teachingTaskId  教学任务id
+     * @param examinationName 测试任务名
      * @return 测试结果集合
      */
     List<ExaminationResultViewVo> listPage(@Param("pageParam") PageParam pageParam,
                                            @Param("submitTime") Date submitTime,
-                                           @Param("stuId") Long stuId);
+                                           @Param("stuId") Long stuId,
+                                           @Param("teachingTaskId") Long teachingTaskId,
+                                           @Param("examinationName") String examinationName);
 
     /**
      * 分页查询学生测试结果 - 总记录数
      *
-     * @param submitTime 提交时间
-     * @param stuId      学生id
+     * @param submitTime      提交时间
+     * @param stuId           学生id
+     * @param teachingTaskId  教学任务id
+     * @param examinationName 测试任务名
      * @return 总记录数
      */
     Integer countListPage(@Param("submitTime") Date submitTime,
-                          @Param("stuId") Long stuId);
+                          @Param("stuId") Long stuId,
+                          @Param("teachingTaskId") Long teachingTaskId,
+                          @Param("examinationName") String examinationName);
 }

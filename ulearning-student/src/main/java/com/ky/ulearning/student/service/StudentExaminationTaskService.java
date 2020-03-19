@@ -52,10 +52,12 @@ public interface StudentExaminationTaskService {
     /**
      * 分页查询学生测试结果
      *
-     * @param pageParam  分页条件
-     * @param submitTime 提交时间
-     * @param stuId      学生id
+     * @param pageParam       分页条件
+     * @param submitTime      提交时间
+     * @param stuId           学生id
+     * @param teachingTaskId  教学任务id
+     * @param examinationName 测试任务名
      * @return 测试结果分页对象
      */
-    PageBean<ExaminationResultViewVo> pageList(PageParam pageParam, Date submitTime, Long stuId);
+    PageBean<ExaminationResultViewVo> pageList(PageParam pageParam, Date submitTime, Long stuId, Long teachingTaskId, String examinationName);
 }

@@ -69,9 +69,9 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
     }
 
     @Override
-    public PageBean<ExaminationResultViewVo> pageList(PageParam pageParam, Date submitTime, Long stuId) {
+    public PageBean<ExaminationResultViewVo> pageList(PageParam pageParam, Date submitTime, Long stuId, Long teachingTaskId, String examinationName) {
         //查询所有测试数据
-        List<ExaminationResultViewVo> resList = Optional.ofNullable(studentExaminationTaskDao.listPage(pageParam, submitTime, stuId)).orElse(Collections.emptyList());
+        List<ExaminationResultViewVo> resList = Optional.ofNullable(studentExaminationTaskDao.listPage(pageParam, submitTime, stuId, teachingTaskId, examinationName)).orElse(Collections.emptyList());
 
         //计算需要的字段
         for (ExaminationResultViewVo examinationResultViewVo : resList) {
@@ -138,7 +138,7 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
 
         PageBean<ExaminationResultViewVo> pageBean = new PageBean<>();
         //设置总记录数
-        pageBean.setTotal(studentExaminationTaskDao.countListPage(submitTime, stuId))
+        pageBean.setTotal(studentExaminationTaskDao.countListPage(submitTime, stuId, teachingTaskId, examinationName))
                 //设置查询结果
                 .setContent(resList);
         return setPageBeanProperties(pageBean, pageParam);

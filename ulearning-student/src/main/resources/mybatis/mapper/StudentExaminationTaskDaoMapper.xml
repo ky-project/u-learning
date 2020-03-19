@@ -18,20 +18,20 @@
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     </resultMap>
     <sql id="Base_Column_List">
-            id,
-            examination_task_id,
-            stu_id,
-            examining_hostIP,
-            examining_login_time,
-            examining_remain_time,
-            examining_state,
-            examining_state_switch_time,
-            `valid`,
-            memo,
-            create_time,
-            create_by,
-            update_time,
-            update_by
+        id,
+        examination_task_id,
+        stu_id,
+        examining_hostIP,
+        examining_login_time,
+        examining_remain_time,
+        examining_state,
+        examining_state_switch_time,
+        `valid`,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by
     </sql>
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
@@ -117,12 +117,16 @@
         uset.examining_state_switch_time AS examiningStateSwitchTime,
         uttet.examination_parameters AS examinationParameters, uttet.examination_show_result AS examinationShowResult
         FROM u_student_examination_task uset
-        INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
+        INNER JOIN u_teaching_task_examination_task uttet
+        ON uset.examination_task_id = uttet.id AND uttet.valid = 1 AND uttet.teaching_task_id = #{teachingTaskId}
         WHERE uset.valid = 1
         AND uset.stu_id = #{stuId}
         AND uset.examining_state = 2
         <if test="submitTime != null">
             AND date(uset.examining_state_switch_time) = #{submitTime}
+        </if>
+        <if test="examinationName != null and examinationName != ''">
+            AND uttet.examination_name LIKE concat('%', #{examinationName}, '%')
         </if>
         ORDER BY uset.examining_state_switch_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
@@ -133,12 +137,16 @@
     <select id="countListPage" resultType="java.lang.Integer">
         SELECT count(1)
         FROM u_student_examination_task uset
-        INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
+        INNER JOIN u_teaching_task_examination_task uttet
+        ON uset.examination_task_id = uttet.id AND uttet.valid = 1 AND uttet.teaching_task_id = #{teachingTaskId}
         WHERE uset.valid = 1
         AND uset.stu_id = #{stuId}
         AND uset.examining_state = 2
         <if test="submitTime != null">
             AND date(uset.examining_state_switch_time) = #{submitTime}
+        </if>
+        <if test="examinationName != null and examinationName != ''">
+            AND uttet.examination_name LIKE concat('%', #{examinationName}, '%')
         </if>
     </select>
 </mapper>
