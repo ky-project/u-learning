@@ -55,6 +55,10 @@ public class StudentExaminationStatisticsVo {
     private List<ExaminationStatusVo> examinationStatusList;
 
     public StudentExaminationStatisticsVo() {
+        this.highestScore = 0.0;
+        this.lowestScore = 0.0;
+        this.averageScore = 0.0;
+        this.totalStudent = 0;
         this.examinationStatusList = new ArrayList<>();
         this.statisticalResultsList = new ArrayList<>();
         this.statisticalResultsList.add(new StatisticalResultsVo(1, 0));

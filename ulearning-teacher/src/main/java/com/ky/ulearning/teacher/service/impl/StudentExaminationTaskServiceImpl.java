@@ -62,7 +62,7 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
     @Override
     public StudentExaminationStatisticsVo getStudentExaminationStatistics(ExaminationTaskEntity examinationTaskEntity) {
         //计算最高分、最低分和平均分
-        StudentExaminationStatisticsVo studentExaminationStatisticsVo = studentExaminationTaskDao.getStudentExaminationStatistics(examinationTaskEntity.getId());
+        StudentExaminationStatisticsVo studentExaminationStatisticsVo = Optional.ofNullable(studentExaminationTaskDao.getStudentExaminationStatistics(examinationTaskEntity.getId())).orElse(new StudentExaminationStatisticsVo());
         //查询总学生人数
         Integer totalStudent = studentTeachingTaskDao.countByTeachingTaskId(examinationTaskEntity.getTeachingTaskId());
         studentExaminationStatisticsVo.setTotalStudent(totalStudent);
