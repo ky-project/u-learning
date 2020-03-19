@@ -119,13 +119,60 @@
     </select>
     <!--根据id查询学生测试信息-->
     <select id="getById" resultMap="StudentExaminationTaskDtoMap">
-        SELECT uset.id, uset.examination_task_id, uset.stu_id, uset.examining_hostIP, uset.examining_login_time,
-               uset.examining_remain_time, uset.examining_state, uset.examining_state_switch_time, uset.valid, uset.memo,
-               uset.create_time, uset.create_by, uset.update_time, uset.update_by,
-               us.stu_name,us.stu_number
+        SELECT uset.id,
+               uset.examination_task_id,
+               uset.stu_id,
+               uset.examining_hostIP,
+               uset.examining_login_time,
+               uset.examining_remain_time,
+               uset.examining_state,
+               uset.examining_state_switch_time,
+               uset.valid,
+               uset.memo,
+               uset.create_time,
+               uset.create_by,
+               uset.update_time,
+               uset.update_by,
+               us.stu_name,
+               us.stu_number
         FROM u_student_examination_task uset
                  INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
         WHERE uset.valid = 1
           AND uset.id = #{id}
+    </select>
+    <!--根据测试任务id统计学生测试基本信息-->
+    <select id="getStudentExaminationStatistics"
+            resultType="com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo">
+        SELECT max(everyTotalScore) AS highestScore,
+               min(everyTotalScore) AS lowestScore,
+               avg(everyTotalScore) AS averageScore
+        FROM (
+                 SELECT uset.id,
+                        sum(uer.student_score) everyTotalScore
+                 FROM u_student_examination_task uset
+                          LEFT JOIN u_examination_result uer ON uset.id = uer.examining_id AND uer.valid = 1
+                 WHERE uset.valid = 1
+                   AND uset.examining_state = 2
+                   AND uset.examination_task_id = #{examinationTaskId}
+                 GROUP BY uset.id
+             ) AS examination_result_count
+    </select>
+    <!--根据测试任务id查询各个状态的学生数量-->
+    <select id="getExaminationStatus"
+            resultType="com.ky.ulearning.spi.teacher.vo.ExaminationStatusVo">
+        SELECT examining_state AS resultType,
+               count(1)        AS stuNumber
+        FROM u_student_examination_task
+        WHERE valid = 1
+          AND examination_task_id = #{examinationTaskId}
+        GROUP BY examining_state
+    </select>
+    <!--根据测试任务id查询所有已测试结束的学生id-->
+    <select id="getIdByExaminationTaskId" resultType="java.lang.Long">
+        SELECT id
+        FROM u_student_examination_task
+        WHERE valid = 1
+          AND examination_task_id = #{examinationTaskId}
+          AND examining_state = 2
     </select>
 </mapper>

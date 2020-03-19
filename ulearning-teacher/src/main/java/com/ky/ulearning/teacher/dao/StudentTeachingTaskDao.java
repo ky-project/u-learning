@@ -70,4 +70,12 @@ public interface StudentTeachingTaskDao {
      * @param studentTeachingTaskDto 选课学生信息
      */
     void remove(@Param("studentTeachingTaskDto") StudentTeachingTaskDto studentTeachingTaskDto);
+
+    /**
+     * 根据教学任务id统计学生选课人数
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 学生人数
+     */
+    Integer countByTeachingTaskId(Long teachingTaskId);
 }

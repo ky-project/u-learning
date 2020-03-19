@@ -72,4 +72,23 @@
         WHERE uer.valid = 1
           AND examining_id = #{examiningId}
     </select>
+    <!--根据学生测试id查询所有测试结果-->
+    <select id="getByExaminingId" resultMap="ExaminationResultDtoMap">
+        SELECT uer.id,
+               uer.question_id,
+               uer.examining_id,
+               uer.student_answer,
+               uer.student_score,
+               uer.valid,
+               uer.memo,
+               uer.create_time,
+               uer.create_by,
+               uer.update_time,
+               uer.update_by,
+               ucq.question_type
+        FROM u_examination_result uer
+                 LEFT JOIN u_course_question ucq ON uer.question_id = ucq.id AND ucq.valid = 1
+        WHERE uer.valid = 1
+          AND uer.examining_id = #{examiningId}
+    </select>
 </mapper>

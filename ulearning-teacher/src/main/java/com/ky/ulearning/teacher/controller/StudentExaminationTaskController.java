@@ -12,8 +12,10 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.vo.CourseQuestionDetailVo;
 import com.ky.ulearning.spi.teacher.vo.ExaminationResultDetailVo;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.service.ExaminationResultService;
@@ -87,6 +89,18 @@ public class StudentExaminationTaskController extends BaseController {
         examinationResultDetailVo.setExaminingRemainTime(studentExaminationTaskDto.getExaminingRemainTime());
         examinationResultDetailVo.setCourseQuestion(courseQuestionVoMapList);
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultDetailVo));
+    }
+
+    @Log("根据测试任务id查询学生测试统计")
+    @ApiOperation(value = "根据测试任务id查询学生测试统计", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/getStudentExaminationStatistics")
+    public ResponseEntity<JsonResult<StudentExaminationStatisticsVo>> getStudentExaminationStatistics(Long examinationTaskId) {
+        ValidateHandler.checkNull(examinationTaskId, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        //权限校验
+        ExaminationTaskEntity examinationTaskEntity = teachingTaskValidUtil.checkExaminationId(examinationTaskId, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+
+        StudentExaminationStatisticsVo studentExaminationStatistics = studentExaminationTaskService.getStudentExaminationStatistics(examinationTaskEntity);
+        return ResponseEntityUtil.ok(JsonResult.buildData(studentExaminationStatistics));
     }
 
 }

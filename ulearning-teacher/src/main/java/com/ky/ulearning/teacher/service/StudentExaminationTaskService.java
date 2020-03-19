@@ -3,6 +3,8 @@ package com.ky.ulearning.teacher.service;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 
 /**
  * 学生测试service - 接口
@@ -28,4 +30,12 @@ public interface StudentExaminationTaskService {
      * @return 学生测试信息
      */
     StudentExaminationTaskDto getById(Long id);
+
+    /**
+     * 统计学生测试信息
+     *
+     * @param examinationTaskEntity 测试任务对象
+     * @return 学生测试统计信息
+     */
+    StudentExaminationStatisticsVo getStudentExaminationStatistics(ExaminationTaskEntity examinationTaskEntity);
 }

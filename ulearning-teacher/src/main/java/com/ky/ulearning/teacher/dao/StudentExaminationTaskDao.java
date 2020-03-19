@@ -2,6 +2,8 @@ package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.teacher.vo.ExaminationStatusVo;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -43,4 +45,28 @@ public interface StudentExaminationTaskDao {
      * @return 学生测试信息
      */
     StudentExaminationTaskDto getById(Long id);
+
+    /**
+     * 根据测试任务id统计学生测试基本信息
+     *
+     * @param examinationTaskId 测试任务id
+     * @return 学生测试统计信息
+     */
+    StudentExaminationStatisticsVo getStudentExaminationStatistics(Long examinationTaskId);
+
+    /**
+     * 根据测试任务id查询各个状态的学生数量
+     *
+     * @param examinationTaskId 测试任务id
+     * @return 各个状态的学生数量
+     */
+    List<ExaminationStatusVo> getExaminationStatus(Long examinationTaskId);
+
+    /**
+     * 根据测试任务id查询所有已测试结束的学生id
+     *
+     * @param examinationTaskId 测试任务id
+     * @return id集合
+     */
+    List<Long> getIdByExaminationTaskId(Long examinationTaskId);
 }

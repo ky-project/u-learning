@@ -25,17 +25,17 @@
     </sql>
     <!--删除关联信息-->
     <delete id="delete" parameterType="java.lang.Long">
-        delete
-        from u_student_teaching_task
-        where id = #{id,jdbcType=BIGINT}
+        DELETE
+        FROM u_student_teaching_task
+        WHERE id = #{id,jdbcType=BIGINT}
     </delete>
     <!--插入关联信息-->
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.teacher.dto.StudentTeachingTaskDto" useGeneratedKeys="true">
-        insert into u_student_teaching_task (teaching_task_id, stu_id, `valid`,
+        INSERT INTO u_student_teaching_task (teaching_task_id, stu_id, `valid`,
                                              memo, create_time, create_by,
                                              update_time, update_by)
-        values (#{teachingTaskId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT}, 1,
+        VALUES (#{teachingTaskId,jdbcType=BIGINT}, #{stuId,jdbcType=BIGINT}, 1,
                 #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
                 now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
@@ -84,9 +84,9 @@
         <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
             AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
         </if>
-        order by ustt.update_time desc
+        ORDER BY ustt.update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--分页查询选课学生信息 - 总记录数-->
@@ -136,4 +136,11 @@
         WHERE stu_id = #{studentTeachingTaskDto.stuId}
           AND teaching_task_id = #{studentTeachingTaskDto.teachingTaskId}
     </update>
+    <!--根据教学任务id统计学生选课人数-->
+    <select id="countByTeachingTaskId" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_student_teaching_task
+        WHERE valid = 1
+          AND teaching_task_id = #{teachingTaskId}
+    </select>
 </mapper>
