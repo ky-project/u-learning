@@ -91,4 +91,29 @@
         WHERE uer.valid = 1
           AND uer.examining_id = #{examiningId}
     </select>
+    <!--根据学生测试id查询学生成绩和准确率-->
+    <select id="getScoreAndAccuracyByExaminingId" resultType="java.util.Map">
+        SELECT t1.stuScore,
+               t3.correctNumber / t2.questionNumber AS accuracy
+        FROM (
+                 SELECT sum(student_score) AS stuScore
+                 FROM u_examination_result
+                 WHERE valid = 1
+                   AND examining_id = #{examiningId}
+             ) AS t1,
+             (
+                 SELECT count(1) AS questionNumber
+                 FROM u_examination_result
+                 WHERE valid = 1
+                   AND examining_id = #{examiningId}
+             ) AS t2,
+             (
+                 SELECT count(1) AS correctNumber
+                 FROM u_examination_result
+                 WHERE valid = 1
+                   AND examining_id = #{examiningId}
+                   AND student_score IS NOT NULL
+                   AND student_score != 0
+             ) AS t3
+    </select>
 </mapper>

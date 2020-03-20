@@ -6,9 +6,10 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.vo.ExaminationStatusVo;
-import com.ky.ulearning.spi.teacher.vo.StatisticalResultsVo;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationResultVo;
 import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 import com.ky.ulearning.teacher.dao.ExaminationResultDao;
 import com.ky.ulearning.teacher.dao.StudentExaminationTaskDao;
@@ -19,7 +20,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -108,5 +112,37 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
         }
 
         return studentExaminationStatisticsVo;
+    }
+
+    @Override
+    public PageBean<StudentExaminationResultVo> pageStudentExaminationResultList(PageParam pageParam, StudentExaminationResultVo studentExaminationResultVo, String examinationParameters) {
+        List<StudentExaminationResultVo> resultList = Optional.ofNullable(studentExaminationTaskDao.pageStudentExaminationResultList(pageParam, studentExaminationResultVo)).orElse(Collections.emptyList());
+
+        //数据填充：成绩，准确率，排名
+        for (StudentExaminationResultVo examinationResultVo : resultList) {
+            //获取学生成绩和准确率
+            Map<String, Object> scoreAndAccuracyMap = examinationResultDao.getScoreAndAccuracyByExaminingId(examinationResultVo.getExaminingId());
+            examinationResultVo.setAccuracy(Optional.ofNullable(scoreAndAccuracyMap.get("accuracy"))
+                    .map(o -> Double.valueOf(o.toString())).orElse(0.0));
+            examinationResultVo.setStuScore(Optional.ofNullable(scoreAndAccuracyMap.get("stuScore"))
+                    .map(o -> Double.valueOf(o.toString())).orElse(0.0));
+            //获取学生测试信息，计算排名
+            List<StudentExaminationTaskBaseInfoVo> studentExaminationTaskBaseInfoVoList = Optional.ofNullable(studentExaminationTaskDao.getBaseInfoByExaminationTaskId(studentExaminationResultVo.getExaminationTaskId())).orElse(Collections.emptyList());
+            int index = 1;
+            for (StudentExaminationTaskBaseInfoVo studentExaminationTaskBaseInfoVo : studentExaminationTaskBaseInfoVoList) {
+                if (studentExaminationTaskBaseInfoVo.getStuTotalScore() <= examinationResultVo.getStuScore()) {
+                    break;
+                }
+                index++;
+            }
+            examinationResultVo.setRanking(index);
+        }
+
+        PageBean<StudentExaminationResultVo> pageBean = new PageBean<>();
+        //设置总记录数
+        pageBean.setTotal(studentExaminationTaskDao.countPageStudentExaminationResultList(studentExaminationResultVo))
+                //设置查询结果
+                .setContent(resultList);
+        return setPageBeanProperties(pageBean, pageParam);
     }
 }

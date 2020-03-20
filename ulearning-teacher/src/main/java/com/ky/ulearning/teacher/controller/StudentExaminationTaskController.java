@@ -15,6 +15,7 @@ import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.vo.CourseQuestionDetailVo;
 import com.ky.ulearning.spi.teacher.vo.ExaminationResultDetailVo;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationResultVo;
 import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
@@ -95,12 +96,25 @@ public class StudentExaminationTaskController extends BaseController {
     @ApiOperation(value = "根据测试任务id查询学生测试统计", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getStudentExaminationStatistics")
     public ResponseEntity<JsonResult<StudentExaminationStatisticsVo>> getStudentExaminationStatistics(Long examinationTaskId) {
-        ValidateHandler.checkNull(examinationTaskId, TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
+        ValidateHandler.checkNull(examinationTaskId, TeacherErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
         //权限校验
         ExaminationTaskEntity examinationTaskEntity = teachingTaskValidUtil.checkExaminationId(examinationTaskId, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
 
         StudentExaminationStatisticsVo studentExaminationStatistics = studentExaminationTaskService.getStudentExaminationStatistics(examinationTaskEntity);
         return ResponseEntityUtil.ok(JsonResult.buildData(studentExaminationStatistics));
+    }
+
+    @Log("分页查询学生测试结果统计信息")
+    @ApiOperation(value = "分页查询学生测试结果统计信息", notes = "只能查看/操作已选教学任务的数据")
+    @ApiOperationSupport(ignoreParameters = {"stuScore", "ranking", "accuracy"})
+    @GetMapping("/pageStudentExaminationResultList")
+    public ResponseEntity<JsonResult<PageBean<StudentExaminationResultVo>>> pageStudentExaminationResultList(PageParam pageParam, StudentExaminationResultVo studentExaminationResultVo) {
+        ValidateHandler.checkNull(studentExaminationResultVo.getExaminationTaskId(), TeacherErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
+        //权限校验
+        ExaminationTaskEntity examinationTaskEntity = teachingTaskValidUtil.checkExaminationId(studentExaminationResultVo.getExaminationTaskId(), RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+
+        PageBean<StudentExaminationResultVo> pageBean = studentExaminationTaskService.pageStudentExaminationResultList(setPageParam(pageParam), studentExaminationResultVo, examinationTaskEntity.getExaminationParameters());
+        return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
 }

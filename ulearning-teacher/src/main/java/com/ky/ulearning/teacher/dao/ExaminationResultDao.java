@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 测试结果dao
@@ -33,4 +34,12 @@ public interface ExaminationResultDao {
      * @return 测试结果集合
      */
     List<ExaminationResultDto> getByExaminingId(Long examiningId);
+
+    /**
+     * 根据学生测试id查询学生成绩和准确率
+     *
+     * @param examiningId 学生测试id
+     * @return stuScore、accuracy
+     */
+    Map<String, Object> getScoreAndAccuracyByExaminingId(Long examiningId);
 }

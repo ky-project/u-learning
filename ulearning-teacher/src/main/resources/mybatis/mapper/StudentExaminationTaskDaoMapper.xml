@@ -175,4 +175,66 @@
           AND examination_task_id = #{examinationTaskId}
           AND examining_state = 2
     </select>
+    <!--分页查询学生测试结果-->
+    <select id="pageStudentExaminationResultList"
+            resultType="com.ky.ulearning.spi.teacher.vo.StudentExaminationResultVo">
+        SELECT uset.id AS examiningId,
+        uset.examining_state_switch_time AS examiningStateSwitchTime,
+        us.stu_number AS stuNumber,
+        us.stu_name AS stuName,
+        us.stu_dept AS stuDept
+        FROM u_student_examination_task uset
+        INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+        WHERE uset.valid = 1
+        AND uset.examination_task_id = #{studentExaminationResultVo.examinationTaskId}
+        <if test="studentExaminationResultVo.stuName != null and studentExaminationResultVo.stuName != ''">
+            AND us.stu_name LIKE concat('%', #{studentExaminationResultVo.stuName}, '%')
+        </if>
+        <if test="studentExaminationResultVo.stuNumber != null and studentExaminationResultVo.stuNumber != ''">
+            AND us.stu_number LIKE concat('%', #{studentExaminationResultVo.stuNumber}, '%')
+        </if>
+        <if test="studentExaminationResultVo.stuDept != null and studentExaminationResultVo.stuDept != ''">
+            AND us.stu_dept LIKE concat('%', #{studentExaminationResultVo.stuDept}, '%')
+        </if>
+        <if test="studentExaminationResultVo.examiningStateSwitchTime != null">
+            AND date(uset.examining_state_switch_time) = #{studentExaminationResultVo.examiningStateSwitchTime}
+        </if>
+        ORDER BY uset.examining_state_switch_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--分页查询学生测试结果 - 总记录数-->
+    <select id="countPageStudentExaminationResultList" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_student_examination_task uset
+        INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+        WHERE uset.valid = 1
+        AND uset.examination_task_id = #{studentExaminationResultVo.examinationTaskId}
+        <if test="studentExaminationResultVo.stuName != null and studentExaminationResultVo.stuName != ''">
+            AND us.stu_name LIKE concat('%', #{studentExaminationResultVo.stuName}, '%')
+        </if>
+        <if test="studentExaminationResultVo.stuNumber != null and studentExaminationResultVo.stuNumber != ''">
+            AND us.stu_number LIKE concat('%', #{studentExaminationResultVo.stuNumber}, '%')
+        </if>
+        <if test="studentExaminationResultVo.stuDept != null and studentExaminationResultVo.stuDept != ''">
+            AND us.stu_dept LIKE concat('%', #{studentExaminationResultVo.stuDept}, '%')
+        </if>
+        <if test="studentExaminationResultVo.examiningStateSwitchTime != null">
+            AND date(uset.examining_state_switch_time) = #{studentExaminationResultVo.examiningStateSwitchTime}
+        </if>
+    </select>
+    <!--根据测试任务id查询学生测试基本信息-->
+    <select id="getBaseInfoByExaminationTaskId"
+            resultType="com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo">
+        SELECT uset.id,
+               coalesce(sum(uer.student_score), 0) AS stuTotalScore
+        FROM u_student_examination_task uset
+                 INNER JOIN u_examination_result uer ON uset.id = uer.examining_id AND uer.valid = 1
+        WHERE uset.valid = 1
+          AND uset.examining_state = 2
+          AND uset.examination_task_id = #{examinationTaskId}
+        GROUP BY uset.id
+        ORDER BY stuTotalScore DESC
+    </select>
 </mapper>

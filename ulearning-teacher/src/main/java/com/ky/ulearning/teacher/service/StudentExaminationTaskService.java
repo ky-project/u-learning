@@ -4,6 +4,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationResultVo;
 import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 
 /**
@@ -38,4 +39,16 @@ public interface StudentExaminationTaskService {
      * @return 学生测试统计信息
      */
     StudentExaminationStatisticsVo getStudentExaminationStatistics(ExaminationTaskEntity examinationTaskEntity);
+
+    /**
+     * 分页查询学生测试结果
+     *
+     * @param pageParam                  分页参数
+     * @param studentExaminationResultVo 查询条件
+     * @param examinationParameters      组卷参数
+     * @return 学生测试结果分页对象
+     */
+    PageBean<StudentExaminationResultVo> pageStudentExaminationResultList(PageParam pageParam,
+                                                                          StudentExaminationResultVo studentExaminationResultVo,
+                                                                          String examinationParameters);
 }

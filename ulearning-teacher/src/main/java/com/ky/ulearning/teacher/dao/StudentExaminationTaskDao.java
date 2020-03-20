@@ -2,7 +2,9 @@ package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
+import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 import com.ky.ulearning.spi.teacher.vo.ExaminationStatusVo;
+import com.ky.ulearning.spi.teacher.vo.StudentExaminationResultVo;
 import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -69,4 +71,30 @@ public interface StudentExaminationTaskDao {
      * @return id集合
      */
     List<Long> getIdByExaminationTaskId(Long examinationTaskId);
+
+    /**
+     * 分页查询学生测试结果
+     *
+     * @param pageParam                  分页参数
+     * @param studentExaminationResultVo 查询条件
+     * @return 学生测试结果集合
+     */
+    List<StudentExaminationResultVo> pageStudentExaminationResultList(@Param("pageParam") PageParam pageParam,
+                                                                      @Param("studentExaminationResultVo") StudentExaminationResultVo studentExaminationResultVo);
+
+    /**
+     * 分页查询学生测试结果 - 总记录数
+     *
+     * @param studentExaminationResultVo 查询条件
+     * @return 总记录数
+     */
+    Integer countPageStudentExaminationResultList(@Param("studentExaminationResultVo") StudentExaminationResultVo studentExaminationResultVo);
+
+    /**
+     * 根据测试任务id查询学生测试基本信息
+     *
+     * @param examinationTaskId 测试任务id
+     * @return 学生基本信息
+     */
+    List<StudentExaminationTaskBaseInfoVo> getBaseInfoByExaminationTaskId(Long examinationTaskId);
 }
