@@ -7,7 +7,7 @@ info:
 
 ### web
 server:
-  port: 8082
+  port: 14007
   tomcat:
     basedir: ./ulearning-logs/${spring.application.name}/tomcat
     accesslog:
