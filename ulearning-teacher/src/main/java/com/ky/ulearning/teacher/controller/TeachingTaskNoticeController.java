@@ -71,12 +71,12 @@ public class TeachingTaskNoticeController extends BaseController {
     @Autowired
     private MonitorManageRemoting monitorManageRemoting;
 
-    @Log("分页查询通告")
+    @Log(value = "分页查询通告", devModel = true)
     @ApiOperation(value = "分页查询通告", notes = "只能查看自己教学任务的通告")
     @ApiOperationSupport(ignoreParameters = {"id", "noticeAttachment"})
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<TeachingTaskNoticeDto>>> pageList(PageParam pageParam,
-                                                                                   TeachingTaskNoticeDto teachingTaskNoticeDto) {
+                                                                                TeachingTaskNoticeDto teachingTaskNoticeDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(teachingTaskNoticeDto.getTeachingTaskId()), TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         //权限校验
         teachingTaskValidUtil.checkTeachingTask(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class), teachingTaskNoticeDto.getTeachingTaskId());
@@ -141,7 +141,7 @@ public class TeachingTaskNoticeController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(teachingTaskNoticeDto.getId(), "添加成功"));
     }
 
-    @Log("根据id查询通告")
+    @Log(value = "根据id查询通告", devModel = true)
     @ApiOperation(value = "根据id查询通告", notes = "只能查看自己教学任务的通告")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<TeachingTaskNoticeDto>> getById(Long id) {
@@ -150,7 +150,7 @@ public class TeachingTaskNoticeController extends BaseController {
         TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskValidUtil.checkNoticeId(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         //计算文件大小
         TeachingTaskNoticeDto teachingTaskNoticeDto = new TeachingTaskNoticeDto();
-        if(StringUtil.isNotEmpty(teachingTaskNoticeEntity)){
+        if (StringUtil.isNotEmpty(teachingTaskNoticeEntity)) {
             BeanUtils.copyProperties(teachingTaskNoticeEntity, teachingTaskNoticeDto);
             if (StringUtil.isNotEmpty(teachingTaskNoticeDto.getNoticeAttachment())) {
                 String[] fileUrlArray = StringUtils.split(teachingTaskNoticeDto.getNoticeAttachment(), ",");

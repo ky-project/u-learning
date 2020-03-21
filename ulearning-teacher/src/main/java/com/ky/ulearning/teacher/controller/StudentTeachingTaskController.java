@@ -50,7 +50,7 @@ public class StudentTeachingTaskController extends BaseController {
     @Autowired
     private StudentService studentService;
 
-    @Log("分页查询选课学生信息")
+    @Log(value = "分页查询选课学生信息", devModel = true)
     @ApiOperation(value = "分页查询选课学生信息", notes = "只能查看选了自己课的学生信息")
     @ApiOperationSupport(ignoreParameters = {"id", "stuPassword"})
     @GetMapping("/pageList")
@@ -62,7 +62,7 @@ public class StudentTeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("根据id查询选课学生信息")
+    @Log(value = "根据id查询选课学生信息", devModel = true)
     @ApiOperation(value = "根据id查询选课学生信息", notes = "只能查看选了自己课的学生信息")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<StudentEntity>> getById(Long stuId) {

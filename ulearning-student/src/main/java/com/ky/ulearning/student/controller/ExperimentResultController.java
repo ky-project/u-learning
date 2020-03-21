@@ -91,7 +91,7 @@ public class ExperimentResultController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("提交成功"));
     }
 
-    @Log("根据实验id查询实验结果")
+    @Log(value = "根据实验id查询实验结果", devModel = true)
     @ApiOperation(value = "根据实验id查询实验结果", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getByExperimentId")
     public ResponseEntity<JsonResult<ExperimentResultDto>> getByExperimentId(Long experimentId) {

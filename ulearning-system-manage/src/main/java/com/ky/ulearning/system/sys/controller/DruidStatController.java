@@ -1,15 +1,11 @@
 package com.ky.ulearning.system.sys.controller;
 
 import com.alibaba.druid.stat.DruidStatService;
-import com.ky.ulearning.common.core.annotation.Log;
-import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.spi.common.vo.DruidWebUriVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +31,7 @@ public class DruidStatController {
     private DruidStatService druidStatService = DruidStatService.getInstance();
 
     @GetMapping("/apiStat")
-    public ResponseEntity<JsonResult<List<DruidWebUriVo>>> getApiStat(){
+    public ResponseEntity<JsonResult<List<DruidWebUriVo>>> getApiStat() {
         String service = druidStatService.service(CommonConstant.DRUID_STAT_WEB_URI);
         Map res = JsonUtil.parseObject(service, Map.class);
         Object contentJson = res.get("Content");

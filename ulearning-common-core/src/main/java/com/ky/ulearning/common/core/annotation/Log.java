@@ -15,4 +15,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Log {
     String value() default "";
+
+    boolean devModel() default false;
 }

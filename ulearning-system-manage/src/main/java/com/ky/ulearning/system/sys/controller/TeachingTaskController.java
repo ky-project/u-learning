@@ -58,7 +58,7 @@ public class TeachingTaskController extends BaseController {
     @Autowired
     private CourseService courseService;
 
-    @Log("获取学期集合")
+    @Log(value = "获取学期集合", devModel = true)
     @ApiOperation(value = "获取学期集合")
     @PermissionName(source = "teachingTask:getTermList", name = "获取学期集合", group = "教学任务管理")
     @GetMapping("/getTermList")
@@ -95,7 +95,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(teachingTaskDto.getId(), "添加成功"));
     }
 
-    @Log("分页查询教学任务")
+    @Log(value = "分页查询教学任务", devModel = true)
     @ApiOperation(value = "分页查询教学任务")
     @ApiOperationSupport(ignoreParameters = {"id"})
     @PermissionName(source = "teachingTask:pageList", name = "分页查询教学任务", group = "教学任务管理")
@@ -126,7 +126,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
-    @Log("根据id查询教学任务")
+    @Log(value = "根据id查询教学任务", devModel = true)
     @ApiOperation(value = "根据id查询教学任务")
     @PermissionName(source = "teachingTask:getById", name = "根据id查询教学任务", group = "教学任务管理")
     @GetMapping("/getById")

@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.common.aspect;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.AopUtil;
 import com.ky.ulearning.common.core.utils.JsonUtil;
@@ -34,6 +35,9 @@ public class LogAspect {
     @Autowired
     private MonitorManageRemoting monitorManageRemoting;
 
+    @Autowired
+    private DefaultConfigParameters defaultConfigParameters;
+
     private long currentTime = 0L;
 
     /**
@@ -55,6 +59,12 @@ public class LogAspect {
         currentTime = System.currentTimeMillis();
         //执行方法
         result = joinPoint.proceed();
+
+        //判断是否是开发模式记录的日志
+        if (!defaultConfigParameters.isDevMode() && AopUtil.devModel(joinPoint)) {
+            return result;
+        }
+
         //设置log属性
         LogEntity logEntity = AopUtil.buildLogEntity(joinPoint, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class),
                 RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP), currentTime,
@@ -67,8 +77,8 @@ public class LogAspect {
         }
 
         //若是分页查询，只记录查询第一页的日志，其余查询不记录
-        if(logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)){
-            if(! logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)){
+        if (logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)) {
+            if (!logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)) {
                 return result;
             }
         }

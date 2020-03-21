@@ -101,4 +101,15 @@ public class AopUtil {
         // 描述
         return aopLog.value();
     }
+
+    /**
+     * 获取注解中的用户操作信息
+     */
+    public static boolean devModel(ProceedingJoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+        Log aopLog = method.getAnnotation(Log.class);
+        // 描述
+        return aopLog.devModel();
+    }
 }

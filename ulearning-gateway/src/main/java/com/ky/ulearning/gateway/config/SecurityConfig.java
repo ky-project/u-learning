@@ -99,7 +99,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //放行patterns
                 .antMatchers(gatewayConfigParameters.getAuthenticateReleasePatterns()).anonymous()
-//                .antMatchers("/druid/**").anonymous()
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 // 防止iframe 造成跨域

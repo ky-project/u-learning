@@ -107,7 +107,7 @@ public class TeachingTaskExperimentController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(experimentDto.getId(), "添加成功"));
     }
 
-    @Log("根据id查询实验")
+    @Log(value = "根据id查询实验", devModel = true)
     @ApiOperation(value = "根据id查询实验", notes = "只能查看自己教学任务的实验")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<TeachingTaskExperimentDto>> getById(Long id) {
@@ -116,7 +116,7 @@ public class TeachingTaskExperimentController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskExperimentDto));
     }
 
-    @Log("分页查询实验信息")
+    @Log(value = "分页查询实验信息", devModel = true)
     @ApiOperation(value = "分页查询实验信息", notes = "只能查看自己教学任务的实验")
     @ApiOperationSupport(ignoreParameters = {"id", "experimentAttachment"})
     @GetMapping("/pageList")

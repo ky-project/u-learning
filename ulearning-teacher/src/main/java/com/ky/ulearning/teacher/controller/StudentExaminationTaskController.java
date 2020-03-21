@@ -57,7 +57,7 @@ public class StudentExaminationTaskController extends BaseController {
     @Autowired
     private ExaminationTaskService examinationTaskService;
 
-    @Log("分页查询学生测试")
+    @Log(value = "分页查询学生测试", devModel = true)
     @ApiOperation(value = "分页查询学生测试", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "stuId"})
     @GetMapping("/pageList")
@@ -72,7 +72,7 @@ public class StudentExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("根据学生测试id查询答题情况")
+    @Log(value = "根据学生测试id查询答题情况", devModel = true)
     @ApiOperation(value = "根据学生测试id查询答题情况", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getExaminationResultByExaminingId")
     public ResponseEntity<JsonResult<ExaminationResultDetailVo>> getExaminationResultByExaminingId(Long examiningId) {
@@ -92,7 +92,7 @@ public class StudentExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultDetailVo));
     }
 
-    @Log("根据测试任务id查询学生测试统计")
+    @Log(value = "根据测试任务id查询学生测试统计", devModel = true)
     @ApiOperation(value = "根据测试任务id查询学生测试统计", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getStudentExaminationStatistics")
     public ResponseEntity<JsonResult<StudentExaminationStatisticsVo>> getStudentExaminationStatistics(Long examinationTaskId) {
@@ -104,7 +104,7 @@ public class StudentExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(studentExaminationStatistics));
     }
 
-    @Log("分页查询学生测试结果统计信息")
+    @Log(value = "分页查询学生测试结果统计信息", devModel = true)
     @ApiOperation(value = "分页查询学生测试结果统计信息", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"stuScore", "ranking", "accuracy"})
     @GetMapping("/pageStudentExaminationResultList")

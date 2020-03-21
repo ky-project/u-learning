@@ -49,7 +49,7 @@ public class TeachingTaskNoticeController extends BaseController {
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
 
-    @Log("分页查询通告")
+    @Log(value = "分页查询通告", devModel = true)
     @ApiOperation(value = "分页查询通告", notes = "只能查看/操作已选教学任务的通告")
     @ApiOperationSupport(ignoreParameters = {"id", "noticeAttachment"})
     @GetMapping("/pageList")

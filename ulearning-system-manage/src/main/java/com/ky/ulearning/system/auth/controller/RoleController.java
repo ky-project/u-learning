@@ -50,7 +50,7 @@ public class RoleController extends BaseController {
     @Autowired
     private RoleService roleService;
 
-    @Log("角色查询")
+    @Log(value = "角色查询", devModel = true)
     @ApiOperation(value = "角色查询")
     @PermissionName(source = "role:pageList", name = "角色查询", group = "角色管理")
     @GetMapping("/pageList")
@@ -62,7 +62,7 @@ public class RoleController extends BaseController {
     /**
      * 暂时隐藏接口不显示
      */
-    @Log("获取角色权限集合")
+    @Log(value = "获取角色权限集合", devModel = true)
     @ApiOperation(value = "获取角色权限集合", hidden = true)
     @ApiImplicitParam(name = "roleIdArr", value = "角色id字符串，逗号分隔")
     @PermissionName(source = "role:getPermissionListByRoleId", name = "获取角色权限集合", group = "角色管理")
@@ -116,7 +116,7 @@ public class RoleController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
-    @Log("查询角色已分配权限")
+    @Log(value = "查询角色已分配权限", devModel = true)
     @ApiOperation(value = "查询角色已分配权限", notes = "根据角色id分组查询所拥有的所有权限")
     @PermissionName(source = "role:getAssignedPermission", name = "查询角色已分配权限", group = "角色管理")
     @GetMapping("/getAssignedPermission")
@@ -126,7 +126,7 @@ public class RoleController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 
-    @Log("角色分配权限")
+    @Log(value = "角色分配权限", devModel = true)
     @DeleteUserRedis
     @ApiOperation(value = "角色分配权限")
     @ApiImplicitParam(name = "permissionIds", value = "权限id字符串，逗号分隔")
@@ -138,7 +138,7 @@ public class RoleController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("权限分配成功"));
     }
 
-    @Log("查询所有角色数组")
+    @Log(value = "查询所有角色数组", devModel = true)
     @ApiOperation(value = "查询所有角色数组")
     @PermissionName(source = "role:arrayList", name = "查询所有角色数组", group = "角色管理")
     @GetMapping(value = "/arrayList")

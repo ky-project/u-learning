@@ -55,7 +55,7 @@ public class FileRecordController extends BaseController {
         fileRecordService.insert(fileRecordDto);
     }
 
-    @Log("文件记录查询")
+    @Log(value = "文件记录查询", devModel = true)
     @ApiOperation(value = "文件记录查询", notes = "分页查询，支持多条件筛选，其中recordSize不为空时，查询>=recordSize的所有记录")
     @ApiOperationSupport(ignoreParameters = {"id", "recordUrl", "recordTableId"})
     @PermissionName(source = "fileRecord:pageList", name = "文件记录查询", group = "文件管理")
@@ -66,7 +66,7 @@ public class FileRecordController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("根据id查询文件记录")
+    @Log(value = "根据id查询文件记录", devModel = true)
     @ApiOperation(value = "根据id查询文件记录")
     @PermissionName(source = "fileRecord:getById", name = "根据id查询文件记录", group = "文件管理")
     @GetMapping("/getById")

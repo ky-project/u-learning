@@ -111,7 +111,7 @@ public class TeacherController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("教师删除成功"));
     }
 
-    @Log("教师查询")
+    @Log(value = "教师查询", devModel = true)
     @ApiOperation(value = "教师查询", notes = "分页查询，支持多条件筛选")
     @PermissionName(source = "teacher:pageList", name = "教师查询", group = "教师管理")
     @GetMapping("/pageList")
@@ -150,7 +150,7 @@ public class TeacherController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(userContext));
     }
 
-    @Log("根据工号查询教师")
+    @Log(value = "根据工号查询教师", devModel = true)
     @ApiOperation("根据工号查询教师")
     @PermissionName(source = "teacher:getByTeaNumber", name = "根据工号查询教师", group = "教师管理")
     @GetMapping("/getByTeaNumber")
@@ -160,7 +160,7 @@ public class TeacherController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(exists));
     }
 
-    @Log("查询教师角色")
+    @Log(value = "查询教师角色", devModel = true)
     @ApiOperation("查询教师角色")
     @PermissionName(source = "teacher:getAssignedRole", name = "查询教师角色", group = "教师管理")
     @GetMapping("/getAssignedRole")
@@ -208,7 +208,7 @@ public class TeacherController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分配成功"));
     }
 
-    @Log("根据id查询教师")
+    @Log(value = "根据id查询教师", devModel = true)
     @ApiOperation("根据id查询教师")
     @PermissionName(source = "teacher:getById", name = "根据id查询教师", group = "教师管理")
     @GetMapping("/getById")
@@ -218,7 +218,7 @@ public class TeacherController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(teacherEntity));
     }
 
-    @Log("获取所有教师信息")
+    @Log(value = "获取所有教师信息", devModel = true)
     @ApiOperation("获取所有教师信息")
     @PermissionName(source = "teacher:getAll", name = "获取所有教师信息", group = "教师管理")
     @GetMapping("/getAll")
@@ -295,7 +295,7 @@ public class TeacherController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }
 
-    @Log("根据email查询教师")
+    @Log(value = "根据email查询教师", devModel = true)
     @ApiOperation("根据email查询教师")
     @PermissionName(source = "teacher:getByTeaEmail", name = "根据email查询教师", group = "教师管理")
     @GetMapping("/getByTeaEmail")

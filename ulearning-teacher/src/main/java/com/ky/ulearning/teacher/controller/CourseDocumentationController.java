@@ -26,7 +26,6 @@ import com.ky.ulearning.teacher.service.CourseDocumentationService;
 import com.ky.ulearning.teacher.service.CourseFileService;
 import com.ky.ulearning.teacher.service.TeachingTaskService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
@@ -151,7 +150,7 @@ public class CourseDocumentationController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
-    @Log("查询文件资料根节点")
+    @Log(value = "查询文件资料根节点", devModel = true)
     @ApiOperation(value = "查询文件资料根节点", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getRootFolder")
     public ResponseEntity<JsonResult<CourseFileDocumentationDto>> getRootFolder(Long teachingTaskId) {
@@ -169,7 +168,7 @@ public class CourseDocumentationController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
     }
 
-    @Log("查询文件资料列表")
+    @Log(value = "查询文件资料列表", devModel = true)
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询文件资料列表", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/list")
@@ -188,7 +187,7 @@ public class CourseDocumentationController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDtoList));
     }
 
-    @Log("查询文件资料")
+    @Log(value = "查询文件资料", devModel = true)
     @ApiOperation(value = "查询文件资料", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<CourseFileDocumentationDto>> getById(Long id) {
@@ -324,7 +323,7 @@ public class CourseDocumentationController extends BaseController {
         //空值校验
         ValidateHandler.checkNull(courseFileDocumentationDto, TeacherErrorCodeEnum.DOCUMENTATION_NOT_EXISTS);
         //若为非共享文件，进行可操作验证
-        if(! courseFileDocumentationDto.getDocumentationShared()){
+        if (!courseFileDocumentationDto.getDocumentationShared()) {
             //校验课程文件id
             teachingTaskValidUtil.checkCourseFileId(courseFileDocumentationDto.getFileId(), username);
         }
@@ -354,7 +353,7 @@ public class CourseDocumentationController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
         //若修改了分享字段，进行更新
-        if(! documentationShared.equals(courseFileDocumentationDto.getDocumentationShared())){
+        if (!documentationShared.equals(courseFileDocumentationDto.getDocumentationShared())) {
             courseDocumentationService.updateShared(id, documentationShared, username);
         }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
@@ -374,14 +373,14 @@ public class CourseDocumentationController extends BaseController {
             Long id = Long.parseLong(idStr);
             CourseFileDocumentationDto courseFileDocumentationDto = teachingTaskValidUtil.checkDocumentationId(id, username);
             //若修改了分享字段，进行更新
-            if(! documentationShared.equals(courseFileDocumentationDto.getDocumentationShared())){
+            if (!documentationShared.equals(courseFileDocumentationDto.getDocumentationShared())) {
                 courseDocumentationService.updateShared(id, documentationShared, username);
             }
         }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
     }
 
-    @Log("查询文件资料分享区根节点id")
+    @Log(value = "查询文件资料分享区根节点id", devModel = true)
     @ApiOperation(value = "查询文件资料分享区根节点id", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getSharedRootFolder")
     public ResponseEntity<JsonResult<Long>> getSharedRootFolder(Long teachingTaskId) {
@@ -398,7 +397,7 @@ public class CourseDocumentationController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(fileId));
     }
 
-    @Log("查询文件资料分享区列表")
+    @Log(value = "查询文件资料分享区列表", devModel = true)
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询文件资料分享区列表", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/sharedList")
@@ -414,9 +413,9 @@ public class CourseDocumentationController extends BaseController {
         List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getSharedList(courseFileDocumentationDto);
         //将教学任务fileName去除#
         CourseFileDocumentationDto pre1 = courseDocumentationService.getByFileId(courseFileDocumentationDto.getFileParentId());
-        if(StringUtil.isNotEmpty(pre1)){
+        if (StringUtil.isNotEmpty(pre1)) {
             CourseFileEntity pre2 = courseFileService.getById(pre1.getFileParentId());
-            if(StringUtil.isNotEmpty(pre2) && (new Long(MicroConstant.ROOT_FOLDER_PARENT_ID).equals(pre2.getFileParentId()))){
+            if (StringUtil.isNotEmpty(pre2) && (new Long(MicroConstant.ROOT_FOLDER_PARENT_ID).equals(pre2.getFileParentId()))) {
                 for (CourseFileDocumentationDto fileDocumentationDto : courseFileDocumentationDtoList) {
                     fileDocumentationDto.setFileName(fileDocumentationDto.getFileName().split("#")[0]);
                 }

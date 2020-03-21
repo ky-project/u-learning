@@ -44,7 +44,7 @@ public class ExaminationTaskController extends BaseController {
     @Autowired
     private StudentTeachingTaskUtil studentTeachingTaskUtil;
 
-    @Log("分页查询测试任务")
+    @Log(value = "分页查询测试任务", devModel = true)
     @ApiOperation(value = "分页查询测试任务", notes = "只能查询/操作属于自己的教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "examinationParameters"})
     @GetMapping("/pageList")
@@ -59,7 +59,7 @@ public class ExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("根据id查询测试任务")
+    @Log(value = "根据id查询测试任务", devModel = true)
     @ApiOperation(value = "根据id查询测试任务", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<ExaminationTaskEntity>> getById(Long id) {
@@ -69,7 +69,7 @@ public class ExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationTaskEntity));
     }
 
-    @Log("查询所有未完成测试任务数组")
+    @Log(value = "查询所有未完成测试任务数组", devModel = true)
     @ApiOperation(value = "查询所有未完成测试任务数组", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getExaminationTaskArr")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getExaminationTaskArr(Long teachingTaskId) {

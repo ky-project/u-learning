@@ -241,10 +241,10 @@ public class StudentExaminationTaskController extends BaseController {
                 //若填空题且学生答案为空，则按填空数量补充|#|
                 if (StringUtil.isEmpty(courseQuestionVo.getStudentAnswer())
                         && quantityVo.getQuestionType().equals(4)
-                        && courseQuestionVo.getQuestionKey().contains(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE)){
+                        && courseQuestionVo.getQuestionKey().contains(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE)) {
                     String[] split = courseQuestionVo.getQuestionKey().split(CommonConstant.COURSE_QUESTION_SEPARATE);
                     String stuAnswer = "";
-                    for(int  j = 0; j < split.length - 1; j++){
+                    for (int j = 0; j < split.length - 1; j++) {
                         stuAnswer += CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE;
                     }
                     courseQuestionVo.setStudentAnswer(stuAnswer);
@@ -283,7 +283,7 @@ public class StudentExaminationTaskController extends BaseController {
         return courseQuestionVoList;
     }
 
-    @Log("分页查询测试结果明细")
+    @Log(value = "分页查询测试结果明细", devModel = true)
     @ApiOperation(value = "分页查询测试结果明细", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/pageList")
     public ResponseEntity<JsonResult<PageBean<ExaminationResultViewVo>>> pageList(PageParam pageParam, Date submitTime, Long teachingTaskId, String examinationName) {

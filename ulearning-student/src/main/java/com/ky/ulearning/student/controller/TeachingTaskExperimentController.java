@@ -53,15 +53,15 @@ public class TeachingTaskExperimentController extends BaseController {
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
 
-    @Log("分页查询实验")
+    @Log(value = "分页查询实验", devModel = true)
     @ApiOperation(value = "分页查询实验", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "experimentAttachment"})
     @GetMapping("/pageExperimentList")
-    public ResponseEntity<JsonResult<PageBean<StudentTeachingTaskExperimentDto >>> pageNotSelectedList(PageParam pageParam, ExperimentDto experimentDto) {
+    public ResponseEntity<JsonResult<PageBean<StudentTeachingTaskExperimentDto>>> pageNotSelectedList(PageParam pageParam, ExperimentDto experimentDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(experimentDto.getTeachingTaskId()), StudentErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         studentTeachingTaskUtil.checkTeachingTaskId(experimentDto.getTeachingTaskId(), stuId);
-        PageBean<StudentTeachingTaskExperimentDto > pageBean = teachingTaskExperimentService.pageList(experimentDto, setPageParam(pageParam), stuId);
+        PageBean<StudentTeachingTaskExperimentDto> pageBean = teachingTaskExperimentService.pageList(experimentDto, setPageParam(pageParam), stuId);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 

@@ -39,7 +39,7 @@ public class LogHistoryController {
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
 
-    @Log("查询所有历史日志")
+    @Log(value = "查询所有历史日志", devModel = true)
     @ApiOperation(value = "查询所有历史日志")
     @PermissionName(source = "logHistory:getVoList", name = "查询所有历史日志", group = "历史日志管理")
     @GetMapping("/getVoList")

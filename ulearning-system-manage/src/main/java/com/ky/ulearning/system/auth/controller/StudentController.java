@@ -81,7 +81,7 @@ public class StudentController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(studentDto.getId(), "添加学生成功"));
     }
 
-    @Log("根据id查询学生信息")
+    @Log(value = "根据id查询学生信息", devModel = true)
     @ApiOperation(value = "根据id查询学生信息")
     @PermissionName(source = "student:getById", name = "根据id查询学生信息", group = "学生管理")
     @GetMapping("/getById")
@@ -91,7 +91,7 @@ public class StudentController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(studentEntity, "查询成功"));
     }
 
-    @Log("分页查询学生信息")
+    @Log(value = "分页查询学生信息", devModel = true)
     @ApiOperation(value = "分页查询学生信息")
     @ApiOperationSupport(ignoreParameters = {"id", "stuPassword"})
     @PermissionName(source = "student:pageList", name = "分页查询学生信息", group = "学生管理")
@@ -217,7 +217,7 @@ public class StudentController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("上传成功"));
     }
 
-    @Log("根据email查询学生")
+    @Log(value = "根据email查询学生", devModel = true)
     @ApiOperation("根据email查询学生")
     @PermissionName(source = "student:getByStuEmail", name = "根据email查询学生", group = "学生管理")
     @GetMapping("/getByStuEmail")

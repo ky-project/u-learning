@@ -46,7 +46,7 @@ public class PermissionController extends BaseController {
     @Autowired
     private PermissionService permissionService;
 
-    @Log("查询所有权限组")
+    @Log(value = "查询所有权限组", devModel = true)
     @ApiOperation("查询所有权限组")
     @PermissionName(source = "permission:getAllGroup", name = "查询所有权限组", group = "权限管理")
     @GetMapping("/getAllGroup")
@@ -55,7 +55,7 @@ public class PermissionController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(allGroup));
     }
 
-    @Log("查询权限")
+    @Log(value = "查询权限", devModel = true)
     @ApiOperation("查询权限")
     @PermissionName(source = "permission:pageList", name = "查询权限", group = "权限管理")
     @GetMapping("/pageList")
@@ -114,7 +114,7 @@ public class PermissionController extends BaseController {
     /**
      * 以树的形式查询所有权限
      */
-    @Log("分组查询所有权限")
+    @Log(value = "分组查询所有权限", devModel = true)
     @ApiOperation(value = "分组查询所有权限", notes = "以组为单位查询所有权限")
     @PermissionName(source = "permission:groupList", name = "分组查询所有权限", group = "权限管理")
     @GetMapping(value = "/groupList")
@@ -124,7 +124,7 @@ public class PermissionController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(groupList));
     }
 
-    @Log("查询所有权限")
+    @Log(value = "查询所有权限", devModel = true)
     @ApiOperation(value = "查询所有权限")
     @PermissionName(source = "permission:list", name = "查询所有权限", group = "权限管理")
     @GetMapping(value = "/list")
@@ -134,7 +134,7 @@ public class PermissionController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(permissionEntityList));
     }
 
-    @Log("查询所有权限数组")
+    @Log(value = "查询所有权限数组", devModel = true)
     @ApiOperation(value = "查询所有权限数组")
     @PermissionName(source = "permission:arrayList", name = "查询所有权限数组", group = "权限管理")
     @GetMapping(value = "/arrayList")

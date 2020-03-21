@@ -14,7 +14,6 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
-import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.service.ExperimentResultService;
@@ -52,7 +51,7 @@ public class ExperimentResultController extends BaseController {
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
 
-    @Log("分页查询实验结果")
+    @Log(value = "分页查询实验结果", devModel = true)
     @ApiOperation(value = "分页查询实验结果", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "experimentUrl"})
     @GetMapping("/pageList")
@@ -64,7 +63,7 @@ public class ExperimentResultController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDtoList));
     }
 
-    @Log("根据id查询实验结果")
+    @Log(value = "根据id查询实验结果", devModel = true)
     @ApiOperation(value = "根据id查询实验结果", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<ExperimentResultDto>> getById(Long id) {

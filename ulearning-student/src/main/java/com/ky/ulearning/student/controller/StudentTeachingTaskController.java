@@ -49,7 +49,7 @@ public class StudentTeachingTaskController extends BaseController {
     @Autowired
     private StudentTeachingTaskUtil studentTeachingTaskUtil;
 
-    @Log("分页查询未选的教学任务")
+    @Log(value = "分页查询未选的教学任务", devModel = true)
     @ApiOperation(value = "分页查询未选的教学任务", notes = "查询学生未选的教学任务列表")
     @ApiOperationSupport(ignoreParameters = {"id", "teaId", "courseId"})
     @GetMapping("/pageNotSelectedList")
@@ -59,7 +59,7 @@ public class StudentTeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 
-    @Log("分页查询已选的教学任务")
+    @Log(value = "分页查询已选的教学任务", devModel = true)
     @ApiOperation(value = "分页查询已选的教学任务", notes = "查询学生已选的教学任务列表")
     @ApiOperationSupport(ignoreParameters = {"id", "teaId", "courseId"})
     @GetMapping("/pageSelectedList")
@@ -104,7 +104,7 @@ public class StudentTeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("退选成功"));
     }
 
-    @Log("查询所有已选教学任务数组")
+    @Log(value = "查询所有已选教学任务数组", devModel = true)
     @ApiOperation(value = "查询所有已选教学任务数组", notes = "查询学生已选的教学任务数组key-label")
     @GetMapping("/getTeachingTaskArray")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getTeachingTaskArray() {
@@ -112,7 +112,7 @@ public class StudentTeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
     }
 
-    @Log("查询所有教学任务数组")
+    @Log(value = "查询所有教学任务数组", devModel = true)
     @ApiOperation(value = "查询所有教学任务数组", notes = "查询所有教学任务数组key-label")
     @GetMapping("/getAllTeachingTaskArray")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAllTeachingTaskArray() {

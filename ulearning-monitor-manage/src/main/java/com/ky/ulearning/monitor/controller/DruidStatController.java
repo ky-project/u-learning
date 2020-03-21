@@ -57,7 +57,7 @@ public class DruidStatController {
 
     private DruidStatService druidStatService = DruidStatService.getInstance();
 
-    @Log("查询系统模块映射")
+    @Log(value = "查询系统模块映射", devModel = true)
     @ApiOperation(value = "查询系统模块映射")
     @GetMapping("/getSystemModules")
     public ResponseEntity<JsonResult<List<KeyLabelVo>>> getSystemModules() {
@@ -72,7 +72,7 @@ public class DruidStatController {
         return ResponseEntityUtil.ok(JsonResult.buildData(res));
     }
 
-    @Log("接口统计查询")
+    @Log(value = "接口统计查询", devModel = true)
     @ApiOperation(value = "接口统计查询")
     @GetMapping("/apiStat")
     public ResponseEntity<JsonResult<List<DruidWebUriVo>>> getApiStat(Integer module) {

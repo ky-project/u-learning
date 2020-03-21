@@ -47,7 +47,7 @@ public class LogController extends BaseController {
         logService.insert(logEntity);
     }
 
-    @Log("日志查询")
+    @Log(value = "日志查询", devModel = true)
     @ApiOperation(value = "日志查询", notes = "分页查询，支持多条件筛选")
     @ApiOperationSupport(ignoreParameters = "logTime")
     @PermissionName(source = "log:pageList", name = "日志查询", group = "日志管理")

@@ -43,7 +43,7 @@ public class CourseController extends BaseController {
     @Autowired
     private CourseService courseService;
 
-    @Log("课程查询")
+    @Log(value = "课程查询", devModel = true)
     @ApiOperation(value = "课程查询", notes = "分页查询，支持多条件筛选")
     @PermissionName(source = "course:pageList", name = "课程查询", group = "课程管理")
     @GetMapping("/pageList")
@@ -52,7 +52,7 @@ public class CourseController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(pageBean, "查询成功"));
     }
 
-    @Log("根据id查询课程")
+    @Log(value = "根据id查询课程", devModel = true)
     @ApiOperation(value = "根据id查询课程")
     @PermissionName(source = "course:getById", name = "根据id查询课程", group = "课程管理")
     @GetMapping("/getById")
@@ -109,7 +109,7 @@ public class CourseController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
 
-    @Log("获取所有课程信息")
+    @Log(value = "获取所有课程信息", devModel = true)
     @ApiOperation(value = "获取所有课程信息")
     @PermissionName(source = "course:getAll", name = "获取所有课程信息", group = "课程管理")
     @GetMapping("/getAll")

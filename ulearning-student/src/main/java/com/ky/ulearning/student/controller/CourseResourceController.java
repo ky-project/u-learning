@@ -9,7 +9,6 @@ import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
-import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
@@ -64,7 +63,7 @@ public class CourseResourceController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileResourceDto));
     }
 
-    @Log("查询教学资源列表")
+    @Log(value = "查询教学资源列表", devModel = true)
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询教学资源列表", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/list")

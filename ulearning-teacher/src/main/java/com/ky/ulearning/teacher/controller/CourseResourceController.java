@@ -151,7 +151,7 @@ public class CourseResourceController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("添加成功"));
     }
 
-    @Log("查询教学资源根节点")
+    @Log(value = "查询教学资源根节点", devModel = true)
     @ApiOperation(value = "查询教学资源根节点", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getRootFolder")
     public ResponseEntity<JsonResult<CourseFileResourceDto>> getRootFolder(Long teachingTaskId) {
@@ -169,7 +169,7 @@ public class CourseResourceController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileResourceDto));
     }
 
-    @Log("查询教学资源列表")
+    @Log(value = "查询教学资源列表", devModel = true)
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询教学资源列表", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/list")
@@ -188,7 +188,7 @@ public class CourseResourceController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileResourceDtoList));
     }
 
-    @Log("查询教学资源")
+    @Log(value = "查询教学资源", devModel = true)
     @ApiOperation(value = "查询教学资源", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<CourseFileResourceDto>> getById(Long id) {
@@ -379,7 +379,7 @@ public class CourseResourceController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
     }
 
-    @Log("查询教学资源分享区根节点id")
+    @Log(value = "查询教学资源分享区根节点id", devModel = true)
     @ApiOperation(value = "查询教学资源分享区根节点id", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/getSharedRootFolder")
     public ResponseEntity<JsonResult<Long>> getSharedRootFolder(Long teachingTaskId) {
@@ -396,7 +396,7 @@ public class CourseResourceController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(fileId));
     }
 
-    @Log("查询教学资源分享区列表")
+    @Log(value = "查询教学资源分享区列表", devModel = true)
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询教学资源分享区列表", notes = "只能查询/操作属于自己的教学任务的数据")
     @GetMapping("/sharedList")

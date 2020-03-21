@@ -63,7 +63,7 @@ public class TeachingTaskController extends BaseController {
     @Autowired
     private TeachingTaskValidUtil teachingTaskValidUtil;
 
-    @Log("分页查询教学任务")
+    @Log(value = "分页查询教学任务", devModel = true)
     @ApiOperation(value = "分页查询教学任务")
     @ApiOperationSupport(ignoreParameters = {"id", "courseId", "teaId"})
     @GetMapping("/pageList")
@@ -74,7 +74,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("获取学期集合")
+    @Log(value = "获取学期集合", devModel = true)
     @ApiOperation(value = "获取学期集合")
     @GetMapping("/getTermList")
     public ResponseEntity<JsonResult<List<TermVo>>> getTermList() {
@@ -130,7 +130,7 @@ public class TeachingTaskController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
     }
 
-    @Log("根据id查询教学任务")
+    @Log(value = "根据id查询教学任务", devModel = true)
     @ApiOperation(value = "根据id查询教学任务", notes = "只能查看属于自己的教学任务")
     @PostMapping("/getById")
     public ResponseEntity<JsonResult<CourseTeachingTaskDto>> getById(Long id) {
@@ -144,7 +144,7 @@ public class TeachingTaskController extends BaseController {
 
     @ApiOperation(value = "获取教师所有的教学任务")
     @GetMapping("/getAll")
-    public ResponseEntity<JsonResult<List<TeachingTaskVo>>> getAll(){
+    public ResponseEntity<JsonResult<List<TeachingTaskVo>>> getAll() {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         List<TeachingTaskVo> teachingTaskVoList = teachingTaskService.getAll(username);
         return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskVoList));

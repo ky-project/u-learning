@@ -14,7 +14,6 @@ import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
 import com.ky.ulearning.student.service.CourseDocumentationService;
-import com.ky.ulearning.student.service.TeachingTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
@@ -64,7 +63,7 @@ public class CourseDocumentationController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
     }
 
-    @Log("查询文件资料列表")
+    @Log(value = "查询文件资料列表", devModel = true)
     @ApiOperationSupport(ignoreParameters = {"id", "fileId"})
     @ApiOperation(value = "查询文件资料列表", notes = "只能查看/操作已选教学任务的数据")
     @GetMapping("/list")

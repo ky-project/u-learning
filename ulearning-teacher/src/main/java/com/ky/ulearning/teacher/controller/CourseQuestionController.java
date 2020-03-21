@@ -121,7 +121,7 @@ public class CourseQuestionController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(questionDto.getId(), "添加成功"));
     }
 
-    @Log("分页查询课程试题")
+    @Log(value = "分页查询课程试题", devModel = true)
     @ApiOperation(value = "分页查询课程试题", notes = "只能查看自己教学任务的课程试题")
     @ApiOperationSupport(ignoreParameters = {"id", "courseId", "questionUrl", "courseNumber", "courseName", "courseCredit"})
     @GetMapping("/pageList")
@@ -134,7 +134,7 @@ public class CourseQuestionController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
     }
 
-    @Log("根据id查询课程试题")
+    @Log(value = "根据id查询课程试题", devModel = true)
     @ApiOperation(value = "根据id查询课程试题", notes = "只能查看自己教学任务的课程试题")
     @GetMapping("/getById")
     public ResponseEntity<JsonResult<CourseQuestionDto>> getById(Long id) {
