@@ -33,4 +33,10 @@ public class TeachingTaskVo {
      */
     @ApiModelProperty("开课学期")
     private String term;
+
+    /**
+     * 展示名
+     */
+    @ApiModelProperty("展示名")
+    private String showName;
 }

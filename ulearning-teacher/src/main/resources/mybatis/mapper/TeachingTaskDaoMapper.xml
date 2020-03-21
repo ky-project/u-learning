@@ -92,7 +92,7 @@
         <if test="courseTeachingTaskDto.courseCredit != null">
             AND uc.course_credit = #{courseTeachingTaskDto.courseCredit}
         </if>
-        ORDER BY utt.update_time desc
+        ORDER BY utt.update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
@@ -136,18 +136,18 @@
     <!--插入教学任务信息-->
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto" useGeneratedKeys="true">
-        insert into u_teaching_task (course_id, tea_id, teaching_task_alias,
+        INSERT INTO u_teaching_task (course_id, tea_id, teaching_task_alias,
                                      term, `valid`, memo,
                                      create_time, create_by, update_time,
                                      update_by)
-        values (#{courseId,jdbcType=BIGINT}, #{teaId,jdbcType=BIGINT}, #{teachingTaskAlias,jdbcType=VARCHAR},
+        VALUES (#{courseId,jdbcType=BIGINT}, #{teaId,jdbcType=BIGINT}, #{teachingTaskAlias,jdbcType=VARCHAR},
                 #{term,jdbcType=VARCHAR}, 1, #{memo,jdbcType=VARCHAR},
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
                 #{updateBy,jdbcType=VARCHAR})
     </insert>
     <!--更新教学任务信息-->
     <update id="update" parameterType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
-        update u_teaching_task
+        UPDATE u_teaching_task
         <set>
             update_time = now(),
             <if test="courseId != null">
@@ -169,7 +169,7 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
     <!--根据教师id查询所有教学任务id集合-->
     <select id="getIdByTeaId" resultType="java.lang.Long" parameterType="java.lang.Long">
@@ -208,7 +208,7 @@
     </select>
     <!--获取教师所有教学任务信息-->
     <select id="getAll" resultMap="TeachingTaskVoResultMap">
-        SELECT utt.id, utt.teaching_task_alias, utt.term
+        SELECT utt.id, utt.teaching_task_alias, utt.term, concat('[', utt.term, ']', utt.teaching_task_alias) AS showName
         FROM u_teaching_task utt
                  INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
         WHERE utt.valid = 1
