@@ -70,6 +70,8 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
         //查询总学生人数
         Integer totalStudent = studentTeachingTaskDao.countByTeachingTaskId(examinationTaskEntity.getTeachingTaskId());
         studentExaminationStatisticsVo.setTotalStudent(totalStudent);
+        //查询测试总分
+        studentExaminationStatisticsVo.setExaminationTotalScore(ExaminationParamUtil.getTotalScore(examinationTaskEntity.getExaminationParameters()));
         //获取考试状态
         List<ExaminationStatusVo> examinationStatusList = studentExaminationTaskDao.getExaminationStatus(examinationTaskEntity.getId());
         int count = 0;

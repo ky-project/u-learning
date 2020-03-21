@@ -3,7 +3,6 @@ package com.ky.ulearning.spi.teacher.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,12 @@ import java.util.List;
 @Data
 @ApiModel("学生测试统计vo")
 public class StudentExaminationStatisticsVo {
+
+    /**
+     * 测试总分
+     */
+    @ApiModelProperty("测试总分")
+    public Double examinationTotalScore;
 
     /**
      * 最高分

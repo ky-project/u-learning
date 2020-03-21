@@ -2,6 +2,7 @@ package com.ky.ulearning.common.core.utils;
 
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.common.vo.QuantityVo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @author luyuhao
  * @since 2020/03/20 00:26
  */
+@Slf4j
 public class ExaminationParamUtil {
 
     /**
@@ -32,13 +34,18 @@ public class ExaminationParamUtil {
      * @return 总分
      */
     public static Double getTotalScore(String examinationParameters) {
-        ExaminationParamVo examinationParamVo = getExaminationParamVo(examinationParameters);
-        List<QuantityVo> quantity = examinationParamVo.getQuantity();
-        Double totalScore = 0.0;
-        for (QuantityVo quantityVo : quantity) {
-            totalScore += quantityVo.getGrade() * quantityVo.getAmount();
+        try {
+            ExaminationParamVo examinationParamVo = getExaminationParamVo(examinationParameters);
+            List<QuantityVo> quantity = examinationParamVo.getQuantity();
+            double totalScore = 0.0;
+            for (QuantityVo quantityVo : quantity) {
+                totalScore += quantityVo.getGrade() * quantityVo.getAmount();
+            }
+            return totalScore;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return 0.0;
         }
-        return totalScore;
     }
 
     /**
