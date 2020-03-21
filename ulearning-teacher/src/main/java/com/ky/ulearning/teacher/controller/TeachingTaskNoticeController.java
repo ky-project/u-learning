@@ -132,6 +132,7 @@ public class TeachingTaskNoticeController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //权限校验
         teachingTaskValidUtil.checkTeachingTask(username, teachingTaskNoticeDto.getTeachingTaskId());
+        teachingTaskValidUtil.checkOperate(null, teachingTaskNoticeDto.getTeachingTaskId());
         //设置创建/更新者和提交时间
         teachingTaskNoticeDto.setCreateBy(username);
         teachingTaskNoticeDto.setUpdateBy(username);
@@ -172,6 +173,7 @@ public class TeachingTaskNoticeController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //获取原通告对象并校验
         TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskValidUtil.checkNoticeId(teachingTaskNoticeDto.getId(), username);
+        teachingTaskValidUtil.checkOperate(null, teachingTaskNoticeEntity.getTeachingTaskId());
         //教学任务校验
         if (StringUtil.isNotEmpty(teachingTaskNoticeDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, teachingTaskNoticeDto.getTeachingTaskId());
@@ -199,6 +201,7 @@ public class TeachingTaskNoticeController extends BaseController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
         //获取原通告对象并校验
         TeachingTaskNoticeEntity teachingTaskNoticeEntity = teachingTaskValidUtil.checkNoticeId(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        teachingTaskValidUtil.checkOperate(null, teachingTaskNoticeEntity.getTeachingTaskId());
         teachingTaskNoticeService.delete(id, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         //移除原有附件
         List<String> attachmentList = StringUtil.strToList(teachingTaskNoticeEntity.getNoticeAttachment(), ",");

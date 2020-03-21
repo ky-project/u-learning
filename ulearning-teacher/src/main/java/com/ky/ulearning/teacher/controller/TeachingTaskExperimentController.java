@@ -99,6 +99,7 @@ public class TeachingTaskExperimentController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //教学任务id校验
         teachingTaskValidUtil.checkTeachingTask(username, experimentDto.getTeachingTaskId());
+        teachingTaskValidUtil.checkOperate(null, experimentDto.getTeachingTaskId());
         //设置更新者信息
         experimentDto.setUpdateBy(username);
         experimentDto.setCreateBy(username);
@@ -137,6 +138,7 @@ public class TeachingTaskExperimentController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //获取实验信息
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskValidUtil.checkExperimentId(experimentDto.getId(), username);
+        teachingTaskValidUtil.checkOperate(null, teachingTaskExperimentDto.getTeachingTaskId());
         //教学任务校验
         if (StringUtil.isNotEmpty(experimentDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, experimentDto.getTeachingTaskId());
@@ -193,6 +195,7 @@ public class TeachingTaskExperimentController extends BaseController {
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //获取实验信息
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskValidUtil.checkExperimentId(id, username);
+        teachingTaskValidUtil.checkOperate(null, teachingTaskExperimentDto.getTeachingTaskId());
         //删除实验
         teachingTaskExperimentService.delete(id, username);
         //判断是否需要删除原图片

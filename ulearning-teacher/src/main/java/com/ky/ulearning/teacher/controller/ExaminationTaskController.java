@@ -67,6 +67,7 @@ public class ExaminationTaskController extends BaseController {
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         teachingTaskValidUtil.checkTeachingTask(username, examinationTaskDto.getTeachingTaskId());
+        teachingTaskValidUtil.checkOperate(null, examinationTaskDto.getTeachingTaskId());
         //试题参数校验
         ValidateHandler.checkParameter(!checkExaminationParam(examinationTaskDto.getExaminationParameters()), TeacherErrorCodeEnum.EXAMINATION_PARAMETERS_ILLEGAL);
         examinationTaskDto.setUpdateBy(username);
@@ -105,7 +106,8 @@ public class ExaminationTaskController extends BaseController {
                 .on(StringUtil.isEmpty(examinationTaskDto.getId()), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
                 .doValidate().checkResult();
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
-        teachingTaskValidUtil.checkExaminationId(examinationTaskDto.getId(), username);
+        ExaminationTaskEntity examinationTaskEntity = teachingTaskValidUtil.checkExaminationId(examinationTaskDto.getId(), username);
+        teachingTaskValidUtil.checkOperate(null, examinationTaskEntity.getTeachingTaskId());
         //教学任务校验
         if (StringUtil.isNotEmpty(examinationTaskDto.getTeachingTaskId())) {
             teachingTaskValidUtil.checkTeachingTask(username, examinationTaskDto.getTeachingTaskId());
@@ -126,7 +128,8 @@ public class ExaminationTaskController extends BaseController {
         ValidateHandler.checkParameter(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL);
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         //权限校验
-        teachingTaskValidUtil.checkExaminationId(id, username);
+        ExaminationTaskEntity examinationTaskEntity = teachingTaskValidUtil.checkExaminationId(id, username);
+        teachingTaskValidUtil.checkOperate(null, examinationTaskEntity.getTeachingTaskId());
         examinationTaskService.delete(id, username);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }

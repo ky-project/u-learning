@@ -1,13 +1,12 @@
 package com.ky.ulearning.teacher.common.utils;
 
+import com.ky.ulearning.common.core.utils.DateUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
-import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
-import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
-import com.ky.ulearning.spi.teacher.dto.CourseQuestionDto;
-import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
+import com.ky.ulearning.spi.teacher.dto.*;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskNoticeEntity;
@@ -28,6 +27,16 @@ import java.util.Set;
  */
 @Component
 public class TeachingTaskValidUtil {
+
+    /**
+     * 第一学期
+     */
+    public static final String FIRST_TERM = "1";
+
+    /**
+     * 第二学期
+     */
+    public static final String SECOND_TERM = "2";
 
     @Autowired
     private TeacherService teacherService;
@@ -258,5 +267,40 @@ public class TeachingTaskValidUtil {
         ValidateHandler.checkNull(studentExaminationTaskDto, TeacherErrorCodeEnum.STUDENT_EXAMINATION_TASK_ID_ILLEGAL);
         checkExaminationId(studentExaminationTaskDto.getExaminationTaskId(), username);
         return studentExaminationTaskDto;
+    }
+
+    /**
+     * 验证能否操作该教学任务的数据
+     * 1. 操作本学期的教学任务数据
+     * 2. 操作之后学期的教学任务数据
+     *
+     * @param term           学期
+     * @param teachingTaskId 教学任务id
+     */
+    public void checkOperate(String term, Long teachingTaskId) {
+        //若学期为null，则根据教学任务获取term
+        if (StringUtil.isEmpty(term)) {
+            CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskService.getById(teachingTaskId);
+            term = courseTeachingTaskDto.getTerm();
+        }
+        //分隔获取学年和学期
+        String[] termArr = term.split("-");
+        //获取当前年
+        String year = String.valueOf(DateUtil.thisYear());
+        //若当前年小于学年，则说明是未来学期
+        if (Integer.parseInt(termArr[1]) > Integer.parseInt(year)) {
+            return;
+        }
+        //判断今年是否在该学年
+        ValidateHandler.checkParameter(!(termArr[0].equals(year) || termArr[1].equals(year)), TeacherErrorCodeEnum.TERM_ILLEGAL);
+        //第一学期：8月-12月&1月-2月；第二学期：2月-8月
+        int thisMonth = DateUtil.thisMonth() + 1;
+        if (FIRST_TERM.equals(termArr[2])) {
+            ValidateHandler.checkParameter(thisMonth > 2 && thisMonth < 8, TeacherErrorCodeEnum.TERM_ILLEGAL);
+        } else if (SECOND_TERM.equals(termArr[2])) {
+            ValidateHandler.checkParameter(thisMonth > 8 || thisMonth < 2, TeacherErrorCodeEnum.TERM_ILLEGAL);
+        } else {
+            ValidateHandler.checkNull(null, TeacherErrorCodeEnum.TERM_ERROR);
+        }
     }
 }

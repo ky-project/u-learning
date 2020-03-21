@@ -213,7 +213,7 @@
                  INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
         WHERE utt.valid = 1
           AND ut.tea_number = #{courseTeachingTaskDto.teaNumber}
-        ORDER BY utt.id ASC
+        ORDER BY utt.term DESC
     </select>
     <!--根据id查询课程id-->
     <select id="getCourseIdById" resultType="java.lang.Long">
