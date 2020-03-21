@@ -98,7 +98,7 @@
         SELECT up.id              `key`,
                up.permission_name `label`
         FROM u_role_permission urp
-                 LEFT JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
+                 INNER JOIN u_permission up ON up.valid = 1 AND urp.permission_id = up.id
         WHERE urp.valid = 1
           AND urp.role_id = #{roleId}
     </select>
