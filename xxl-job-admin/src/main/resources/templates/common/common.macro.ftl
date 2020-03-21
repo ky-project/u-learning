@@ -144,7 +144,9 @@
 				<li class="nav-click <#if pageName == "joblog">active</#if>" ><a href="${Request["systemSuffix"]}${request.contextPath}/joblog"><i class="fa fa-circle-o text-green"></i><span>${I18n.joblog_name}</span></a></li>
 				<#if Request["XXL_JOB_LOGIN_IDENTITY"].role == 1>
                     <li class="nav-click <#if pageName == "jobgroup">active</#if>" ><a href="${Request["systemSuffix"]}${request.contextPath}/jobgroup"><i class="fa fa-circle-o text-red"></i><span>${I18n.jobgroup_name}</span></a></li>
-                    <li class="nav-click <#if pageName == "user">active</#if>" ><a href="${Request["systemSuffix"]}${request.contextPath}/user"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
+                    <#if proxy == false>
+                        <li class="nav-click <#if pageName == "user">active</#if>"><a href="${Request["systemSuffix"]}${request.contextPath}/user"><i class="fa fa-circle-o text-purple"></i><span>${I18n.user_manage}</span></a></li>
+                    </#if>
 				</#if>
 				<li class="nav-click <#if pageName == "help">active</#if>" ><a href="${Request["systemSuffix"]}${request.contextPath}/help"><i class="fa fa-circle-o text-gray"></i><span>${I18n.job_help}</span></a></li>
 			</ul>
