@@ -61,7 +61,7 @@ fdfs:
 ulearning:
   # 显示的学期前n年和后n年
   term:
-    preyears: 3
+    preyears: 1
     nextyears: 3
   file:
     # 默认MB
