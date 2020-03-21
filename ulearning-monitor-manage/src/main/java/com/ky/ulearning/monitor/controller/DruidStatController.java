@@ -2,7 +2,6 @@ package com.ky.ulearning.monitor.controller;
 
 import com.alibaba.druid.stat.DruidStatService;
 import com.ky.ulearning.common.core.annotation.Log;
-import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
@@ -19,7 +18,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +37,11 @@ import java.util.*;
 @Api(tags = "druid监控数据管理", description = "druid监控数据管理接口")
 @RequestMapping(value = "/druidStat")
 public class DruidStatController {
+
+    /**
+     * 过滤不显示的接口统计
+     */
+    private static final String FILTER_URL = "/actuator";
 
     @Autowired
     private DefaultConfigParameters defaultConfigParameters;
@@ -74,34 +77,42 @@ public class DruidStatController {
     @GetMapping("/apiStat")
     public ResponseEntity<JsonResult<List<DruidWebUriVo>>> getApiStat(Integer module) {
         ValidateHandler.checkNull(module, MonitorManageErrorCodeEnum.MODULE_CANNOT_BE_NULL);
-        List<DruidWebUriVo> druidWebUriVo = new ArrayList<>();
+        List<DruidWebUriVo> druidWebUriVoList = new ArrayList<>();
         switch (module) {
             //后台管理系统
             case 1:
-                druidWebUriVo = Optional.ofNullable(systemManageRemoting.getApiStat())
+                druidWebUriVoList = Optional.ofNullable(systemManageRemoting.getApiStat())
                         .map(JsonResult::getData)
                         .orElse(Collections.emptyList());
                 break;
             //监控系统
             case 2:
-                druidWebUriVo = getSelfApiStat();
+                druidWebUriVoList = getSelfApiStat();
                 break;
             //教师端
             case 3:
-                druidWebUriVo = Optional.ofNullable(teacherRemoting.getApiStat())
+                druidWebUriVoList = Optional.ofNullable(teacherRemoting.getApiStat())
                         .map(JsonResult::getData)
                         .orElse(Collections.emptyList());
                 break;
             //学生端
             case 4:
-                druidWebUriVo = Optional.ofNullable(studentRemoting.getApiStat())
+                druidWebUriVoList = Optional.ofNullable(studentRemoting.getApiStat())
                         .map(JsonResult::getData)
                         .orElse(Collections.emptyList());
                 break;
             default:
                 break;
         }
-        return ResponseEntityUtil.ok(JsonResult.buildData(druidWebUriVo));
+
+        //过滤/actuator接口统计信息
+        for (int i = 0; i < druidWebUriVoList.size(); i++) {
+            DruidWebUriVo druidWebUriVo = druidWebUriVoList.get(i);
+            if (druidWebUriVo.getUri().contains(FILTER_URL)) {
+                druidWebUriVoList.remove(i--);
+            }
+        }
+        return ResponseEntityUtil.ok(JsonResult.buildData(druidWebUriVoList));
     }
 
     private List<DruidWebUriVo> getSelfApiStat() {
