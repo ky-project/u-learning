@@ -73,7 +73,7 @@ public class PermissionFilter extends OncePerRequestFilter {
                 adminPermissionCheck(uri);
             } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getTeacherPatterns())) {
                 //访问教师端服务
-                teacherPermissionCheck();
+                teacherPermissionCheck(uri);
             } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getStudentPatterns())) {
                 //访问学生端服务
                 studentPermissionCheck(uri);
@@ -96,7 +96,7 @@ public class PermissionFilter extends OncePerRequestFilter {
                 .map(PermissionEntity::getPermissionUrl)
                 .collect(Collectors.toList())
                 .stream().noneMatch(s -> UrlUtil.matchUri(uri, s))) {
-            warnInfo();
+            warnInfo(uri);
         }
     }
 
@@ -111,18 +111,18 @@ public class PermissionFilter extends OncePerRequestFilter {
         String sysRole = JwtAccountUtil.getSysRole();
         if (StringUtils.isEmpty(sysRole)
                 || !sysRole.equals(MicroConstant.SYS_ROLE_STUDENT)) {
-            warnInfo();
+            warnInfo(uri);
         }
     }
 
     /**
      * 教师端服务权限校验
      */
-    private void teacherPermissionCheck() {
+    private void teacherPermissionCheck(String uri) {
         String sysRole = JwtAccountUtil.getSysRole();
         if (StringUtils.isEmpty(sysRole)
                 || !sysRole.equals(MicroConstant.SYS_ROLE_TEACHER)) {
-            warnInfo();
+            warnInfo(uri);
         }
     }
 
@@ -131,7 +131,7 @@ public class PermissionFilter extends OncePerRequestFilter {
      */
     private void adminPermissionCheck(String uri) {
         if(! hasAdminPermission(uri)){
-            warnInfo();
+            warnInfo(uri);
         }
     }
 
@@ -169,7 +169,8 @@ public class PermissionFilter extends OncePerRequestFilter {
     /**
      * 无权限时进行response处理，给予提示
      */
-    private void warnInfo() {
+    private void warnInfo(String uri) {
+        log.error(String.format("账号：%s 访问无权限接口：'%s' !", JwtAccountUtil.getUsername(), uri));
         throw new JwtTokenException(GatewayErrorCodeEnum.INSUFFICIENT_PERMISSION.getMessage());
     }
 }
