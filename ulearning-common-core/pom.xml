@@ -112,6 +112,14 @@
             <artifactId>fastdfs-client</artifactId>
         </dependency>
         <!-- FastDFS-Client End -->
+
+        <!-- easyexcel Begin -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>${easyexcel.version}</version>
+        </dependency>
+        <!-- easyexcel End -->
         <!-- Plugins End -->
 
         <!-- U-Learning Begin -->
