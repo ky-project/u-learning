@@ -17,6 +17,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.spi.common.excel.StudentExcel;
 import com.ky.ulearning.spi.common.excel.TeacherExcel;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
@@ -26,6 +27,8 @@ import com.ky.ulearning.system.auth.service.RolePermissionService;
 import com.ky.ulearning.system.auth.service.TeacherRoleService;
 import com.ky.ulearning.system.auth.service.TeacherService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import com.ky.ulearning.system.common.excel.StudentExcelListener;
+import com.ky.ulearning.system.common.excel.TeacherExcelListener;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -44,10 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -321,5 +321,22 @@ public class TeacherController extends BaseController {
         //响应内容是字节流
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, courseFileBytes);
+    }
+
+    @Log("导入教师信息")
+    @ApiOperation("导入教师信息")
+    @PermissionName(source = "teacher:importExcel", name = "导入教师信息", group = "教师管理")
+    @PostMapping("/importExcel")
+    public ResponseEntity<JsonResult<Map<Integer, TeacherExcel>>> importExcel(MultipartFile file) throws IOException {
+        ValidatorBuilder.build()
+                .ofNull(file, CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
+                //文件类型篡改校验
+                .on(!FileUtil.fileTypeCheck(file), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
+                .on(!FileUtil.fileTypeRuleCheck(file, FileUtil.IMPORT_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                .doValidate().checkResult();
+        log.info("管理员：{}，开始导入教师信息", RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        TeacherExcelListener listener = new TeacherExcelListener(teacherService);
+        ExcelUtil.readExcelToList(TeacherExcel.class, file.getInputStream(), listener);
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(listener.getErrorMap(), CollectionUtils.isEmpty(listener.getErrorMap()) ? "导入成功" : "以下记录导入失败，请检查是否已存在或信息是否正确"));
     }
 }

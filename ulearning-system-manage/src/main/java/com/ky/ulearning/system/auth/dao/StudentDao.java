@@ -105,4 +105,11 @@ public interface StudentDao {
      * @return 邮箱list
      */
     List<String> getStuEmailList();
+
+    /**
+     * 批量添加学生数据
+     *
+     * @param list 学生数据集合
+     */
+    void batchInsert(List<StudentEntity> list);
 }

@@ -22,6 +22,7 @@ import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
 import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import com.ky.ulearning.system.common.excel.StudentExcelListener;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +41,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * @author luyuhao
@@ -244,5 +247,22 @@ public class StudentController extends BaseController {
         //响应内容是字节流
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, courseFileBytes);
+    }
+
+    @Log("导入学生信息")
+    @ApiOperation("导入学生信息")
+    @PermissionName(source = "student:importExcel", name = "导入学生信息", group = "学生管理")
+    @PostMapping("/importExcel")
+    public ResponseEntity<JsonResult<Map<Integer, StudentExcel>>> importExcel(MultipartFile file) throws IOException {
+        ValidatorBuilder.build()
+                .ofNull(file, CommonErrorCodeEnum.FILE_CANNOT_BE_NULL)
+                //文件类型篡改校验
+                .on(!FileUtil.fileTypeCheck(file), CommonErrorCodeEnum.FILE_TYPE_TAMPER)
+                .on(!FileUtil.fileTypeRuleCheck(file, FileUtil.IMPORT_TYPE), CommonErrorCodeEnum.FILE_TYPE_ERROR)
+                .doValidate().checkResult();
+        log.info("管理员：{}，开始导入学生信息", RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        StudentExcelListener listener = new StudentExcelListener(studentService);
+        ExcelUtil.readExcelToList(StudentExcel.class, file.getInputStream(), listener);
+        return ResponseEntityUtil.ok(JsonResult.buildDataMsg(listener.getErrorMap(), CollectionUtils.isEmpty(listener.getErrorMap()) ? "导入成功" : "以下记录导入失败，请检查是否已存在或信息是否正确"));
     }
 }

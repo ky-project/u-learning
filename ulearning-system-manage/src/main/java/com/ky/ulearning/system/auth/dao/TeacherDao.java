@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -106,4 +105,25 @@ public interface TeacherDao {
      * @return 返回教师信息集合
      */
     List<TeacherEntity> getListByTeaEmail(String teaEmail);
+
+    /**
+     * 获取所有工号
+     *
+     * @return 工号list
+     */
+    List<String> getTeaNumberList();
+
+    /**
+     * 获取所有邮箱
+     *
+     * @return 邮箱list
+     */
+    List<String> getTeaEmailList();
+
+    /**
+     * 批量添加教师数据
+     *
+     * @param list 教师数据集合
+     */
+    void batchInsert(List<TeacherEntity> list);
 }

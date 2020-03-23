@@ -2,17 +2,13 @@ package com.ky.ulearning.system.common.excel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.fastjson.JSON;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.spi.common.excel.StudentExcel;
-import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,8 +46,8 @@ public class StudentExcelListener extends AnalysisEventListener<StudentExcel> {
     @Override
     public void invoke(StudentExcel data, AnalysisContext context) {
         Integer index = context.readRowHolder().getRowIndex();
-        log.info("解析第" + index + "条数据:{}", JsonUtil.toJsonString(data));
-        map.put(index, data);
+        log.info("解析第" + (index + 1) + "条数据:{}", JsonUtil.toJsonString(data));
+        map.put(index + 1, data);
 
         // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
         if (map.size() >= BATCH_COUNT) {
@@ -70,10 +66,10 @@ public class StudentExcelListener extends AnalysisEventListener<StudentExcel> {
     }
 
     private void saveData() {
-        //TODO 批量保存数据获取存储失败的数据
-        Map<Integer, StudentExcel> studentEntityMap = new HashMap<>();
-        if (! CollectionUtils.isEmpty(map)) {
-            errorMap.putAll(map);
+        //批量保存数据获取存储失败的数据
+        Map<Integer, StudentExcel> studentEntityMap = studentService.batchInsertExcel(map);
+        if (!CollectionUtils.isEmpty(studentEntityMap)) {
+            errorMap.putAll(studentEntityMap);
         }
 
     }

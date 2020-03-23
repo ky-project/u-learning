@@ -2,11 +2,13 @@ package com.ky.ulearning.system.auth.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.TeacherExcel;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.system.vo.TeacherVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 教师service 接口类
@@ -77,4 +79,12 @@ public interface TeacherService {
      * @return 返回教师信息
      */
     TeacherEntity getByTeaEmail(String teaEmail);
+
+    /**
+     * 批量插入excel数据
+     *
+     * @param teacherExcelMap excel数据
+     * @return 插入失败的数据
+     */
+    Map<Integer, TeacherExcel> batchInsertExcel(Map<Integer, TeacherExcel> teacherExcelMap);
 }

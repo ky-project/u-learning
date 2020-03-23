@@ -44,34 +44,34 @@
             tea_name
     </sql>
     <select id="getByTeaNumber" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="selectAll"/>
-        from u_teacher
-        where valid = 1
-        and tea_number = #{teaNumber,jdbcType=VARCHAR}
-        limit 1
+        FROM u_teacher
+        WHERE valid = 1
+        AND tea_number = #{teaNumber,jdbcType=VARCHAR}
+        LIMIT 1
     </select>
     <!--根据教师编号查询教师信息-->
     <select id="findByTeaNumber" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="selectAll"/>
-        from u_teacher
-        where valid = 1
-        and tea_number = #{teaNumber,jdbcType=VARCHAR}
-        limit 1
+        FROM u_teacher
+        WHERE valid = 1
+        AND tea_number = #{teaNumber,jdbcType=VARCHAR}
+        LIMIT 1
     </select>
     <!--根据教师邮箱查询教师信息-->
     <select id="findByEmail" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="selectAll"/>
-        from u_teacher
-        where valid = 1
-        and tea_email = #{teaEmail}
-        limit 1
+        FROM u_teacher
+        WHERE valid = 1
+        AND tea_email = #{teaEmail}
+        LIMIT 1
     </select>
     <!--更新教师信息-->
     <update id="updateById">
-        update u_teacher
+        UPDATE u_teacher
         <set>
             update_time = now(),
             <if test="teaNumber != null and teaNumber != ''">
@@ -114,73 +114,73 @@
                 tea_photo = #{teaPhoto},
             </if>
         </set>
-        where valid = 1
-        and id = #{id}
+        WHERE valid = 1
+        AND id = #{id}
     </update>
     <!--根据条件进行用户查询-->
     <select id="listPage" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="selectAll"/>
-        from u_teacher
-        where valid = 1
+        FROM u_teacher
+        WHERE valid = 1
         <if test="teacherDto.id != null">
-            and id = #{teacherDto.id}
+            AND id = #{teacherDto.id}
         </if>
         <if test="teacherDto.teaNumber != null and teacherDto.teaNumber != ''">
-            and tea_number like concat('%', #{teacherDto.teaNumber}, '%')
+            AND tea_number LIKE concat('%', #{teacherDto.teaNumber}, '%')
         </if>
         <if test="teacherDto.teaName != null and teacherDto.teaName != ''">
-            and tea_name like concat('%', #{teacherDto.teaName}, '%')
+            AND tea_name LIKE concat('%', #{teacherDto.teaName}, '%')
         </if>
         <if test="teacherDto.teaGender != null and teacherDto.teaGender != ''">
-            and tea_gender = #{teacherDto.teaGender}
+            AND tea_gender = #{teacherDto.teaGender}
         </if>
         <if test="teacherDto.teaDept != null and teacherDto.teaDept != ''">
-            and tea_dept like concat('%', #{teacherDto.teaDept}, '%')
+            AND tea_dept LIKE concat('%', #{teacherDto.teaDept}, '%')
         </if>
         <if test="teacherDto.teaTitle != null and teacherDto.teaTitle != ''">
-            and tea_title like concat('%', #{teacherDto.teaTitle}, '%')
+            AND tea_title LIKE concat('%', #{teacherDto.teaTitle}, '%')
         </if>
         <if test="teacherDto.teaPhone != null and teacherDto.teaPhone != ''">
-            and tea_phone like concat('%', #{teacherDto.teaPhone}, '%')
+            AND tea_phone LIKE concat('%', #{teacherDto.teaPhone}, '%')
         </if>
         <if test="teacherDto.teaEmail != null and teacherDto.teaEmail != ''">
-            and tea_email like concat('%', #{teacherDto.teaEmail}, '%')
+            AND tea_email LIKE concat('%', #{teacherDto.teaEmail}, '%')
         </if>
-        order by update_time desc
+        ORDER BY update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--分页查询，计算总记录数-->
     <select id="countListPage" resultType="java.lang.Integer">
-        select
+        SELECT
         COUNT(1)
-        from u_teacher
-        where valid = 1
+        FROM u_teacher
+        WHERE valid = 1
         <if test="id != null">
-            and id = #{id}
+            AND id = #{id}
         </if>
         <if test="teaNumber != null and teaNumber != ''">
-            and tea_number like concat('%', #{teaNumber}, '%')
+            AND tea_number LIKE concat('%', #{teaNumber}, '%')
         </if>
         <if test="teaName != null and teaName != ''">
-            and tea_name like concat('%', #{teaName}, '%')
+            AND tea_name LIKE concat('%', #{teaName}, '%')
         </if>
         <if test="teaGender != null and teaGender != ''">
-            and tea_gender = #{teaGender}
+            AND tea_gender = #{teaGender}
         </if>
         <if test="teaDept != null and teaDept != ''">
-            and tea_dept like concat('%', #{teaDept}, '%')
+            AND tea_dept LIKE concat('%', #{teaDept}, '%')
         </if>
         <if test="teaTitle != null and teaTitle != ''">
-            and tea_title like concat('%', #{teaTitle}, '%')
+            AND tea_title LIKE concat('%', #{teaTitle}, '%')
         </if>
         <if test="teaPhone != null and teaPhone != ''">
-            and tea_phone like concat('%', #{teaPhone}, '%')
+            AND tea_phone LIKE concat('%', #{teaPhone}, '%')
         </if>
         <if test="teaEmail != null and teaEmail != ''">
-            and tea_email like concat('%', #{teaEmail}, '%')
+            AND tea_email LIKE concat('%', #{teaEmail}, '%')
         </if>
     </select>
     <update id="updateValidByTeaId">
@@ -217,10 +217,36 @@
     </select>
     <!--根据email查询教师信息-->
     <select id="getListByTeaEmail" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="selectAll"/>
-        from u_teacher
-        where valid = 1
-        and tea_email = #{teaEmail}
+        FROM u_teacher
+        WHERE valid = 1
+        AND tea_email = #{teaEmail}
+    </select>
+    <!--获取所有工号-->
+    <select id="getTeaNumberList" resultType="java.lang.String">
+        SELECT tea_number
+        FROM u_teacher
+        WHERE valid = 1
+    </select>
+    <!--获取所有邮箱-->
+    <select id="getTeaEmailList" resultType="java.lang.String">
+        SELECT tea_email
+        FROM u_teacher
+        WHERE valid = 1
+    </select>
+    <!--批量添加教师数据-->
+    <select id="batchInsert">
+        INSERT INTO u_teacher(tea_number, tea_name, tea_password, tea_gender, tea_dept, tea_title, tea_phone, tea_email,
+        tea_photo, valid, memo, create_time, create_by, update_time, update_by, pwd_update_time)
+        VALUES
+        <foreach collection="list" item="teacher" separator=",">
+            (#{teacher.teaNumber}, #{teacher.teaName},
+            #{teacher.teaPassword}, #{teacher.teaGender}, #{teacher.teaDept},
+            #{teacher.teaTitle}, #{teacher.teaPhone},
+            #{teacher.teaEmail}, #{teacher.teaPhoto}, 1,
+            #{teacher.memo}, now(), #{teacher.createBy}, now(),
+            #{teacher.updateBy}, now())
+        </foreach>
     </select>
 </mapper>

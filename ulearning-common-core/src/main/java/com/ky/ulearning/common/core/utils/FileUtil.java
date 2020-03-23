@@ -1,10 +1,6 @@
 package com.ky.ulearning.common.core.utils;
 
 import cn.hutool.core.util.IdUtil;
-import com.google.common.base.Charsets;
-import com.google.common.io.CharSink;
-import com.google.common.io.FileWriteMode;
-import com.google.common.io.Files;
 import com.ky.ulearning.common.core.constant.FileTypeEnum;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -12,7 +8,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Optional;
@@ -46,6 +41,11 @@ public class FileUtil {
      * 常见图片类型
      */
     public static final String[] IMAGE_TYPE = {"jpg", "png", "jpeg", "gif", "bmp"};
+
+    /**
+     * 导入信息文件类型
+     */
+    public static final String[] IMPORT_TYPE = {"xls", "xlsx"};
 
     /**
      * 常见附件类型

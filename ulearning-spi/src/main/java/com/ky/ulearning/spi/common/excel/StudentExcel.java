@@ -1,5 +1,6 @@
 package com.ky.ulearning.spi.common.excel;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.alibaba.excel.annotation.write.style.HeadRowHeight;
@@ -63,4 +64,10 @@ public class StudentExcel {
     @ColumnWidth(value = 15)
     @ExcelProperty(value = "邮箱", index = 6)
     private String stuEmail;
+
+    /**
+     * 导入的错误信息
+     */
+    @ExcelIgnore
+    private String errorMsg;
 }

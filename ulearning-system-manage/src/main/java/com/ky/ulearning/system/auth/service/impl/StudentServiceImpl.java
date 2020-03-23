@@ -1,9 +1,13 @@
 package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
+import com.ky.ulearning.common.core.utils.EncryptUtil;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.excel.StudentExcel;
@@ -11,6 +15,7 @@ import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.dao.StudentDao;
 import com.ky.ulearning.system.auth.service.StudentService;
+import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -127,8 +132,8 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             return Collections.emptyMap();
         }
         //获取系统所有学号和邮箱
-        List<String> stuNumberList = studentDao.getStuNumberList();
-        List<String> stuEmailList = studentDao.getStuEmailList();
+        List<String> stuNumberList = Optional.ofNullable(studentDao.getStuNumberList()).orElse(Collections.emptyList());
+        List<String> stuEmailList = Optional.ofNullable(studentDao.getStuEmailList()).orElse(Collections.emptyList());
         Map<Integer, StudentExcel> errorMap = new HashMap<>();
         List<StudentEntity> list = new ArrayList<>();
         for (Map.Entry<Integer, StudentExcel> studentExcelEntry : studentExcelMap.entrySet()) {
@@ -136,14 +141,28 @@ public class StudentServiceImpl extends BaseService implements StudentService {
                 //1. 转为entity
                 StudentEntity studentEntity = new StudentEntity();
                 BeanUtils.copyProperties(studentExcelEntry.getValue(), studentEntity);
-                //2. 验证非空值
-                //3. 验证学号和邮箱是否已经存在
-                //4. 设置初始密码
+                //2. 属性验证
+                ValidatorBuilder.build()
+                        .ofNull(studentEntity.getStuNumber(), SystemErrorCodeEnum.STU_NUMBER_CANNOT_BE_NULL)
+                        .ofNull(studentEntity.getStuName(), SystemErrorCodeEnum.STU_NAME_CANNOT_BE_NULL)
+                        .on(StringUtil.isNotEmpty(studentEntity.getStuGender()) && studentEntity.getStuGender().length() > 1, SystemErrorCodeEnum.STU_GENDER_ERROR)
+                        .on(stuNumberList.contains(studentEntity.getStuNumber()), SystemErrorCodeEnum.STU_NUMBER_ILLEGAL)
+                        .on(StringUtil.isNotEmpty(studentEntity.getStuEmail()) && stuEmailList.contains(studentEntity.getStuEmail()), SystemErrorCodeEnum.STU_EMAIL_ILLEGAL)
+                        .doValidate().checkResult();
+                //4. 设置初始密码和创建者
+                studentEntity.setStuPassword(EncryptUtil.encryptPassword("123456"));
+                studentEntity.setCreateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+                studentEntity.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
                 //5. 存入list
+                list.add(studentEntity);
             } catch (Exception e) {
                 //excel数据处理失败处理
+                studentExcelEntry.getValue().setErrorMsg(e.getMessage());
                 errorMap.put(studentExcelEntry.getKey(), studentExcelEntry.getValue());
             }
+        }
+        if (!CollectionUtils.isEmpty(list)) {
+            studentDao.batchInsert(list);
         }
         return errorMap;
     }

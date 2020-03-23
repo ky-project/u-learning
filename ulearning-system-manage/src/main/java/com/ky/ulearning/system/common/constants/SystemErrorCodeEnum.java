@@ -15,6 +15,7 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     PARAMETER_EMPTY(HttpStatus.BAD_REQUEST, "参数不可为空!"),
     EMAIL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "邮箱不可为空!"),
     TEA_NUMBER_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "工号不可为空!"),
+    TEA_NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教师姓名不可为空!"),
     NAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "姓名不可为空!"),
     PERMISSION_URL_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "权限url不可为空!"),
     PERMISSION_GROUP_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "权限组不可为空!"),
@@ -44,6 +45,12 @@ public enum SystemErrorCodeEnum implements BaseEnum {
     TEA_ID_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教师id不存在"),
     STUDENT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "学生不存在!"),
 
+    STU_GENDER_ERROR(HttpStatus.BAD_REQUEST, "学生性别长度过长"),
+    STU_NUMBER_ILLEGAL(HttpStatus.BAD_REQUEST, "学生学号已存在"),
+    STU_EMAIL_ILLEGAL(HttpStatus.BAD_REQUEST, "学生邮箱已绑定"),
+    TEA_GENDER_ERROR(HttpStatus.BAD_REQUEST, "教师性别长度过长"),
+    TEA_EMAIL_ILLEGAL(HttpStatus.BAD_REQUEST, "教师邮箱已绑定"),
+    TEA_NUMBER_ILLEGAL(HttpStatus.BAD_REQUEST, "教师工号已存在"),
     ;
 
     private Integer code;

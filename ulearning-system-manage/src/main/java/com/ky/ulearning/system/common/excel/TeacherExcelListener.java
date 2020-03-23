@@ -46,8 +46,8 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherExcel> {
     @Override
     public void invoke(TeacherExcel data, AnalysisContext context) {
         Integer index = context.readRowHolder().getRowIndex();
-        log.info("解析第" + index + "条数据:{}", JsonUtil.toJsonString(data));
-        map.put(index, data);
+        log.info("解析第" + (index + 1) + "条数据:{}", JsonUtil.toJsonString(data));
+        map.put((index + 1), data);
 
         // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
         if (map.size() >= BATCH_COUNT) {
@@ -66,10 +66,10 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherExcel> {
     }
 
     private void saveData() {
-        //TODO 批量保存数据获取存储失败的数据
-        Map<Integer, TeacherExcel> teacherExcelMap = new HashMap<>();
-        if (!CollectionUtils.isEmpty(map)) {
-            errorMap.putAll(map);
+        //批量保存数据获取存储失败的数据
+        Map<Integer, TeacherExcel> teacherExcelMap = teacherService.batchInsertExcel(map);
+        if (!CollectionUtils.isEmpty(teacherExcelMap)) {
+            errorMap.putAll(teacherExcelMap);
         }
 
     }

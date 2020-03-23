@@ -1,16 +1,23 @@
 package com.ky.ulearning.system.auth.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
+import com.ky.ulearning.common.core.utils.EncryptUtil;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.TeacherExcel;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
 import com.ky.ulearning.spi.system.vo.TeacherVo;
 import com.ky.ulearning.system.auth.dao.TeacherDao;
 import com.ky.ulearning.system.auth.service.TeacherService;
+import com.ky.ulearning.system.common.constants.SystemErrorCodeEnum;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -20,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 教师service 实现类
@@ -124,5 +131,48 @@ public class TeacherServiceImpl extends BaseService implements TeacherService {
             throw new BadRequestException("存在重复绑定该邮箱教师");
         }
         return teacherEntityList.get(0);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public Map<Integer, TeacherExcel> batchInsertExcel(Map<Integer, TeacherExcel> teacherExcelMap) {
+        if (CollectionUtils.isEmpty(teacherExcelMap)) {
+            return Collections.emptyMap();
+        }
+        //获取系统所有学号和邮箱
+        List<String> teaNumberList = Optional.ofNullable(teacherDao.getTeaNumberList()).orElse(Collections.emptyList());
+        List<String> teaEmailList = Optional.ofNullable(teacherDao.getTeaEmailList()).orElse(Collections.emptyList());
+        Map<Integer, TeacherExcel> errorMap = new HashMap<>();
+        List<TeacherEntity> list = new ArrayList<>();
+        for (Map.Entry<Integer, TeacherExcel> teacherExcelEntry : teacherExcelMap.entrySet()) {
+            try {
+                //1. 转为entity
+                TeacherEntity teacherEntity = new TeacherEntity();
+                BeanUtils.copyProperties(teacherExcelEntry.getValue(), teacherEntity);
+                //2. 属性验证
+                ValidatorBuilder.build()
+                        .ofNull(teacherEntity.getTeaNumber(), SystemErrorCodeEnum.TEA_NUMBER_CANNOT_BE_NULL)
+                        .ofNull(teacherEntity.getTeaName(), SystemErrorCodeEnum.TEA_NAME_CANNOT_BE_NULL)
+                        .on(StringUtil.isNotEmpty(teacherEntity.getTeaGender()) && teacherEntity.getTeaGender().length() > 1, SystemErrorCodeEnum.TEA_GENDER_ERROR)
+                        .on(teaNumberList.contains(teacherEntity.getTeaNumber()), SystemErrorCodeEnum.TEA_NUMBER_ILLEGAL)
+                        .on(StringUtil.isNotEmpty(teacherEntity.getTeaEmail()) && teaEmailList.contains(teacherEntity.getTeaEmail()), SystemErrorCodeEnum.TEA_EMAIL_ILLEGAL)
+                        .doValidate().checkResult();
+                //4. 设置初始密码和创建者
+                teacherEntity.setTeaPassword(EncryptUtil.encryptPassword("123456"));
+                teacherEntity.setCreateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+                teacherEntity.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+                //5. 存入list
+                list.add(teacherEntity);
+            } catch (Exception e) {
+                //excel数据处理失败处理
+                teacherExcelEntry.getValue().setErrorMsg(e.getMessage());
+                errorMap.put(teacherExcelEntry.getKey(), teacherExcelEntry.getValue());
+            }
+        }
+        if (!CollectionUtils.isEmpty(list)) {
+            teacherDao.batchInsert(list);
+        }
+        return errorMap;
     }
 }

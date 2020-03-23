@@ -22,43 +22,43 @@
         <result column="pwd_update_time" jdbcType="TIMESTAMP" property="pwdUpdateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id,
-        stu_number,
-        stu_name,
-        stu_password,
-        stu_gender,
-        stu_dept,
-        stu_class,
-        stu_phone,
-        stu_email,
-        stu_photo,
-        last_login_time,
-        `valid`,
-        memo,
-        create_time,
-        create_by,
-        update_time,
-        update_by,
-        pwd_update_time
+            id,
+            stu_number,
+            stu_name,
+            stu_password,
+            stu_gender,
+            stu_dept,
+            stu_class,
+            stu_phone,
+            stu_email,
+            stu_photo,
+            last_login_time,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            pwd_update_time
     </sql>
     <!--根据id获取学生信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="Base_Column_List"/>
-        from u_student
-        where valid = 1
+        FROM u_student
+        WHERE valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </select>
     <!--插入学生信息-->
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ky.ulearning.spi.system.entity.StudentEntity"
             useGeneratedKeys="true">
-        insert into u_student (stu_number, stu_name, stu_password,
+        INSERT INTO u_student (stu_number, stu_name, stu_password,
                                stu_gender, stu_dept, stu_class,
                                stu_phone, stu_email, stu_photo,
                                last_login_time, `valid`, memo,
                                create_time, create_by, update_time,
                                update_by, pwd_update_time)
-        values (#{stuNumber,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{stuPassword,jdbcType=VARCHAR},
+        VALUES (#{stuNumber,jdbcType=VARCHAR}, #{stuName,jdbcType=VARCHAR}, #{stuPassword,jdbcType=VARCHAR},
                 #{stuGender,jdbcType=VARCHAR}, #{stuDept,jdbcType=VARCHAR}, #{stuClass,jdbcType=VARCHAR},
                 #{stuPhone,jdbcType=VARCHAR}, #{stuEmail,jdbcType=VARCHAR}, #{stuPhoto,jdbcType=VARCHAR},
                 #{lastLoginTime,jdbcType=TIMESTAMP}, 1, #{memo,jdbcType=VARCHAR},
@@ -67,7 +67,7 @@
     </insert>
     <!--更新学生信息-->
     <update id="update" parameterType="com.ky.ulearning.spi.system.dto.StudentDto">
-        update u_student
+        UPDATE u_student
         <set>
             update_time = now(),
             <if test="stuNumber != null and stuNumber != ''">
@@ -110,7 +110,7 @@
                 stu_photo = #{stuPhoto},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
     <!--根据学号查询-->
     <select id="getByStuNumber" resultMap="BaseResultMap">
@@ -157,9 +157,9 @@
         <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
             AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
         </if>
-        order by update_time desc
+        ORDER BY update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--根据分页查询条件查询总记录数-->
@@ -218,5 +218,30 @@
         SELECT stu_email
         FROM u_student
         WHERE valid = 1
+    </select>
+    <!--批量添加学生数据-->
+    <select id="batchInsert">
+        INSERT INTO u_student (stu_number, stu_name, stu_password,
+        stu_gender, stu_dept, stu_class,
+        stu_phone, stu_email, stu_photo,
+        last_login_time, `valid`, memo,
+        create_time, create_by, update_time,
+        update_by, pwd_update_time)
+        VALUES
+        <foreach collection="list" item="studentEntity" separator=",">
+            (#{studentEntity.stuNumber,jdbcType=VARCHAR},
+            #{studentEntity.stuName,jdbcType=VARCHAR},
+            #{studentEntity.stuPassword,jdbcType=VARCHAR},
+            #{studentEntity.stuGender,jdbcType=VARCHAR},
+            #{studentEntity.stuDept,jdbcType=VARCHAR},
+            #{studentEntity.stuClass,jdbcType=VARCHAR},
+            #{studentEntity.stuPhone,jdbcType=VARCHAR},
+            #{studentEntity.stuEmail,jdbcType=VARCHAR},
+            #{studentEntity.stuPhoto,jdbcType=VARCHAR},
+            #{studentEntity.lastLoginTime,jdbcType=TIMESTAMP}, 1,
+            #{studentEntity.memo,jdbcType=VARCHAR}, now(),
+            #{studentEntity.createBy,jdbcType=VARCHAR}, now(),
+            #{studentEntity.updateBy,jdbcType=VARCHAR}, now())
+        </foreach>
     </select>
 </mapper>
