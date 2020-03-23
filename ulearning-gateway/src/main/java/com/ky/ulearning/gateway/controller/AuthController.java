@@ -3,7 +3,6 @@ package com.ky.ulearning.gateway.controller;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.ky.ulearning.common.core.annotation.DeleteUserRedis;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
@@ -268,7 +267,6 @@ public class AuthController extends BaseController {
         } catch (Exception e) {
             log.error("监控系统未启动");
         }
-        redisClientWrapper.delete(MicroConstant.LOGIN_USER_REDIS_PREFIX + loginUser.getUsername());
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(map, "登录成功"));
     }
 
@@ -338,7 +336,6 @@ public class AuthController extends BaseController {
     public ResponseEntity<JsonResult> updateInfo(TeacherDto teacherDto, StudentDto studentDto) {
         JwtAccount jwtAccount = JwtAccountUtil.getUserDetails();
         ValidateHandler.checkParameter(jwtAccount == null, GatewayErrorCodeEnum.NOT_LOGGED_IN);
-        redisClientWrapper.delete(MicroConstant.LOGIN_USER_REDIS_PREFIX + jwtAccount.getUsername());
         String sysRole = jwtAccount.getSysRole();
         Map<String, Object> param = new HashMap<>(16);
         param.put("id", jwtAccount.getId());
@@ -373,7 +370,6 @@ public class AuthController extends BaseController {
     }
 
     @Log("上传头像")
-    @DeleteUserRedis
     @ApiOperation("上传头像")
     @PostMapping("/uploadPhoto")
     public ResponseEntity<JsonResult> uploadPhoto(MultipartFile photo) {
@@ -439,7 +435,6 @@ public class AuthController extends BaseController {
 
     @Log("修改密码")
     @ApiOperation("修改密码")
-    @DeleteUserRedis
     @ApiOperationSupport(ignoreParameters = "id")
     @PostMapping("/updatePassword")
     public ResponseEntity<JsonResult> updatePassword(PasswordUpdateDto passwordUpdateDto) {
@@ -550,7 +545,6 @@ public class AuthController extends BaseController {
     }
 
     @Log("通过邮箱修改密码")
-    @DeleteUserRedis
     @ApiOperation(value = "通过邮箱修改密码", notes = "忘记密码时使用")
     @ApiOperationSupport(ignoreParameters = {"email"})
     @PostMapping("/updatePwdByEmail")

@@ -2,8 +2,11 @@ package com.ky.ulearning.system.auth.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.StudentExcel;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
+
+import java.util.Map;
 
 /**
  * 学生service - 接口类
@@ -67,4 +70,12 @@ public interface StudentService {
      * @return 学生对象
      */
     StudentEntity getByStuEmail(String stuEmail);
+
+    /**
+     * 批量插入excel数据
+     *
+     * @param studentExcelMap excel数据
+     * @return 插入失败的数据
+     */
+    Map<Integer, StudentExcel> batchInsertExcel(Map<Integer, StudentExcel> studentExcelMap);
 }

@@ -17,6 +17,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.spi.common.excel.StudentExcel;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.service.StudentService;
@@ -27,12 +28,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
 
@@ -225,5 +229,20 @@ public class StudentController extends BaseController {
         ValidateHandler.checkParameter(StringUtils.isEmpty(stuEmail), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
         StudentEntity exists = studentService.getByStuEmail(stuEmail);
         return ResponseEntityUtil.ok(JsonResult.buildData(exists));
+    }
+
+    @Log(value = "下载学生导入模板", devModel = true)
+    @ApiOperation("下载学生导入模板")
+    @PermissionName(source = "student:downloadTemplate", name = "下载学生导入模板", group = "学生管理")
+    @GetMapping("/downloadTemplate")
+    public ResponseEntity downloadTemplate() {
+        byte[] courseFileBytes = ExcelUtil.createTemplate(StudentExcel.class);
+        //设置head
+        HttpHeaders headers = new HttpHeaders();
+        //文件的属性名
+        headers.setContentDispositionFormData("attachment", new String(("学生导入模板.xlsx").getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //响应内容是字节流
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntityUtil.ok(headers, courseFileBytes);
     }
 }

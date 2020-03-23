@@ -91,4 +91,18 @@ public interface StudentDao {
      * @return 返回学生信息集合
      */
     List<StudentEntity> getListByStuEmail(String stuEmail);
+
+    /**
+     * 获取所有学号
+     *
+     * @return 学号list
+     */
+    List<String> getStuNumberList();
+
+    /**
+     * 获取所有邮箱
+     *
+     * @return 邮箱list
+     */
+    List<String> getStuEmailList();
 }

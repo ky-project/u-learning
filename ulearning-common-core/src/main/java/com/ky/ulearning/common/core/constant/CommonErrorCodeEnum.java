@@ -21,6 +21,8 @@ public enum CommonErrorCodeEnum implements BaseEnum {
     NEW_PASSWORD_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "新密码不能为空"),
     OLD_PASSWORD_ERROR(HttpStatus.BAD_REQUEST, "旧密码错误"),
     PASSWORD_SAME(HttpStatus.BAD_REQUEST, "旧密码与新密码相同"),
+    EXCEL_MODULE_ERROR(HttpStatus.BAD_REQUEST, "excel模型错误，请检查"),
+    CREATE_TEMPLATE_ERROR(HttpStatus.BAD_REQUEST, "生成excel模板失败，请联系管理员"),
     ;
 
     private Integer code;

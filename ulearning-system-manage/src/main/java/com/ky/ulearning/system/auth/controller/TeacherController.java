@@ -17,6 +17,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.spi.common.excel.TeacherExcel;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
@@ -32,6 +33,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -303,5 +306,20 @@ public class TeacherController extends BaseController {
         ValidateHandler.checkParameter(StringUtils.isEmpty(teaEmail), SystemErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
         TeacherEntity exists = teacherService.getByTeaEmail(teaEmail);
         return ResponseEntityUtil.ok(JsonResult.buildData(exists));
+    }
+
+    @Log(value = "下载教师导入模板", devModel = true)
+    @ApiOperation("下载教师导入模板")
+    @PermissionName(source = "teacher:downloadTemplate", name = "下载教师导入模板", group = "教师管理")
+    @GetMapping("/downloadTemplate")
+    public ResponseEntity downloadTemplate() {
+        byte[] courseFileBytes = ExcelUtil.createTemplate(TeacherExcel.class);
+        //设置head
+        HttpHeaders headers = new HttpHeaders();
+        //文件的属性名
+        headers.setContentDispositionFormData("attachment", new String(("教师导入模板.xlsx").getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //响应内容是字节流
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntityUtil.ok(headers, courseFileBytes);
     }
 }

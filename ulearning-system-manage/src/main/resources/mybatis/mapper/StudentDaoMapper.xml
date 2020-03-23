@@ -22,24 +22,24 @@
         <result column="pwd_update_time" jdbcType="TIMESTAMP" property="pwdUpdateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-            id,
-            stu_number,
-            stu_name,
-            stu_password,
-            stu_gender,
-            stu_dept,
-            stu_class,
-            stu_phone,
-            stu_email,
-            stu_photo,
-            last_login_time,
-            `valid`,
-            memo,
-            create_time,
-            create_by,
-            update_time,
-            update_by,
-            pwd_update_time
+        id,
+        stu_number,
+        stu_name,
+        stu_password,
+        stu_gender,
+        stu_dept,
+        stu_class,
+        stu_phone,
+        stu_email,
+        stu_photo,
+        last_login_time,
+        `valid`,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by,
+        pwd_update_time
     </sql>
     <!--根据id获取学生信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -206,5 +206,17 @@
         FROM u_student
         WHERE valid = 1
         AND stu_email = #{stuEmail}
+    </select>
+    <!--获取所有学号-->
+    <select id="getStuNumberList" resultType="java.lang.String">
+        SELECT stu_number
+        FROM u_student
+        WHERE valid = 1
+    </select>
+    <!--获取所有邮箱-->
+    <select id="getStuEmailList" resultType="java.lang.String">
+        SELECT stu_email
+        FROM u_student
+        WHERE valid = 1
     </select>
 </mapper>

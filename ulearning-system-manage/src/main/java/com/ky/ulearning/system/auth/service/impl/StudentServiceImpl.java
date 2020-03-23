@@ -6,10 +6,12 @@ import com.ky.ulearning.common.core.exceptions.exception.EntityExistException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.StudentExcel;
 import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.auth.dao.StudentDao;
 import com.ky.ulearning.system.auth.service.StudentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 学生service - 实现类
@@ -115,5 +117,34 @@ public class StudentServiceImpl extends BaseService implements StudentService {
             throw new BadRequestException("存在重复绑定该邮箱学生");
         }
         return studentEntityList.get(0);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public Map<Integer, StudentExcel> batchInsertExcel(Map<Integer, StudentExcel> studentExcelMap) {
+        if (CollectionUtils.isEmpty(studentExcelMap)) {
+            return Collections.emptyMap();
+        }
+        //获取系统所有学号和邮箱
+        List<String> stuNumberList = studentDao.getStuNumberList();
+        List<String> stuEmailList = studentDao.getStuEmailList();
+        Map<Integer, StudentExcel> errorMap = new HashMap<>();
+        List<StudentEntity> list = new ArrayList<>();
+        for (Map.Entry<Integer, StudentExcel> studentExcelEntry : studentExcelMap.entrySet()) {
+            try {
+                //1. 转为entity
+                StudentEntity studentEntity = new StudentEntity();
+                BeanUtils.copyProperties(studentExcelEntry.getValue(), studentEntity);
+                //2. 验证非空值
+                //3. 验证学号和邮箱是否已经存在
+                //4. 设置初始密码
+                //5. 存入list
+            } catch (Exception e) {
+                //excel数据处理失败处理
+                errorMap.put(studentExcelEntry.getKey(), studentExcelEntry.getValue());
+            }
+        }
+        return errorMap;
     }
 }
