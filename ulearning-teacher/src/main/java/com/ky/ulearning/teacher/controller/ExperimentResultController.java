@@ -116,4 +116,18 @@ public class ExperimentResultController extends BaseController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntityUtil.ok(headers, attachmentBytes);
     }
+
+    @Log("根据id（取消）分享展示实验结果")
+    @ApiOperation(value = "根据id（取消）分享展示实验结果", notes = "只能查看/操作已选教学任务的数据")
+    @PostMapping("/sharedExperimentResult")
+    public ResponseEntity<JsonResult> sharedExperimentResult(Long id, Boolean experimentShared) {
+        ValidatorBuilder.build()
+                .ofNull(id, TeacherErrorCodeEnum.EXPERIMENT_RESULT_ID_CANNOT_BE_NULL)
+                .ofNull(experimentShared, TeacherErrorCodeEnum.EXPERIMENT_RESULT_SHARED_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        teachingTaskValidUtil.checkExperimentResultId(id, username);
+        experimentResultService.sharedExperimentResult(id, username, experimentShared);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
+    }
 }

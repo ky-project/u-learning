@@ -142,6 +142,10 @@
         <if test="experimentResultDto.experimentTitle != null and experimentResultDto.experimentTitle != ''">
             AND utte.experiment_title LIKE concat('%', #{experimentResultDto.experimentTitle}, '%')
         </if>
+        <if test="experimentResultDto.isCorrected != null">
+            AND ((uer.experiment_score IS NOT NULL AND uer.experiment_score != '')
+            OR (uer.experiment_advice IS NOT NULL AND uer.experiment_advice != ''))
+        </if>
         ORDER BY uer.experiment_commit_time ASC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
@@ -151,29 +155,53 @@
     <select id="countListPage" resultType="java.lang.Integer">
         SELECT
         COUNT(1)
-        FROM u_experiment_result
-        WHERE valid = 1
-        AND experiment_id = #{experimentResultDto.experimentId}
+        FROM u_experiment_result uer
+        INNER JOIN u_student us ON us.valid = 1 AND uer.stu_id = us.id
+        INNER JOIN u_teaching_task_experiment utte ON uer.experiment_id = utte.id AND utte.valid = 1
+        WHERE uer.valid = 1
+        AND uer.experiment_id = #{experimentResultDto.experimentId}
         <if test="experimentResultDto.stuId != null">
-            AND stu_id = #{experimentResultDto.stuId}
+            AND uer.stu_id = #{experimentResultDto.stuId}
         </if>
         <if test="experimentResultDto.experimentCommitTime != null">
-            AND DATE(experiment_commit_time) = #{experimentResultDto.experimentCommitTime}
+            AND DATE(uer.experiment_commit_time) = #{experimentResultDto.experimentCommitTime}
         </if>
         <if test="experimentResultDto.experimentResult != null and experimentResultDto.experimentResult != ''">
-            AND experiment_result LIKE CONCAT('%', #{experimentResultDto.experimentResult} , '%')
+            AND uer.experiment_result LIKE CONCAT('%', #{experimentResultDto.experimentResult} , '%')
         </if>
         <if test="experimentResultDto.experimentScore != null">
-            AND experiment_score = #{experimentResultDto.experimentScore}
+            AND uer.experiment_score = #{experimentResultDto.experimentScore}
         </if>
         <if test="experimentResultDto.experimentAdvice != null and experimentResultDto.experimentAdvice != ''">
-            AND experiment_advice LIKE CONCAT('%', #{experimentResultDto.experimentAdvice} , '%')
+            AND uer.experiment_advice LIKE CONCAT('%', #{experimentResultDto.experimentAdvice} , '%')
         </if>
         <if test="experimentResultDto.experimentAttachmentName != null and experimentResultDto.experimentAttachmentName != ''">
-            AND experiment_attachment_name LIKE CONCAT('%', #{experimentResultDto.experimentAttachmentName} , '%')
+            AND uer.experiment_attachment_name LIKE CONCAT('%', #{experimentResultDto.experimentAttachmentName} , '%')
         </if>
         <if test="experimentResultDto.experimentShared != null">
-            AND experiment_shared = #{experimentResultDto.experimentShared}
+            AND uer.experiment_shared = #{experimentResultDto.experimentShared}
+        </if>
+        <if test="experimentResultDto.stuName != null and experimentResultDto.stuName != ''">
+            AND us.stu_name LIKE CONCAT('%', #{experimentResultDto.stuName}, '%')
+        </if>
+        <if test="experimentResultDto.stuNumber != null and experimentResultDto.stuNumber != ''">
+            AND us.stu_number LIKE CONCAT('%', #{experimentResultDto.stuNumber}, '%')
+        </if>
+        <if test="experimentResultDto.experimentTitle != null and experimentResultDto.experimentTitle != ''">
+            AND utte.experiment_title LIKE concat('%', #{experimentResultDto.experimentTitle}, '%')
+        </if>
+        <if test="experimentResultDto.isCorrected != null">
+            AND ((uer.experiment_score IS NOT NULL AND uer.experiment_score != '')
+            OR (uer.experiment_advice IS NOT NULL AND uer.experiment_advice != ''))
         </if>
     </select>
+    <!--更新分享-->
+    <update id="updateSharedById">
+        UPDATE u_experiment_result
+        SET update_time       = now(),
+            update_by         = #{username},
+            experiment_shared = #{experimentShared}
+        WHERE id = #{id}
+          AND valid = 1
+    </update>
 </mapper>

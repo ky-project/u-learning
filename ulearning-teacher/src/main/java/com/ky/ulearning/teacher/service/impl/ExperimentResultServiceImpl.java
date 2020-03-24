@@ -41,16 +41,11 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     public PageBean<ExperimentResultDto> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto) {
         List<ExperimentResultDto> resultList = Optional.ofNullable(experimentResultDao.listPage(experimentResultDto, pageParam))
                 .orElse(Collections.emptyList());
-        for (int i = 0; i < resultList.size(); i++) {
-            ExperimentResultDto resultDto = resultList.get(i);
+        for (ExperimentResultDto resultDto : resultList) {
             if (StringUtil.isNotEmpty(resultDto.getExperimentUrl())) {
                 resultDto.setExperimentAttachmentSize(fastDfsClientWrapper.getFileInfo(resultDto.getExperimentUrl()).getFileSize());
             }
             resultDto.setIsCorrected(StringUtil.isNotEmpty(resultDto.getExperimentAdvice()) || StringUtil.isNotEmpty(resultDto.getExperimentScore()));
-            if (StringUtil.isNotEmpty(experimentResultDto.getIsCorrected())
-                    && !experimentResultDto.getIsCorrected().equals(resultDto.getIsCorrected())) {
-                resultList.remove(i--);
-            }
         }
 
         PageBean<ExperimentResultDto> pageBean = new PageBean<>();
@@ -79,5 +74,12 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     @Transactional(rollbackFor = Throwable.class)
     public void update(ExperimentResultEntity experimentResultEntity) {
         experimentResultDao.update(experimentResultEntity);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void sharedExperimentResult(Long id, String username, Boolean experimentShared) {
+        experimentResultDao.updateSharedById(id, username, experimentShared);
     }
 }

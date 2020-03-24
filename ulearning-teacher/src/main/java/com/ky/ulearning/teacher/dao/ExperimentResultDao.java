@@ -60,5 +60,14 @@ public interface ExperimentResultDao {
      * @param experimentResultDto 筛选条件
      * @return 总记录数
      */
-    Integer countListPage(@Param("experimentResultDto")ExperimentResultDto experimentResultDto);
+    Integer countListPage(@Param("experimentResultDto") ExperimentResultDto experimentResultDto);
+
+    /**
+     * 更新分享
+     *
+     * @param id               实验结果id
+     * @param username         更新者
+     * @param experimentShared 是否分享展示
+     */
+    void updateSharedById(@Param("id") Long id, @Param("username") String username, @Param("experimentShared") Boolean experimentShared);
 }

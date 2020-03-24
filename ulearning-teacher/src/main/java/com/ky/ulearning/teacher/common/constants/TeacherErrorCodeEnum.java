@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.common.constants;
 
 import com.ky.ulearning.common.core.exceptions.enums.BaseEnum;
+import com.netflix.ribbon.proxy.annotation.Http;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -64,6 +65,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "课程文件不存在"),
     RESOURCE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教学资源不存在"),
     EXPERIMENT_RESULT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验结果不存在"),
+    EXPERIMENT_RESULT_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "是否分享实验结果不能为空"),
 
     NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),
@@ -84,7 +86,8 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     COURSE_FILE_ROOT_ERROR(HttpStatus.BAD_REQUEST, "课程/教师根目录无法操作"),
     DOCUMENTATION_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "文件资料无法作为文件夹"),
     RESOURCE_CANNOT_BE_FOLDER(HttpStatus.BAD_REQUEST, "教学资源无法作为文件夹"),
-    TERM_ERROR(HttpStatus.BAD_REQUEST, "学期错误");
+    TERM_ERROR(HttpStatus.BAD_REQUEST, "学期错误"),
+    ;
 
     private Integer code;
     private String message;

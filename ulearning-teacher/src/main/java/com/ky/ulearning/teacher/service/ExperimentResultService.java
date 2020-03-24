@@ -36,4 +36,13 @@ public interface ExperimentResultService {
      * @param experimentResultEntity 实验对象
      */
     void update(ExperimentResultEntity experimentResultEntity);
+
+    /**
+     * 分享展示实验结果
+     *
+     * @param id               实验结果id
+     * @param username         更新者
+     * @param experimentShared 是否分享展示
+     */
+    void sharedExperimentResult(Long id, String username, Boolean experimentShared);
 }
