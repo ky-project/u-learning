@@ -13,6 +13,8 @@ import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
@@ -105,6 +107,18 @@ public class ExperimentResultController extends BaseController {
         ValidateHandler.checkNull(experimentResultDto, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
 
         return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDto));
+    }
+
+    @Log(value = "分页查询优秀实验结果", devModel = true)
+    @ApiOperation(value = "分页查询优秀实验结果", notes = "只能查看/操作已选教学任务的数据")
+    @ApiOperationSupport(ignoreParameters = {"id", "experimentUrl", "stuId", "experimentAttachmentName", "experimentShared", "isCorrected"})
+    @GetMapping("/pageList")
+    public ResponseEntity<JsonResult<PageBean<ExperimentResultDto>>> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto) {
+        ValidateHandler.checkNull(experimentResultDto.getExperimentId(), StudentErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
+        Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
+        studentTeachingTaskUtil.checkExperimentId(experimentResultDto.getExperimentId(), stuId);
+        PageBean<ExperimentResultDto> experimentResultDtoList = experimentResultService.pageList(setPageParam(pageParam), experimentResultDto);
+        return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDtoList));
     }
 }
 

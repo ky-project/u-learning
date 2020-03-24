@@ -1,5 +1,7 @@
 package com.ky.ulearning.student.service;
 
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 
@@ -43,4 +45,13 @@ public interface ExperimentResultService {
      * @return 实验结果
      */
     ExperimentResultDto getDetailByExperimentIdAndStuId(Long experimentId, Long stuId);
+
+    /**
+     * 分页查询优秀实验作品
+     *
+     * @param pageParam           分页参数
+     * @param experimentResultDto 筛选参数
+     * @return 实验结果的分页对象
+     */
+    PageBean<ExperimentResultDto> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto);
 }

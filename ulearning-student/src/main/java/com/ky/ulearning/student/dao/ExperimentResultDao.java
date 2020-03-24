@@ -1,9 +1,8 @@
 package com.ky.ulearning.student.dao;
 
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
-import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
-import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -69,4 +68,22 @@ public interface ExperimentResultDao {
      * @return 实验结果集合
      */
     List<ExperimentResultDto> listByScoreDesc(Long experimentId);
+
+    /**
+     * 分页查询优秀实验作品
+     *
+     * @param pageParam           分页参数
+     * @param experimentResultDto 筛选参数
+     * @return 实验结果集合
+     */
+    List<ExperimentResultDto> listPage(@Param("experimentResultDto") ExperimentResultDto experimentResultDto,
+                                       @Param("pageParam") PageParam pageParam);
+
+    /**
+     * 分页查询优秀实验作品 - 总记录
+     *
+     * @param experimentResultDto 筛选参数
+     * @return 总记录
+     */
+    Integer countListPage(@Param("experimentResultDto") ExperimentResultDto experimentResultDto);
 }
