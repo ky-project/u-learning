@@ -157,7 +157,7 @@
         <if test="studentDto.stuEmail != null and studentDto.stuEmail != ''">
             AND stu_email LIKE CONCAT('%', #{studentDto.stuEmail}, '%')
         </if>
-        ORDER BY update_time DESC
+        ORDER BY stu_number ASC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>

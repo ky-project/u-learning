@@ -147,7 +147,7 @@
         <if test="teacherDto.teaEmail != null and teacherDto.teaEmail != ''">
             AND tea_email LIKE concat('%', #{teacherDto.teaEmail}, '%')
         </if>
-        ORDER BY update_time DESC
+        ORDER BY tea_number ASC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
