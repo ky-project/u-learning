@@ -1,12 +1,10 @@
-package com.ky.ulearning.system.auth.util;
+package com.ky.ulearning.system.common.util;
 
-import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.utils.EnvironmentAwareUtil;
-import com.ky.ulearning.common.core.utils.UrlUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

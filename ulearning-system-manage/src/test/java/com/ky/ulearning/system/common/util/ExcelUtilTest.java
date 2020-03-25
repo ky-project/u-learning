@@ -1,8 +1,7 @@
-package com.ky.ulearning.system.auth.util;
+package com.ky.ulearning.system.common.util;
 
 import com.ky.ulearning.common.core.utils.ExcelUtil;
 import com.ky.ulearning.spi.common.excel.StudentExcel;
-import com.ky.ulearning.spi.system.entity.StudentEntity;
 import com.ky.ulearning.system.common.excel.StudentExcelListener;
 import org.junit.Test;
 import org.springframework.util.CollectionUtils;

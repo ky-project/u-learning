@@ -56,6 +56,7 @@
         <xxl-rpc.version>1.5.0</xxl-rpc.version>
         <xxl-job-core.version>2.1.1</xxl-job-core.version>
         <easyexcel.version>2.1.6</easyexcel.version>
+        <rocketmq.version>4.4.0</rocketmq.version>
         <target.dir>D:\Mydata\Major\java\develop\u-learning\shell</target.dir>
     </properties>
 
@@ -231,6 +232,13 @@
             </dependency>
             <!-- easyexcel End -->
 
+            <!-- rocketmq-client Begin -->
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>${rocketmq.version}</version>
+            </dependency>
+            <!-- rocketmq-client End -->
             <!-- Plugins End -->
 
             <!-- ulearning Begin -->

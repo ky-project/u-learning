@@ -99,4 +99,6 @@ public class SystemController extends BaseController {
         log.debug("重新加载系统权限...完毕");
         return ResponseEntityUtil.ok(JsonResult.buildMsg("权限加载完成"));
     }
+
+
 }

@@ -31,6 +31,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!-- Spring Boot End -->
 
         <!-- Spring Cloud End -->
@@ -113,6 +118,12 @@
         </dependency>
         <!-- FastDFS-Client End -->
 
+        <!-- rocketmq-client Begin -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client</artifactId>
+        </dependency>
+        <!-- rocketmq-client End -->
         <!-- Plugins End -->
 
         <!-- U-Learning Begin -->
