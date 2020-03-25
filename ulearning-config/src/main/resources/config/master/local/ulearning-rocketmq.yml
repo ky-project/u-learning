@@ -4,6 +4,8 @@ rocketmq:
   groupName: ${spring.application.name}
   #mq的nameserver地址
   namesrvAddr: 47.95.14.126:9876
+  #关闭vip通道，不使用10909端口
+  vipChannelEnabled: false
   #producer
   producer:
     #消息最大长度 默认1024*4(4M)

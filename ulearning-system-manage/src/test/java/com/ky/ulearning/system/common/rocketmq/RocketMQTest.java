@@ -1,11 +1,17 @@
 package com.ky.ulearning.system.common.rocketmq;
 
+import com.alibaba.fastjson.JSON;
 import com.ky.ulearning.common.core.utils.EnvironmentAwareUtil;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.junit.BeforeClass;
@@ -16,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * @author luyuhao
@@ -29,18 +36,60 @@ public class RocketMQTest {
     private DefaultMQProducer defaultMQProducer;
 
     @BeforeClass
-    public static void init(){
+    public static void init() {
         EnvironmentAwareUtil.adjust();
     }
 
     @Test
     public void test01() throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException {
-        Message msg = new Message("TopicTest", "tags1", "你好".getBytes(RemotingHelper.DEFAULT_CHARSET));
-        // 发送消息到一个Broker
-        SendResult sendResult = defaultMQProducer.send(msg);
-        // 通过sendResult返回消息是否成功送达
-        System.out.printf("%s%n", sendResult);
+        for(int i = 0; i < 20; i++) {
+            Message msg = new Message("TopicTest", "tags1", ("你好" + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
+            // 发送消息到一个Broker
+            SendResult sendResult = defaultMQProducer.send(msg);
+            // 通过sendResult返回消息是否成功送达
+            System.out.printf("%s%n", sendResult);
+        }
+        Thread.sleep(20000);
+        defaultMQProducer.shutdown();
+    }
 
+    @Test
+    public void test02() throws MQClientException {
+        DefaultMQProducer producer = new DefaultMQProducer("test-group");
+        producer.setNamesrvAddr("47.95.14.126:9876");
+        producer.setVipChannelEnabled(false);
+        producer.start();
+        try {
+            Message message = new Message("log-topic", "user-tag", JSON.toJSONString("hello world").getBytes());
+            System.out.println("生产者发送消息:" + JSON.toJSONString("hello world"));
+            producer.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        producer.shutdown();
+    }
+
+    @Test
+    public void test03() throws MQClientException, InterruptedException {
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("test-group");
+
+        consumer.setNamesrvAddr("47.95.14.126:9876");
+        consumer.subscribe("log-topic", "user-tag");
+        consumer.setVipChannelEnabled(false);
+
+        consumer.registerMessageListener(new MessageListenerConcurrently() {
+            @Override
+            public ConsumeConcurrentlyStatus consumeMessage(
+                    List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
+                System.out.println(context);
+                for (MessageExt msg : msgs) {
+                    System.out.println("消费者消费数据:"+new String(msg.getBody()));
+                }
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
+        });
+        consumer.start();
         Thread.sleep(10000);
+        consumer.shutdown();
     }
 }

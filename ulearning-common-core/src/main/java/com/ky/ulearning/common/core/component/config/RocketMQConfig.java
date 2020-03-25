@@ -28,51 +28,52 @@ import java.util.Map;
 @ConditionalOnProperty(prefix = "rocketmq", value = "isEnable", havingValue = "true")
 public class RocketMQConfig {
 
-    private RocketMQProperties properties;
+    private RocketMQProperties rocketMQProperties;
 
     private ApplicationContext applicationContext;
 
 
-    public RocketMQConfig(RocketMQProperties properties, ApplicationContext applicationContext) {
-        this.properties = properties;
+    public RocketMQConfig(RocketMQProperties rocketMQProperties, ApplicationContext applicationContext) {
+        this.rocketMQProperties = rocketMQProperties;
         this.applicationContext = applicationContext;
     }
 
     /**
      * 注入一个默认的生产者
      */
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public DefaultMQProducer getRocketMQProducer() throws MQClientException {
-        if (StringUtil.isEmpty(properties.getGroupName())) {
+        if (StringUtil.isEmpty(rocketMQProperties.getGroupName())) {
             throw new MQClientException(-1, "groupName is blank");
         }
 
-        if (StringUtil.isEmpty(properties.getNamesrvAddr())) {
+        if (StringUtil.isEmpty(rocketMQProperties.getNamesrvAddr())) {
             throw new MQClientException(-1, "nameServerAddr is blank");
         }
         DefaultMQProducer producer;
-        producer = new DefaultMQProducer(properties.getGroupName());
+        producer = new DefaultMQProducer(rocketMQProperties.getGroupName());
 
-        producer.setNamesrvAddr(properties.getNamesrvAddr());
+        producer.setNamesrvAddr(rocketMQProperties.getNamesrvAddr());
         // producer.setCreateTopicKey("AUTO_CREATE_TOPIC_KEY");
 
         // 如果需要同一个jvm中不同的producer往不同的mq集群发送消息，需要设置不同的instanceName
         // producer.setInstanceName(instanceName);
-        producer.setMaxMessageSize(properties.getProducerMaxMessageSize());
-        producer.setSendMsgTimeout(properties.getProducerSendMsgTimeout());
+        producer.setMaxMessageSize(rocketMQProperties.getMaxMessageSize());
+        producer.setSendMsgTimeout(rocketMQProperties.getSendMsgTimeout());
         // 如果发送消息失败，设置重试次数，默认为2次
-        producer.setRetryTimesWhenSendFailed(properties.getProducerRetryTimesWhenSendFailed());
+        producer.setRetryTimesWhenSendFailed(rocketMQProperties.getRetryTimesWhenSendFailed());
+        //配置是否使用vip通道
+        producer.setVipChannelEnabled(rocketMQProperties.getVipChannelEnabled());
 
         try {
             producer.start();
-            log.info("producer is start ! groupName:{},namesrvAddr:{}", properties.getGroupName(),
-                    properties.getNamesrvAddr());
+            log.info("producer is start ! groupName:{},namesrvAddr:{}", rocketMQProperties.getGroupName(),
+                    rocketMQProperties.getNamesrvAddr());
         } catch (MQClientException e) {
             log.error(e.getMessage(), e);
             throw e;
         }
         return producer;
-
     }
 
     /**
@@ -84,7 +85,6 @@ public class RocketMQConfig {
         if (CollectionUtils.isEmpty(consumers)) {
             log.info("init rocket consumer 0");
         }
-        Iterator<String> beans = consumers.keySet().iterator();
         for (String beanName : consumers.keySet()) {
             AbstractRocketConsumer consumer = consumers.get(beanName);
             consumer.init();
@@ -99,23 +99,20 @@ public class RocketMQConfig {
      *
      * @param arc 消费者
      */
-    public void createConsumer(AbstractRocketConsumer arc) {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(this.properties.getGroupName());
-        consumer.setNamesrvAddr(this.properties.getNamesrvAddr());
-        consumer.setConsumeThreadMin(this.properties.getConsumerConsumeThreadMin());
-        consumer.setConsumeThreadMax(this.properties.getConsumerConsumeThreadMax());
-        consumer.registerMessageListener(arc.getMessageListener());
+    private void createConsumer(AbstractRocketConsumer arc) {
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(this.rocketMQProperties.getGroupName());
+        consumer.setNamesrvAddr(this.rocketMQProperties.getNamesrvAddr());
+        consumer.setConsumeThreadMin(this.rocketMQProperties.getConsumeThreadMin());
+        consumer.setConsumeThreadMax(this.rocketMQProperties.getConsumeThreadMax());
+        consumer.setVipChannelEnabled(this.rocketMQProperties.getVipChannelEnabled());
+        consumer.registerMessageListener(arc.getMessageListenerConcurrently());
         //设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费 如果非第一次启动，那么按照上次消费的位置继续消费
         // consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
-        /**
-         * 设置消费模型，集群还是广播，默认为集群
-         */
+        //设置消费模型，集群还是广播，默认为集群
         // consumer.setMessageModel(MessageModel.CLUSTERING);
 
-        /**
-         * 设置一次消费消息的条数，默认为1条
-         */
-        consumer.setConsumeMessageBatchMaxSize(this.properties.getConsumerConsumeMessageBatchMaxSize());
+        //设置一次消费消息的条数，默认为1条
+        consumer.setConsumeMessageBatchMaxSize(this.rocketMQProperties.getConsumeMessageBatchMaxSize());
         try {
             consumer.subscribe(arc.getTopics(), arc.getTags());
             consumer.start();

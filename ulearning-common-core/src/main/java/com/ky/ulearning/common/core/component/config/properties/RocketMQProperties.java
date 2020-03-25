@@ -1,6 +1,7 @@
 package com.ky.ulearning.common.core.component.config.properties;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -31,27 +32,38 @@ public class RocketMQProperties {
     private String namesrvAddr;
 
     /**
+     * vip通道，是否使用10909端口
+     */
+    private Boolean vipChannelEnabled;
+
+    /**
      * 消息最大长度 默认1024*4(4M)
      */
-    private Integer producerMaxMessageSize;
+    @Value("${rocketmq.producer.maxMessageSize}")
+    private Integer maxMessageSize;
 
     /**
      * 发送消息超时时间,默认3000
      */
-    private Integer producerSendMsgTimeout;
+    @Value("${rocketmq.producer.sendMsgTimeout}")
+    private Integer sendMsgTimeout;
 
     /**
      * 发送消息失败重试次数，默认2
      */
-    private Integer producerRetryTimesWhenSendFailed;
+    @Value("${rocketmq.producer.retryTimesWhenSendFailed}")
+    private Integer retryTimesWhenSendFailed;
 
-    private Integer consumerConsumeThreadMin;
+    @Value("${rocketmq.consumer.consumeThreadMin}")
+    private Integer consumeThreadMin;
 
-    private Integer consumerConsumeThreadMax;
+    @Value("${rocketmq.consumer.consumeThreadMax}")
+    private Integer consumeThreadMax;
 
     /**
      * 设置一次消费消息的条数，默认为1条
      */
-    private Integer consumerConsumeMessageBatchMaxSize;
+    @Value("${rocketmq.consumer.consumeMessageBatchMaxSize}")
+    private Integer consumeMessageBatchMaxSize;
 
 }

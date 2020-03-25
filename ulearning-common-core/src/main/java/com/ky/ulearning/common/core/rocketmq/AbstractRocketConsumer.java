@@ -14,7 +14,7 @@ public abstract class AbstractRocketConsumer implements RocketConsumer {
 
     private String topics;
     private String tags;
-    private MessageListenerConcurrently messageListener;
+    private MessageListenerConcurrently messageListenerConcurrently;
     private String consumerTitle;
     private MQPushConsumer mqPushConsumer;
 
@@ -34,44 +34,24 @@ public abstract class AbstractRocketConsumer implements RocketConsumer {
     public abstract void init();
 
     @Override
-    public void registerMessageListener(MessageListenerConcurrently messageListener) {
-        this.messageListener = messageListener;
+    public void registerMessageListener(MessageListenerConcurrently messageListenerConcurrently) {
+        this.messageListenerConcurrently = messageListenerConcurrently;
     }
 
     public String getTopics() {
         return topics;
     }
 
-    public void setTopics(String topics) {
-        this.topics = topics;
-    }
-
     public String getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public MessageListenerConcurrently getMessageListener() {
-        return messageListener;
-    }
-
-    public void setMessageListener(MessageListenerConcurrently messageListener) {
-        this.messageListener = messageListener;
+    public MessageListenerConcurrently getMessageListenerConcurrently() {
+        return messageListenerConcurrently;
     }
 
     public String getConsumerTitle() {
         return consumerTitle;
-    }
-
-    public void setConsumerTitle(String consumerTitle) {
-        this.consumerTitle = consumerTitle;
-    }
-
-    public MQPushConsumer getMqPushConsumer() {
-        return mqPushConsumer;
     }
 
     public void setMqPushConsumer(MQPushConsumer mqPushConsumer) {
