@@ -1,13 +1,22 @@
 package com.ky.ulearning.monitor.common.aspect;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ky.ulearning.common.core.component.component.SpringBeanWrapper;
+import com.ky.ulearning.common.core.component.config.properties.RocketMQProperties;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.AopUtil;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.monitor.common.constants.MonitorManageConfigParameters;
 import com.ky.ulearning.monitor.service.LogService;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.message.Message;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -16,6 +25,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * 日志aop切面类
@@ -33,6 +44,12 @@ public class LogAspect {
 
     @Autowired
     private DefaultConfigParameters defaultConfigParameters;
+
+    @Autowired
+    private MonitorManageConfigParameters monitorManageConfigParameters;
+
+    @Autowired
+    private RocketMQProperties rocketMQProperties;
 
     private long currentTime = 0L;
 
@@ -80,7 +97,7 @@ public class LogAspect {
         }
 
         //保存log信息
-        logService.insert(logEntity);
+        add(logEntity);
 
         return result;
     }
@@ -105,8 +122,34 @@ public class LogAspect {
         }
 
         //保存log信息
-        logService.insert(logEntity);
+        add(logEntity);
     }
 
+    /**
+     * 添加日志 - 测试阶段
+     */
+    private void add(LogEntity logEntity) {
+        //添加日志
+        if (rocketMQProperties.getIsEnable()) {
+            try {
+                DefaultMQProducer defaultMQProducer = SpringBeanWrapper.getBean(DefaultMQProducer.class);
+                defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, monitorManageConfigParameters.getAppName(), JSON.toJSONString(logEntity).getBytes()));
+                log.info(monitorManageConfigParameters.getAppName() + " 生成一条日志发送至队列");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                remotingAdd(logEntity);
+            }
+        } else {
+            remotingAdd(logEntity);
+        }
+    }
+
+    /**
+     * service添加日志
+     */
+    private void remotingAdd(LogEntity logEntity) {
+        //保存log信息
+        logService.insert(logEntity);
+    }
 }
 

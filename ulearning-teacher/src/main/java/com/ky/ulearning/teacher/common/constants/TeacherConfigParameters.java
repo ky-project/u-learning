@@ -19,4 +19,7 @@ public class TeacherConfigParameters {
 
     @Value("${ulearning.term.nextyears}")
     private Integer nextYears;
+
+    @Value("${spring.application.name}")
+    private String appName;
 }

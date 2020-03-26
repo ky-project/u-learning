@@ -5,7 +5,6 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import com.ky.ulearning.spi.monitor.vo.TrafficVo;
-import org.springframework.scheduling.annotation.Async;
 
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,6 @@ public interface LogService {
      *
      * @param logEntity 待插入的日志对象
      */
-    @Async
     void insert(LogEntity logEntity);
 
     /**

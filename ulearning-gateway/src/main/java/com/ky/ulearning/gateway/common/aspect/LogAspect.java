@@ -1,12 +1,19 @@
 package com.ky.ulearning.gateway.common.aspect;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ky.ulearning.common.core.component.component.SpringBeanWrapper;
+import com.ky.ulearning.common.core.component.config.properties.RocketMQProperties;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.*;
+import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.gateway.remoting.MonitorManageRemoting;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.message.Message;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -31,6 +38,12 @@ public class LogAspect {
 
     @Autowired
     private MonitorManageRemoting monitorManageRemoting;
+
+    @Autowired
+    private GatewayConfigParameters gatewayConfigParameters;
+
+    @Autowired
+    private RocketMQProperties rocketMQProperties;
 
     private long currentTime = 0L;
 
@@ -64,8 +77,8 @@ public class LogAspect {
             return result;
         }
         //若是分页查询，只记录查询第一页的日志，其余查询不记录
-        if(logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)){
-            if(! logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)){
+        if (logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)) {
+            if (!logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)) {
                 return result;
             }
         }
@@ -99,9 +112,28 @@ public class LogAspect {
     }
 
     /**
-     * 添加日志
+     * 添加日志 - 测试阶段
      */
     private void add(LogEntity logEntity) {
+        //添加日志
+        if (rocketMQProperties.getIsEnable()) {
+            try {
+                DefaultMQProducer defaultMQProducer = SpringBeanWrapper.getBean(DefaultMQProducer.class);
+                defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, gatewayConfigParameters.getAppName(), JSON.toJSONString(logEntity).getBytes()));
+                log.info(gatewayConfigParameters.getAppName() + " 生成一条日志发送至队列");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                remotingAdd(logEntity);
+            }
+        } else {
+            remotingAdd(logEntity);
+        }
+    }
+
+    /**
+     * feign添加日志
+     */
+    private void remotingAdd(LogEntity logEntity) {
         Map<String, Object> logMap =
                 JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
         try {

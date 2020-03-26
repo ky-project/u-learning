@@ -14,12 +14,14 @@ public class SpringBeanWrapper implements ApplicationContextAware {
     /**
      * 上下文对象实例
      */
-    private ApplicationContext applicationContext;
+    private static ApplicationContext applicationContext;
 
     @SuppressWarnings("NullableProblems")
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        if (SpringBeanWrapper.applicationContext == null) {
+            SpringBeanWrapper.applicationContext = applicationContext;
+        }
     }
 
     /**
@@ -27,7 +29,7 @@ public class SpringBeanWrapper implements ApplicationContextAware {
      *
      * @return 返回实例
      */
-    public ApplicationContext getApplicationContext() {
+    public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
 
@@ -37,7 +39,7 @@ public class SpringBeanWrapper implements ApplicationContextAware {
      * @param name 实例名
      * @return 实例对象
      */
-    public Object getBean(String name) {
+    public static Object getBean(String name) {
         return getApplicationContext().getBean(name);
     }
 
@@ -47,7 +49,7 @@ public class SpringBeanWrapper implements ApplicationContextAware {
      * @param clazz class
      * @return 返回实例
      */
-    public <T> T getBean(Class<T> clazz) {
+    public static <T> T getBean(Class<T> clazz) {
         try {
             return getApplicationContext().getBean(clazz);
         } catch (Exception e) {
@@ -62,7 +64,7 @@ public class SpringBeanWrapper implements ApplicationContextAware {
      * @param clazz 实例类型
      * @return 实例对象
      */
-    public <T> T getBean(String name, Class<T> clazz) {
+    public static <T> T getBean(String name, Class<T> clazz) {
         return getApplicationContext().getBean(name, clazz);
     }
 }

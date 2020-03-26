@@ -12,6 +12,7 @@ import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
+import com.ky.ulearning.system.common.constants.SystemManageConfigParameters;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
@@ -48,7 +49,7 @@ public class LogAspect {
     private RocketMQProperties rocketMQProperties;
 
     @Autowired
-    private SpringBeanWrapper springBeanWrapper;
+    private SystemManageConfigParameters systemManageConfigParameters;
 
     private long currentTime = 0L;
 
@@ -95,18 +96,7 @@ public class LogAspect {
             }
         }
         //添加日志
-        if (rocketMQProperties.getIsEnable()) {
-            try {
-                DefaultMQProducer defaultMQProducer = springBeanWrapper.getBean(DefaultMQProducer.class);
-                defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, "system-manage", JSON.toJSONString(logEntity).getBytes()));
-                log.info("生成一条日志发送至队列");
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                add(logEntity);
-            }
-        } else {
-            add(logEntity);
-        }
+        add(logEntity);
         return result;
     }
 
@@ -133,9 +123,28 @@ public class LogAspect {
     }
 
     /**
-     * 添加日志
+     * 添加日志 - 测试阶段
      */
     private void add(LogEntity logEntity) {
+        //添加日志
+        if (rocketMQProperties.getIsEnable()) {
+            try {
+                DefaultMQProducer defaultMQProducer = SpringBeanWrapper.getBean(DefaultMQProducer.class);
+                defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, systemManageConfigParameters.getAppName(), JSON.toJSONString(logEntity).getBytes()));
+                log.info(systemManageConfigParameters.getAppName() + " 生成一条日志发送至队列");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                remotingAdd(logEntity);
+            }
+        } else {
+            remotingAdd(logEntity);
+        }
+    }
+
+    /**
+     * feign添加日志
+     */
+    private void remotingAdd(LogEntity logEntity) {
         Map<String, Object> logMap =
                 JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
         try {

@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 @RefreshScope
 public class GatewayConfigParameters {
 
+    @Value("${spring.application.name}")
+    private String appName;
+
     @Value("${jwt.secret}")
     private String secret;
 
