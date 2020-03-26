@@ -26,7 +26,9 @@ eureka:
   server:
     enable-self-preservation: true
   instance:
-    hostname: wyf.darren1112.com
+    prefer-ip-address: true
+    ip-address: 106.15.75.204
+    hostname: 106.15.75.204
   client:
     register-with-eureka: true
     fetch-registry: false

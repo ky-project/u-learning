@@ -18,4 +18,4 @@ eureka:
   client:
     serviceUrl:
       # 注册中心url
-      defaultZone: http://10.15.75.204:14001/eureka/
+      defaultZone: http://106.15.75.204:14001/eureka/

@@ -13,7 +13,7 @@ spring:
 eureka:
   instance:
     # 所部署服务器域名
-    hostname: 10.15.75.204
+    hostname: 106.15.75.204
     home-page-url-path: /
     lease-expiration-duration-in-seconds: 90
     lease-renewal-interval-in-seconds: 30
@@ -22,5 +22,5 @@ eureka:
   client:
     serviceUrl:
       # 注册中心url
-      defaultZone: http://10.15.75.204:14001/eureka/
+      defaultZone: http://106.15.75.204:14001/eureka/
     registry-fetch-interval-seconds: 5
