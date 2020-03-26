@@ -76,4 +76,10 @@ public class StudentExaminationTaskDto extends BaseDto {
      */
     @ApiModelProperty("姓名")
     private String stuName;
+
+    /**
+     * 性别
+     */
+    @ApiModelProperty("性别")
+    private String stuGender;
 }

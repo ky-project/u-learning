@@ -35,6 +35,7 @@
 
         <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
         <result column="stu_number" jdbcType="VARCHAR" property="stuNumber"/>
+        <result column="stu_gender" jdbcType="VARCHAR" property="stuGender"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -57,7 +58,7 @@
         SELECT uset.id, uset.examination_task_id, uset.stu_id, uset.examining_hostIP, uset.examining_login_time,
         uset.examining_remain_time, uset.examining_state, uset.examining_state_switch_time, uset.valid, uset.memo,
         uset.create_time, uset.create_by, uset.update_time, uset.update_by,
-        us.stu_name,us.stu_number
+        us.stu_name,us.stu_number, us.stu_gender
         FROM u_student_examination_task uset
         INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
         WHERE uset.valid = 1
