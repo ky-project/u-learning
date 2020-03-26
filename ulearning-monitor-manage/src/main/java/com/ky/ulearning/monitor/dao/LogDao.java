@@ -87,4 +87,21 @@ public interface LogDao {
      * @return 返回日志对象集合
      */
     List<LogEntity> getLogTop(Integer topNumber);
+
+    /**
+     * 查询当日访问用户操作数
+     *
+     * @param today 当天日期
+     * @return 当天访问操作数
+     */
+    Long getTodayOperationNumber(String today);
+
+    /**
+     * 查询当日指定访问用户操作数
+     *
+     * @param today    当天日期
+     * @param username 用户
+     * @return 当天该用户访问操作数
+     */
+    Long getTodayOperationNumberByUsername(@Param("today") String today, @Param("username") String username);
 }

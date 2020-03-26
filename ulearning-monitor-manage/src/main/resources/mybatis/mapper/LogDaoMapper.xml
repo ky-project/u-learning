@@ -52,8 +52,8 @@
     </sql>
     <!-- 插入记录 -->
     <insert id="insert" parameterType="com.ky.ulearning.spi.monitor.entity.LogEntity">
-        insert into u_log(<include refid="insertSql"/>)
-        values (#{logUsername}, #{logDescription},
+        INSERT INTO u_log(<include refid="insertSql"/>)
+        VALUES (#{logUsername}, #{logDescription},
         #{logModule}, #{logIp},
         #{logType}, #{logException},
         #{logParams}, #{logTime},
@@ -96,9 +96,9 @@
         <if test="logDto.createTime != null">
             AND DATE(create_time) = #{logDto.createTime}
         </if>
-        order by update_time desc
+        ORDER BY update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--根据筛选条件查询总记录数-->
@@ -185,5 +185,20 @@
         AND log_username != ''
         ORDER BY update_time DESC
         LIMIT #{topNumber}
+    </select>
+    <!--查询当日访问用户操作数-->
+    <select id="getTodayOperationNumber" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM u_log
+        WHERE valid = 1
+          AND DATE(create_time) = #{today}
+    </select>
+    <!--查询当日指定访问用户操作数-->
+    <select id="getTodayOperationNumberByUsername" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        FROM u_log
+        WHERE valid = 1
+          AND DATE(create_time) = #{today}
+          AND log_username = #{username}
     </select>
 </mapper>

@@ -3,8 +3,10 @@ package com.ky.ulearning.monitor.controller;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.annotation.PermissionName;
 import com.ky.ulearning.common.core.api.controller.BaseController;
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.DateUtil;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.monitor.common.constants.MonitorManageErrorCodeEnum;
@@ -13,6 +15,7 @@ import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.vo.TrafficOperationVo;
 import com.ky.ulearning.spi.monitor.vo.TrafficVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,5 +83,14 @@ public class LogController extends BaseController {
     public ResponseEntity<JsonResult<List<LogEntity>>> getTopTwentyLog(Integer topNumber) {
         List<LogEntity> logEntityList = logService.getLogTop(topNumber);
         return ResponseEntityUtil.ok(JsonResult.buildData(logEntityList));
+    }
+
+    @ApiOperation(value = "查询近n天的操作量")
+    @PermissionName(source = "log:getDaysOperation", name = "查询近n天的访问量", group = "日志管理")
+    @GetMapping("/getDaysOperation")
+    public ResponseEntity<JsonResult<TrafficOperationVo>> getDaysOperation(Integer days) {
+        ValidateHandler.checkParameter(days <= 0, MonitorManageErrorCodeEnum.TRAFFIC_DAYS_ERROR);
+        TrafficOperationVo trafficOperationVo = logService.getDaysOperation(new Date(), DateUtil.offsetDay(new Date(), 1 - days), RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        return ResponseEntityUtil.ok(JsonResult.buildData(trafficOperationVo));
     }
 }

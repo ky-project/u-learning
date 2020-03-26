@@ -1,9 +1,11 @@
 package com.ky.ulearning.monitor.service;
 
+import cn.hutool.core.date.DateTime;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.vo.TrafficOperationVo;
 import com.ky.ulearning.spi.monitor.vo.TrafficVo;
 
 import java.util.Date;
@@ -78,4 +80,14 @@ public interface LogService {
      * @return 返回日志对象集合
      */
     List<LogEntity> getLogTop(Integer topNumber);
+
+    /**
+     * 查询oldDate~today范围内的操作数
+     *
+     * @param today    当天
+     * @param oldDate  待计算的天数
+     * @param username 当前用户
+     * @return 返回每天的访问量
+     */
+    TrafficOperationVo getDaysOperation(Date today, DateTime oldDate, String username);
 }
