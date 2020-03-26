@@ -25,6 +25,12 @@ public class ExaminationResultDetailVo {
     private Integer examiningRemainTime;
 
     /**
+     * 测试任务名称
+     */
+    @ApiModelProperty("测试任务名称")
+    private String examinationName;
+
+    /**
      * 组卷题目
      */
     @ApiModelProperty("组卷题目")

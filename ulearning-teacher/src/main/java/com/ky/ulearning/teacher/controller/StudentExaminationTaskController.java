@@ -79,8 +79,8 @@ public class StudentExaminationTaskController extends BaseController {
         ValidateHandler.checkNull(examiningId, TeacherErrorCodeEnum.STUDENT_EXAMINATION_TASK_ID_CANNOT_BE_NULL);
         StudentExaminationTaskDto studentExaminationTaskDto = teachingTaskValidUtil.checkExaminingId(examiningId, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         //获取组卷参数
-        String examinationParameters = examinationTaskService.getExaminationParameters(studentExaminationTaskDto.getExaminationTaskId());
-        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationParameters, ExaminationParamVo.class);
+        ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(studentExaminationTaskDto.getExaminationTaskId());
+        ExaminationParamVo examinationParamVo = JsonUtil.parseObject(examinationTaskEntity.getExaminationParameters(), ExaminationParamVo.class);
 
         //根据学生测试id查询学生答题情况
         Map<Integer, List<CourseQuestionDetailVo>> courseQuestionVoMapList = examinationResultService.getCourseQuestionVoByExaminingId(examiningId, examinationParamVo.getQuantity());
@@ -89,6 +89,7 @@ public class StudentExaminationTaskController extends BaseController {
         ExaminationResultDetailVo examinationResultDetailVo = new ExaminationResultDetailVo();
         examinationResultDetailVo.setExaminingRemainTime(studentExaminationTaskDto.getExaminingRemainTime());
         examinationResultDetailVo.setCourseQuestion(courseQuestionVoMapList);
+        examinationResultDetailVo.setExaminationName(examinationTaskEntity.getExaminationName());
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultDetailVo));
     }
 
