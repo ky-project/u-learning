@@ -3,11 +3,11 @@ xxl:
   job:
     accessToken:
     admin:
-      addresses: http://www.darren1112.com:14007/xxl-job-admin
+      addresses: http://121.40.183.90:14007/xxl-job-admin
     executor:
       appname: ${spring.application.name}
       # 双网卡时需要指定可通信ip
-      ip: 47.95.14.126
+      ip: 121.40.183.90
       logpath: /tmp/ulearning-logs/xxl-job/${spring.application.name}
       logretentiondays: 30
       port: 24004

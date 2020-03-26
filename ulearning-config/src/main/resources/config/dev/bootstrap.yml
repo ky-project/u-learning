@@ -14,8 +14,8 @@ spring:
 eureka:
   instance:
     # 所部署服务器域名
-    hostname: darren1112.com
+    hostname: 47.95.14.126
   client:
     serviceUrl:
       # 注册中心url
-      defaultZone: http://wyf.darren1112.com:14001/eureka/
+      defaultZone: http://10.15.75.204:14001/eureka/

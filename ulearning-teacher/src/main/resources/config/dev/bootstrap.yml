@@ -12,8 +12,8 @@ spring:
 #服务注册中心配置
 eureka:
   instance:
-    # 所部署服务器域名
-    hostname: tqq.darren1112.com
+    # 所部署服务器域名 or ip
+    hostname: 101.133.156.148
     home-page-url-path: /${spring.application.name}
     lease-expiration-duration-in-seconds: 90
     lease-renewal-interval-in-seconds: 30
@@ -22,5 +22,5 @@ eureka:
   client:
     serviceUrl:
       # 注册中心url
-      defaultZone: http://wyf.darren1112.com:14001/eureka/
+      defaultZone: http://10.15.75.204:14001/eureka/
     registry-fetch-interval-seconds: 5
