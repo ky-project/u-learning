@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.Iterator;
 import java.util.Map;
 
 /**

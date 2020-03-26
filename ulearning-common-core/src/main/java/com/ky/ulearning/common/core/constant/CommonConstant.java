@@ -8,6 +8,8 @@ package com.ky.ulearning.common.core.constant;
  */
 public class CommonConstant {
 
+    public static final String CHARSET = "UTF-8";
+
     /**
      * 测试任务状态，1：未发布 2：未开始 3：进行中 4：已结束
      */
@@ -24,5 +26,10 @@ public class CommonConstant {
     public static final String COURSE_QUESTION_SEPARATE_JUDGE = "|#|";
 
     public static final String DRUID_STAT_WEB_URI = "/weburi.json";
+
+    /**
+     * rocketmq日志队列主题
+     */
+    public static final String ROCKET_LOG_MONITOR_TOPIC = "LogMonitor";
 
 }

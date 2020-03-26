@@ -1,7 +1,11 @@
 package com.ky.ulearning.system.common.aspect;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ky.ulearning.common.core.component.component.SpringBeanWrapper;
+import com.ky.ulearning.common.core.component.config.properties.RocketMQProperties;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.AopUtil;
 import com.ky.ulearning.common.core.utils.JsonUtil;
@@ -10,6 +14,8 @@ import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
 import com.ky.ulearning.system.remoting.MonitorManageRemoting;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.message.Message;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -37,6 +43,12 @@ public class LogAspect {
 
     @Autowired
     private DefaultConfigParameters defaultConfigParameters;
+
+    @Autowired
+    private RocketMQProperties rocketMQProperties;
+
+    @Autowired
+    private SpringBeanWrapper springBeanWrapper;
 
     private long currentTime = 0L;
 
@@ -77,13 +89,24 @@ public class LogAspect {
         }
 
         //若是分页查询，只记录查询第一页的日志，其余查询不记录
-        if(logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)){
-            if(! logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)){
+        if (logEntity.getLogParams().contains(AopUtil.PAGE_PARAM)) {
+            if (!logEntity.getLogParams().contains(AopUtil.FIRST_PAGE_PARAM)) {
                 return result;
             }
         }
         //添加日志
-        add(logEntity);
+        if (rocketMQProperties.getIsEnable()) {
+            try {
+                DefaultMQProducer defaultMQProducer = springBeanWrapper.getBean(DefaultMQProducer.class);
+                defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, "system-manage", JSON.toJSONString(logEntity).getBytes()));
+                log.info("生成一条日志发送至队列");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                add(logEntity);
+            }
+        } else {
+            add(logEntity);
+        }
         return result;
     }
 

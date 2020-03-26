@@ -2,6 +2,7 @@ package com.ky.ulearning.system.common.rocketmq;
 
 import com.alibaba.fastjson.JSON;
 import com.ky.ulearning.common.core.utils.EnvironmentAwareUtil;
+import com.ky.ulearning.common.core.utils.JsonUtil;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -32,25 +33,9 @@ import java.util.List;
 @SpringBootTest
 public class RocketMQTest {
 
-    @Autowired
-    private DefaultMQProducer defaultMQProducer;
-
     @BeforeClass
     public static void init() {
         EnvironmentAwareUtil.adjust();
-    }
-
-    @Test
-    public void test01() throws InterruptedException, RemotingException, MQClientException, MQBrokerException, UnsupportedEncodingException {
-        for(int i = 0; i < 20; i++) {
-            Message msg = new Message("TopicTest", "tags1", ("你好" + i).getBytes(RemotingHelper.DEFAULT_CHARSET));
-            // 发送消息到一个Broker
-            SendResult sendResult = defaultMQProducer.send(msg);
-            // 通过sendResult返回消息是否成功送达
-            System.out.printf("%s%n", sendResult);
-        }
-        Thread.sleep(20000);
-        defaultMQProducer.shutdown();
     }
 
     @Test

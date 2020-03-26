@@ -7,7 +7,7 @@ spring:
       discovery:
         enabled: true
         service-id: config
-      name: ${spring.application.name}, ulearning-jdbc, ulearning-common
+      name: ${spring.application.name}, ulearning-jdbc, ulearning-common, ulearning-rocketmq
       label: local
 #服务注册中心配置
 eureka:
