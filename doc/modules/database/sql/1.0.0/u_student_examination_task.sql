@@ -5,7 +5,7 @@ CREATE TABLE `u_student_examination_task`  (
   `stu_id` bigint(20) NULL DEFAULT NULL COMMENT '学生id',
   `examining_hostIP` varchar(150) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'IP地址',
   `examining_login_time` datetime(0) NOT NULL COMMENT '登录时间',
-  `examining_remain_time` smallint(6) NOT NULL COMMENT '剩余时间',
+  `examining_remain_time` int(10) NOT NULL COMMENT '剩余时间',
   `examining_state` smallint(6) NOT NULL COMMENT '测试状态',
   `examining_state_switch_time` datetime(0) NOT NULL COMMENT '状态变更时间',
   `valid` tinyint(1) NULL DEFAULT 1 COMMENT '是否有效',
