@@ -64,4 +64,19 @@ public class DateUtil extends cn.hutool.core.date.DateUtil {
             throw new BadRequestException("日期计算错误");
         }
     }
+
+    /**
+     * 计算两个时间的秒数差
+     *
+     * @return 秒数
+     */
+    public static int diffDateSec(Date date1, Date date2) {
+        try {
+            long mill = betweenMs(date1, date2);
+            return (int) (mill / 1000);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new BadRequestException("日期计算错误");
+        }
+    }
 }

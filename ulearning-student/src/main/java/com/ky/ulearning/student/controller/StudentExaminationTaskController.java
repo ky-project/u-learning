@@ -97,7 +97,7 @@ public class StudentExaminationTaskController extends BaseController {
         String ip = RequestHolderUtil.getHeaderByName(MicroConstant.USER_REQUEST_IP);
         String cityInfo = IpUtil.getCityInfo(ip);
         ip = cityInfo + "(" + ip + ")";
-        StudentExaminationTaskDto studentExaminationTaskDto = initInsertDto(examinationTaskId, stuId, examinationTaskEntity.getExaminationDuration(), stuNumber, ip);
+        StudentExaminationTaskDto studentExaminationTaskDto = initInsertDto(examinationTaskId, stuId, examinationTaskEntity.getExaminationDuration() * 60, stuNumber, ip);
         studentExaminationTaskService.add(studentExaminationTaskDto);
         //开始组题
         Map<Integer, List<CourseQuestionVo>> resMap = randomTestPaper(examinationParamVo, courseId);
@@ -106,7 +106,7 @@ public class StudentExaminationTaskController extends BaseController {
 
         //创建待返回的数据结构
         ExaminationResultVo examinationResultVo = new ExaminationResultVo();
-        examinationResultVo.setExaminingRemainTime(examinationTaskEntity.getExaminationDuration());
+        examinationResultVo.setExaminingRemainTime(examinationTaskEntity.getExaminationDuration() * 60);
         examinationResultVo.setCourseQuestion(resMap);
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultVo));
     }
@@ -152,7 +152,7 @@ public class StudentExaminationTaskController extends BaseController {
         //更新剩余时间和状态变更时间
         Integer remainTime = studentExaminationTaskEntity.getExaminingRemainTime();
         Date examiningStateSwitchTime = studentExaminationTaskEntity.getExaminingStateSwitchTime();
-        int subMin = DateUtil.diffDateMin(examiningStateSwitchTime, new Date());
+        int subMin = DateUtil.diffDateSec(examiningStateSwitchTime, new Date());
         int newRemainTime = remainTime - subMin;
         //设置待更新的对象
         StudentExaminationTaskDto studentExaminationTaskDto = new StudentExaminationTaskDto();
