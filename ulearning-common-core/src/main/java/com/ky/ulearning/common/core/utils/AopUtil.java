@@ -7,6 +7,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -53,8 +54,10 @@ public class AopUtil {
         logEntity.setLogParams(getParams(joinPoint));
         logEntity.setLogTime(System.currentTimeMillis() - currentTime);
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
-        logEntity.setCreateBy("system");
-        logEntity.setUpdateBy("system");
+        logEntity.setCreateTime(new Date());
+        logEntity.setUpdateTime(new Date());
+        logEntity.setCreateBy(username);
+        logEntity.setUpdateBy(username);
         return logEntity;
     }
 

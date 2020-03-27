@@ -30,7 +30,9 @@
             log_address,
             memo,
             create_by,
-            update_by
+            update_by,
+            create_time,
+            update_time
     </sql>
     <sql id="All">
             id,
@@ -58,7 +60,8 @@
         #{logType}, #{logException},
         #{logParams}, #{logTime},
         #{logAddress}, #{memo},
-        #{createBy}, #{updateBy})
+        #{createBy}, #{updateBy},
+        #{createTime}, #{updateTime} )
     </insert>
     <!--分页查询日志信息-->
     <select id="listPage" resultMap="BaseResultMap">
