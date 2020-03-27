@@ -195,6 +195,8 @@
         FROM u_log
         WHERE valid = 1
           AND DATE(create_time) = #{today}
+          AND log_username != ''
+          AND log_username IS NOT NULL
     </select>
     <!--查询当日指定访问用户操作数-->
     <select id="getTodayOperationNumberByUsername" resultType="java.lang.Long">
