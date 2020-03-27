@@ -29,6 +29,11 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     EMAIL_ERROR(HttpStatus.BAD_REQUEST, "邮箱被多个账号绑定，请联系管理员"),
     VERIFY_CODE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST,"验证码不能为空"),
     LOST_PARAMETERS(HttpStatus.BAD_REQUEST, "缺少参数"),
+    USERNAME_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "用户名不能为空"),
+    PASSWORD_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "密码不能为空"),
+    LOGIN_TYPE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "登录类型不能为空"),
+    LOGIN_TYPE_ERROR(HttpStatus.BAD_REQUEST, "未知登录"),
+
     ;
 
     private Integer code;

@@ -37,6 +37,11 @@ public class JwtTokenUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public Integer getLoginTypeFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("loginType", Integer.class);
+    }
+
     public Date getIssuedAtDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getIssuedAt);
     }
@@ -84,6 +89,7 @@ public class JwtTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         JwtAccount jwtAccount = (JwtAccount) userDetails;
         claims.put("id", jwtAccount.getId());
+        claims.put("loginType", jwtAccount.getLoginType());
         return doGenerateToken(claims, jwtAccount.getUsername());
     }
 

@@ -22,6 +22,16 @@ public class MicroConstant {
     public static final String SYS_ROLE_STUDENT = "student";
 
     /**
+     * 学生登录类型
+     */
+    public static final int LOGIN_TYPE_STUDENT = 2;
+
+    /**
+     * 教师登录类型
+     */
+    public static final int LOGIN_TYPE_TEACHER = 1;
+
+    /**
      * 用户ip
      */
     public static final String USER_REQUEST_IP = "userIp";

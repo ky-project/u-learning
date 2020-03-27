@@ -101,6 +101,7 @@ public class JwtRefreshTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         JwtAccount jwtAccount = (JwtAccount) userDetails;
         claims.put("id", jwtAccount.getId());
+        claims.put("loginType", jwtAccount.getLoginType());
         return doGenerateRefreshToken(claims, jwtAccount.getUsername());
     }
 

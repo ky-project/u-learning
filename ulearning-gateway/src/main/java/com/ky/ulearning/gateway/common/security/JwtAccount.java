@@ -56,6 +56,11 @@ public class JwtAccount implements UserDetails {
     private Date pwdUpdateTime;
 
     /**
+     * 登录类型 1：教师，2：学生
+     */
+    private Integer loginType;
+
+    /**
      * 权限集合
      */
     private Collection<GrantedAuthority> authorities;

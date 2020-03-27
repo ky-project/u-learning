@@ -8,6 +8,7 @@ import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.constant.TableFileEnum;
@@ -181,6 +182,7 @@ public class AuthController extends BaseController {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(GatewayConstant.COOKIE_TOKEN)
                         || cookie.getName().equals(GatewayConstant.COOKIE_REFRESH_TOKEN)) {
+                    //TODO 从cookie中获取username进行操作
                     cookie.setMaxAge(0);
                     cookie.setPath("/");
                     response.addCookie(cookie);
@@ -208,17 +210,22 @@ public class AuthController extends BaseController {
     public ResponseEntity<JsonResult> login(LoginUser loginUser,
                                             HttpServletRequest request,
                                             HttpServletResponse response) {
+        ValidatorBuilder.build()
+                .ofNull(loginUser.getCode(), GatewayErrorCodeEnum.VERIFY_CODE_CANNOT_BE_NULL)
+                .ofNull(loginUser.getUsername(), GatewayErrorCodeEnum.USERNAME_CANNOT_BE_NULL)
+                .ofNull(loginUser.getPassword(), GatewayErrorCodeEnum.PASSWORD_CANNOT_BE_NULL)
+                .ofNull(loginUser.getLoginType(), GatewayErrorCodeEnum.LOGIN_TYPE_CANNOT_BE_NULL)
+                .doValidate().checkResult();
         long currentTime = System.currentTimeMillis();
         // 查询验证码
         String code = redisService.getCodeVal(loginUser.getUuid());
         // 清除验证码
         redisService.delete(loginUser.getUuid());
         ValidateHandler.checkParameter(StringUtils.isEmpty(code), GatewayErrorCodeEnum.VERIFY_CODE_TIMEOUT);
-        ValidateHandler.checkParameter(StringUtils.isEmpty(loginUser.getCode())
-                || !loginUser.getCode().equalsIgnoreCase(code), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
+        ValidateHandler.checkParameter(!loginUser.getCode().equalsIgnoreCase(code), GatewayErrorCodeEnum.VERIFY_CODE_ERROR);
 
         //手动获取登录用户信息
-        JwtAccount jwtAccount = (JwtAccount) jwtAccountDetailsService.loadUserByUsername(loginUser.getUsername());
+        JwtAccount jwtAccount = (JwtAccount) jwtAccountDetailsService.loadUserByUsername(loginUser.getUsername() + CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE + loginUser.getLoginType());
 
         ValidateHandler.checkParameter(!jwtAccount.getPassword().equals(EncryptUtil.encryptPassword(loginUser.getPassword())), GatewayErrorCodeEnum.LOGIN_PASSWORD_ERROR);
 

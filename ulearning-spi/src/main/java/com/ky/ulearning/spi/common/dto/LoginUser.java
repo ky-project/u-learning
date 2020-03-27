@@ -23,6 +23,9 @@ public class LoginUser {
     @ApiModelProperty(value = "验证码生成的uuid", example = "55ac0bcf1f1044c69cd155c6393010ee", required = true)
     private String uuid = "";
 
+    @ApiModelProperty(value = "登录类型 1：教师，2：学生", required = true)
+    private Integer loginType;
+
     @Override
     public String toString() {
         return "{username=" + username + ", password= ******}";

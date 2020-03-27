@@ -1,6 +1,7 @@
 package com.ky.ulearning.gateway.common.security;
 
 import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.message.JsonResult;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,44 +43,52 @@ public class JwtAccountDetailsService implements UserDetailsService {
     /**
      * 1. 先从缓存中获取
      * 2. 缓存未命中再去调用接口
-     *
+     * <p>
      * 任何修改学生、教师、教师角色、角色、角色权限和权限表的操作都会清空该缓存
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameCom) throws UsernameNotFoundException {
+        String username = usernameCom.substring(0, usernameCom.lastIndexOf(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE));
+        int loginType = Integer.parseInt(usernameCom.substring(usernameCom.lastIndexOf(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE) + CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE.length()));
+
         //从缓存中获取
-        Object result = redisClientWrapper.get(MicroConstant.LOGIN_USER_REDIS_PREFIX + username);
-        if(StringUtil.isNotEmpty(result)){
+        Object result = redisClientWrapper.get(MicroConstant.LOGIN_USER_REDIS_PREFIX + username + "::" + loginType);
+        if (StringUtil.isNotEmpty(result)) {
             return JsonUtil.parseObject(result.toString(), JwtAccount.class);
         }
-        //教师账号
-        UserContext teacher = teacherLogin(username);
-        //学生登录
-        UserContext student = studentLogin(username);
-        //账号都不存在时
-        if (teacher == null && student == null) {
-            throw new BadRequestException(GatewayErrorCodeEnum.USER_NOT_EXISTS);
-        }
-        //账号都存在时
-        if (teacher != null && student != null) {
-            throw new BadRequestException(GatewayErrorCodeEnum.ACCOUNT_ERROR);
-        }
+        //教师 or 学生登录
         JwtAccount jwtAccount;
-        //判断是教师还是学生
-        if (teacher != null) {
-            jwtAccount = userContextJwtAccountMapper.toDto(teacher);
-            if (!CollectionUtils.isEmpty(teacher.getPermissions())) {
-                jwtAccount.setAuthorities(teacher.getPermissions()
-                        .stream()
-                        .map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.getPermissionUrl()))
-                        .collect(Collectors.toList()));
-            }
-        } else {
-            jwtAccount = userContextJwtAccountMapper.toDto(student);
-            jwtAccount.setAuthorities(Collections.emptyList());
+        switch (loginType) {
+            //教师登录
+            case MicroConstant.LOGIN_TYPE_TEACHER:
+                UserContext teacher = teacherLogin(username);
+                if (Objects.isNull(teacher)) {
+                    throw new BadRequestException(GatewayErrorCodeEnum.USER_NOT_EXISTS);
+                }
+                jwtAccount = userContextJwtAccountMapper.toDto(teacher);
+                if (!CollectionUtils.isEmpty(teacher.getPermissions())) {
+                    jwtAccount.setAuthorities(teacher.getPermissions()
+                            .stream()
+                            .map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.getPermissionUrl()))
+                            .collect(Collectors.toList()));
+                }
+                break;
+            //学生登录
+            case MicroConstant.LOGIN_TYPE_STUDENT:
+                UserContext student = studentLogin(username);
+                if (Objects.isNull(student)) {
+                    throw new BadRequestException(GatewayErrorCodeEnum.USER_NOT_EXISTS);
+                }
+                jwtAccount = userContextJwtAccountMapper.toDto(student);
+                jwtAccount.setAuthorities(Collections.emptyList());
+                break;
+            //未知登录
+            default:
+                throw new BadRequestException(GatewayErrorCodeEnum.LOGIN_TYPE_ERROR);
         }
+        jwtAccount.setLoginType(loginType);
         //设置进缓存
-        redisClientWrapper.set(MicroConstant.LOGIN_USER_REDIS_PREFIX + username, JsonUtil.toJsonString(jwtAccount), MicroConstant.LOGIN_USER_REDIS_EXPIRE);
+        redisClientWrapper.set(MicroConstant.LOGIN_USER_REDIS_PREFIX + username + "::" + loginType, JsonUtil.toJsonString(jwtAccount), MicroConstant.LOGIN_USER_REDIS_EXPIRE);
         return jwtAccount;
     }
 

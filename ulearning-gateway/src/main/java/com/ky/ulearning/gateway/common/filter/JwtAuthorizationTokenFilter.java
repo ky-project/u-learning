@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.filter;
 
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
@@ -75,6 +76,7 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         String token;
         String refreshToken;
         String username;
+        Integer loginType;
         try {
             //token空值校验
             if (tokenHeader == null || refreshTokenHeader == null) {
@@ -99,8 +101,10 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             }
             //获取用户账号
             username = jwtTokenUtil.getUsernameFromToken(token);
+            loginType = jwtTokenUtil.getLoginTypeFromToken(token);
             //通过用户编号获取用户
-            JwtAccount account = (JwtAccount) userDetailsService.loadUserByUsername(username);
+            JwtAccount account = (JwtAccount) userDetailsService.loadUserByUsername(username + CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE + loginType);
+            //验证用户是否登录其他平台
             //双token刷新
             if (!jwtTokenUtil.validateToken(token, account) && jwtRefreshTokenUtil.validateRefreshToken(refreshToken, account)) {
                 //token过期,refresh_token未过期 -> 刷新token
