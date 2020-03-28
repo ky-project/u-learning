@@ -81,16 +81,14 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
         try {
             //token空值校验
             if (tokenHeader == null || refreshTokenHeader == null) {
-                chain.doFilter(request, response);
-                return;
+                throw new JwtTokenException("请先登录");
             }
             //字符转义
             tokenHeader = URLDecoder.decode(tokenHeader, Encoder.UTF_8).trim();
             refreshTokenHeader = URLDecoder.decode(refreshTokenHeader, Encoder.UTF_8).trim();
             if (!tokenHeader.startsWith(GatewayConstant.TOKEN_PREFIX)
                     || !refreshTokenHeader.startsWith(GatewayConstant.TOKEN_PREFIX)) {
-                chain.doFilter(request, response);
-                return;
+                throw new JwtTokenException("请先登录");
             }
             //提取token
             token = tokenHeader.substring(GatewayConstant.TOKEN_PREFIX.length());
