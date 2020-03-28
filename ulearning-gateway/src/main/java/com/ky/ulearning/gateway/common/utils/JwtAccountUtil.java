@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.utils;
 
+import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.gateway.common.security.JwtAccount;
 import com.ky.ulearning.spi.system.entity.PermissionEntity;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
@@ -100,4 +101,17 @@ public class JwtAccountUtil {
                 .orElse(Collections.emptyList());
     }
 
+
+    public static String getSysRoleByLoginType(Integer loginType) {
+        switch (loginType) {
+            case MicroConstant.LOGIN_TYPE_STUDENT:
+                return MicroConstant.SYS_ROLE_STUDENT;
+            case MicroConstant.LOGIN_TYPE_TEACHER:
+                return MicroConstant.SYS_ROLE_TEACHER;
+            case MicroConstant.LOGIN_TYPE_ADMIN:
+                return MicroConstant.SYS_ROLE_TEACHER;
+            default:
+                return "";
+        }
+    }
 }

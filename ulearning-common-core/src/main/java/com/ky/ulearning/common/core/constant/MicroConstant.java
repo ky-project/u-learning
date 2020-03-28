@@ -24,12 +24,17 @@ public class MicroConstant {
     /**
      * 学生登录类型
      */
-    public static final int LOGIN_TYPE_STUDENT = 2;
+    public static final int LOGIN_TYPE_STUDENT = 3;
 
     /**
      * 教师登录类型
      */
-    public static final int LOGIN_TYPE_TEACHER = 1;
+    public static final int LOGIN_TYPE_TEACHER = 2;
+
+    /**
+     * 后台登录类型
+     */
+    public static final int LOGIN_TYPE_ADMIN = 1;
 
     /**
      * 用户ip

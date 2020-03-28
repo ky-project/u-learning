@@ -9,8 +9,10 @@ import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayErrorCodeEnum;
 import com.ky.ulearning.gateway.common.conversion.UserContextJwtAccountMapper;
+import com.ky.ulearning.gateway.common.utils.JwtAccountUtil;
 import com.ky.ulearning.gateway.remoting.SystemManageRemoting;
 import com.ky.ulearning.spi.common.dto.UserContext;
+import com.ky.ulearning.spi.system.entity.RoleEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,14 +53,37 @@ public class JwtAccountDetailsService implements UserDetailsService {
         String username = usernameCom.substring(0, usernameCom.lastIndexOf(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE));
         int loginType = Integer.parseInt(usernameCom.substring(usernameCom.lastIndexOf(CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE) + CommonConstant.COURSE_QUESTION_SEPARATE_JUDGE.length()));
 
+        //角色提取
+        String sysRole = JwtAccountUtil.getSysRoleByLoginType(loginType);
         //从缓存中获取
-        Object result = redisClientWrapper.get(MicroConstant.LOGIN_USER_REDIS_PREFIX + username + "::" + loginType);
+        Object result = redisClientWrapper.get(MicroConstant.LOGIN_USER_REDIS_PREFIX + username + "::" + sysRole);
         if (StringUtil.isNotEmpty(result)) {
             return JsonUtil.parseObject(result.toString(), JwtAccount.class);
         }
-        //教师 or 学生登录
+        //后台 or 教师 or 学生登录
         JwtAccount jwtAccount;
         switch (loginType) {
+            //后台登录
+            case MicroConstant.LOGIN_TYPE_ADMIN:
+                UserContext admin = teacherLogin(username);
+                if (Objects.isNull(admin)) {
+                    throw new BadRequestException(GatewayErrorCodeEnum.USER_NOT_EXISTS);
+                }
+                jwtAccount = userContextJwtAccountMapper.toDto(admin);
+                //判断是否有管理员权限
+                if (!jwtAccount.getRoles().stream()
+                        .map(RoleEntity::getIsAdmin)
+                        .collect(Collectors.toList())
+                        .contains(true)) {
+                    throw new BadRequestException(GatewayErrorCodeEnum.NOT_ADMIN);
+                }
+                if (!CollectionUtils.isEmpty(admin.getPermissions())) {
+                    jwtAccount.setAuthorities(admin.getPermissions()
+                            .stream()
+                            .map(permissionEntity -> new SimpleGrantedAuthority(permissionEntity.getPermissionUrl()))
+                            .collect(Collectors.toList()));
+                }
+                break;
             //教师登录
             case MicroConstant.LOGIN_TYPE_TEACHER:
                 UserContext teacher = teacherLogin(username);
@@ -88,7 +113,7 @@ public class JwtAccountDetailsService implements UserDetailsService {
         }
         jwtAccount.setLoginType(loginType);
         //设置进缓存
-        redisClientWrapper.set(MicroConstant.LOGIN_USER_REDIS_PREFIX + username + "::" + loginType, JsonUtil.toJsonString(jwtAccount), MicroConstant.LOGIN_USER_REDIS_EXPIRE);
+        redisClientWrapper.set(MicroConstant.LOGIN_USER_REDIS_PREFIX + username + "::" + jwtAccount.getSysRole(), JsonUtil.toJsonString(jwtAccount), MicroConstant.LOGIN_USER_REDIS_EXPIRE);
         return jwtAccount;
     }
 

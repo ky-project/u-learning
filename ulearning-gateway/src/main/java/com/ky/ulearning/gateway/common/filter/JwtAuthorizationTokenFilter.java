@@ -1,6 +1,7 @@
 package com.ky.ulearning.gateway.common.filter;
 
 import com.ky.ulearning.common.core.constant.CommonConstant;
+import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.utils.UrlUtil;
 import com.ky.ulearning.gateway.common.constant.GatewayConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
@@ -126,9 +127,15 @@ public class JwtAuthorizationTokenFilter extends OncePerRequestFilter {
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (AuthenticationException ae) {
+            deleteTokenCookie(request, GatewayConstant.COOKIE_TOKEN);
+            deleteTokenCookie(request, GatewayConstant.COOKIE_REFRESH_TOKEN);
             //交给自定义的AuthenticationFailureHandler
             jwtAuthenticationFailureHandler.onAuthenticationFailure(request, response, ae);
             return;
+        } catch (Exception e) {
+            deleteTokenCookie(request, GatewayConstant.COOKIE_TOKEN);
+            deleteTokenCookie(request, GatewayConstant.COOKIE_REFRESH_TOKEN);
+            throw new BadRequestException(e.getMessage());
         }
         chain.doFilter(request, response);
     }

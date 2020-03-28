@@ -33,7 +33,7 @@ public enum  GatewayErrorCodeEnum implements BaseEnum {
     PASSWORD_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "密码不能为空"),
     LOGIN_TYPE_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "登录类型不能为空"),
     LOGIN_TYPE_ERROR(HttpStatus.BAD_REQUEST, "未知登录"),
-
+    NOT_ADMIN(HttpStatus.BAD_REQUEST, "非管理员用户"),
     ;
 
     private Integer code;
