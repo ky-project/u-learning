@@ -40,6 +40,9 @@ public class PermissionFilter extends OncePerRequestFilter {
     @Autowired
     private GatewayConfigParameters gatewayConfigParameters;
 
+    @Autowired
+    private DefaultConfigParameters defaultConfigParameters;
+
     private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 
     public PermissionFilter(JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler) {
@@ -76,7 +79,7 @@ public class PermissionFilter extends OncePerRequestFilter {
                 teacherPermissionCheck(uri);
             } else if (UrlUtil.matchUri(uri, gatewayConfigParameters.getStudentPatterns())) {
                 //访问学生端服务
-                studentPermissionCheck(uri);
+                studentPermissionCheck(uri, request);
             } else {
                 //网关访问
                 gatewayPermissionCheck(uri);
@@ -103,9 +106,9 @@ public class PermissionFilter extends OncePerRequestFilter {
     /**
      * 学生端服务权限校验
      */
-    private void studentPermissionCheck(String uri) {
-        //允许有权限的管理员调用学生端接口
-        if(hasAdminPermission(uri)){
+    private void studentPermissionCheck(String uri, HttpServletRequest request) {
+        //允许有权限的管理员调用学生端接口，且只接受通过开发文档的调用
+        if (hasAdminPermission(uri) && isDevDocument(request)) {
             return;
         }
         String sysRole = JwtAccountUtil.getSysRole();
@@ -130,7 +133,7 @@ public class PermissionFilter extends OncePerRequestFilter {
      * 后台端服务权限校验
      */
     private void adminPermissionCheck(String uri) {
-        if(! hasAdminPermission(uri)){
+        if (!hasAdminPermission(uri)) {
             warnInfo(uri);
         }
     }
@@ -138,7 +141,7 @@ public class PermissionFilter extends OncePerRequestFilter {
     /**
      * 管理员访问权限验证
      */
-    private boolean hasAdminPermission(String uri){
+    private boolean hasAdminPermission(String uri) {
         String sysRole = JwtAccountUtil.getSysRole();
         List<RoleEntity> roles = JwtAccountUtil.getRoles();
         List<PermissionEntity> permissions = JwtAccountUtil.getPermissions();
@@ -164,6 +167,20 @@ public class PermissionFilter extends OncePerRequestFilter {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 开发文档调用
+     */
+    private boolean isDevDocument(HttpServletRequest request) {
+        try {
+            String referer = request.getHeader("Referer");
+            String uri = UrlUtil.getPath(referer);
+            return UrlUtil.matchUri(uri, defaultConfigParameters.getSystemSuffix() + "/doc.html");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     /**
