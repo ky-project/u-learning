@@ -13,7 +13,13 @@ spring:
 # 注册中心配置
 eureka:
   instance:
-    hostname: localhost
+    hostname: 127.0.0.1
+    instance-id: ${eureka.instance.hostname}:${server.port}
+    home-page-url-path: /
+    lease-expiration-duration-in-seconds: 90
+    lease-renewal-interval-in-seconds: 30
+    metadata-map:
+      management.context-path: /actuator
   client:
     serviceUrl:
       defaultZone: http://www.darren1112.com:14001/eureka/

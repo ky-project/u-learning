@@ -14,6 +14,7 @@ eureka:
   instance:
     # 所部署服务器域名 or ip
     hostname: 101.133.156.148
+    instance-id: ${eureka.instance.hostname}:${server.port}
     home-page-url-path: /${spring.application.name}
     lease-expiration-duration-in-seconds: 90
     lease-renewal-interval-in-seconds: 30
