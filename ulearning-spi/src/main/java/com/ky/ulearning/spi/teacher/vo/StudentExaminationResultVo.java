@@ -75,4 +75,10 @@ public class StudentExaminationResultVo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date examiningStateSwitchTime;
 
+    /**
+     * 测试任务名称
+     */
+    @ApiModelProperty("测试任务名称")
+    private String examinationName;
+
 }

@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.StudentExaminationResultExcel;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
 import com.ky.ulearning.spi.teacher.vo.ExaminationStatusVo;
@@ -97,4 +98,12 @@ public interface StudentExaminationTaskDao {
      * @return 学生基本信息
      */
     List<StudentExaminationTaskBaseInfoVo> getBaseInfoByExaminationTaskId(Long examinationTaskId);
+
+    /**
+     * 根据测试任务id查询学生测试结果
+     *
+     * @param examinationTaskId 测试任务id
+     * @return 学生测试结果
+     */
+    List<StudentExaminationResultExcel> getStudentExaminationResultList(Long examinationTaskId);
 }

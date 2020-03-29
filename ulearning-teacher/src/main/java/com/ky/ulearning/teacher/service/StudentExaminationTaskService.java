@@ -2,10 +2,13 @@ package com.ky.ulearning.teacher.service;
 
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.StudentExaminationResultExcel;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.spi.teacher.vo.StudentExaminationResultVo;
 import com.ky.ulearning.spi.teacher.vo.StudentExaminationStatisticsVo;
+
+import java.util.List;
 
 /**
  * 学生测试service - 接口
@@ -51,4 +54,13 @@ public interface StudentExaminationTaskService {
     PageBean<StudentExaminationResultVo> pageStudentExaminationResultList(PageParam pageParam,
                                                                           StudentExaminationResultVo studentExaminationResultVo,
                                                                           String examinationParameters);
+
+    /**
+     * 根据测试任务id查询所有学生测试结果
+     *
+     * @param examinationTaskId     测试任务id
+     * @param examinationParameters 组卷参数
+     * @return 学生测试结果集合
+     */
+    List<StudentExaminationResultExcel> getStudentExaminationResultList(Long examinationTaskId, String examinationParameters);
 }

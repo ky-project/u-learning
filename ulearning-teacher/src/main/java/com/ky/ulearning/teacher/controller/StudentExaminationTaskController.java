@@ -4,12 +4,14 @@ import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.ExcelUtil;
 import com.ky.ulearning.common.core.utils.JsonUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.StudentExaminationResultExcel;
 import com.ky.ulearning.spi.common.vo.ExaminationParamVo;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
@@ -27,11 +29,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -116,6 +121,27 @@ public class StudentExaminationTaskController extends BaseController {
 
         PageBean<StudentExaminationResultVo> pageBean = studentExaminationTaskService.pageStudentExaminationResultList(setPageParam(pageParam), studentExaminationResultVo, examinationTaskEntity.getExaminationParameters());
         return ResponseEntityUtil.ok(JsonResult.buildData(pageBean));
+    }
+
+    @Log("导出学生测试结果统计")
+    @ApiOperation(value = "导出学生测试结果统计", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/export")
+    public ResponseEntity export(Long examinationTaskId) {
+        ValidateHandler.checkNull(examinationTaskId, TeacherErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
+        //权限校验
+        ExaminationTaskEntity examinationTaskEntity = teachingTaskValidUtil.checkExaminationId(examinationTaskId, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+
+        List<StudentExaminationResultExcel> list = studentExaminationTaskService.getStudentExaminationResultList(examinationTaskId, examinationTaskEntity.getExaminationParameters());
+
+        //导出信息
+        byte[] courseFileBytes = ExcelUtil.export(StudentExaminationResultExcel.class, list, examinationTaskEntity.getExaminationName());
+        //设置head
+        HttpHeaders headers = new HttpHeaders();
+        //文件的属性名
+        headers.setContentDispositionFormData("attachment", new String((examinationTaskEntity.getExaminationName() + "-学生测试结果统计.xlsx").getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //响应内容是字节流
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntityUtil.ok(headers, courseFileBytes);
     }
 
 }

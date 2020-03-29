@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -46,6 +47,36 @@ public class ExcelUtil {
             EasyExcel.write(out, excelModel)
                     .sheet("模板")
                     .doWrite(Collections.emptyList());
+            return out.toByteArray();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new BadRequestException(CommonErrorCodeEnum.CREATE_TEMPLATE_ERROR);
+        } finally {
+            if (Objects.nonNull(out)) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据clazz中添加@ExcelProperty等注解的excel类，导出excel
+     *
+     * @param excelModel 带有excel注解的excel模型类的类型
+     * @param data       数据
+     * @param sheetName  sheet名
+     * @return byte[]
+     */
+    public static <T> byte[] export(Class excelModel, List<T> data, String sheetName) {
+        ByteArrayOutputStream out = null;
+        try {
+            out = new ByteArrayOutputStream();
+            EasyExcel.write(out, excelModel)
+                    .sheet(sheetName)
+                    .doWrite(data);
             return out.toByteArray();
         } catch (Exception e) {
             log.error(e.getMessage(), e);

@@ -234,7 +234,7 @@ public class StudentController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(exists));
     }
 
-    @Log(value = "下载学生导入模板", devModel = true)
+    @Log("下载学生导入模板")
     @ApiOperation("下载学生导入模板")
     @PermissionName(source = "student:downloadTemplate", name = "下载学生导入模板", group = "学生管理")
     @GetMapping("/downloadTemplate")

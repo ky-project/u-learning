@@ -183,9 +183,11 @@
         uset.examining_state_switch_time AS examiningStateSwitchTime,
         us.stu_number AS stuNumber,
         us.stu_name AS stuName,
-        us.stu_dept AS stuDept
+        us.stu_dept AS stuDept,
+        uttet.examination_name AS examinationName
         FROM u_student_examination_task uset
         INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+        INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
         WHERE uset.valid = 1
         AND uset.examination_task_id = #{studentExaminationResultVo.examinationTaskId}
         <if test="studentExaminationResultVo.stuName != null and studentExaminationResultVo.stuName != ''">
@@ -237,5 +239,20 @@
           AND uset.examination_task_id = #{examinationTaskId}
         GROUP BY uset.id
         ORDER BY stuTotalScore DESC
+    </select>
+    <!--根据测试任务id查询学生测试结果-->
+    <select id="getStudentExaminationResultList"
+            resultType="com.ky.ulearning.spi.common.excel.StudentExaminationResultExcel">
+        SELECT uset.id AS examiningId,
+               uset.examining_state_switch_time AS examiningStateSwitchTime,
+               us.stu_number AS stuNumber,
+               us.stu_name AS stuName,
+               us.stu_dept AS stuDept,
+               uttet.examination_name AS examinationName
+        FROM u_student_examination_task uset
+                 INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
+                 INNER JOIN u_teaching_task_examination_task uttet ON uset.examination_task_id = uttet.id AND uttet.valid = 1
+        WHERE uset.valid = 1
+          AND uset.examination_task_id = #{studentExaminationResultVo.examinationTaskId}
     </select>
 </mapper>

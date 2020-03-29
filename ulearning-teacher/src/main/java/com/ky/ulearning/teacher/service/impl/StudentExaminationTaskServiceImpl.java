@@ -4,6 +4,7 @@ import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.utils.ExaminationParamUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.excel.StudentExaminationResultExcel;
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
 import com.ky.ulearning.spi.student.dto.StudentExaminationTaskDto;
 import com.ky.ulearning.spi.student.vo.StudentExaminationTaskBaseInfoVo;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -119,7 +121,7 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
     @Override
     public PageBean<StudentExaminationResultVo> pageStudentExaminationResultList(PageParam pageParam, StudentExaminationResultVo studentExaminationResultVo, String examinationParameters) {
         List<StudentExaminationResultVo> resultList = Optional.ofNullable(studentExaminationTaskDao.pageStudentExaminationResultList(pageParam, studentExaminationResultVo)).orElse(Collections.emptyList());
-
+        List<StudentExaminationTaskBaseInfoVo> studentExaminationTaskBaseInfoVoList = Optional.ofNullable(studentExaminationTaskDao.getBaseInfoByExaminationTaskId(studentExaminationResultVo.getExaminationTaskId())).orElse(Collections.emptyList());
         //数据填充：成绩，准确率，排名
         for (StudentExaminationResultVo examinationResultVo : resultList) {
             //获取学生成绩和准确率
@@ -129,7 +131,6 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
             examinationResultVo.setStuScore(Optional.ofNullable(scoreAndAccuracyMap.get("stuScore"))
                     .map(o -> Double.valueOf(o.toString())).orElse(0.0));
             //获取学生测试信息，计算排名
-            List<StudentExaminationTaskBaseInfoVo> studentExaminationTaskBaseInfoVoList = Optional.ofNullable(studentExaminationTaskDao.getBaseInfoByExaminationTaskId(studentExaminationResultVo.getExaminationTaskId())).orElse(Collections.emptyList());
             int index = 1;
             for (StudentExaminationTaskBaseInfoVo studentExaminationTaskBaseInfoVo : studentExaminationTaskBaseInfoVoList) {
                 if (studentExaminationTaskBaseInfoVo.getStuTotalScore() <= examinationResultVo.getStuScore()) {
@@ -146,5 +147,31 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
                 //设置查询结果
                 .setContent(resultList);
         return setPageBeanProperties(pageBean, pageParam);
+    }
+
+    @Override
+    public List<StudentExaminationResultExcel> getStudentExaminationResultList(Long examinationTaskId, String examinationParameters) {
+        List<StudentExaminationResultExcel> resultList = Optional.ofNullable(studentExaminationTaskDao.getStudentExaminationResultList(examinationTaskId)).orElse(Collections.emptyList());
+        List<StudentExaminationTaskBaseInfoVo> studentExaminationTaskBaseInfoVoList = Optional.ofNullable(studentExaminationTaskDao.getBaseInfoByExaminationTaskId(examinationTaskId)).orElse(Collections.emptyList());
+        //数据填充：成绩，准确率，排名
+        for (StudentExaminationResultExcel examinationResultExcel : resultList) {
+            //获取学生成绩和准确率
+            Map<String, Object> scoreAndAccuracyMap = examinationResultDao.getScoreAndAccuracyByExaminingId(examinationResultExcel.getExaminingId());
+            examinationResultExcel.setAccuracy(Optional.ofNullable(scoreAndAccuracyMap.get("accuracy"))
+                    .map(o -> Double.valueOf(o.toString())).orElse(0.0));
+            examinationResultExcel.setStuScore(Optional.ofNullable(scoreAndAccuracyMap.get("stuScore"))
+                    .map(o -> Double.valueOf(o.toString())).orElse(0.0));
+            examinationResultExcel.setAccuracyStr(String.format("%.2f", (examinationResultExcel.getAccuracy() * 100)) + "%");
+            //获取学生测试信息，计算排名
+            int index = 1;
+            for (StudentExaminationTaskBaseInfoVo studentExaminationTaskBaseInfoVo : studentExaminationTaskBaseInfoVoList) {
+                if (studentExaminationTaskBaseInfoVo.getStuTotalScore() <= examinationResultExcel.getStuScore()) {
+                    break;
+                }
+                index++;
+            }
+            examinationResultExcel.setRanking(index);
+        }
+        return resultList;
     }
 }
