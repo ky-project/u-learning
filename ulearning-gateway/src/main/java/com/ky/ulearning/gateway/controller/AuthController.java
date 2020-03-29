@@ -2,11 +2,14 @@ package com.ky.ulearning.gateway.controller;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.component.component.RedisClientWrapper;
+import com.ky.ulearning.common.core.component.component.SpringBeanWrapper;
+import com.ky.ulearning.common.core.component.config.properties.RocketMQProperties;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.CommonErrorCodeEnum;
@@ -44,6 +47,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -105,6 +110,9 @@ public class AuthController extends BaseController {
 
     @Autowired
     private RedisClientWrapper redisClientWrapper;
+
+    @Autowired
+    private RocketMQProperties rocketMQProperties;
 
     @ApiOperation(value = "获取个人权限信息", notes = "若为学生，则无权限信息")
     @GetMapping(value = "/permissionInfo")
@@ -174,7 +182,7 @@ public class AuthController extends BaseController {
     @GetMapping(value = "/logout")
     public ResponseEntity logout(HttpServletRequest request,
                                  HttpServletResponse response) {
-        String username = JwtAccountUtil.getUsername();
+        String username = "";
         long currentTime = System.currentTimeMillis();
         redisClientWrapper.delete(MicroConstant.LOGIN_USER_REDIS_PREFIX + username);
         Cookie[] cookies = request.getCookies();
@@ -182,7 +190,10 @@ public class AuthController extends BaseController {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(GatewayConstant.COOKIE_TOKEN)
                         || cookie.getName().equals(GatewayConstant.COOKIE_REFRESH_TOKEN)) {
-                    //TODO 从cookie中获取username进行操作
+                    //从cookie中获取username进行操作
+                    if(StringUtil.isEmpty(username)) {
+                        username = jwtTokenUtil.getUsernameFromToken(cookie.getValue());
+                    }
                     cookie.setMaxAge(0);
                     cookie.setPath("/");
                     response.addCookie(cookie);
@@ -329,11 +340,25 @@ public class AuthController extends BaseController {
         logEntity.setLogAddress(IpUtil.getCityInfo(logEntity.getLogIp()));
         logEntity.setCreateBy("system");
         logEntity.setUpdateBy("system");
+        logEntity.setCreateTime(new Date());
+        logEntity.setUpdateTime(new Date());
 
         Map<String, Object> logMap =
                 JSONObject.parseObject(JsonUtil.toJsonString(logEntity));
 
-        monitorManageRemoting.add(logMap);
+        //添加日志
+        if (rocketMQProperties.getIsEnable()) {
+            try {
+                DefaultMQProducer defaultMQProducer = SpringBeanWrapper.getBean(DefaultMQProducer.class);
+                defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, gatewayConfigParameters.getAppName(), JSON.toJSONString(logEntity).getBytes()));
+                log.info(gatewayConfigParameters.getAppName() + " 生成一条日志发送至队列");
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                monitorManageRemoting.add(logMap);
+            }
+        } else {
+            monitorManageRemoting.add(logMap);
+        }
     }
 
     @Log("修改个人信息")
