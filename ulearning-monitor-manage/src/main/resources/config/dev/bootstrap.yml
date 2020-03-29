@@ -14,6 +14,11 @@ spring:
       ui:
         title: U-Learning 服务监控
         public-url: http://www.darren1112.com
+      notify:
+        mail:
+          to: ludaye1112@163.com
+          from: ludaye1112@163.com
+          enabled: true
 #服务注册中心配置
 eureka:
   instance:
