@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Getter
-@RefreshScope
 public class GatewayConfigParameters {
 
     @Value("${spring.application.name}")
