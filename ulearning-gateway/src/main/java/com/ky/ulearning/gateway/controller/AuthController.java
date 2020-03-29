@@ -191,7 +191,7 @@ public class AuthController extends BaseController {
                 if (cookie.getName().equals(GatewayConstant.COOKIE_TOKEN)
                         || cookie.getName().equals(GatewayConstant.COOKIE_REFRESH_TOKEN)) {
                     //从cookie中获取username进行操作
-                    if(StringUtil.isEmpty(username)) {
+                    if (StringUtil.isEmpty(username)) {
                         username = jwtTokenUtil.getUsernameFromToken(cookie.getValue());
                     }
                     cookie.setMaxAge(0);
@@ -509,28 +509,33 @@ public class AuthController extends BaseController {
     @PostMapping("/sendUpdatePwdEmail")
     public ResponseEntity<JsonResult<String>> sendUpdatePwdEmail(ForgetPasswordDto forgetPasswordDto) {
         ValidateHandler.checkParameter(StringUtil.isEmpty(forgetPasswordDto.getEmail()), GatewayErrorCodeEnum.EMAIL_CANNOT_BE_NULL);
-        //获取学生教师信息
-        TeacherEntity teacherEntity = getByTeaEmail(forgetPasswordDto.getEmail());
-        StudentEntity studentEntity = getByStuEmail(forgetPasswordDto.getEmail());
-        //都不存在时
-        if (teacherEntity == null && studentEntity == null) {
-            throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_NOT_EXISTS);
-        }
-        //账号都存在时
-        if (teacherEntity != null && studentEntity != null) {
-            throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_ERROR);
-        }
-        String username;
-        if (teacherEntity != null) {
-            forgetPasswordDto.setId(teacherEntity.getId())
-                    .setSysRole(MicroConstant.SYS_ROLE_TEACHER)
-                    .setUsername(teacherEntity.getTeaNumber());
-            username = teacherEntity.getTeaName();
-        } else {
-            forgetPasswordDto.setId(studentEntity.getId())
-                    .setSysRole(MicroConstant.SYS_ROLE_STUDENT)
-                    .setUsername(studentEntity.getStuNumber());
-            username = studentEntity.getStuName();
+        ValidateHandler.checkParameter(StringUtil.isEmpty(forgetPasswordDto.getUserType()), GatewayErrorCodeEnum.USER_TYPE_CANNOT_BE_NULL);
+
+
+        switch (forgetPasswordDto.getUserType()) {
+            //教师
+            case MicroConstant.SYS_TYPE_TEACHER:
+                TeacherEntity teacherEntity = getByTeaEmail(forgetPasswordDto.getEmail());
+                if (Objects.isNull(teacherEntity)) {
+                    throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_NOT_EXISTS);
+                }
+                forgetPasswordDto.setId(teacherEntity.getId())
+                        .setSysRole(MicroConstant.SYS_ROLE_TEACHER)
+                        .setUsername(teacherEntity.getTeaNumber());
+                break;
+            //学生
+            case MicroConstant.SYS_TYPE_STUDENT:
+                StudentEntity studentEntity = getByStuEmail(forgetPasswordDto.getEmail());
+                if (Objects.isNull(studentEntity)) {
+                    throw new BadRequestException(GatewayErrorCodeEnum.EMAIL_NOT_EXISTS);
+                }
+                forgetPasswordDto.setId(studentEntity.getId())
+                        .setSysRole(MicroConstant.SYS_ROLE_STUDENT)
+                        .setUsername(studentEntity.getStuNumber());
+                break;
+            //未知
+            default:
+                throw new BadRequestException(GatewayErrorCodeEnum.USER_TYPE_ERROR);
         }
         //生成随机字串
         String code = VerifyCodeUtil.generateVerifyCode(6, VerifyCodeUtil.NUMBER_VERIFY_CODES);
@@ -538,7 +543,7 @@ public class AuthController extends BaseController {
         forgetPasswordDto.setCode(code);
         redisService.saveCode(uuid, JsonUtil.toJsonString(forgetPasswordDto));
         //发送邮件
-        sendMailUtil.sendVerifyCodeMail(username, code, forgetPasswordDto.getEmail());
+        sendMailUtil.sendVerifyCodeMail(forgetPasswordDto.getUsername(), code, forgetPasswordDto.getEmail());
         return ResponseEntityUtil.ok(JsonResult.buildData(uuid));
     }
 
@@ -578,7 +583,7 @@ public class AuthController extends BaseController {
 
     @Log("通过邮箱修改密码")
     @ApiOperation(value = "通过邮箱修改密码", notes = "忘记密码时使用")
-    @ApiOperationSupport(ignoreParameters = {"email"})
+    @ApiOperationSupport(ignoreParameters = {"email", "userType"})
     @PostMapping("/updatePwdByEmail")
     public ResponseEntity<JsonResult> updatePwdByEmail(ForgetPasswordDto forgetPasswordDto) {
         ValidatorBuilder.build()
@@ -600,19 +605,21 @@ public class AuthController extends BaseController {
         Map<String, Object> param = new HashMap<>(4);
         param.put("id", checkDto.getId());
         param.put("updateBy", checkDto.getUsername());
-        String sysRole = checkDto.getSysRole();
 
-        //根据不同系统角色调用不同接口
-        if (MicroConstant.SYS_ROLE_TEACHER.equals(sysRole)) {
-            //教师身份
-            param.put("teaPassword", forgetPasswordDto.getPassword());
-            systemManageRemoting.teacherUpdate(param);
-        } else if (MicroConstant.SYS_ROLE_STUDENT.equals(sysRole)) {
-            //学生身份
-            param.put("stuPassword", forgetPasswordDto.getPassword());
-            systemManageRemoting.studentUpdate(param);
-        } else {
-            return ResponseEntityUtil.badRequest(JsonResult.buildErrorEnum(GatewayErrorCodeEnum.ACCOUNT_ERROR));
+        switch (checkDto.getUserType()) {
+            //教师
+            case MicroConstant.SYS_TYPE_TEACHER:
+                param.put("teaPassword", forgetPasswordDto.getPassword());
+                systemManageRemoting.teacherUpdate(param);
+                break;
+            //学生
+            case MicroConstant.SYS_TYPE_STUDENT:
+                param.put("stuPassword", forgetPasswordDto.getPassword());
+                systemManageRemoting.studentUpdate(param);
+                break;
+            //未知
+            default:
+                throw new BadRequestException(GatewayErrorCodeEnum.USER_TYPE_ERROR);
         }
         //返回信息
         return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));

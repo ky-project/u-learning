@@ -37,6 +37,9 @@ public class ForgetPasswordDto implements Serializable {
     @ApiModelProperty(value = "发送邮件生成的uuid")
     private String uuid;
 
+    @ApiModelProperty(value = "用户类型 1：教师 2：学生")
+    private Integer userType;
+
     @Override
     public String toString() {
         return "ForgetPasswordDto{" +
