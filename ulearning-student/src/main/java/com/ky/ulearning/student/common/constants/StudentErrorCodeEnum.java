@@ -18,6 +18,7 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     DOCUMENTATION_PARENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "文件资料父节点id不能为空"),
     RESOURCE_PARENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "教学资源父节点id不能为空"),
     EXPERIMENT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验id不能为空"),
+    EXPERIMENT_RESULT_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验结果id不能为空"),
     EXPERIMENT_RESULT_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "实验结果和实验附件不能都为空"),
     EXAMINATION_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "测试任务id不能为空"),
     QUESTION_ID_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "试题id不能为空"),
@@ -48,6 +49,7 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     EXPERIMENT_RESULT_ILLEGAL(HttpStatus.BAD_REQUEST, "实验结果已提交，无法重复提交"),
     EXAMINATION_TASK_ILLEGAL(HttpStatus.BAD_REQUEST, "测试任务未开始或已结束"),
     STUDENT_EXAMINATION_TASK_ILLEGAL(HttpStatus.BAD_REQUEST, "您还未开始测试"),
+    EXPERIMENT_RESULT_SHARED_ILLEGAL(HttpStatus.BAD_REQUEST, "无法访问该实验结果"),
 
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     COURSE_FOLDER_CANNOT_DOWNLOAD(HttpStatus.BAD_REQUEST, "暂不支持文件夹下载"),

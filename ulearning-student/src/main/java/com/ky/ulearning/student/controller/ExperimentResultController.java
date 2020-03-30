@@ -25,6 +25,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -119,6 +122,44 @@ public class ExperimentResultController extends BaseController {
         studentTeachingTaskUtil.checkExperimentId(experimentResultDto.getExperimentId(), stuId);
         PageBean<ExperimentResultDto> experimentResultDtoList = experimentResultService.pageList(setPageParam(pageParam), experimentResultDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDtoList));
+    }
+
+    @Log(value = "根据实验结果id查询优秀实验结果", devModel = true)
+    @ApiOperation(value = "根据实验结果id查询优秀实验结果", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/getSharedById")
+    public ResponseEntity<JsonResult<ExperimentResultDto>> getSharedById(Long id) {
+        ValidateHandler.checkNull(id, StudentErrorCodeEnum.EXPERIMENT_RESULT_ID_CANNOT_BE_NULL);
+
+        ExperimentResultEntity experimentResultEntity = experimentResultService.getById(id);
+        ValidateHandler.checkParameter(!experimentResultEntity.getExperimentShared(), StudentErrorCodeEnum.EXPERIMENT_RESULT_SHARED_ILLEGAL);
+
+        //查询实验结果
+        ExperimentResultDto experimentResultDto = experimentResultService.getDetailByExperimentIdAndStuId(experimentResultEntity.getExperimentId(), experimentResultEntity.getStuId());
+        ValidateHandler.checkNull(experimentResultDto, StudentErrorCodeEnum.EXPERIMENT_RESULT_NOT_EXISTS);
+
+        return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDto));
+    }
+
+    @Log(value = "根据实验结果id下载优秀实验结果", devModel = true)
+    @ApiOperation(value = "根据实验结果id下载优秀实验结果", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/downloadById")
+    public ResponseEntity downloadById(Long id) {
+        ValidateHandler.checkNull(id, StudentErrorCodeEnum.EXPERIMENT_RESULT_ID_CANNOT_BE_NULL);
+
+        ExperimentResultEntity experimentResultEntity = experimentResultService.getById(id);
+        ValidateHandler.checkParameter(!experimentResultEntity.getExperimentShared(), StudentErrorCodeEnum.EXPERIMENT_RESULT_SHARED_ILLEGAL);
+
+        //下载并校验附件是否过期
+        byte[] attachmentBytes = fastDfsClientWrapper.download(experimentResultEntity.getExperimentUrl());
+        ValidateHandler.checkParameter(attachmentBytes == null, StudentErrorCodeEnum.ATTACHMENT_ILLEGAL);
+
+        //设置head
+        HttpHeaders headers = new HttpHeaders();
+        //文件的属性名
+        headers.setContentDispositionFormData("attachment", new String(experimentResultEntity.getExperimentAttachmentName().getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
+        //响应内容是字节流
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return ResponseEntityUtil.ok(headers, attachmentBytes);
     }
 }
 
