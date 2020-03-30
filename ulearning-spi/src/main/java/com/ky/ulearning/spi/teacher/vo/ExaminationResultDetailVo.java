@@ -31,6 +31,12 @@ public class ExaminationResultDetailVo {
     private String examinationName;
 
     /**
+     * 测试状态
+     */
+    @ApiModelProperty("测试状态 1：进行中 2：已完成")
+    private Integer examiningState;
+
+    /**
      * 组卷题目
      */
     @ApiModelProperty("组卷题目")

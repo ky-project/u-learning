@@ -95,6 +95,7 @@ public class StudentExaminationTaskController extends BaseController {
         examinationResultDetailVo.setExaminingRemainTime(studentExaminationTaskDto.getExaminingRemainTime());
         examinationResultDetailVo.setCourseQuestion(courseQuestionVoMapList);
         examinationResultDetailVo.setExaminationName(examinationTaskEntity.getExaminationName());
+        examinationResultDetailVo.setExaminingState(studentExaminationTaskDto.getExaminingState());
         return ResponseEntityUtil.ok(JsonResult.buildData(examinationResultDetailVo));
     }
 
