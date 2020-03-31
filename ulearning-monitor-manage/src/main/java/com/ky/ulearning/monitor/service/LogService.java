@@ -90,4 +90,11 @@ public interface LogService {
      * @return 返回每天的访问量
      */
     TrafficOperationVo getDaysOperation(Date today, DateTime oldDate, String username);
+
+    /**
+     * 批量插入记录
+     *
+     * @param logEntityList 待插入的日志对象
+     */
+    void batchInsert(List<LogEntity> logEntityList);
 }

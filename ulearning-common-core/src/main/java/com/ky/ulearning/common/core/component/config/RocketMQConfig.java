@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -108,10 +109,10 @@ public class RocketMQConfig {
         //设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费 如果非第一次启动，那么按照上次消费的位置继续消费
         // consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         //设置消费模型，集群还是广播，默认为集群
-        // consumer.setMessageModel(MessageModel.CLUSTERING);
+        consumer.setMessageModel(arc.getMessageModel());
 
         //设置一次消费消息的条数，默认为1条
-        consumer.setConsumeMessageBatchMaxSize(this.rocketMQProperties.getConsumeMessageBatchMaxSize());
+        consumer.setConsumeMessageBatchMaxSize(arc.getConsumeMessageBatchMaxSize());
         try {
             consumer.subscribe(arc.getTopics(), arc.getTags());
             consumer.start();

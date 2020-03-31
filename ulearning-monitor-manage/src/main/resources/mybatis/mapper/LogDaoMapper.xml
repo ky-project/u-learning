@@ -206,4 +206,18 @@
           AND DATE(create_time) = #{today}
           AND log_username = #{username}
     </select>
+    <!--批量插入记录-->
+    <select id="batchInsert">
+        INSERT INTO u_log(<include refid="insertSql"/>)
+        VALUES
+        <foreach collection="logEntityList" item="logEntity" separator=",">
+            (#{logUsername}, #{logDescription},
+            #{logModule}, #{logIp},
+            #{logType}, #{logException},
+            #{logParams}, #{logTime},
+            #{logAddress}, #{memo},
+            #{createBy}, #{updateBy},
+            #{createTime}, #{updateTime} )
+        </foreach>
+    </select>
 </mapper>

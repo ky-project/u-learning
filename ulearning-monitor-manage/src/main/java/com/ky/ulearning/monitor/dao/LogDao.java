@@ -104,4 +104,11 @@ public interface LogDao {
      * @return 当天该用户访问操作数
      */
     Long getTodayOperationNumberByUsername(@Param("today") String today, @Param("username") String username);
+
+    /**
+     * 批量插入记录
+     *
+     * @param logEntityList 待插入的日志对象
+     */
+    void batchInsert(@Param("logEntityList") List<LogEntity> logEntityList);
 }

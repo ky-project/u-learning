@@ -3,6 +3,7 @@ package com.ky.ulearning.common.core.rocketmq;
 import org.apache.rocketmq.client.consumer.MQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.MessageListener;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 /**
  * 消费者基础信息
@@ -17,6 +18,8 @@ public abstract class AbstractRocketConsumer implements RocketConsumer {
     private MessageListenerConcurrently messageListenerConcurrently;
     private String consumerTitle;
     private MQPushConsumer mqPushConsumer;
+    private MessageModel messageModel;
+    private Integer consumeMessageBatchMaxSize;
 
     /**
      * 必要的信息
@@ -29,8 +32,11 @@ public abstract class AbstractRocketConsumer implements RocketConsumer {
         this.topics = topics;
         this.tags = tags;
         this.consumerTitle = consumerTitle;
+        this.messageModel = MessageModel.CLUSTERING;
+        this.consumeMessageBatchMaxSize = 1;
     }
 
+    @Override
     public abstract void init();
 
     @Override
@@ -56,5 +62,21 @@ public abstract class AbstractRocketConsumer implements RocketConsumer {
 
     public void setMqPushConsumer(MQPushConsumer mqPushConsumer) {
         this.mqPushConsumer = mqPushConsumer;
+    }
+
+    public MessageModel getMessageModel() {
+        return messageModel;
+    }
+
+    public Integer getConsumeMessageBatchMaxSize() {
+        return consumeMessageBatchMaxSize;
+    }
+
+    public void setMessageModel(MessageModel messageModel) {
+        this.messageModel = messageModel;
+    }
+
+    public void setConsumeMessageBatchMaxSize(Integer consumeMessageBatchMaxSize) {
+        this.consumeMessageBatchMaxSize = consumeMessageBatchMaxSize;
     }
 }

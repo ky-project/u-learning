@@ -131,4 +131,9 @@ public class LogServiceImpl extends BaseService implements LogService {
         trafficOperationVo.setSelfOperation(selfOperation);
         return trafficOperationVo;
     }
+
+    @Override
+    public void batchInsert(List<LogEntity> logEntityList) {
+        logDao.batchInsert(logEntityList);
+    }
 }

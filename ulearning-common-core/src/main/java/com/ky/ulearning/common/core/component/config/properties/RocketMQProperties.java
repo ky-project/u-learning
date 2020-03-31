@@ -60,10 +60,4 @@ public class RocketMQProperties {
     @Value("${rocketmq.consumer.consumeThreadMax}")
     private Integer consumeThreadMax;
 
-    /**
-     * 设置一次消费消息的条数，默认为1条
-     */
-    @Value("${rocketmq.consumer.consumeMessageBatchMaxSize}")
-    private Integer consumeMessageBatchMaxSize;
-
 }
