@@ -1,5 +1,6 @@
 package com.ky.ulearning.gateway.common.utils;
 
+import com.ky.ulearning.common.core.component.component.SendEmailWrapper;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.gateway.common.constant.GatewayConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -72,28 +73,12 @@ public class SendMailUtil {
             "</table>";
 
     @Autowired
-    private JavaMailSender javaMailSender;
-
-    @Autowired
-    private DefaultConfigParameters defaultConfigParameters;
+    private SendEmailWrapper sendEmailWrapper;
 
     @Async
     public void sendVerifyCodeMail(String username, String code, String sendTo) {
         String tmpMailContent = VERIFY_CODE_MAIL;
         tmpMailContent = String.format(tmpMailContent, username, code);
-        MimeMessage message;
-        try {
-            message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(defaultConfigParameters.getMailFrom());
-            // 接收地址
-            helper.setTo(sendTo);
-            // 标题
-            helper.setSubject(GatewayConstant.VERIFY_CODE_MAIL_TITLE);
-            helper.setText(tmpMailContent, true);
-            javaMailSender.send(message);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
+        sendEmailWrapper.sendHtmlMail(sendTo, tmpMailContent, GatewayConstant.VERIFY_CODE_MAIL_TITLE);
     }
 }
