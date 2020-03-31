@@ -52,6 +52,7 @@ public class RocketMQConfig {
         }
         DefaultMQProducer producer;
         producer = new DefaultMQProducer(rocketMQProperties.getGroupName());
+        producer.setInstanceName(System.currentTimeMillis() + "");
 
         producer.setNamesrvAddr(rocketMQProperties.getNamesrvAddr());
         // producer.setCreateTopicKey("AUTO_CREATE_TOPIC_KEY");
@@ -89,7 +90,7 @@ public class RocketMQConfig {
             AbstractRocketConsumer consumer = consumers.get(beanName);
             consumer.init();
             createConsumer(consumer);
-            log.info("init success consumer title {} , toips {} , tags {}", consumer.getConsumerTitle(), consumer.getTags(),
+            log.info("init success consumer title {} , topics {} , tags {}", consumer.getConsumerTitle(), consumer.getTags(),
                     consumer.getTopics());
         }
     }
@@ -101,6 +102,7 @@ public class RocketMQConfig {
      */
     private void createConsumer(AbstractRocketConsumer arc) {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(this.rocketMQProperties.getGroupName());
+        consumer.setInstanceName(System.currentTimeMillis() + "");
         consumer.setNamesrvAddr(this.rocketMQProperties.getNamesrvAddr());
         consumer.setConsumeThreadMin(this.rocketMQProperties.getConsumeThreadMin());
         consumer.setConsumeThreadMax(this.rocketMQProperties.getConsumeThreadMax());
@@ -118,7 +120,7 @@ public class RocketMQConfig {
             consumer.start();
             arc.setMqPushConsumer(consumer);
         } catch (MQClientException e) {
-            log.error("info consumer title {}", arc.getConsumerTitle(), e);
+            log.error("error info consumer title {}", arc.getConsumerTitle(), e);
         }
 
     }

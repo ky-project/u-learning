@@ -32,4 +32,9 @@ public class CommonConstant {
      */
     public static final String ROCKET_LOG_MONITOR_TOPIC = "LogMonitor";
 
+    /**
+     * rocketmq教师动态队列主题
+     */
+    public static final String ROCKET_LOG_TEACHER_ACTIVITY_TOPIC = "TeacherActivity";
+
 }

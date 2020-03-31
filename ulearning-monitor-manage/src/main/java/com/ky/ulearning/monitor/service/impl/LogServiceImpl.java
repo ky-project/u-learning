@@ -133,6 +133,7 @@ public class LogServiceImpl extends BaseService implements LogService {
     }
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public void batchInsert(List<LogEntity> logEntityList) {
         logDao.batchInsert(logEntityList);
     }

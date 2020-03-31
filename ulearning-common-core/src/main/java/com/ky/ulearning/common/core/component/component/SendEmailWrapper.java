@@ -39,4 +39,21 @@ public class SendEmailWrapper {
             log.error(e.getMessage(), e);
         }
     }
+
+    public void batchSendHtmlMail(String[] sendTo, String mailContent, String subject) {
+        MimeMessage message;
+        try {
+            message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(defaultConfigParameters.getMailFrom());
+            // 接收地址
+            helper.setTo(sendTo);
+            // 标题
+            helper.setSubject(subject);
+            helper.setText(mailContent, true);
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 }

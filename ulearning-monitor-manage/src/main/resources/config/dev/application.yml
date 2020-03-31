@@ -41,3 +41,21 @@ management:
   endpoint:
     health:
       show-details: always
+
+spring:
+  #freemarker配置
+  freemarker:
+    #模板加载路径
+    template-loader-path: classpath:static/template/
+    #模板文件后缀
+    suffix: .ftl
+    enabled: true
+    cache: false
+    charset: UTF-8
+    content-type: text/html
+    allow-request-override: false
+    #是否需要检查模板路径是否存在
+    check-template-location: true
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false

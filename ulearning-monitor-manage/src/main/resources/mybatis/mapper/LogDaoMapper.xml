@@ -211,13 +211,13 @@
         INSERT INTO u_log(<include refid="insertSql"/>)
         VALUES
         <foreach collection="logEntityList" item="logEntity" separator=",">
-            (#{logUsername}, #{logDescription},
-            #{logModule}, #{logIp},
-            #{logType}, #{logException},
-            #{logParams}, #{logTime},
-            #{logAddress}, #{memo},
-            #{createBy}, #{updateBy},
-            #{createTime}, #{updateTime} )
+            (#{logEntity.logUsername}, #{logEntity.logDescription},
+            #{logEntity.logModule}, #{logEntity.logIp},
+            #{logEntity.logType}, #{logEntity.logException},
+            #{logEntity.logParams}, #{logEntity.logTime},
+            #{logEntity.logAddress}, #{logEntity.memo},
+            #{logEntity.createBy}, #{logEntity.updateBy},
+            #{logEntity.createTime}, #{logEntity.updateTime} )
         </foreach>
     </select>
 </mapper>

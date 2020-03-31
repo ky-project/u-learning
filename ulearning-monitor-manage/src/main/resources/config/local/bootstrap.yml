@@ -18,7 +18,7 @@ spring:
         mail:
           to: ludaye1112@163.com
           from: ludaye1112@163.com
-          enabled: true
+          enabled: false
 #服务注册中心配置
 eureka:
   instance:
