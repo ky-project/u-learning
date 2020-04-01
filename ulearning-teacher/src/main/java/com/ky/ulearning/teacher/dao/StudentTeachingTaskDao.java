@@ -78,4 +78,12 @@ public interface StudentTeachingTaskDao {
      * @return 学生人数
      */
     Integer countByTeachingTaskId(Long teachingTaskId);
+
+    /**
+     * 根据教学任务id查询学生信息
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 学生信息集合
+     */
+    List<StudentEntity> getStudentListByTeachingTaskId(Long teachingTaskId);
 }

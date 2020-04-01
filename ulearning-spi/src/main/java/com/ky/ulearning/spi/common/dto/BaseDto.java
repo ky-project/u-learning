@@ -3,7 +3,9 @@ package com.ky.ulearning.spi.common.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,6 +14,8 @@ import java.util.Date;
  * @author luyuhao
  * @since 20/01/13 00:41
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class BaseDto implements Serializable {
     /**

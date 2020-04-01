@@ -30,7 +30,11 @@ public class AsyncExceptionConfig implements AsyncConfigurer {
             for (Object object : objects) {
                 stringBuilder.append(object);
             }
-            stringBuilder.append("}");
+            stringBuilder.append("}")
+                    .append("，错误信息:{")
+                    .append(throwable.getMessage())
+                    .append("}");
+
             log.error(stringBuilder.toString());
         }
     }

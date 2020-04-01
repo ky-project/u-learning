@@ -143,4 +143,12 @@
         WHERE valid = 1
           AND teaching_task_id = #{teachingTaskId}
     </select>
+    <!--根据教学任务id查询学生信息-->
+    <select id="getStudentListByTeachingTaskId" resultType="com.ky.ulearning.spi.system.entity.StudentEntity">
+        SELECT us.id, us.stu_email AS stuEmail, us.stu_phone AS stuPhone
+        FROM u_student_teaching_task ustt
+                 INNER JOIN u_student us ON ustt.stu_id = us.id AND us.valid = 1
+        WHERE ustt.teaching_task_id = #{teachingTaskId}
+        AND ustt.valid = 1
+    </select>
 </mapper>

@@ -1,18 +1,22 @@
-package com.ky.ulearning.spi.monitor.entity;
+package com.ky.ulearning.spi.common.dto;
 
-import com.ky.ulearning.spi.common.entity.BaseEntity;
+import com.ky.ulearning.spi.common.dto.BaseDto;
+import com.ky.ulearning.spi.common.entity.ActivityEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 动态实体类
+ * 动态dto {@link ActivityEntity}
+ *
+ * @author luyuhao
+ * @since 2020/03/31 23:59
  */
-@ApiModel("动态实体类")
+@ApiModel("动态dto")
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ActivityEntity extends BaseEntity {
+public class ActivityDto extends BaseDto {
 
     /**
      * 未查阅的学生/教师id 逗号分隔
@@ -43,5 +47,4 @@ public class ActivityEntity extends BaseEntity {
      */
     @ApiModelProperty("推送邮箱")
     private String activityEmail;
-
 }

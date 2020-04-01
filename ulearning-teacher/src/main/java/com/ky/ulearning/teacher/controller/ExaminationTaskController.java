@@ -2,6 +2,7 @@ package com.ky.ulearning.teacher.controller;
 
 import com.ky.ulearning.common.core.annotation.Log;
 import com.ky.ulearning.common.core.api.controller.BaseController;
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.JsonUtil;
@@ -19,6 +20,7 @@ import com.ky.ulearning.spi.teacher.dto.ExaminationTaskDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
+import com.ky.ulearning.teacher.service.ActivityService;
 import com.ky.ulearning.teacher.service.ExaminationTaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,6 +54,9 @@ public class ExaminationTaskController extends BaseController {
     @Autowired
     private TeachingTaskValidUtil teachingTaskValidUtil;
 
+    @Autowired
+    private ActivityService activityService;
+
     @Log("添加测试任务")
     @ApiOperationSupport(ignoreParameters = "id")
     @ApiOperation(value = "添加测试任务", notes = "只能查询/操作属于自己的教学任务的数据")
@@ -73,6 +78,10 @@ public class ExaminationTaskController extends BaseController {
         examinationTaskDto.setUpdateBy(username);
         examinationTaskDto.setCreateBy(username);
         examinationTaskService.save(examinationTaskDto);
+        if (!CommonConstant.EXAMINATION_STATE[0].equals(examinationTaskDto.getExaminationState())
+                && !CommonConstant.EXAMINATION_STATE[3].equals(examinationTaskDto.getExaminationState())) {
+            activityService.createExaminationTask(examinationTaskDto.getId());
+        }
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(examinationTaskDto.getId(), "添加成功"));
     }
 

@@ -2,7 +2,9 @@ package com.ky.ulearning.spi.common.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +15,8 @@ import java.util.Date;
  * @author luyuhao
  * @date 19/12/08 03:39
  */
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class BaseEntity implements Serializable {
     /**

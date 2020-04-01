@@ -99,4 +99,12 @@ public interface TeachingTaskDao {
      * @return 课程id
      */
     Long getCourseIdById(Long id);
+
+    /**
+     * 根据id查询教学任务信息
+     *
+     * @param id 教学任务id
+     * @return 教学任务信息
+     */
+    TeachingTaskDto getInfoById(Long id);
 }

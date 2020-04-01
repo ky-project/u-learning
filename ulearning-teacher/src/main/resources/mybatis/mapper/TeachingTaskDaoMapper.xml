@@ -208,7 +208,10 @@
     </select>
     <!--获取教师所有教学任务信息-->
     <select id="getAll" resultMap="TeachingTaskVoResultMap">
-        SELECT utt.id, utt.teaching_task_alias, utt.term, concat('[', utt.term, ']', utt.teaching_task_alias) AS showName
+        SELECT utt.id,
+               utt.teaching_task_alias,
+               utt.term,
+               concat('[', utt.term, ']', utt.teaching_task_alias) AS showName
         FROM u_teaching_task utt
                  INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
         WHERE utt.valid = 1
@@ -221,5 +224,25 @@
         FROM u_teaching_task
         WHERE valid = 1
           AND id = #{id}
+    </select>
+    <!--根据id查询教学任务信息-->
+    <select id="getInfoById" resultType="com.ky.ulearning.spi.system.dto.TeachingTaskDto">
+        SELECT utt.id,
+               utt.course_id           AS courseId,
+               utt.tea_id              AS teaId,
+               utt.teaching_task_alias AS teachingTaskAlias,
+               utt.term,
+               utt.valid,
+               utt.memo,
+               utt.create_time         AS createTime,
+               utt.create_by           AS createBy,
+               utt.update_time         AS updateTime,
+               utt.update_by           AS updateBy,
+               ut.tea_name             AS teaName
+        FROM u_teaching_task utt
+                 INNER JOIN u_teacher ut ON utt.tea_id = ut.id AND ut.valid = 1
+            AND utt.valid = 1
+        WHERE utt.valid = 1
+          AND utt.id = #{id}
     </select>
 </mapper>
