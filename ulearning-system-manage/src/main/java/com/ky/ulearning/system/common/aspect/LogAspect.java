@@ -134,10 +134,6 @@ public class LogAspect {
                 DefaultMQProducer defaultMQProducer = SpringBeanWrapper.getBean(DefaultMQProducer.class);
                 defaultMQProducer.sendOneway(new Message(CommonConstant.ROCKET_LOG_MONITOR_TOPIC, systemManageConfigParameters.getAppName(), JSON.toJSONString(logEntity).getBytes()));
                 log.info(systemManageConfigParameters.getAppName() + " 生成一条日志发送至队列");
-
-                ActivityEntity activityEntity = needDelete();
-                SendResult send = defaultMQProducer.send(new Message(CommonConstant.ROCKET_LOG_TEACHER_ACTIVITY_TOPIC, systemManageConfigParameters.getAppName(), JSON.toJSONString(activityEntity).getBytes()));
-                log.info("发送教师动态信息成功 {}", send.toString());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 remotingAdd(logEntity);
@@ -159,16 +155,6 @@ public class LogAspect {
         } catch (Exception te) {
             log.error("监控系统未启动");
         }
-    }
-
-    //TODO
-    private ActivityEntity needDelete(){
-        ActivityEntity activityEntity = new ActivityEntity();
-        activityEntity.setActivityTopic("主题名");
-        activityEntity.setActivityEmail("ludaye1112@163.com,784121671@qq.com");
-        activityEntity.setActivityContent("这是邮件内容");
-
-        return activityEntity;
     }
 }
 
