@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -101,15 +102,15 @@ public class RocketMQConfig {
      * @param arc 消费者
      */
     private void createConsumer(AbstractRocketConsumer arc) {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(this.rocketMQProperties.getGroupName());
-        consumer.setInstanceName(System.currentTimeMillis() + "");
+        String groupName = this.rocketMQProperties.getGroupName() + "_" + arc.getTopics();
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(groupName);
         consumer.setNamesrvAddr(this.rocketMQProperties.getNamesrvAddr());
         consumer.setConsumeThreadMin(this.rocketMQProperties.getConsumeThreadMin());
         consumer.setConsumeThreadMax(this.rocketMQProperties.getConsumeThreadMax());
         consumer.setVipChannelEnabled(this.rocketMQProperties.getVipChannelEnabled());
         consumer.registerMessageListener(arc.getMessageListenerConcurrently());
         //设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费 如果非第一次启动，那么按照上次消费的位置继续消费
-        // consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
+         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
         //设置消费模型，集群还是广播，默认为集群
         consumer.setMessageModel(arc.getMessageModel());
 

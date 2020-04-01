@@ -55,11 +55,12 @@ public class LogConsumerMQ extends AbstractRocketConsumer {
                                 || StringUtil.isNotEmpty(logEntity.getLogIp())) {
                             logEntityList.add(logEntity);
                         }
-                        log.info("接受来自 {} 的教师动态信息并处理，队列偏移 {}, 消息长度 {}", msg.getTags(), msg.getQueueOffset(), msgs.size());
+                        log.info("接受来自 {} 的日志信息并处理，队列偏移 {}", msg.getTags(), msg.getQueueOffset());
                     }
                     if (!CollectionUtils.isEmpty(logEntityList)) {
                         logService.batchInsert(logEntityList);
                     }
+                    log.info("完成日志消息处理, 消息长度 {}", msgs.size());
                 } catch (Exception e) {
                     //日志处理异常不处理，打日志，防止死信和消息堆积
                     log.error(e.getMessage(), e);
