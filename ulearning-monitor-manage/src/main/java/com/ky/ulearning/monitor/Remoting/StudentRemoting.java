@@ -1,4 +1,4 @@
-package com.ky.ulearning.monitor.Remoting;
+package com.ky.ulearning.monitor.remoting;
 
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.spi.common.vo.DruidWebUriVo;
