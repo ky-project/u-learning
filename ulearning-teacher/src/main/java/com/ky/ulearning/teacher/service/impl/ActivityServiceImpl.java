@@ -109,9 +109,6 @@ public class ActivityServiceImpl implements ActivityService {
                 break;
             //测试开始
             case CommonConstant.UPDATE_OPERATION:
-                if (CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState())) {
-                    return;
-                }
                 activityTopic = MessageFormat.format(START_EXAMINATION_TASK_TOPIC, examinationTaskEntity.getExaminationName());
                 activityContent = MessageFormat.format(START_EXAMINATION_TASK_CONTENT,
                         teachingTaskDto.getTeaName(),
