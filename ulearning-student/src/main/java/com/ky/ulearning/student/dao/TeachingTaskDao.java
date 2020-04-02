@@ -76,4 +76,12 @@ public interface TeachingTaskDao {
      * @return 教学任务dto对象
      */
     TeachingTaskDto getDtoById(Long id);
+
+    /**
+     * 根据id查询教学任务对象
+     *
+     * @param id 教学任务id
+     * @return 教学任务对象
+     */
+    TeachingTaskEntity getById(Long id);
 }

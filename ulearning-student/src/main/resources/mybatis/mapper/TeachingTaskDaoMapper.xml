@@ -51,17 +51,17 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,
-        course_id,
-        tea_id,
-        teaching_task_alias,
-        term,
-        `valid`,
-        memo,
-        create_time,
-        create_by,
-        update_time,
-        update_by
+            id,
+            course_id,
+            tea_id,
+            teaching_task_alias,
+            term,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by
     </sql>
 
     <!--分页查询未选教学任务信息-->
@@ -121,7 +121,7 @@
                 AND ut.tea_name LIKE CONCAT('%', #{teachingTaskDto.teaName}, '%')
             </if>
         </where>
-        ORDER BY utt.teaching_task_alias desc
+        ORDER BY utt.teaching_task_alias DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
@@ -219,7 +219,7 @@
                 AND ut.tea_name LIKE CONCAT('%', #{teachingTaskDto.teaName}, '%')
             </if>
         </where>
-        ORDER BY utt.teaching_task_alias desc
+        ORDER BY utt.teaching_task_alias DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
@@ -294,5 +294,13 @@
                  INNER JOIN u_teacher ut ON ut.valid = 1 AND utt.tea_id = ut.id
         WHERE utt.valid = 1
           AND utt.id = #{id}
+    </select>
+    <!--根据id查询教学任务对象-->
+    <select id="getById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND id = #{id}
     </select>
 </mapper>

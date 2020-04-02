@@ -19,6 +19,7 @@ import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
+import com.ky.ulearning.student.service.ActivityService;
 import com.ky.ulearning.student.service.ExperimentResultService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -60,6 +61,9 @@ public class ExperimentResultController extends BaseController {
     @Autowired
     private DefaultConfigParameters defaultConfigParameters;
 
+    @Autowired
+    private ActivityService activityService;
+
     @Log("提交实验结果")
     @ApiOperation(value = "提交实验结果", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "stuId", "experimentCommitTime", "experimentUrl", "experimentScore", "experimentAdvice", "experimentAttachmentName", "experimentShared"})
@@ -93,6 +97,7 @@ public class ExperimentResultController extends BaseController {
             experimentResultDto.setExperimentAttachmentName(file.getOriginalFilename());
         }
         experimentResultService.add(experimentResultDto);
+        activityService.completeExperimentActivity(experimentResultDto.getId(), stuName);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("提交成功"));
     }
 

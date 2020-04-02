@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ky.ulearning.student.dao.ActivityDao">
+    <resultMap id="BaseResultMap" type="com.ky.ulearning.spi.common.entity.ActivityEntity">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_ids" jdbcType="VARCHAR" property="userIds"/>
+        <result column="activity_topic" jdbcType="VARCHAR" property="activityTopic"/>
+        <result column="activity_content" jdbcType="VARCHAR" property="activityContent"/>
+        <result column="activity_type" jdbcType="BOOLEAN" property="activityType"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="activity_email" jdbcType="VARCHAR" property="activityEmail"/>
+    </resultMap>
+    <resultMap id="ActivityDtoMap" type="com.ky.ulearning.spi.common.dto.ActivityDto">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_ids" jdbcType="VARCHAR" property="userIds"/>
+        <result column="activity_topic" jdbcType="VARCHAR" property="activityTopic"/>
+        <result column="activity_content" jdbcType="VARCHAR" property="activityContent"/>
+        <result column="activity_type" jdbcType="BOOLEAN" property="activityType"/>
+        <result column="valid" jdbcType="BOOLEAN" property="valid"/>
+        <result column="memo" jdbcType="VARCHAR" property="memo"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="activity_email" jdbcType="VARCHAR" property="activityEmail"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+            id,
+            user_ids,
+            activity_topic,
+            activity_content,
+            activity_type,
+            `valid`,
+            memo,
+            create_time,
+            create_by,
+            update_time,
+            update_by,
+            activity_email
+    </sql>
+    <insert id="insert" keyColumn="id" keyProperty="id"
+            parameterType="com.ky.ulearning.spi.common.entity.ActivityEntity" useGeneratedKeys="true">
+        INSERT INTO u_activity (user_ids, activity_topic, activity_content,
+                                activity_type, `valid`, memo,
+                                create_time, create_by, update_time,
+                                update_by, activity_email)
+        VALUES (#{userIds,jdbcType=VARCHAR}, #{activityTopic,jdbcType=VARCHAR}, #{activityContent,jdbcType=VARCHAR},
+                #{activityType,jdbcType=BOOLEAN}, 1, #{memo,jdbcType=VARCHAR},
+                now(), #{createBy,jdbcType=VARCHAR}, now(),
+                #{updateBy,jdbcType=VARCHAR}, #{activityEmail,jdbcType=VARCHAR})
+    </insert>
+</mapper>

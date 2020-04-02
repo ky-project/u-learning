@@ -20,10 +20,7 @@ import com.ky.ulearning.spi.student.vo.ExaminationResultVo;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.common.utils.StudentTeachingTaskUtil;
-import com.ky.ulearning.student.service.CourseQuestionService;
-import com.ky.ulearning.student.service.ExaminationResultService;
-import com.ky.ulearning.student.service.StudentExaminationTaskService;
-import com.ky.ulearning.student.service.TeachingTaskService;
+import com.ky.ulearning.student.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +55,9 @@ public class StudentExaminationTaskController extends BaseController {
 
     @Autowired
     private TeachingTaskService teachingTaskService;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Log("开始测试")
     @ApiOperation(value = "开始测试", notes = "只能查看/操作已选教学任务的数据")
@@ -172,6 +172,8 @@ public class StudentExaminationTaskController extends BaseController {
         boolean isOver = studentExaminationTaskDto.getExaminingState() != 1;
         if (isOver || examinationResultSaveDto.getIsSubmit()) {
             examinationResultService.calculationResult(studentExaminationTaskEntity.getId());
+            //记录动态
+            activityService.completeExaminationActivity(studentExaminationTaskEntity.getId(), stuNumber);
         }
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(!isOver, "保存成功"));
     }
