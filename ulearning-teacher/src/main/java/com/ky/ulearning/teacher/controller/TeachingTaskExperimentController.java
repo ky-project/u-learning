@@ -109,7 +109,7 @@ public class TeachingTaskExperimentController extends BaseController {
         experimentDto.setCreateBy(username);
         teachingTaskExperimentService.save(experimentDto);
 
-        activityService.experimentActivity(experimentDto.getId());
+        activityService.experimentActivity(experimentDto.getId(), username);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(experimentDto.getId(), "添加成功"));
     }
 

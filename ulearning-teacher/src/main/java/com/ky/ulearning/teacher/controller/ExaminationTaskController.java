@@ -81,7 +81,7 @@ public class ExaminationTaskController extends BaseController {
         examinationTaskService.save(examinationTaskDto);
         if (!CommonConstant.EXAMINATION_STATE[0].equals(examinationTaskDto.getExaminationState())
                 && !CommonConstant.EXAMINATION_STATE[3].equals(examinationTaskDto.getExaminationState())) {
-            activityService.examinationTaskActivity(examinationTaskDto.getId(), CommonConstant.INSERT_OPERATION);
+            activityService.examinationTaskActivity(examinationTaskDto.getId(), CommonConstant.INSERT_OPERATION, username);
         }
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(examinationTaskDto.getId(), "添加成功"));
     }
@@ -131,7 +131,7 @@ public class ExaminationTaskController extends BaseController {
 
         if (Objects.nonNull(examinationTaskDto.getExaminationState())
                 && CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskDto.getExaminationState())) {
-            activityService.examinationTaskActivity(examinationTaskDto.getId(), CommonConstant.UPDATE_OPERATION);
+            activityService.examinationTaskActivity(examinationTaskDto.getId(), CommonConstant.UPDATE_OPERATION, username);
         }
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(examinationTaskDto.getId(), "更新成功"));
     }

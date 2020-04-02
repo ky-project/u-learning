@@ -39,17 +39,17 @@ public class ActivityServiceImpl implements ActivityService {
 
     private static final String TEACHER_EMAIL_TEMPLATE = "teacherActivityMailTemplate.ftl";
 
-    private static final String CREATE_EXAMINATION_TASK_TOPIC = "您有新的测试任务-{0}，请关注测试信息";
+    private static final String CREATE_EXAMINATION_TASK_TOPIC = "您有新的测试任务《{0}》，请关注测试信息";
 
-    private static final String CREATE_EXAMINATION_TASK_CONTENT = "{0} 老师的 {1} 课程发布了新的测试任务 {2}，测试时间 {3} 分钟，详情请登录U-Learning平台查阅";
+    private static final String CREATE_EXAMINATION_TASK_CONTENT = "{0} 老师的 《{1}》 课程发布了新的测试任务《{2}》，测试时间 {3} 分钟，详情请登录U-Learning平台查阅";
 
-    private static final String START_EXAMINATION_TASK_TOPIC = "测试任务-{0} 已开始";
+    private static final String START_EXAMINATION_TASK_TOPIC = "测试任务《{0}》 已开始";
 
-    private static final String START_EXAMINATION_TASK_CONTENT = "{0} 老师的 {1} 课程的测试任务 {2} 已开始，测试时间 {3} 分钟，请登录U-Learning平台及时完成测试";
+    private static final String START_EXAMINATION_TASK_CONTENT = "{0} 老师的《{1}》课程的测试任务《{2}》已开始，测试时间 {3} 分钟，请登录U-Learning平台及时完成测试";
 
-    private static final String CREATE_EXPERIMENT_TOPIC = "您有新的实验-{0}，请关注实验信息";
+    private static final String CREATE_EXPERIMENT_TOPIC = "您有新的实验《{0}》，请关注实验信息";
 
-    private static final String CREATE_EXPERIMENT_CONTENT = "{0} 老师的 {1} 课程发布了新的实验 {2}，详情请登录U-Learning平台查阅";
+    private static final String CREATE_EXPERIMENT_CONTENT = "{0} 老师的《{1}》课程发布了新的实验《{2}》，详情请登录U-Learning平台查阅";
 
 
     @Autowired
@@ -72,7 +72,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public void examinationTaskActivity(Long examinationTaskId, int operation) {
+    public void examinationTaskActivity(Long examinationTaskId, int operation, String username) {
         //获取测试任务对象
         ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(examinationTaskId);
         TeachingTaskDto teachingTaskDto = teachingTaskDao.getInfoById(examinationTaskEntity.getTeachingTaskId());
@@ -97,7 +97,6 @@ public class ActivityServiceImpl implements ActivityService {
         }
         String activityTopic;
         String activityContent;
-        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         switch (operation) {
             //创建测试
             case CommonConstant.INSERT_OPERATION:
@@ -132,7 +131,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public void experimentActivity(Long experimentId) {
+    public void experimentActivity(Long experimentId, String username) {
         //获取实验信息
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentService.getById(experimentId);
         TeachingTaskDto teachingTaskDto = teachingTaskDao.getInfoById(teachingTaskExperimentDto.getTeachingTaskId());
@@ -155,7 +154,6 @@ public class ActivityServiceImpl implements ActivityService {
                 && activityEmail.lastIndexOf(",") == activityEmail.length() - 1) {
             activityEmail.deleteCharAt(activityEmail.length() - 1);
         }
-        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
         String activityTopic = MessageFormat.format(CREATE_EXPERIMENT_TOPIC, teachingTaskExperimentDto.getExperimentTitle());
         String activityContent = MessageFormat.format(CREATE_EXPERIMENT_CONTENT,
                 teachingTaskDto.getTeaName(),

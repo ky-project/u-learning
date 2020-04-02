@@ -15,15 +15,17 @@ public interface ActivityService {
      *
      * @param examinationTaskId 测试任务id
      * @param operation         操作类型
+     * @param username          用户名
      */
     @Async
-    void examinationTaskActivity(Long examinationTaskId, int operation);
+    void examinationTaskActivity(Long examinationTaskId, int operation, String username);
 
     /**
      * 创建实验
      *
      * @param experimentId 实验id
+     * @param username     用户名
      */
     @Async
-    void experimentActivity(Long experimentId);
+    void experimentActivity(Long experimentId, String username);
 }
