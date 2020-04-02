@@ -29,7 +29,7 @@ eureka:
     hostname: 106.15.75.204
     instance-id: ${eureka.instance.hostname}:${server.port}
   client:
-    register-with-eureka: true
+    register-with-eureka: false
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
