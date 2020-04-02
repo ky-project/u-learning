@@ -1,11 +1,13 @@
 package com.ky.ulearning.teacher.service.impl;
 
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.entity.ActivityEntity;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
+import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
 import com.ky.ulearning.teacher.dao.ActivityDao;
 import com.ky.ulearning.teacher.dao.StudentTeachingTaskDao;
@@ -13,6 +15,7 @@ import com.ky.ulearning.teacher.dao.TeachingTaskDao;
 import com.ky.ulearning.teacher.service.ActivityService;
 import com.ky.ulearning.teacher.service.ExaminationTaskService;
 import com.ky.ulearning.teacher.service.SendEmailService;
+import com.ky.ulearning.teacher.service.TeachingTaskExperimentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +41,16 @@ public class ActivityServiceImpl implements ActivityService {
 
     private static final String CREATE_EXAMINATION_TASK_TOPIC = "您有新的测试任务-{0}，请关注测试信息";
 
-    private static final String CREATE_EXAMINATION_TASK_CONTENT = " {1} 学期，{0} 老师的 {2} 课程发布了新的测试任务 {3}，测试时间 {4} 分钟，详情请登录U-Learning平台查阅";
+    private static final String CREATE_EXAMINATION_TASK_CONTENT = "{0} 老师的 {1} 课程发布了新的测试任务 {2}，测试时间 {3} 分钟，详情请登录U-Learning平台查阅";
+
+    private static final String START_EXAMINATION_TASK_TOPIC = "测试任务-{0} 已开始";
+
+    private static final String START_EXAMINATION_TASK_CONTENT = "{0} 老师的 {1} 课程的测试任务 {2} 已开始，测试时间 {3} 分钟，请登录U-Learning平台及时完成测试";
+
+    private static final String CREATE_EXPERIMENT_TOPIC = "您有新的实验-{0}，请关注实验信息";
+
+    private static final String CREATE_EXPERIMENT_CONTENT = "{0} 老师的 {1} 课程发布了新的实验 {2}，详情请登录U-Learning平台查阅";
+
 
     @Autowired
     private ExaminationTaskService examinationTaskService;
@@ -55,9 +67,12 @@ public class ActivityServiceImpl implements ActivityService {
     @Autowired
     private SendEmailService sendEmailService;
 
+    @Autowired
+    private TeachingTaskExperimentService teachingTaskExperimentService;
+
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public void createExaminationTask(Long examinationTaskId) {
+    public void examinationTaskActivity(Long examinationTaskId, int operation) {
         //获取测试任务对象
         ExaminationTaskEntity examinationTaskEntity = examinationTaskService.getById(examinationTaskId);
         TeachingTaskDto teachingTaskDto = teachingTaskDao.getInfoById(examinationTaskEntity.getTeachingTaskId());
@@ -80,14 +95,72 @@ public class ActivityServiceImpl implements ActivityService {
                 && activityEmail.lastIndexOf(",") == activityEmail.length() - 1) {
             activityEmail.deleteCharAt(activityEmail.length() - 1);
         }
-        String activityTopic = MessageFormat.format(CREATE_EXAMINATION_TASK_TOPIC, examinationTaskEntity.getExaminationName());
-        String activityContent = MessageFormat.format(CREATE_EXAMINATION_TASK_CONTENT,
-                teachingTaskDto.getTeaName(),
-                teachingTaskDto.getTerm(),
-                teachingTaskDto.getTeachingTaskAlias(),
-                examinationTaskEntity.getExaminationName(),
-                examinationTaskEntity.getExaminationDuration());
+        String activityTopic;
+        String activityContent;
         String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        switch (operation) {
+            //创建测试
+            case CommonConstant.INSERT_OPERATION:
+                activityTopic = MessageFormat.format(CREATE_EXAMINATION_TASK_TOPIC, examinationTaskEntity.getExaminationName());
+                activityContent = MessageFormat.format(CREATE_EXAMINATION_TASK_CONTENT,
+                        teachingTaskDto.getTeaName(),
+                        teachingTaskDto.getTeachingTaskAlias(),
+                        examinationTaskEntity.getExaminationName(),
+                        examinationTaskEntity.getExaminationDuration());
+                break;
+            //测试开始
+            case CommonConstant.UPDATE_OPERATION:
+                if (CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskEntity.getExaminationState())) {
+                    return;
+                }
+                activityTopic = MessageFormat.format(START_EXAMINATION_TASK_TOPIC, examinationTaskEntity.getExaminationName());
+                activityContent = MessageFormat.format(START_EXAMINATION_TASK_CONTENT,
+                        teachingTaskDto.getTeaName(),
+                        teachingTaskDto.getTeachingTaskAlias(),
+                        examinationTaskEntity.getExaminationName(),
+                        examinationTaskEntity.getExaminationDuration());
+                break;
+            default:
+                return;
+        }
+
+        //创建动态信息
+        ActivityEntity activityEntity = ActivityEntity.build(username, username, userIds.toString(), activityTopic, activityContent, MicroConstant.SYS_TYPE_TEACHER, activityEmail.toString());
+        //处理动态信息
+        insertTeacherActivity(activityEntity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public void experimentActivity(Long experimentId) {
+        //获取实验信息
+        TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentService.getById(experimentId);
+        TeachingTaskDto teachingTaskDto = teachingTaskDao.getInfoById(teachingTaskExperimentDto.getTeachingTaskId());
+        //查询选课学生信息
+        List<StudentEntity> studentEntityList = Optional.ofNullable(studentTeachingTaskDao.getStudentListByTeachingTaskId(teachingTaskExperimentDto.getTeachingTaskId())).orElse(Collections.emptyList());
+        //获取动态基本信息
+        StringBuilder userIds = new StringBuilder();
+        StringBuilder activityEmail = new StringBuilder();
+        for (StudentEntity studentEntity : studentEntityList) {
+            userIds.append(studentEntity.getId()).append(",");
+            if (StringUtil.isNotEmpty(studentEntity.getStuEmail())) {
+                activityEmail.append(studentEntity.getStuEmail()).append(",");
+            }
+        }
+        if (userIds.lastIndexOf(",") != -1
+                && userIds.lastIndexOf(",") == userIds.length() - 1) {
+            userIds.deleteCharAt(userIds.length() - 1);
+        }
+        if (activityEmail.lastIndexOf(",") != -1
+                && activityEmail.lastIndexOf(",") == activityEmail.length() - 1) {
+            activityEmail.deleteCharAt(activityEmail.length() - 1);
+        }
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        String activityTopic = MessageFormat.format(CREATE_EXPERIMENT_TOPIC, teachingTaskExperimentDto.getExperimentTitle());
+        String activityContent = MessageFormat.format(CREATE_EXPERIMENT_CONTENT,
+                teachingTaskDto.getTeaName(),
+                teachingTaskDto.getTeachingTaskAlias(),
+                teachingTaskExperimentDto.getExperimentTitle());
 
         //创建动态信息
         ActivityEntity activityEntity = ActivityEntity.build(username, username, userIds.toString(), activityTopic, activityContent, MicroConstant.SYS_TYPE_TEACHER, activityEmail.toString());

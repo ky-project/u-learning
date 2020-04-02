@@ -37,4 +37,24 @@ public class CommonConstant {
      */
     public static final String ROCKET_LOG_TEACHER_ACTIVITY_TOPIC = "TeacherActivity";
 
+    /**
+     * 插入操作
+     */
+    public static final int INSERT_OPERATION = 1;
+
+    /**
+     * 删除操作
+     */
+    public static final int DELETE_OPERATION = 2;
+
+    /**
+     * 更新操作
+     */
+    public static final int UPDATE_OPERATION = 3;
+
+    /**
+     * 查询操作
+     */
+    public static final int GET_OPERATION = 4;
+
 }

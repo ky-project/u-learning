@@ -22,6 +22,7 @@ import com.ky.ulearning.spi.teacher.vo.ExperimentAttachmentVo;
 import com.ky.ulearning.teacher.common.constants.TeacherErrorCodeEnum;
 import com.ky.ulearning.teacher.common.utils.TeachingTaskValidUtil;
 import com.ky.ulearning.teacher.remoting.MonitorManageRemoting;
+import com.ky.ulearning.teacher.service.ActivityService;
 import com.ky.ulearning.teacher.service.TeachingTaskExperimentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,6 +68,9 @@ public class TeachingTaskExperimentController extends BaseController {
     @Autowired
     private MonitorManageRemoting monitorManageRemoting;
 
+    @Autowired
+    private ActivityService activityService;
+
     @Log("添加附件")
     @ApiOperation(value = "添加附件")
     @PostMapping("/uploadAttachment")
@@ -104,6 +108,8 @@ public class TeachingTaskExperimentController extends BaseController {
         experimentDto.setUpdateBy(username);
         experimentDto.setCreateBy(username);
         teachingTaskExperimentService.save(experimentDto);
+
+        activityService.experimentActivity(experimentDto.getId());
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(experimentDto.getId(), "添加成功"));
     }
 

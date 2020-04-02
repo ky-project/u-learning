@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 测试任务controller
@@ -80,7 +81,7 @@ public class ExaminationTaskController extends BaseController {
         examinationTaskService.save(examinationTaskDto);
         if (!CommonConstant.EXAMINATION_STATE[0].equals(examinationTaskDto.getExaminationState())
                 && !CommonConstant.EXAMINATION_STATE[3].equals(examinationTaskDto.getExaminationState())) {
-            activityService.createExaminationTask(examinationTaskDto.getId());
+            activityService.examinationTaskActivity(examinationTaskDto.getId(), CommonConstant.INSERT_OPERATION);
         }
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(examinationTaskDto.getId(), "添加成功"));
     }
@@ -127,6 +128,11 @@ public class ExaminationTaskController extends BaseController {
         }
         examinationTaskDto.setUpdateBy(username);
         examinationTaskService.update(examinationTaskDto);
+
+        if (Objects.nonNull(examinationTaskDto.getExaminationState())
+                && CommonConstant.EXAMINATION_STATE[2].equals(examinationTaskDto.getExaminationState())) {
+            activityService.examinationTaskActivity(examinationTaskDto.getId(), CommonConstant.UPDATE_OPERATION);
+        }
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(examinationTaskDto.getId(), "更新成功"));
     }
 

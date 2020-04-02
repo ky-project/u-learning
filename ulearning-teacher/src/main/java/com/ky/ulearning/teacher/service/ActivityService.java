@@ -10,12 +10,20 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface ActivityService {
 
-
     /**
-     * 创建测试任务
+     * 创建/开始测试任务
      *
      * @param examinationTaskId 测试任务id
+     * @param operation         操作类型
      */
     @Async
-    void createExaminationTask(Long examinationTaskId);
+    void examinationTaskActivity(Long examinationTaskId, int operation);
+
+    /**
+     * 创建实验
+     *
+     * @param experimentId 实验id
+     */
+    @Async
+    void experimentActivity(Long experimentId);
 }

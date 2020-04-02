@@ -1,6 +1,5 @@
 package com.ky.ulearning.spi.common.dto;
 
-import com.ky.ulearning.spi.common.dto.BaseDto;
 import com.ky.ulearning.spi.common.entity.ActivityEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
