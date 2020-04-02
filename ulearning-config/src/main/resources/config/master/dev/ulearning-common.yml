@@ -20,6 +20,11 @@ spring:
           starttls:
             enable: true
             required: true
+          socketFactory:
+            fallback: false
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
+    port: 465
 #jwt
 jwt:
   header-token: Authorization-token
