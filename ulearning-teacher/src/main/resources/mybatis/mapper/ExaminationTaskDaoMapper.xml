@@ -158,4 +158,13 @@
         WHERE valid = 1
           AND id = #{id}
     </select>
+    <!--根据教师id查询进行中的测试任务数量-->
+    <select id="getExaminationNumber" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_teaching_task utt
+                 INNER JOIN u_teaching_task_examination_task uttet
+                            ON utt.id = uttet.teaching_task_id AND uttet.valid = 1 AND examination_state = 3
+        WHERE utt.valid = 1
+          AND tea_id = #{teaId}
+    </select>
 </mapper>

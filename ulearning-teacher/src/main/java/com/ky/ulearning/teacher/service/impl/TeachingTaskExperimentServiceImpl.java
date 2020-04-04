@@ -127,4 +127,9 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     public void delete(Long id, String updateBy) {
         teachingTaskExperimentDao.delete(id, updateBy);
     }
+
+    @Override
+    public Integer getExperimentNumber(Long teaId) {
+        return teachingTaskExperimentDao.getExperimentNumber(teaId);
+    }
 }

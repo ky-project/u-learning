@@ -87,4 +87,12 @@ public interface ExaminationTaskDao {
      * @return 组卷参数
      */
     String getExaminationParameters(Long id);
+
+    /**
+     * 根据教师id查询进行中的测试任务数量
+     *
+     * @param teaId 教师id
+     * @return 测试任务数量
+     */
+    Integer getExaminationNumber(Long teaId);
 }

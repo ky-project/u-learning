@@ -61,4 +61,12 @@ public interface TeachingTaskExperimentService {
      * @param updateBy 更新者
      */
     void delete(Long id, String updateBy);
+
+    /**
+     * 根据教师id查询实验数量
+     *
+     * @param teaId 教师id
+     * @return 实验数量
+     */
+    Integer getExperimentNumber(Long teaId);
 }

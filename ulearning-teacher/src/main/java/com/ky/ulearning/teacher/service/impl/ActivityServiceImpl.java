@@ -1,9 +1,11 @@
 package com.ky.ulearning.teacher.service.impl;
 
+import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.constant.CommonConstant;
 import com.ky.ulearning.common.core.constant.MicroConstant;
-import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.entity.ActivityEntity;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.StudentEntity;
@@ -35,7 +37,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @Transactional(readOnly = true, rollbackFor = Throwable.class)
-public class ActivityServiceImpl implements ActivityService {
+public class ActivityServiceImpl extends BaseService implements ActivityService {
 
     private static final String TEACHER_EMAIL_TEMPLATE = "teacherActivityMailTemplate.ftl";
 
@@ -175,5 +177,17 @@ public class ActivityServiceImpl implements ActivityService {
         }
         //3. 保存动态记录
         activityDao.insert(activityEntity);
+    }
+
+    @Override
+    public PageBean<ActivityEntity> pageList(PageParam pageParam, Long teaId) {
+        List<ActivityEntity> resultList = activityDao.listPage(teaId, pageParam);
+
+        PageBean<ActivityEntity> pageBean = new PageBean<>();
+        //设置总记录数
+        pageBean.setTotal(activityDao.countListPage(teaId))
+                //设置查询结果
+                .setContent(resultList);
+        return setPageBeanProperties(pageBean, pageParam);
     }
 }

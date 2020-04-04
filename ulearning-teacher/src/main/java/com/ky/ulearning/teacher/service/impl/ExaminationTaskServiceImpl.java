@@ -82,4 +82,9 @@ public class ExaminationTaskServiceImpl extends BaseService implements Examinati
     public String getExaminationParameters(Long id) {
         return examinationTaskDao.getExaminationParameters(id);
     }
+
+    @Override
+    public Integer getExaminationNumber(Long teaId) {
+        return examinationTaskDao.getExaminationNumber(teaId);
+    }
 }

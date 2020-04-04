@@ -1,5 +1,8 @@
 package com.ky.ulearning.teacher.service;
 
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.entity.ActivityEntity;
 import org.springframework.scheduling.annotation.Async;
 
 /**
@@ -28,4 +31,13 @@ public interface ActivityService {
      */
     @Async
     void experimentActivity(Long experimentId, String username);
+
+    /**
+     * 分页查询学生动态
+     *
+     * @param pageParam 分页参数
+     * @param teaId     教师id
+     * @return 封装学生动态的分页对象
+     */
+    PageBean<ActivityEntity> pageList(PageParam pageParam, Long teaId);
 }
