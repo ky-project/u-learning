@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author luyuhao
@@ -117,15 +118,15 @@ public class ExperimentResultController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDto));
     }
 
-    @Log(value = "分页查询优秀实验结果", devModel = true)
-    @ApiOperation(value = "分页查询优秀实验结果", notes = "只能查看/操作已选教学任务的数据")
+    @Log(value = "查询优秀实验结果", devModel = true)
+    @ApiOperation(value = "查询优秀实验结果", notes = "只能查看/操作已选教学任务的数据")
     @ApiOperationSupport(ignoreParameters = {"id", "experimentUrl", "stuId", "experimentAttachmentName", "experimentShared", "isCorrected"})
     @GetMapping("/pageList")
-    public ResponseEntity<JsonResult<PageBean<ExperimentResultDto>>> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto) {
+    public ResponseEntity<JsonResult<List<ExperimentResultDto>>> pageList(ExperimentResultDto experimentResultDto) {
         ValidateHandler.checkNull(experimentResultDto.getExperimentId(), StudentErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
         Long stuId = RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class);
         studentTeachingTaskUtil.checkExperimentId(experimentResultDto.getExperimentId(), stuId);
-        PageBean<ExperimentResultDto> experimentResultDtoList = experimentResultService.pageList(setPageParam(pageParam), experimentResultDto);
+        List<ExperimentResultDto> experimentResultDtoList = experimentResultService.getList(experimentResultDto);
         return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDtoList));
     }
 

@@ -85,8 +85,8 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     }
 
     @Override
-    public PageBean<ExperimentResultDto> pageList(PageParam pageParam, ExperimentResultDto experimentResultDto) {
-        List<ExperimentResultDto> resultList = experimentResultDao.listPage(experimentResultDto, pageParam);
+    public List<ExperimentResultDto> getList(ExperimentResultDto experimentResultDto) {
+        List<ExperimentResultDto> resultList = experimentResultDao.getList(experimentResultDto);
         //获取该实验的所有记录，根据分数降序排序
         List<ExperimentResultDto> experimentDtoList = null;
         for (ExperimentResultDto resultDto : resultList) {
@@ -106,12 +106,6 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
             resultDto.setRanking(ranking);
             resultDto.setSubmitNumber(experimentDtoList.size());
         }
-
-        PageBean<ExperimentResultDto> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(experimentResultDao.countListPage(experimentResultDto))
-                //设置查询结果
-                .setContent(resultList);
-        return setPageBeanProperties(pageBean, pageParam);
+        return resultList;
     }
 }

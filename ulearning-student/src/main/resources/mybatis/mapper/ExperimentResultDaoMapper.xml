@@ -239,4 +239,40 @@
             AND utte.experiment_title LIKE concat('%', #{experimentResultDto.experimentTitle}, '%')
         </if>
     </select>
+    <!--查询优秀作品集合-->
+    <select id="getList" resultMap="ExperimentResultDtoMap">
+        SELECT
+        uer.id, uer.experiment_id, uer.stu_id, uer.experiment_commit_state, uer.experiment_commit_time,
+        uer.experiment_result, uer.experiment_URL, uer.experiment_score, uer.experiment_advice, uer.valid, uer.memo,
+        uer.create_time, uer.create_by, uer.update_time, uer.update_by, uer.experiment_attachment_name,
+        uer.experiment_shared, us.stu_number, us.stu_name, utte.experiment_title
+        FROM u_experiment_result uer
+        INNER JOIN u_student us ON us.valid = 1 AND uer.stu_id = us.id
+        INNER JOIN u_teaching_task_experiment utte ON uer.experiment_id = utte.id AND utte.valid = 1
+        WHERE uer.valid = 1
+        AND uer.experiment_id = #{experimentResultDto.experimentId}
+        AND uer.experiment_shared = 1
+        <if test="experimentResultDto.experimentCommitTime != null">
+            AND DATE(uer.experiment_commit_time) = #{experimentResultDto.experimentCommitTime}
+        </if>
+        <if test="experimentResultDto.experimentResult != null and experimentResultDto.experimentResult != ''">
+            AND uer.experiment_result LIKE CONCAT('%', #{experimentResultDto.experimentResult} , '%')
+        </if>
+        <if test="experimentResultDto.experimentScore != null">
+            AND uer.experiment_score = #{experimentResultDto.experimentScore}
+        </if>
+        <if test="experimentResultDto.experimentAdvice != null and experimentResultDto.experimentAdvice != ''">
+            AND uer.experiment_advice LIKE CONCAT('%', #{experimentResultDto.experimentAdvice} , '%')
+        </if>
+        <if test="experimentResultDto.stuName != null and experimentResultDto.stuName != ''">
+            AND us.stu_name LIKE CONCAT('%', #{experimentResultDto.stuName}, '%')
+        </if>
+        <if test="experimentResultDto.stuNumber != null and experimentResultDto.stuNumber != ''">
+            AND us.stu_number LIKE CONCAT('%', #{experimentResultDto.stuNumber}, '%')
+        </if>
+        <if test="experimentResultDto.experimentTitle != null and experimentResultDto.experimentTitle != ''">
+            AND utte.experiment_title LIKE concat('%', #{experimentResultDto.experimentTitle}, '%')
+        </if>
+        ORDER BY uer.experiment_commit_time ASC
+    </select>
 </mapper>

@@ -86,4 +86,12 @@ public interface ExperimentResultDao {
      * @return 总记录
      */
     Integer countListPage(@Param("experimentResultDto") ExperimentResultDto experimentResultDto);
+
+    /**
+     * 查询优秀作品集合
+     *
+     * @param experimentResultDto 筛选条件
+     * @return 实验结果集合
+     */
+    List<ExperimentResultDto> getList(@Param("experimentResultDto") ExperimentResultDto experimentResultDto);
 }
