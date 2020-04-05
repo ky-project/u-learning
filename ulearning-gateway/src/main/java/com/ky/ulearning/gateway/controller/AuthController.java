@@ -192,7 +192,11 @@ public class AuthController extends BaseController {
                         || cookie.getName().equals(GatewayConstant.COOKIE_REFRESH_TOKEN)) {
                     //从cookie中获取username进行操作
                     if (StringUtil.isEmpty(username)) {
-                        username = jwtTokenUtil.getUsernameFromToken(cookie.getValue());
+                        try {
+                            username = jwtTokenUtil.getUsernameFromToken(cookie.getValue());
+                        } catch (Exception e) {
+                            username = "";
+                        }
                     }
                     cookie.setMaxAge(0);
                     cookie.setPath("/");
