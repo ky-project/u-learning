@@ -1,7 +1,9 @@
 package com.ky.ulearning.student.service.impl;
 
+import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.constant.MicroConstant;
-import com.ky.ulearning.common.core.utils.RequestHolderUtil;
+import com.ky.ulearning.spi.common.dto.PageBean;
+import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.common.entity.ActivityEntity;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 import com.ky.ulearning.spi.student.entity.StudentExaminationTaskEntity;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * @author luyuhao
@@ -22,7 +25,7 @@ import java.text.MessageFormat;
  */
 @Service
 @Transactional(rollbackFor = Throwable.class, readOnly = true)
-public class ActivityServiceImpl implements ActivityService {
+public class ActivityServiceImpl extends BaseService implements ActivityService {
 
     private static final String COMPLETE_EXAMINATION_TOPIC = "学号：{0}同学 完成测试《{1}》";
 
@@ -94,5 +97,12 @@ public class ActivityServiceImpl implements ActivityService {
 
         ActivityEntity activityEntity = ActivityEntity.build(username, username, teachingTaskEntity.getTeaId().toString(), activityTopic, activityContent, MicroConstant.SYS_TYPE_STUDENT, null);
         activityDao.insert(activityEntity);
+    }
+
+    @Override
+    public PageBean<ActivityEntity> pageList(PageParam pageParam, Long stuId) {
+        List<ActivityEntity> resultList = activityDao.listPage(stuId, pageParam);
+        Integer total = activityDao.countListPage(stuId);
+        return createPageBean(pageParam, total, resultList);
     }
 }

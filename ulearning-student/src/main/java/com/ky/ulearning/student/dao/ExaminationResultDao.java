@@ -87,4 +87,12 @@ public interface ExaminationResultDao {
      * @return 试题分类map
      */
     List<CourseQuestionViewVo> getCourseQuestionDetailVoByExaminingId(Long examiningId);
+
+    /**
+     * 查询未完成的测试数量
+     *
+     * @param stuId 学生id
+     * @return 未完成的测试数量
+     */
+    Integer getExperimentNumber(Long stuId);
 }

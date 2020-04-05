@@ -53,4 +53,12 @@ public interface ExperimentResultService {
      * @return 实验结果的集合
      */
     List<ExperimentResultDto> getList(ExperimentResultDto experimentResultDto);
+
+    /**
+     * 查询未完成的实验数量
+     *
+     * @param stuId 学生id
+     * @return 未完成的实验数量
+     */
+    Integer getExperimentNumber(Long stuId);
 }

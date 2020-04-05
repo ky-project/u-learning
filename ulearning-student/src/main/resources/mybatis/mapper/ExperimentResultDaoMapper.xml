@@ -275,4 +275,16 @@
         </if>
         ORDER BY uer.experiment_commit_time ASC
     </select>
+    <!--查询未完成的实验数量-->
+    <select id="getExperimentNumber" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_student_teaching_task ustt
+                 INNER JOIN u_teaching_task_experiment utte
+                            ON utte.teaching_task_id = ustt.teaching_task_id AND utte.valid = 1
+                 LEFT JOIN u_experiment_result uer
+                           ON utte.id = uer.experiment_id AND uer.valid = 1 AND uer.stu_id = ustt.stu_id
+        WHERE ustt.valid = 1
+          AND ustt.stu_id = #{stuId}
+          AND uer.stu_id IS NULL
+    </select>
 </mapper>

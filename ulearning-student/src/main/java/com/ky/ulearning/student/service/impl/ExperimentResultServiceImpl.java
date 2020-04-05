@@ -4,8 +4,6 @@ import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.utils.StringUtil;
-import com.ky.ulearning.spi.common.dto.PageBean;
-import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 import com.ky.ulearning.student.dao.ExperimentResultDao;
@@ -107,5 +105,10 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
             resultDto.setSubmitNumber(experimentDtoList.size());
         }
         return resultList;
+    }
+
+    @Override
+    public Integer getExperimentNumber(Long stuId) {
+        return experimentResultDao.getExperimentNumber(stuId);
     }
 }

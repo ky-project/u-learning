@@ -94,4 +94,12 @@ public interface ExperimentResultDao {
      * @return 实验结果集合
      */
     List<ExperimentResultDto> getList(@Param("experimentResultDto") ExperimentResultDto experimentResultDto);
+
+    /**
+     * 查询未完成的实验数量
+     *
+     * @param stuId 学生id
+     * @return 未完成的实验数量
+     */
+    Integer getExperimentNumber(Long stuId);
 }

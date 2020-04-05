@@ -54,4 +54,35 @@
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
                 #{updateBy,jdbcType=VARCHAR}, #{activityEmail,jdbcType=VARCHAR})
     </insert>
+    <!--查询教师动态集合-->
+    <select id="listPage" resultMap="BaseResultMap">
+        SELECT id,
+        user_ids,
+        activity_topic,
+        activity_content,
+        activity_type,
+        valid,
+        memo,
+        create_time,
+        create_by,
+        update_time,
+        update_by,
+        activity_email
+        FROM u_activity
+        WHERE valid = 1
+        AND find_in_set(#{stuId} , user_ids)
+        AND activity_type = 1
+        ORDER BY create_time DESC
+        <if test="pageParam.startIndex != null and pageParam.pageSize">
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
+        </if>
+    </select>
+    <!--查询教师动态集合 - 总记录-->
+    <select id="countListPage" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM u_activity
+        WHERE valid = 1
+          AND find_in_set(#{stuId}, user_ids)
+          AND activity_type = 1
+    </select>
 </mapper>

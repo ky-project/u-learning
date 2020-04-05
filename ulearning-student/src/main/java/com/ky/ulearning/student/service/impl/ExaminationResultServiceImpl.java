@@ -148,4 +148,9 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
             }
         }
     }
+
+    @Override
+    public Integer getExperimentNumber(Long stuId) {
+        return examinationResultDao.getExperimentNumber(stuId);
+    }
 }

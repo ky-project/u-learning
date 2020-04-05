@@ -49,4 +49,11 @@ public interface ExaminationResultService {
     @Async
     void calculationResult(Long examiningId);
 
+    /**
+     * 查询未完成的测试数量
+     *
+     * @param stuId 学生id
+     * @return 未完成的测试数量
+     */
+    Integer getExperimentNumber(Long stuId);
 }
