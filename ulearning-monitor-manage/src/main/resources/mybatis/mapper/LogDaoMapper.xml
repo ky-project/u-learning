@@ -189,22 +189,29 @@
         ORDER BY update_time DESC
         LIMIT #{topNumber}
     </select>
-    <!--查询当日访问用户操作数-->
-    <select id="getTodayOperationNumber" resultType="java.lang.Long">
-        SELECT COUNT(1)
+    <!--查询days内访问用户操作数-->
+    <select id="getOperationNumberLimitDays" parameterType="java.lang.Integer"
+            resultType="com.ky.ulearning.spi.monitor.vo.TrafficVo">
+        SELECT date(create_time) AS date,
+               count(1)          AS number
         FROM u_log
         WHERE valid = 1
-          AND DATE(create_time) = #{today}
+          AND DATE_SUB(CURDATE(), INTERVAL #{days} DAY) <![CDATA[ < ]]> date(create_time)
           AND log_username != ''
           AND log_username IS NOT NULL
+        GROUP BY DATE(create_time)
+        ORDER BY create_time ASC
     </select>
-    <!--查询当日指定访问用户操作数-->
-    <select id="getTodayOperationNumberByUsername" resultType="java.lang.Long">
-        SELECT COUNT(1)
+    <!--查询days内指定访问用户操作数-->
+    <select id="getTodayOperationNumberByUsername" resultType="com.ky.ulearning.spi.monitor.vo.TrafficVo">
+        SELECT date(create_time) AS date,
+               count(1)          AS number
         FROM u_log
         WHERE valid = 1
-          AND DATE(create_time) = #{today}
+          AND DATE_SUB(CURDATE(), INTERVAL #{days} DAY) <![CDATA[ < ]]> date(create_time)
           AND log_username = #{username}
+        GROUP BY DATE(create_time)
+        ORDER BY create_time ASC
     </select>
     <!--批量插入记录-->
     <select id="batchInsert">

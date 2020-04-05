@@ -1,7 +1,6 @@
 package com.ky.ulearning.monitor.service.impl;
 
 import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateTime;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.component.constant.DefaultConfigParameters;
 import com.ky.ulearning.common.core.utils.DateUtil;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,22 +79,10 @@ public class LogServiceImpl extends BaseService implements LogService {
     }
 
     @Override
-    public List<TrafficVo> getTrafficByDate(Date today, Date oldDate) {
-        List<TrafficVo> trafficVoList = new ArrayList<>();
-        int index = 0;
-        DateTime indexDate;
-        do {
-            //最多查询MAX_TRAFFIC_DAYS天的访问记录
-            if (index >= defaultConfigParameters.getLogRetentionDays()) {
-                break;
-            }
-            indexDate = DateUtil.offsetDay(oldDate, index++);
-            //得到indexDate对应的访问量
-            Long todayUserNumber = logDao.getTodayUserNumber(DateUtil.format(indexDate, DatePattern.NORM_DATE_PATTERN));
-            TrafficVo trafficVo = new TrafficVo(DateUtil.format(indexDate, DatePattern.NORM_DATE_PATTERN), todayUserNumber);
-            trafficVoList.add(trafficVo);
-        } while (!DateUtil.isSameDay(today, indexDate));
-        return trafficVoList;
+    public TrafficVo getTrafficByDate(Date today) {
+        String todayStr = DateUtil.format(today, DatePattern.NORM_DATE_PATTERN);
+        Long todayUserNumber = logDao.getTodayUserNumber(todayStr);
+        return new TrafficVo(todayStr, todayUserNumber);
     }
 
     @Override
@@ -105,28 +91,10 @@ public class LogServiceImpl extends BaseService implements LogService {
     }
 
     @Override
-    public TrafficOperationVo getDaysOperation(Date today, DateTime oldDate, String username) {
+    public TrafficOperationVo getDaysOperation(Integer days, String username) {
         TrafficOperationVo trafficOperationVo = new TrafficOperationVo();
-        List<TrafficVo> totalOperation = new ArrayList<>();
-        List<TrafficVo> selfOperation = new ArrayList<>();
-        int index = 0;
-        DateTime indexDate;
-        do {
-            //最多查询MAX_TRAFFIC_DAYS天的访问记录
-            if (index >= defaultConfigParameters.getLogRetentionDays()) {
-                break;
-            }
-            indexDate = DateUtil.offsetDay(oldDate, index++);
-            //得到indexDate对应的所有用户操作数
-            Long totalTraffic = logDao.getTodayOperationNumber(DateUtil.format(indexDate, DatePattern.NORM_DATE_PATTERN));
-            TrafficVo totalTrafficVo = new TrafficVo(DateUtil.format(indexDate, DatePattern.NORM_DATE_PATTERN), totalTraffic);
-            totalOperation.add(totalTrafficVo);
-
-            //得到indexDate对应的所有用户操作数
-            Long selfTraffic = logDao.getTodayOperationNumberByUsername(DateUtil.format(indexDate, DatePattern.NORM_DATE_PATTERN), username);
-            TrafficVo selfTrafficVo = new TrafficVo(DateUtil.format(indexDate, DatePattern.NORM_DATE_PATTERN), selfTraffic);
-            selfOperation.add(selfTrafficVo);
-        } while (!DateUtil.isSameDay(today, indexDate));
+        List<TrafficVo> totalOperation = logDao.getOperationNumberLimitDays(days);
+        List<TrafficVo> selfOperation = logDao.getTodayOperationNumberByUsername(days, username);
         trafficOperationVo.setTotalOperation(totalOperation);
         trafficOperationVo.setSelfOperation(selfOperation);
         return trafficOperationVo;

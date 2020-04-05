@@ -65,13 +65,12 @@ public interface LogService {
     void deleteByDate(String date);
 
     /**
-     * 查询oldDate~today范围内的访问量
+     * 查询当天的访问量
      *
      * @param today   当天
-     * @param oldDate 待计算的天数
-     * @return 返回每天的访问量
+     * @return 返回当天的访问量
      */
-    List<TrafficVo> getTrafficByDate(Date today, Date oldDate);
+    TrafficVo getTrafficByDate(Date today);
 
     /**
      * 查询前topNumber条日志
@@ -82,14 +81,13 @@ public interface LogService {
     List<LogEntity> getLogTop(Integer topNumber);
 
     /**
-     * 查询oldDate~today范围内的操作数
+     * 查询days范围内的操作数
      *
-     * @param today    当天
-     * @param oldDate  待计算的天数
+     * @param days 天数
      * @param username 当前用户
      * @return 返回每天的访问量
      */
-    TrafficOperationVo getDaysOperation(Date today, DateTime oldDate, String username);
+    TrafficOperationVo getDaysOperation(Integer days, String username);
 
     /**
      * 批量插入记录

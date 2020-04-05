@@ -68,13 +68,12 @@ public class LogController extends BaseController {
         return ResponseEntityUtil.ok(JsonResult.buildData(logTypeList));
     }
 
-    @ApiOperation(value = "查询近n天的访问量")
-    @PermissionName(source = "log:getDaysTraffic", name = "查询近n天的访问量", group = "日志管理")
-    @GetMapping("/getDaysTraffic")
-    public ResponseEntity<JsonResult<List<TrafficVo>>> getDaysTraffic(Integer days) {
-        ValidateHandler.checkParameter(days <= 0, MonitorManageErrorCodeEnum.TRAFFIC_DAYS_ERROR);
-        List<TrafficVo> userNumberList = logService.getTrafficByDate(new Date(), DateUtil.offsetDay(new Date(), 1 - days));
-        return ResponseEntityUtil.ok(JsonResult.buildData(userNumberList));
+    @ApiOperation(value = "查询当天访问量")
+    @PermissionName(source = "log:getTodayTraffic", name = "查询当天访问量", group = "日志管理")
+    @GetMapping("/getTodayTraffic")
+    public ResponseEntity<JsonResult<TrafficVo>> getTodayTraffic() {
+        TrafficVo trafficVo = logService.getTrafficByDate(new Date());
+        return ResponseEntityUtil.ok(JsonResult.buildData(trafficVo));
     }
 
     @ApiOperation(value = "查询前n条日志")
@@ -90,7 +89,7 @@ public class LogController extends BaseController {
     @GetMapping("/getDaysOperation")
     public ResponseEntity<JsonResult<TrafficOperationVo>> getDaysOperation(Integer days) {
         ValidateHandler.checkParameter(days <= 0, MonitorManageErrorCodeEnum.TRAFFIC_DAYS_ERROR);
-        TrafficOperationVo trafficOperationVo = logService.getDaysOperation(new Date(), DateUtil.offsetDay(new Date(), 1 - days), RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        TrafficOperationVo trafficOperationVo = logService.getDaysOperation(days, RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
         return ResponseEntityUtil.ok(JsonResult.buildData(trafficOperationVo));
     }
 }

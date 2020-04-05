@@ -3,6 +3,7 @@ package com.ky.ulearning.monitor.dao;
 import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.monitor.dto.LogDto;
 import com.ky.ulearning.spi.monitor.entity.LogEntity;
+import com.ky.ulearning.spi.monitor.vo.TrafficVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -89,21 +90,21 @@ public interface LogDao {
     List<LogEntity> getLogTop(Integer topNumber);
 
     /**
-     * 查询当日访问用户操作数
+     * 查询days内访问用户操作数
      *
-     * @param today 当天日期
+     * @param days 天数
      * @return 当天访问操作数
      */
-    Long getTodayOperationNumber(String today);
+    List<TrafficVo> getOperationNumberLimitDays(Integer days);
 
     /**
-     * 查询当日指定访问用户操作数
+     * 查询days内指定访问用户操作数
      *
-     * @param today    当天日期
+     * @param days     天数
      * @param username 用户
-     * @return 当天该用户访问操作数
+     * @return 当days内该用户访问操作数
      */
-    Long getTodayOperationNumberByUsername(@Param("today") String today, @Param("username") String username);
+    List<TrafficVo> getTodayOperationNumberByUsername(@Param("days") Integer days, @Param("username") String username);
 
     /**
      * 批量插入记录
