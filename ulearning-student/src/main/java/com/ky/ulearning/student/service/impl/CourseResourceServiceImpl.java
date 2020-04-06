@@ -2,12 +2,10 @@ package com.ky.ulearning.student.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.constant.MicroConstant;
-import com.ky.ulearning.common.core.exceptions.exception.BadRequestException;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileResourceDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
-import com.ky.ulearning.student.common.constants.StudentErrorCodeEnum;
 import com.ky.ulearning.student.dao.CourseFileDao;
 import com.ky.ulearning.student.dao.CourseResourceDao;
 import com.ky.ulearning.student.dao.TeachingTaskDao;
@@ -44,17 +42,17 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
         //查询课程文件根路径
         CourseFileEntity courseFileEntity = courseFileDao.getByCourseIdAndFileName(teachingTaskDto.getCourseId(), MicroConstant.ROOT_FOLDER);
         if (StringUtil.isEmpty(courseFileEntity)) {
-            throw new BadRequestException(StudentErrorCodeEnum.COURSE_RESOURCE_NOT_EXISTS);
+            return new CourseFileResourceDto();
         }
         //查询教师根目录
         CourseFileResourceDto teacherFileRootFolder = courseResourceDao.getByCourseIdAndFileName(teachingTaskDto.getCourseId(), teachingTaskDto.getTeaNumber());
         if (StringUtil.isEmpty(teacherFileRootFolder)) {
-            throw new BadRequestException(StudentErrorCodeEnum.COURSE_RESOURCE_NOT_EXISTS);
+            return new CourseFileResourceDto();
         }
         //查询教学任务根目录
         CourseFileResourceDto teachingTaskFileRootFolder = courseResourceDao.getByCourseIdAndFileName(teachingTaskDto.getCourseId(), teachingTaskRootFolderName);
         if (StringUtil.isEmpty(teachingTaskFileRootFolder)) {
-            throw new BadRequestException(StudentErrorCodeEnum.COURSE_RESOURCE_NOT_EXISTS);
+            return new CourseFileResourceDto();
         }
         return teachingTaskFileRootFolder;
     }

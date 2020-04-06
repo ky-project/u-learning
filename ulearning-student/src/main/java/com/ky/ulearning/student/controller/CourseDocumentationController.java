@@ -7,6 +7,7 @@ import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
+import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
@@ -59,7 +60,9 @@ public class CourseDocumentationController extends BaseController {
         studentTeachingTaskUtil.checkTeachingTaskId(teachingTaskId, stuId);
         //根据courseId和username查询所属用户的根路径id
         CourseFileDocumentationDto courseFileDocumentationDto = courseDocumentationService.getByTeachingTaskId(teachingTaskId);
-        courseFileDocumentationDto.setFileName(courseFileDocumentationDto.getFileName().split("#")[0]);
+        if(StringUtil.isNotEmpty(courseFileDocumentationDto.getFileName())) {
+            courseFileDocumentationDto.setFileName(courseFileDocumentationDto.getFileName().split("#")[0]);
+        }
         return ResponseEntityUtil.ok(JsonResult.buildData(courseFileDocumentationDto));
     }
 
