@@ -102,6 +102,7 @@
         utt.term
         FROM u_teaching_task_experiment utte
         INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
+        LEFT JOIN u_experiment_result uer ON utte.id = uer.experiment_id AND uer.valid = 1
         WHERE utte.valid = 1
         AND utte.teaching_task_id = #{experimentDto.teachingTaskId}
         <if test="experimentDto.experimentOrder != null">
@@ -116,7 +117,20 @@
         <if test="experimentDto.experimentAttachmentName != null and experimentDto.experimentAttachmentName != ''">
             AND utte.experiment_attachment_name LIKE #{experimentDto.experimentAttachmentName}
         </if>
-        ORDER BY utte.experiment_order desc
+        <if test="experimentDto.experimentState != null and experimentDto.experimentState == 0">
+            AND uer.id IS NULL
+        </if>
+        <if test="experimentDto.experimentState != null and experimentDto.experimentState == 1">
+            AND uer.id IS NOT NULL
+            AND uer.experiment_score IS NULL
+            AND uer.experiment_advice IS NULL
+        </if>
+        <if test="experimentDto.experimentState != null and experimentDto.experimentState == 2">
+            AND uer.id IS NOT NULL
+            AND uer.experiment_score IS NOT NULL
+            AND uer.experiment_advice IS NOT NULL
+        </if>
+        ORDER BY utte.experiment_order DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
             LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>

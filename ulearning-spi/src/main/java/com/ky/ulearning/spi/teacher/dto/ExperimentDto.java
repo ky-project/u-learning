@@ -52,4 +52,10 @@ public class ExperimentDto extends BaseDto {
      */
     @ApiModelProperty("附件名")
     private String experimentAttachmentName;
+
+    /**
+     * 实验结果 0：未提交 1：已提交 2：已批改
+     */
+    @ApiModelProperty("实验结果 0：未提交 1：已提交 2：已批改")
+    private Integer experimentState;
 }
