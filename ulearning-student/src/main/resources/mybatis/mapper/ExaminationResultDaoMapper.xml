@@ -192,6 +192,7 @@
         FROM u_student_teaching_task ustt
                  INNER JOIN u_teaching_task_examination_task uttet
                             ON uttet.teaching_task_id = ustt.teaching_task_id AND uttet.valid = 1
+                 INNER JOIN u_teaching_task utt ON ustt.teaching_task_id = utt.id AND utt.valid = 1
                  LEFT JOIN u_student_examination_task uset
                            ON uset.examination_task_id = uttet.id AND uset.valid = 1 AND uset.stu_id = ustt.stu_id
         WHERE ustt.valid = 1

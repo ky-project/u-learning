@@ -281,6 +281,7 @@
         FROM u_student_teaching_task ustt
                  INNER JOIN u_teaching_task_experiment utte
                             ON utte.teaching_task_id = ustt.teaching_task_id AND utte.valid = 1
+                 INNER JOIN u_teaching_task utt ON ustt.teaching_task_id = utt.id AND utt.valid = 1
                  LEFT JOIN u_experiment_result uer
                            ON utte.id = uer.experiment_id AND uer.valid = 1 AND uer.stu_id = ustt.stu_id
         WHERE ustt.valid = 1
