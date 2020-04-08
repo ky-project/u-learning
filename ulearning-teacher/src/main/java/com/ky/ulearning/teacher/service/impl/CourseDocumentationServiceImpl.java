@@ -2,6 +2,7 @@ package com.ky.ulearning.teacher.service.impl;
 
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto;
 import com.ky.ulearning.spi.teacher.dto.CourseFileDocumentationDto;
@@ -114,16 +115,16 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
         //若课程根目录不存在，初始化
         if (StringUtil.isEmpty(courseFileEntity)) {
             //创建课程根文件夹
-            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENT_ID);
+            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENT_ID, null);
             courseFileDao.insert(rootCourseFileDto);
             //创建用户根文件夹
-            CourseFileDto teacherCourseFileDto = createFolder(courseId, username, rootCourseFileDto.getId());
+            CourseFileDto teacherCourseFileDto = createFolder(courseId, username, rootCourseFileDto.getId(), null);
             courseFileDao.insert(teacherCourseFileDto);
             CourseDocumentationDto courseDocumentationDtoFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
             courseDocumentationDtoFolder.setFileId(teacherCourseFileDto.getId());
             courseDocumentationDao.insert(courseDocumentationDtoFolder);
             //创建教学任务根文件夹
-            CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileDto.getId());
+            CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileDto.getId(), username);
             courseFileDao.insert(teachingTaskCourseFileDto);
             CourseDocumentationDto courseDocumentationDtoTeachingTaskFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
             courseDocumentationDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
@@ -134,14 +135,14 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
             CourseFileEntity teacherCourseFileEntity = courseFileDao.getByParentIdAndFileName(courseFileEntity.getId(), username);
             //如果教师根目录不存，初始化
             if (StringUtil.isEmpty(teacherCourseFileEntity)) {
-                CourseFileDto teacherCourseFileDto = createFolder(courseId, username, courseFileEntity.getId());
+                CourseFileDto teacherCourseFileDto = createFolder(courseId, username, courseFileEntity.getId(), null);
                 courseFileDao.insert(teacherCourseFileDto);
                 CourseDocumentationDto courseDocumentationDtoFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
                 courseDocumentationDtoFolder.setFileId(teacherCourseFileDto.getId());
                 //插入文件资料对象
                 courseDocumentationDao.insert(courseDocumentationDtoFolder);
                 //创建教学任务根文件夹
-                CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileDto.getId());
+                CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileDto.getId(), username);
                 courseFileDao.insert(teachingTaskCourseFileDto);
                 CourseDocumentationDto courseDocumentationDtoTeachingTaskFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
                 courseDocumentationDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
@@ -161,7 +162,7 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
                 //教学任务文件夹是否为空
                 if (StringUtil.isEmpty(teachingTaskCourseFileEntity)) {
                     //创建教学任务文件夹
-                    CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileEntity.getId());
+                    CourseFileDto teachingTaskCourseFileDto = createFolder(courseId, teachingTaskAlias, teacherCourseFileEntity.getId(), username);
                     courseFileDao.insert(teachingTaskCourseFileDto);
                     CourseDocumentationDto courseDocumentationDtoTeachingTaskFolder = CourseFileUtil.createCourseDocumentationDtoFolder(username);
                     courseDocumentationDtoTeachingTaskFolder.setFileId(teachingTaskCourseFileDto.getId());
@@ -185,14 +186,14 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
     /**
      * 创建课程文件初始化对象
      */
-    private CourseFileDto createFolder(Long courseId, String fileName, Long parentId) {
+    private CourseFileDto createFolder(Long courseId, String fileName, Long parentId, String username) {
         CourseFileDto courseFileDto = new CourseFileDto();
         courseFileDto.setCourseId(courseId);
         courseFileDto.setFileName(fileName);
         courseFileDto.setFileType(MicroConstant.FOLDER_TYPE);
         courseFileDto.setFileParentId(parentId);
-        courseFileDto.setCreateBy("system");
-        courseFileDto.setUpdateBy("system");
+        courseFileDto.setCreateBy(StringUtil.isEmpty(username) ? "system" : username);
+        courseFileDto.setUpdateBy(StringUtil.isEmpty(username) ? "system" : username);
         return courseFileDto;
     }
 
@@ -284,7 +285,7 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
         //若课程根目录不存在，初始化
         if (StringUtil.isEmpty(courseFileEntity)) {
             //创建课程根文件夹
-            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENT_ID);
+            CourseFileDto rootCourseFileDto = createFolder(courseId, MicroConstant.ROOT_FOLDER, MicroConstant.ROOT_FOLDER_PARENT_ID, null);
             courseFileDao.insert(rootCourseFileDto);
             return rootCourseFileDto.getId();
         }

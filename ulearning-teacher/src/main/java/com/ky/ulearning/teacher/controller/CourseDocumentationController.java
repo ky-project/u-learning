@@ -270,9 +270,8 @@ public class CourseDocumentationController extends BaseController {
             //删除数据库表记录
             courseDocumentationService.delete(courseFileDocumentationDto.getId(), courseFileDocumentationDto.getFileId(), username);
         } else if ((new Integer(MicroConstant.FOLDER_TYPE)).equals(courseFileDocumentationDto.getFileType())) {
-            //课程根目录和教师根目录无法删除
+            //教师根目录无法删除
             ValidateHandler.checkParameter(courseFileDocumentationDto.getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
-            ValidateHandler.checkParameter(courseFileService.getById(courseFileDocumentationDto.getFileParentId()).getFileParentId().equals(MicroConstant.ROOT_FOLDER_PARENT_ID), TeacherErrorCodeEnum.COURSE_FILE_ROOT_ERROR);
             //初始化文件总集合
             List<CourseFileDocumentationDto> courseFileDocumentationDtoList = new ArrayList<>();
             courseFileDocumentationDtoList.add(courseFileDocumentationDto);
@@ -410,6 +409,7 @@ public class CourseDocumentationController extends BaseController {
         //校验教学任务id
         teachingTaskValidUtil.checkTeachingTask(username, courseFileDocumentationDto.getTeachingTaskId());
         //获取文件资料集合
+        courseFileDocumentationDto.setCreateBy(username);
         List<CourseFileDocumentationDto> courseFileDocumentationDtoList = courseDocumentationService.getSharedList(courseFileDocumentationDto);
         //将教学任务fileName去除#
         CourseFileDocumentationDto pre1 = courseDocumentationService.getByFileId(courseFileDocumentationDto.getFileParentId());

@@ -74,12 +74,12 @@
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto" useGeneratedKeys="true">
-        insert into u_course_documentation (documentation_title, documentation_summary,
+        INSERT INTO u_course_documentation (documentation_title, documentation_summary,
                                             documentation_category, documentation_shared,
                                             `valid`, memo, create_time,
                                             create_by, update_time, update_by,
                                             file_id)
-        values (#{documentationTitle,jdbcType=VARCHAR}, #{documentationSummary,jdbcType=VARCHAR},
+        VALUES (#{documentationTitle,jdbcType=VARCHAR}, #{documentationSummary,jdbcType=VARCHAR},
                 #{documentationCategory,jdbcType=SMALLINT}, #{documentationShared,jdbcType=BOOLEAN},
                 1, #{memo,jdbcType=VARCHAR}, now(),
                 #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR},
@@ -87,7 +87,7 @@
     </insert>
     <update id="update"
             parameterType="com.ky.ulearning.spi.teacher.dto.CourseDocumentationDto">
-        update u_course_documentation
+        UPDATE u_course_documentation
         <set>
             update_time = now(),
             <if test="documentationTitle != null and documentationTitle != ''">
@@ -106,7 +106,7 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
     <!--查询文件资料集合-->
     <select id="getList" resultMap="CourseFileDocumentationDtoMap"
@@ -276,7 +276,8 @@
         ucf.file_size,
         ucf.file_ext,
         ucf.file_type,
-        ucf.file_parent_id
+        ucf.file_parent_id,
+        CASE ucf.create_by WHEN #{createBy} THEN 1 ELSE 0 END AS canDeleteSharedFile
         FROM u_course_file ucf
         INNER JOIN u_course_documentation ucd ON ucd.valid = 1 AND ucf.id = ucd.file_id
         WHERE ucf.valid = 1

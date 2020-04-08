@@ -75,18 +75,18 @@
     </select>
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.teacher.dto.CourseResourceDto" useGeneratedKeys="true">
-        insert into u_course_resource (resource_title, resource_summary, resource_type,
+        INSERT INTO u_course_resource (resource_title, resource_summary, resource_type,
                                        resource_shared, `valid`, memo,
                                        create_time, create_by, update_time,
                                        update_by, file_id)
-        values (#{resourceTitle,jdbcType=VARCHAR}, #{resourceSummary,jdbcType=VARCHAR},
+        VALUES (#{resourceTitle,jdbcType=VARCHAR}, #{resourceSummary,jdbcType=VARCHAR},
                 #{resourceType,jdbcType=SMALLINT},
                 #{resourceShared,jdbcType=BOOLEAN}, 1, #{memo,jdbcType=VARCHAR},
                 now(), #{createBy,jdbcType=VARCHAR}, now(),
                 #{updateBy,jdbcType=VARCHAR}, #{fileId,jdbcType=BIGINT})
     </insert>
     <update id="update" parameterType="com.ky.ulearning.spi.teacher.dto.CourseResourceDto">
-        update u_course_resource
+        UPDATE u_course_resource
         <set>
             update_time = now(),
             <if test="resourceTitle != null and resourceTitle != ''">
@@ -105,7 +105,7 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
     <!--根据文件id查询课程文件资料对象-->
     <select id="getByFileId" resultMap="CourseFileResourceDtoMap">
@@ -274,7 +274,8 @@
         ucf.file_size,
         ucf.file_ext,
         ucf.file_type,
-        ucf.file_parent_id
+        ucf.file_parent_id,
+        CASE ucf.create_by WHEN #{createBy} THEN 1 ELSE 0 END AS canDeleteSharedFile
         FROM u_course_file ucf
         INNER JOIN u_course_resource ucr ON ucr.valid = 1 AND ucf.id = ucr.file_id
         WHERE ucf.valid = 1

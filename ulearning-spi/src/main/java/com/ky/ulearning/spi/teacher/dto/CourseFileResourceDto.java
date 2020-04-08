@@ -84,4 +84,10 @@ public class CourseFileResourceDto extends BaseDto {
      */
     @ApiModelProperty("文件所属文件夹 0为根目录")
     private Long fileParentId;
+
+    /**
+     * 能否删除分享的文件
+     */
+    @ApiModelProperty("能否删除分享的文件 0：否 1：是")
+    private Integer canDeleteSharedFile;
 }
