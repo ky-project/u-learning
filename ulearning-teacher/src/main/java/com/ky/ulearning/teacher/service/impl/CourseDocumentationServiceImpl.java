@@ -110,7 +110,7 @@ public class CourseDocumentationServiceImpl extends BaseService implements Cours
         //获取课程根节点
         CourseFileEntity courseFileEntity = courseFileDao.getByCourseIdAndFileName(courseId, MicroConstant.ROOT_FOLDER);
         CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskDao.getById(teachingTaskId);
-        String teachingTaskAlias = courseTeachingTaskDto.getTeachingTaskAlias() + "#" + courseTeachingTaskDto.getId();
+        String teachingTaskAlias = "[" + courseTeachingTaskDto.getTerm() + "]" + courseTeachingTaskDto.getTeachingTaskAlias() + "#" + courseTeachingTaskDto.getId();
         //若课程根目录不存在，初始化
         if (StringUtil.isEmpty(courseFileEntity)) {
             //创建课程根文件夹
