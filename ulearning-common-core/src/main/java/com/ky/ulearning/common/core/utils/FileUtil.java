@@ -179,27 +179,29 @@ public class FileUtil {
      * @param multipartFile 待校验文件流
      */
     public static boolean fileTypeCheck(MultipartFile multipartFile) {
-        try {
-            boolean resFlag = false;
-            //获取文件后缀
-            String fileExt = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-            //后缀转大写
-            String fileExtUpper = Optional.ofNullable(fileExt).map(String::toUpperCase).orElse("");
-            byte[] buffer = new byte[10];
-            multipartFile.getInputStream().read(buffer);
-
-            //获取当前文件的真实类型
-            Set<String> currentFileType = getTrueFileType(bytesToHexFileTypeString(buffer));
-
-            //指定文件类型中是否匹配当前文件类型
-            if (currentFileType.contains(fileExtUpper)) {
-                resFlag = true;
-            }
-
-            return resFlag;
-        } catch (Exception e) {
-            return false;
-        }
+        //TODO 暂时取消文件头验证
+        return true;
+//        try {
+//            boolean resFlag = false;
+//            //获取文件后缀
+//            String fileExt = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+//            //后缀转大写
+//            String fileExtUpper = Optional.ofNullable(fileExt).map(String::toUpperCase).orElse("");
+//            byte[] buffer = new byte[10];
+//            multipartFile.getInputStream().read(buffer);
+//
+//            //获取当前文件的真实类型
+//            Set<String> currentFileType = getTrueFileType(bytesToHexFileTypeString(buffer));
+//
+//            //指定文件类型中是否匹配当前文件类型
+//            if (currentFileType.contains(fileExtUpper)) {
+//                resFlag = true;
+//            }
+//
+//            return resFlag;
+//        } catch (Exception e) {
+//            return false;
+//        }
     }
 
     /**
