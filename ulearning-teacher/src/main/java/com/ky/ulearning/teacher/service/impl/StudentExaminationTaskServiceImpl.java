@@ -51,13 +51,8 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
     @Override
     public PageBean<StudentExaminationTaskDto> pageList(PageParam pageParam, StudentExaminationTaskDto studentExaminationTaskDto) {
         List<StudentExaminationTaskDto> resultList = studentExaminationTaskDao.listPage(studentExaminationTaskDto, pageParam);
-
-        PageBean<StudentExaminationTaskDto> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(studentExaminationTaskDao.countListPage(studentExaminationTaskDto))
-                //设置查询结果
-                .setContent(resultList);
-        return setPageBeanProperties(pageBean, pageParam);
+        Integer total = studentExaminationTaskDao.countListPage(studentExaminationTaskDto);
+        return createPageBean(pageParam, total, resultList);
     }
 
     @Override
