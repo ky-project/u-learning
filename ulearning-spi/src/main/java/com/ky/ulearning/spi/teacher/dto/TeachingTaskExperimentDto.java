@@ -72,4 +72,10 @@ public class TeachingTaskExperimentDto extends BaseDto {
      */
     @ApiModelProperty(value = "附件大小", hidden = true)
     private Long experimentAttachmentSize;
+
+    /**
+     * 是否共享
+     */
+    @ApiModelProperty("是否共享")
+    private Boolean experimentShared;
 }

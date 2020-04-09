@@ -52,4 +52,10 @@ public class TeachingTaskExperimentEntity extends BaseEntity {
      */
     @ApiModelProperty("附件名")
     private String experimentAttachmentName;
+
+    /**
+     * 是否共享
+     */
+    @ApiModelProperty("是否共享")
+    private Boolean experimentShared;
 }
