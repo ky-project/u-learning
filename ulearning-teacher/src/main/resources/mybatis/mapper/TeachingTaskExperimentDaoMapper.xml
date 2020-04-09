@@ -15,6 +15,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="experiment_shared" jdbcType="TINYINT" property="experimentShared"/>
     </resultMap>
     <resultMap id="TeachingTaskExperimentDtoResultMap"
                type="com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto">
@@ -33,6 +34,7 @@
         <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
         <result column="teaching_task_alias" jdbcType="VARCHAR" property="teachingTaskAlias"/>
         <result column="term" jdbcType="VARCHAR" property="term"/>
+        <result column="experiment_shared" jdbcType="TINYINT" property="experimentShared"/>
     </resultMap>
     <resultMap id="ExperimentDtoResultMap"
                type="com.ky.ulearning.spi.teacher.dto.ExperimentDto">
@@ -49,6 +51,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="experiment_attachment_name" jdbcType="VARCHAR" property="experimentAttachmentName"/>
+        <result column="experiment_shared" jdbcType="TINYINT" property="experimentShared"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -63,7 +66,8 @@
             create_by,
             update_time,
             update_by,
-            experiment_attachment_name
+            experiment_attachment_name,
+            experiment_shared
     </sql>
     <!--根据id查询实验信息-->
     <select id="getById" parameterType="java.lang.Long" resultMap="TeachingTaskExperimentDtoResultMap">
