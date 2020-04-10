@@ -85,7 +85,8 @@
                utte.update_by,
                utte.experiment_attachment_name,
                utt.teaching_task_alias,
-               utt.term
+               utt.term,
+               utte.experiment_shared
         FROM u_teaching_task_experiment utte
                  INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
         WHERE utte.valid = 1
@@ -155,7 +156,8 @@
         utte.update_by,
         utte.experiment_attachment_name,
         utt.teaching_task_alias,
-        utt.term
+        utt.term,
+        utte.experiment_shared
         FROM u_teaching_task_experiment utte
         INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
         WHERE utte.valid = 1
@@ -231,4 +233,13 @@
         WHERE utt.valid = 1
           AND utt.tea_id = #{teaId}
     </select>
+    <!--更新是否分享实验字段-->
+    <update id="updateShared">
+        UPDATE u_teaching_task_experiment
+        SET update_time       = now(),
+            update_by         = #{updateBy},
+            experiment_shared = #{experimentShared}
+        WHERE valid = 1
+          AND id = #{id}
+    </update>
 </mapper>

@@ -210,4 +210,20 @@ public class TeachingTaskExperimentController extends BaseController {
         }
         return ResponseEntityUtil.ok(JsonResult.buildMsg("删除成功"));
     }
+
+    @Log("分享/取消实验")
+    @ApiOperation("分享/取消实验")
+    @GetMapping("/updateShared")
+    public ResponseEntity<JsonResult> updateShared(Long id, Boolean experimentShared) {
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(id), TeacherErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .ofNull(experimentShared, TeacherErrorCodeEnum.EXPERIMENT_SHARED_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //获取实验信息
+        teachingTaskValidUtil.checkExperimentId(id, username);
+        //更新是否更新字段
+        teachingTaskExperimentService.updateShared(id, experimentShared, username);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
 }

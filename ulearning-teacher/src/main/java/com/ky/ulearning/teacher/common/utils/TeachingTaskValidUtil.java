@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -165,6 +166,9 @@ public class TeachingTaskValidUtil {
         TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentService.getById(experimentId);
         //校验
         ValidateHandler.checkParameter(teachingTaskExperimentDto == null, TeacherErrorCodeEnum.EXPERIMENT_NOT_EXISTS);
+        if (Objects.nonNull(teachingTaskExperimentDto.getExperimentShared()) && teachingTaskExperimentDto.getExperimentShared()) {
+            return teachingTaskExperimentDto;
+        }
         checkTeachingTask(username, teachingTaskExperimentDto.getTeachingTaskId());
         return teachingTaskExperimentDto;
     }

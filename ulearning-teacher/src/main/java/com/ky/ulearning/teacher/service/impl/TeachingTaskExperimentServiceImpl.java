@@ -73,12 +73,8 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
             }
         }
 
-        PageBean<TeachingTaskExperimentDto> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(teachingTaskExperimentDao.countListPage(experimentDto))
-                //设置查询结果
-                .setContent(teachingTaskExperimentDtoList);
-        return setPageBeanProperties(pageBean, pageParam);
+        Integer total = teachingTaskExperimentDao.countListPage(experimentDto);
+        return createPageBean(pageParam, total, teachingTaskExperimentDtoList);
     }
 
     @Override
@@ -131,5 +127,12 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @Override
     public Integer getExperimentNumber(Long teaId) {
         return teachingTaskExperimentDao.getExperimentNumber(teaId);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void updateShared(Long id, Boolean experimentShared, String updateBy) {
+        teachingTaskExperimentDao.updateShared(id, experimentShared, updateBy);
     }
 }

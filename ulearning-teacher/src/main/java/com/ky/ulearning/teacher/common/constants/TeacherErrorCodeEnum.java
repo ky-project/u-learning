@@ -66,6 +66,7 @@ public enum TeacherErrorCodeEnum implements BaseEnum {
     RESOURCE_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教学资源不存在"),
     EXPERIMENT_RESULT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "实验结果不存在"),
     EXPERIMENT_RESULT_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "是否分享实验结果不能为空"),
+    EXPERIMENT_SHARED_CANNOT_BE_NULL(HttpStatus.BAD_REQUEST, "是否分享实验不能为空"),
 
     NOTICE_ATTACHMENT_ILLEGAL(HttpStatus.BAD_REQUEST, "附件已过期"),
     TEACHING_TASK_ID_ILLEGAL(HttpStatus.BAD_REQUEST, "该教学任务不可操作"),

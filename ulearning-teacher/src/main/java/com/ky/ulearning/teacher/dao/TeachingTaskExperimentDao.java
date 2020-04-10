@@ -91,4 +91,13 @@ public interface TeachingTaskExperimentDao {
      * @return 实验数量
      */
     Integer getExperimentNumber(Long teaId);
+
+    /**
+     * 更新是否分享实验字段
+     *
+     * @param id               实验id
+     * @param experimentShared 是否分享
+     * @param updateBy         是否更新
+     */
+    void updateShared(@Param("id") Long id, @Param("experimentShared") Boolean experimentShared, @Param("updateBy") String updateBy);
 }
