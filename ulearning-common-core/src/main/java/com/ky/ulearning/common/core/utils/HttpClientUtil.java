@@ -1,5 +1,6 @@
 package com.ky.ulearning.common.core.utils;
 
+import com.ky.ulearning.common.core.constant.CommonConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequestInterceptor;
@@ -30,6 +31,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * HttpClient工具类
@@ -127,6 +129,11 @@ public class HttpClientUtil {
         for (HttpRequestInterceptor httpRequestInterceptor : requestInterceptorList) {
             builder.addInterceptorLast(httpRequestInterceptor);
         }
+    }
+
+    public String getForString(String uri, Map<String, String> params){
+        String getUrl = HttpUtils.makeGetQuery(uri, params);
+        return getForString(getUrl, CommonConstant.CHARSET);
     }
 
     /**
