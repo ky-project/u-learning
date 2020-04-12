@@ -16,6 +16,7 @@ import com.ky.ulearning.common.core.validate.ValidatorBuilder;
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.vo.ExperimentAttachmentVo;
@@ -40,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * 实验controller
@@ -224,5 +226,32 @@ public class TeachingTaskExperimentController extends BaseController {
         //更新是否更新字段
         teachingTaskExperimentService.updateShared(id, true, username);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("更新成功"));
+    }
+
+    @ApiOperation(value = "获取教学任务下所有实验信息")
+    @GetMapping("/getAll")
+    public ResponseEntity<JsonResult<List<KeyLabelVo>>> getAll(Long teachingTaskId) {
+        ValidateHandler.checkNull(teachingTaskId, TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //校验是否有操作权限
+        teachingTaskValidUtil.checkTeachingTask(username, teachingTaskId);
+
+        List<KeyLabelVo> keyLabelVoList = teachingTaskExperimentService.getAll(teachingTaskId);
+        return ResponseEntityUtil.ok(JsonResult.buildData(keyLabelVoList));
+    }
+
+    @ApiOperation(value = "复制实验")
+    @PostMapping("/copyExperiment")
+    public ResponseEntity<JsonResult> copyExperiment(Long teachingTaskId, Long experimentId) {
+        ValidatorBuilder.build()
+                .ofNull(teachingTaskId, TeacherErrorCodeEnum.TEACHING_TASK_ID_CANNOT_BE_NULL)
+                .ofNull(experimentId, TeacherErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL)
+                .doValidate().checkResult();
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //校验是否有操作权限
+        teachingTaskValidUtil.checkTeachingTask(username, teachingTaskId);
+
+        teachingTaskExperimentService.copyExperiment(teachingTaskId, experimentId);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("复制成功"));
     }
 }

@@ -76,4 +76,13 @@ public interface TeachingTaskService {
      * @return 课程id
      */
     Long getCourseIdById(Long id);
+
+    /**
+     * 查询所属相同课程的历年教学任务信息
+     *
+     * @param id 教学任务id
+     * @param username 教师工号
+     * @return 教学任务信息
+     */
+    List<TeachingTaskVo> getBeforeTeachingTask(Long id, String username);
 }

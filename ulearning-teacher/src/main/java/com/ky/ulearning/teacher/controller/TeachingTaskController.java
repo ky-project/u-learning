@@ -149,4 +149,14 @@ public class TeachingTaskController extends BaseController {
         List<TeachingTaskVo> teachingTaskVoList = teachingTaskService.getAll(username);
         return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskVoList));
     }
+
+    @ApiOperation(value = "查询历年所属课程教学任务信息")
+    @GetMapping("/getBeforeTeachingTask")
+    public ResponseEntity<JsonResult<List<TeachingTaskVo>>> getBeforeTeachingTask(Long id) {
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        //校验是否有操作权限
+        teachingTaskValidUtil.checkTeachingTask(username, id);
+        List<TeachingTaskVo> teachingTaskVoList = teachingTaskService.getBeforeTeachingTask(id, username);
+        return ResponseEntityUtil.ok(JsonResult.buildData(teachingTaskVoList));
+    }
 }

@@ -95,4 +95,10 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     public Long getCourseIdById(Long id) {
         return teachingTaskDao.getCourseIdById(id);
     }
+
+    @Override
+    public List<TeachingTaskVo> getBeforeTeachingTask(Long id, String username) {
+        CourseTeachingTaskDto courseTeachingTaskDto = teachingTaskDao.getById(id);
+        return teachingTaskDao.getBeforeTeachingTask(courseTeachingTaskDto.getCourseId(), courseTeachingTaskDto.getTerm(), username, id);
+    }
 }

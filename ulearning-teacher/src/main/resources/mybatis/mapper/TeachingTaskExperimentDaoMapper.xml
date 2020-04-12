@@ -268,4 +268,13 @@
             )
         </foreach>
     </select>
+    <!--根据教学任务查询所有实验信息-->
+    <select id="getAll" resultType="com.ky.ulearning.spi.common.vo.KeyLabelVo">
+        SELECT utte.id               AS `key`,
+               experiment_title AS `label`
+        FROM u_teaching_task_experiment utte
+                 INNER JOIN u_teaching_task utt ON utte.teaching_task_id = utt.id AND utt.valid = 1
+        WHERE utte.valid = 1
+          AND utte.teaching_task_id = #{teachingTaskId}
+    </select>
 </mapper>

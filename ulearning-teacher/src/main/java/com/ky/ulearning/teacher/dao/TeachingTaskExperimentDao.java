@@ -1,6 +1,7 @@
 package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskExperimentEntity;
@@ -107,4 +108,12 @@ public interface TeachingTaskExperimentDao {
      * @param experimentDtoList 实验信息
      */
     void batchInsert(@Param("experimentDtoList") List<ExperimentDto> experimentDtoList);
+
+    /**
+     * 根据教学任务查询所有实验信息
+     *
+     * @param teachingTaskId 教学任务id
+     * @return 实验信息集合
+     */
+    List<KeyLabelVo> getAll(Long teachingTaskId);
 }

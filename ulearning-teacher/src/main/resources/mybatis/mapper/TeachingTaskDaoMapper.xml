@@ -254,4 +254,19 @@
         AND course_id = #{courseId}
         AND term = #{term}
     </select>
+    <!--查询所属相同课程的历年教学任务信息-->
+    <select id="getBeforeTeachingTask" resultMap="TeachingTaskVoResultMap">
+        SELECT utt.id,
+               utt.teaching_task_alias,
+               utt.term,
+               concat('[', utt.term, ']', utt.teaching_task_alias) AS showName
+        FROM u_teaching_task utt
+                 INNER JOIN u_teacher ut ON utt.valid = 1 AND utt.tea_id = ut.id
+        WHERE utt.valid = 1
+          AND utt.course_id = #{courseId}
+          AND utt.term <![CDATA[ <= ]]> #{term}
+          AND ut.tea_number = #{username}
+          AND utt.id != #{id}
+        ORDER BY utt.term DESC
+    </select>
 </mapper>

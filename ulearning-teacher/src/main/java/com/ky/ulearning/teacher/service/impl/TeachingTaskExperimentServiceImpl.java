@@ -4,9 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.github.tobato.fastdfs.domain.fdfs.FileInfo;
 import com.ky.ulearning.common.core.api.service.BaseService;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
+import com.ky.ulearning.common.core.constant.MicroConstant;
+import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.common.vo.KeyLabelVo;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
@@ -152,7 +155,7 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
                 .orElse(Collections.emptyList());
         //批量复制实验信息
         for (TeachingTaskEntity teachingTaskEntity : teachingTaskEntityList) {
-            if(teachingTaskEntity.getId().equals(teachingTaskDto.getId())){
+            if (teachingTaskEntity.getId().equals(teachingTaskDto.getId())) {
                 continue;
             }
             ExperimentDto experimentDto = new ExperimentDto();
@@ -162,5 +165,23 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
             teachingTaskExperimentDao.insert(experimentDto);
             activityService.experimentActivity(experimentDto.getId(), updateBy);
         }
+    }
+
+    @Override
+    public List<KeyLabelVo> getAll(Long teachingTaskId) {
+        return teachingTaskExperimentDao.getAll(teachingTaskId);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    @Transactional(rollbackFor = Throwable.class)
+    public void copyExperiment(Long teachingTaskId, Long experimentId) {
+        TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentDao.getById(experimentId);
+        ExperimentDto experimentDto = new ExperimentDto();
+        BeanUtils.copyProperties(teachingTaskExperimentDto, experimentDto);
+        experimentDto.setTeachingTaskId(teachingTaskId);
+        experimentDto.setExperimentShared(false);
+        teachingTaskExperimentDao.insert(experimentDto);
+        activityService.experimentActivity(experimentDto.getId(), RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
     }
 }

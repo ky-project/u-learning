@@ -116,4 +116,15 @@ public interface TeachingTaskDao {
      * @return 教学任务集合
      */
     List<TeachingTaskEntity> getByCourseIdAndTerm(@Param("courseId") Long courseId, @Param("term") String term);
+
+    /**
+     * 查询所属相同课程的历年教学任务信息
+     *
+     * @param courseId 课程id
+     * @param term     学期
+     * @param username 教师工号
+     * @param id       教学任务id
+     * @return 教学任务信息
+     */
+    List<TeachingTaskVo> getBeforeTeachingTask(@Param("courseId") Long courseId, @Param("term") String term, @Param("username") String username, @Param("id") Long id);
 }
