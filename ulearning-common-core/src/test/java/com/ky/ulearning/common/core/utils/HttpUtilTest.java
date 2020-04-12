@@ -74,4 +74,24 @@ public class HttpUtilTest {
         resMap.put("endDate", df.parse(endTimeStr));
         return resMap;
     }
+
+    @Test
+    public void test02(){
+        Map<String, String> param = new HashMap<>();
+        param.put("code", "xxxx.xx");
+        param.put("cycle", "d");
+        param.put("edate", "");
+        param.put("sdate", "");
+
+        String httpResult = httpClientUtil.getForString("url", param);
+        System.out.println(httpResult);
+    }
+
+    @Test
+    public void test03(){
+        String tmp = "1482167.0433";
+        System.out.println("接收: " + tmp);
+        System.out.println("转float: " + Float.valueOf(tmp));
+        System.out.println("转double: " + Double.valueOf(tmp));
+    }
 }
