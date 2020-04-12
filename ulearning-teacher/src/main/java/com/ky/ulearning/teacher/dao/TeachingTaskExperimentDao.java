@@ -100,4 +100,11 @@ public interface TeachingTaskExperimentDao {
      * @param updateBy         是否更新
      */
     void updateShared(@Param("id") Long id, @Param("experimentShared") Boolean experimentShared, @Param("updateBy") String updateBy);
+
+    /**
+     * 批量插入实验信息
+     *
+     * @param experimentDtoList 实验信息
+     */
+    void batchInsert(@Param("experimentDtoList") List<ExperimentDto> experimentDtoList);
 }

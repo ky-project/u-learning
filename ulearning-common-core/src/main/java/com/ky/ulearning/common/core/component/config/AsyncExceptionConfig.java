@@ -28,14 +28,14 @@ public class AsyncExceptionConfig implements AsyncConfigurer {
         public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
             StringBuilder stringBuilder = new StringBuilder(method.getName() + "异步请求失败 请求参数:{");
             for (Object object : objects) {
-                stringBuilder.append(object);
+                stringBuilder.append(object).append(",");
             }
             stringBuilder.append("}")
                     .append("，错误信息:{")
                     .append(throwable.getMessage())
                     .append("}");
 
-            log.error(stringBuilder.toString());
+            log.error(stringBuilder.toString(), throwable);
         }
     }
 }

@@ -242,4 +242,30 @@
         WHERE valid = 1
           AND id = #{id}
     </update>
+    <!--批量插入实验信息-->
+    <select id="batchInsert">
+        INSERT INTO u_teaching_task_experiment(teaching_task_id, experiment_order,
+        experiment_title, experiment_content, experiment_attachment,
+        `valid`, memo, create_time,
+        create_by, update_time, update_by,
+        experiment_attachment_name, experiment_shared)
+        VALUES
+        <foreach collection="experimentDtoList" separator="," item="experimentDto">
+            (
+            #{experimentDto.teachingTaskId},
+            #{experimentDto.experimentOrder},
+            #{experimentDto.experimentTitle},
+            #{experimentDto.experimentContent},
+            #{experimentDto.experimentAttachment},
+            #{experimentDto.valid},
+            #{experimentDto.memo},
+            #{experimentDto.createTime},
+            #{experimentDto.createBy},
+            #{experimentDto.updateTime},
+            #{experimentDto.updateBy},
+            #{experimentDto.experimentAttachmentName},
+            #{experimentDto.experimentShared}
+            )
+        </foreach>
+    </select>
 </mapper>

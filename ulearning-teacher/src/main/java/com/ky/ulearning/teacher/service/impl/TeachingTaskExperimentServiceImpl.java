@@ -7,11 +7,16 @@ import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.utils.StringUtil;
 import com.ky.ulearning.spi.common.dto.PageBean;
 import com.ky.ulearning.spi.common.dto.PageParam;
+import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
+import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.dto.ExperimentDto;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.TeachingTaskExperimentEntity;
+import com.ky.ulearning.teacher.dao.TeachingTaskDao;
 import com.ky.ulearning.teacher.dao.TeachingTaskExperimentDao;
+import com.ky.ulearning.teacher.service.ActivityService;
 import com.ky.ulearning.teacher.service.TeachingTaskExperimentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -34,6 +39,12 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
 
     @Autowired
     private TeachingTaskExperimentDao teachingTaskExperimentDao;
+
+    @Autowired
+    private TeachingTaskDao teachingTaskDao;
+
+    @Autowired
+    private ActivityService activityService;
 
     @Autowired
     private FastDfsClientWrapper fastDfsClientWrapper;
@@ -134,5 +145,22 @@ public class TeachingTaskExperimentServiceImpl extends BaseService implements Te
     @Transactional(rollbackFor = Throwable.class)
     public void updateShared(Long id, Boolean experimentShared, String updateBy) {
         teachingTaskExperimentDao.updateShared(id, experimentShared, updateBy);
+        //查询教学任务信息
+        TeachingTaskExperimentDto teachingTaskExperimentDto = teachingTaskExperimentDao.getById(id);
+        TeachingTaskDto teachingTaskDto = teachingTaskDao.getInfoById(teachingTaskExperimentDto.getTeachingTaskId());
+        List<TeachingTaskEntity> teachingTaskEntityList = Optional.ofNullable(teachingTaskDao.getByCourseIdAndTerm(teachingTaskDto.getCourseId(), teachingTaskDto.getTerm()))
+                .orElse(Collections.emptyList());
+        //批量复制实验信息
+        for (TeachingTaskEntity teachingTaskEntity : teachingTaskEntityList) {
+            if(teachingTaskEntity.getId().equals(teachingTaskDto.getId())){
+                continue;
+            }
+            ExperimentDto experimentDto = new ExperimentDto();
+            BeanUtils.copyProperties(teachingTaskExperimentDto, experimentDto);
+            experimentDto.setTeachingTaskId(teachingTaskEntity.getId());
+            experimentDto.setExperimentShared(false);
+            teachingTaskExperimentDao.insert(experimentDto);
+            activityService.experimentActivity(experimentDto.getId(), updateBy);
+        }
     }
 }

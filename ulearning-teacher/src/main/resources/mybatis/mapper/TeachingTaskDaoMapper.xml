@@ -245,4 +245,13 @@
         WHERE utt.valid = 1
           AND utt.id = #{id}
     </select>
+    <!--根据课程id和term查询所有教学任务-->
+    <select id="getByCourseIdAndTerm" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM u_teaching_task
+        WHERE valid = 1
+        AND course_id = #{courseId}
+        AND term = #{term}
+    </select>
 </mapper>
