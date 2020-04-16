@@ -38,7 +38,7 @@ public class CourseResourceServiceImpl extends BaseService implements CourseReso
     @Override
     public CourseFileResourceDto getByTeachingTaskId(Long teachingTaskId) {
         TeachingTaskDto teachingTaskDto = teachingTaskDao.getDtoById(teachingTaskId);
-        String teachingTaskRootFolderName = teachingTaskDto.getTeachingTaskAlias() + "#" + teachingTaskId;
+        String teachingTaskRootFolderName = "[" + teachingTaskDto.getTerm() + "]" + teachingTaskDto.getTeachingTaskAlias() + "#" + teachingTaskId;
         //查询课程文件根路径
         CourseFileEntity courseFileEntity = courseFileDao.getByCourseIdAndFileName(teachingTaskDto.getCourseId(), MicroConstant.ROOT_FOLDER);
         if (StringUtil.isEmpty(courseFileEntity)) {
