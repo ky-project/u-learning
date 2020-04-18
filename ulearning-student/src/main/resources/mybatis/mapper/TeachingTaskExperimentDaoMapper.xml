@@ -99,10 +99,14 @@
         utte.update_by,
         utte.experiment_attachment_name,
         utt.teaching_task_alias,
-        utt.term
+        utt.term,
+        CASE WHEN uer.id IS NULL THEN 0
+        WHEN uer.id IS NOT NULL AND uer.experiment_score IS NULL AND uer.experiment_advice IS NULL THEN 1
+        ELSE 2 END AS experimentStatus
         FROM u_teaching_task_experiment utte
         INNER JOIN u_teaching_task utt ON utt.valid = 1 AND utte.teaching_task_id = utt.id
-        LEFT JOIN u_experiment_result uer ON utte.id = uer.experiment_id AND uer.valid = 1
+        LEFT JOIN u_experiment_result uer
+        ON utte.id = uer.experiment_id AND uer.valid = 1 AND uer.stu_id = #{stuId}
         WHERE utte.valid = 1
         AND utte.teaching_task_id = #{experimentDto.teachingTaskId}
         <if test="experimentDto.experimentOrder != null">

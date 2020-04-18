@@ -25,10 +25,12 @@ public interface TeachingTaskExperimentDao {
      *
      * @param experimentDto 筛选条件
      * @param pageParam     分页参数
+     * @param stuId         学生id
      * @return 返回实验信息集合
      */
     List<StudentTeachingTaskExperimentDto> listPage(@Param("experimentDto") ExperimentDto experimentDto,
-                                                    @Param("pageParam") PageParam pageParam);
+                                                    @Param("pageParam") PageParam pageParam,
+                                                    @Param("stuId") Long stuId);
 
     /**
      * 分页查询实验信息 - 总记录数
