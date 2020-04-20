@@ -1,0 +1,53 @@
+#路由配置
+zuul:
+  routes:
+    gateway:
+      path: /gateway/**
+      stripPrefix: true
+      serviceId: ulearning-gateway
+    monitor-manage:
+      path: /monitor-manage/**
+      stripPrefix: false
+      serviceId: monitor-manage
+    system-manage:
+      path: /system-manage/**
+      stripPrefix: false
+      serviceId: system-manage
+    teacher:
+      path: /teacher/**
+      stripPrefix: false
+      serviceId: teacher
+    student:
+      path: /student/**
+      stripPrefix: false
+      serviceId: student
+    xxl-job-admin:
+      path: /xxl-job-admin/**
+      stripPrefix: false
+      serviceId: xxl-job-admin
+  add-host-header: true
+
+#hystrix的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 130000
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
+
+# 系统的各个端的匹配路径
+ulearning:
+  admin-patterns: ${zuul.routes.monitor-manage.path}, ${zuul.routes.system-manage.path}, ${zuul.routes.xxl-job-admin.path}
+  teacher-patterns: ${zuul.routes.teacher.path}
+  student-patterns: ${zuul.routes.student.path}
+  # 无需进行权限校验的路径
+  permission-release-patterns: /auth/**
+  # 无需登录验证的路径
+  authenticate-release-patterns: /*.html, /webjars/**, /**/*.html, /**/*.css, /**/*.js, /**/*.ico, /**/*.png, /**/*.svg, /swagger-resources, /v2/api-docs, /auth/login, /auth/logout, /auth/vCode, /actuator/**, /auth/sendUpdatePwdEmail, /auth/updatePwdByEmail

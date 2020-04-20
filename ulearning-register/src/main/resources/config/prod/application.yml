@@ -1,0 +1,46 @@
+info:
+  build:
+    name: @project.name@
+    description: @project.description@
+    artifactId: @project.artifactId@
+    version: @project.version@
+
+server:
+  port: 14001
+  tomcat:
+    basedir: /tmp/ulearning-logs/${spring.application.name}/tomcat
+    accesslog:
+      enabled: true
+      directory: ./access
+      buffered: false
+      file-date-format: .yyyy-MM-dd
+      pattern: '%h %l %u %t "%r" %s %b %D %{User-Agent}i'
+      prefix: ${spring.application.name}
+      rotate: true
+      suffix: .log
+
+eureka:
+  #关闭自我保护机制-开发环境开启
+  server:
+    enable-self-preservation: true
+  instance:
+    hostname: 106.15.75.204
+    instance-id: ${eureka.instance.hostname}:${server.port}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+logging:
+  config: classpath:config/prod/logback.xml
+
+#监控配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
