@@ -1,0 +1,3 @@
+INSERT INTO `u_teacher_role` VALUES (1, 1, 1, 1, NULL, '2020-2-1 23:48:24', '16620208', '2020-2-1 23:48:24', '16620208');
+
+ALTER TABLE `u_teacher_role` AUTO_INCREMENT = 2;

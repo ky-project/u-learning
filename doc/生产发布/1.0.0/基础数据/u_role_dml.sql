@@ -1,0 +1,3 @@
+INSERT INTO `u_role` VALUES (1, '管理员', 'admin', 1, 1, NULL, '2019-12-8 21:44:00', NULL, '2019-12-8 21:44:00', NULL);
+
+ALTER TABLE `u_role` AUTO_INCREMENT = 2;
