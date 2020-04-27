@@ -29,11 +29,11 @@ spring:
 jwt:
   header-token: Authorization-token
   header-refresh-token: Authorization-refresh-token
-  secret: glFHrX0x5wYaDfhMMusyEg7p9ZVmz1hWgp1sKx0woVeLECAIn50VsHtOXf9b8fwK
+  secret: RxaM3fZtzFSEj02WlM7pjfUkUoedD561p54uZ4u3OR1R9KqpsEuthgFMEnG4zH9B
   # token 过期时间 5分钟
   token: 300000
-  # refresh-token 过期时间7天
-  refresh-token: 604800000
+  # refresh-token 过期时间2天
+  refresh-token: 172800000
 
 #swagger2
 swagger:
@@ -44,12 +44,12 @@ fdfs:
   so-timeout: 1501
   connect-timeout: 601
   #nginx访问地址
-  reqHost: darren1112.com
+  reqHost: 47.95.14.126
   #nginx访问端口
   reqPort: 8888
   #TrackerList参数,支持多个
   tracker-list:
-    - darren1112.com:22122
+    - 47.95.14.126:22122
   pool:
     #从池中借出的对象的最大数目（配置为-1表示不限制）
     max-total: -1
@@ -71,7 +71,7 @@ ulearning:
   file:
     # 默认MB
     # 图片最大限制
-    photo-max-size: 3
+    photo-max-size: 5
     # 通告附件最大限制
     notice-attachment-max-size: 10
     # 实验附件最大限制
@@ -85,7 +85,7 @@ ulearning:
   # 系统相关变量
   system:
     # 是否是开发模式，发布模式需要关闭
-    dev-mode: true
+    dev-mode: false
     # 项目发布地址前缀
     suffix: /server
     # 系统模块映射
