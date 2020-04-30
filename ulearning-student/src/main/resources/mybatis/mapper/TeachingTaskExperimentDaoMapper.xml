@@ -121,15 +121,15 @@
         <if test="experimentDto.experimentAttachmentName != null and experimentDto.experimentAttachmentName != ''">
             AND utte.experiment_attachment_name LIKE #{experimentDto.experimentAttachmentName}
         </if>
-        <if test="experimentDto.experimentState != null and experimentDto.experimentState == 0">
+        <if test="experimentDto.experimentStatus != null and experimentDto.experimentStatus == 0">
             AND uer.id IS NULL
         </if>
-        <if test="experimentDto.experimentState != null and experimentDto.experimentState == 1">
+        <if test="experimentDto.experimentStatus != null and experimentDto.experimentStatus == 1">
             AND uer.id IS NOT NULL
             AND uer.experiment_score IS NULL
             AND uer.experiment_advice IS NULL
         </if>
-        <if test="experimentDto.experimentState != null and experimentDto.experimentState == 2">
+        <if test="experimentDto.experimentStatus != null and experimentDto.experimentStatus == 2">
             AND uer.id IS NOT NULL
             AND uer.experiment_score IS NOT NULL
             AND uer.experiment_advice IS NOT NULL

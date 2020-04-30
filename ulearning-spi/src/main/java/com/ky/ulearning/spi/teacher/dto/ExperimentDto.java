@@ -57,7 +57,7 @@ public class ExperimentDto extends BaseDto {
      * 实验结果 0：未提交 1：已提交 2：已批改
      */
     @ApiModelProperty("实验结果 0：未提交 1：已提交 2：已批改")
-    private Integer experimentState;
+    private Integer experimentStatus;
 
     /**
      * 是否共享
