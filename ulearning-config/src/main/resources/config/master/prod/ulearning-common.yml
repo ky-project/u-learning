@@ -44,12 +44,12 @@ fdfs:
   so-timeout: 1501
   connect-timeout: 601
   #nginx访问地址
-  reqHost: 47.95.14.126
+  reqHost: 10.66.2.81
   #nginx访问端口
   reqPort: 8888
   #TrackerList参数,支持多个
   tracker-list:
-    - 47.95.14.126:22122
+    - 10.66.2.81:22122
   pool:
     #从池中借出的对象的最大数目（配置为-1表示不限制）
     max-total: -1
