@@ -13,7 +13,7 @@ spring:
     admin:
       ui:
         title: U-Learning 服务监控
-        public-url: http://www.darren1112.com
+        public-url: http://10.66.2.81
       notify:
         mail:
           to: ludaye1112@163.com
@@ -23,7 +23,7 @@ spring:
 eureka:
   instance:
     # 所部署服务器域名
-    hostname: 121.40.183.90
+    hostname: 10.66.2.81
     instance-id: ${eureka.instance.hostname}:${server.port}
     home-page-url-path: /${spring.application.name}
     lease-expiration-duration-in-seconds: 90
@@ -33,5 +33,5 @@ eureka:
   client:
     serviceUrl:
       # 注册中心url
-      defaultZone: http://106.15.75.204:14001/eureka/
+      defaultZone: http://10.66.2.81:14001/eureka/
     registry-fetch-interval-seconds: 5
