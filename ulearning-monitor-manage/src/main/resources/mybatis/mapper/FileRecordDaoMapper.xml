@@ -33,20 +33,20 @@
     </sql>
     <!--根据id查询文件记录-->
     <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
+        SELECT
         <include refid="Base_Column_List"/>
-        from u_file_record
-        where valid = 1
+        FROM u_file_record
+        WHERE valid = 1
         AND id = #{id,jdbcType=BIGINT}
     </select>
     <!--插入文件记录-->
     <insert id="insert" keyColumn="id" keyProperty="id"
             parameterType="com.ky.ulearning.spi.monitor.dto.FileRecordDto" useGeneratedKeys="true">
-        insert into u_file_record (record_url, record_name, record_size,
+        INSERT INTO u_file_record (record_url, record_name, record_size,
                                    record_type, record_table, record_table_id,
                                    `valid`, memo, create_time,
                                    create_by, update_time, update_by)
-        values (#{recordUrl,jdbcType=VARCHAR}, #{recordName,jdbcType=VARCHAR}, #{recordSize,jdbcType=BIGINT},
+        VALUES (#{recordUrl,jdbcType=VARCHAR}, #{recordName,jdbcType=VARCHAR}, #{recordSize,jdbcType=BIGINT},
                 #{recordType,jdbcType=VARCHAR}, #{recordTable,jdbcType=VARCHAR}, #{recordTableId,jdbcType=BIGINT},
                 1, #{memo,jdbcType=VARCHAR}, now(),
                 #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR})
@@ -77,9 +77,9 @@
         <if test="fileRecordDto.recordTable != null and fileRecordDto.recordTable != ''">
             AND record_table LIKE CONCAT('%', #{fileRecordDto.recordTable} , '%')
         </if>
-        order by update_time desc
+        ORDER BY update_time DESC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
-            limit #{pageParam.startIndex}, #{pageParam.pageSize}
+            LIMIT #{pageParam.startIndex}, #{pageParam.pageSize}
         </if>
     </select>
     <!--分页查询文件记录 - 总记录数-->
@@ -115,12 +115,12 @@
                                    create_by, update_time, update_by)
         SELECT tea_photo,
                SUBSTRING_INDEX(tea_photo, '/', -1),
-               null,
+               NULL,
                SUBSTRING_INDEX(tea_photo, '.', -1),
                'u_teacher',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
@@ -142,12 +142,12 @@
                                    create_by, update_time, update_by)
         SELECT stu_photo,
                SUBSTRING_INDEX(stu_photo, '/', -1),
-               null,
+               NULL,
                SUBSTRING_INDEX(stu_photo, '.', -1),
                'u_student',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
@@ -170,12 +170,12 @@
                                    create_by, update_time, update_by)
         SELECT question_URL,
                SUBSTRING_INDEX(question_URL, '/', -1),
-               null,
+               NULL,
                SUBSTRING_INDEX(question_URL, '.', -1),
                'u_course_question',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
@@ -198,12 +198,12 @@
                                    create_by, update_time, update_by)
         SELECT experiment_attachment,
                experiment_attachment_name,
-               null,
+               NULL,
                SUBSTRING_INDEX(experiment_attachment, '.', -1),
                'u_teaching_task_experiment',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
@@ -253,7 +253,7 @@
                'u_log_history',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
@@ -270,7 +270,7 @@
     </insert>
     <!--计算文件总量-->
     <select id="getSumFileSize" resultType="java.lang.Long">
-        SELECT SUM(record_size)
+        SELECT COALESCE(SUM(record_size),0)
         FROM u_file_record
         WHERE valid = 1
     </select>
@@ -287,7 +287,7 @@
                'u_course_file',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
@@ -310,12 +310,12 @@
                                    create_by, update_time, update_by)
         SELECT experiment_URL,
                experiment_attachment_name,
-               null,
+               NULL,
                SUBSTRING_INDEX(experiment_URL, '.', -1),
                'u_experiment_result',
                id,
                1,
-               null,
+               NULL,
                now(),
                'fileRecordHandler',
                now(),
