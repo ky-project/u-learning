@@ -123,7 +123,7 @@ public class LogServiceImpl extends BaseService implements LogService {
         for (int i = days - 1, j = 0; i >= 0; i--, j++) {
             DateTime dateTime = DateUtil.offsetDay(new Date(), -i);
             String format = DateUtil.format(dateTime, "yyyy-MM-dd");
-            if(! list.get(j).getDate().equals(format)){
+            if(j >= list.size() || ! list.get(j).getDate().equals(format)){
                 TrafficVo trafficVo = new TrafficVo();
                 trafficVo.setDate(format);
                 trafficVo.setNumber(0L);
