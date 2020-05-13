@@ -138,7 +138,25 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
         for (ExaminationResultDto examinationResultDto : examinationResultDtoList) {
             ExaminationResultDto temp = new ExaminationResultDto();
             temp.setId(examinationResultDto.getId());
-            temp.setStudentScore(examinationResultDto.getStudentAnswer().equals(examinationResultDto.getQuestionKey()) ? quantityMap.get(examinationResultDto.getQuestionType()) : 0.0);
+            //判卷
+            if(StringUtil.isEmpty(examinationResultDto.getStudentAnswer())){
+                temp.setStudentScore(0.0);
+            } else if(CommonConstant.QUESTION_TYPE[3].equals(examinationResultDto.getQuestionType())){
+                //填空题需要比较每个空的答案
+                List<String> studentAnswerList = StringUtil.strToList(examinationResultDto.getStudentAnswer(), CommonConstant.COURSE_QUESTION_SEPARATE);
+                List<String> questionKeyList = StringUtil.strToList(examinationResultDto.getQuestionKey(), CommonConstant.COURSE_QUESTION_SEPARATE);
+                //获取分值
+                Double questionScore = quantityMap.get(examinationResultDto.getQuestionType());
+                Double studentScore = 0.0;
+                for(int i = 0; i < studentAnswerList.size(); i++){
+                    if(studentAnswerList.get(i).equals(questionKeyList.get(i))){
+                        studentScore += questionScore;
+                    }
+                }
+                temp.setStudentScore(studentScore);
+            } else {
+                temp.setStudentScore(examinationResultDto.getStudentAnswer().equals(examinationResultDto.getQuestionKey()) ? quantityMap.get(examinationResultDto.getQuestionType()) : 0.0);
+            }
             resList.add(temp);
         }
         //批量更新测试结果

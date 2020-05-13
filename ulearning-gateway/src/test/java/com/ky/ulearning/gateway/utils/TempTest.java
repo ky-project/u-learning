@@ -19,4 +19,14 @@ public class TempTest {
         System.out.println(username);
         System.out.println(loginType);
     }
+
+    @Test
+    public void test02(){
+        String answer = "A|#|B|#|C";
+        String[] split = answer.split(CommonConstant.COURSE_QUESTION_SEPARATE);
+
+        for (String s : split) {
+            System.out.print(s + " ");
+        }
+    }
 }
