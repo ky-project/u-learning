@@ -142,9 +142,13 @@
         <if test="experimentResultDto.experimentTitle != null and experimentResultDto.experimentTitle != ''">
             AND utte.experiment_title LIKE concat('%', #{experimentResultDto.experimentTitle}, '%')
         </if>
-        <if test="experimentResultDto.isCorrected != null">
+        <if test="experimentResultDto.isCorrected != null and experimentResultDto.isCorrected == true">
             AND ((uer.experiment_score IS NOT NULL AND uer.experiment_score != '')
             OR (uer.experiment_advice IS NOT NULL AND uer.experiment_advice != ''))
+        </if>
+        <if test="experimentResultDto.isCorrected != null and experimentResultDto.isCorrected == false">
+            AND ((uer.experiment_score IS NULL AND uer.experiment_score != '')
+            AND (uer.experiment_advice IS NULL AND uer.experiment_advice != ''))
         </if>
         ORDER BY uer.experiment_commit_time ASC
         <if test="pageParam.startIndex != null and pageParam.pageSize">
