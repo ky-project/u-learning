@@ -4,7 +4,10 @@
 
 <Workspace>
 	<Local Expanded="Yes">
-		<Model Expanded="Yes" ID="{85C43174-0B65-4C89-A07E-5E7384AA6A6B}" Name="System5A" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="System5A/System5A.prj"/>
+		<Model Expanded="Yes" ID="{85C43174-0B65-4C89-A07E-5E7384AA6A6B}" Loaded="No" Name="System5A" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="System5A/System5A.prj"/>
+		<Model Expanded="Yes" ID="{A399277D-32D6-4DA6-BA7F-E96D5318BA80}" Loaded="No" Name="模型" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="/Mydata/Major/java/develop/dptms/dptms-server/文档/产品文档/数据库设计/模型/模型.prj"/>
+		<Model Expanded="Yes" ID="{A399277D-32D6-4DA6-BA7F-E96D5318BA80}" Loaded="No" Name="模型" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="/Mydata/Major/java/develop/dptms/dptms-server/文档/产品文档/数据库设计/模型/模型.prj"/>
+		<Model Expanded="Yes" ID="{A399277D-32D6-4DA6-BA7F-E96D5318BA80}" Name="模型" Type="{FF4B6538-9856-42CF-B9B9-304ED370CEAA}" URL="/Mydata/Major/java/develop/dptms/dptms-server/文档/产品文档/数据库设计/模型/模型.prj"/>
 	</Local>
 	<BrowserModule Name="仓库(&amp;R)"/>
 </Workspace>
