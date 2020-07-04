@@ -26,7 +26,7 @@ eureka:
   server:
     enable-self-preservation: true
   instance:
-    hostname: 106.15.75.204
+    hostname: 121.40.183.90
     instance-id: ${eureka.instance.hostname}:${server.port}
   client:
     register-with-eureka: false
