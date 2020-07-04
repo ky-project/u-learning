@@ -19,6 +19,7 @@ import com.ky.ulearning.spi.common.dto.PasswordUpdateDto;
 import com.ky.ulearning.spi.common.dto.UserContext;
 import com.ky.ulearning.spi.common.excel.StudentExcel;
 import com.ky.ulearning.spi.common.excel.TeacherExcel;
+import com.ky.ulearning.spi.system.dto.StudentDto;
 import com.ky.ulearning.spi.system.dto.TeacherDto;
 import com.ky.ulearning.spi.system.entity.RoleEntity;
 import com.ky.ulearning.spi.system.entity.TeacherEntity;
@@ -338,5 +339,30 @@ public class TeacherController extends BaseController {
         TeacherExcelListener listener = new TeacherExcelListener(teacherService);
         ExcelUtil.readExcelToList(TeacherExcel.class, file.getInputStream(), listener);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(listener.getErrorMap(), CollectionUtils.isEmpty(listener.getErrorMap()) ? "导入成功" : "以下记录导入失败，请检查是否已存在或信息是否正确"));
+    }
+
+
+    @Log("修改教师密码")
+    @DeleteUserRedis
+    @ApiOperation("修改教师密码")
+    @ApiOperationSupport(ignoreParameters = {"oldPassword"})
+    @PermissionName(source = "teacher:updatePasswordById", name = "修改教师密码", group = "教师管理")
+    @PostMapping("/updatePasswordById")
+    public ResponseEntity<JsonResult> updatePasswordById(PasswordUpdateDto passwordUpdateDto){
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(passwordUpdateDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(passwordUpdateDto.getNewPassword()), CommonErrorCodeEnum.NEW_PASSWORD_CANNOT_BE_NULL)
+                .on(passwordUpdateDto.getNewPassword().equals(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.PASSWORD_SAME)
+                .doValidate().checkResult();
+        //密码加密
+        String newPassword = EncryptUtil.encryptPassword(passwordUpdateDto.getNewPassword());
+        //旧密码错误
+        TeacherDto teacherDto = new TeacherDto();
+        teacherDto.setId(passwordUpdateDto.getId());
+        teacherDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        teacherDto.setTeaPassword(newPassword);
+        teacherDto.setPwdUpdateTime(new Date());
+        teacherService.update(teacherDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
     }
 }

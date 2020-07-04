@@ -265,4 +265,28 @@ public class StudentController extends BaseController {
         ExcelUtil.readExcelToList(StudentExcel.class, file.getInputStream(), listener);
         return ResponseEntityUtil.ok(JsonResult.buildDataMsg(listener.getErrorMap(), CollectionUtils.isEmpty(listener.getErrorMap()) ? "导入成功" : "以下记录导入失败，请检查是否已存在或信息是否正确"));
     }
+
+    @Log("修改学生密码")
+    @DeleteUserRedis
+    @ApiOperation("修改学生密码")
+    @ApiOperationSupport(ignoreParameters = {"oldPassword"})
+    @PermissionName(source = "student:updatePasswordById", name = "修改学生密码", group = "学生管理")
+    @PostMapping("/updatePasswordById")
+    public ResponseEntity<JsonResult> updatePasswordById(PasswordUpdateDto passwordUpdateDto){
+        ValidatorBuilder.build()
+                .on(StringUtil.isEmpty(passwordUpdateDto.getId()), SystemErrorCodeEnum.ID_CANNOT_BE_NULL)
+                .on(StringUtil.isEmpty(passwordUpdateDto.getNewPassword()), CommonErrorCodeEnum.NEW_PASSWORD_CANNOT_BE_NULL)
+                .on(passwordUpdateDto.getNewPassword().equals(passwordUpdateDto.getOldPassword()), CommonErrorCodeEnum.PASSWORD_SAME)
+                .doValidate().checkResult();
+        //密码加密
+        String newPassword = EncryptUtil.encryptPassword(passwordUpdateDto.getNewPassword());
+        //旧密码错误
+        StudentDto studentDto = new StudentDto();
+        studentDto.setId(passwordUpdateDto.getId());
+        studentDto.setUpdateBy(RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class));
+        studentDto.setStuPassword(newPassword);
+        studentDto.setPwdUpdateTime(new Date());
+        studentService.update(studentDto);
+        return ResponseEntityUtil.ok(JsonResult.buildMsg("修改成功"));
+    }
 }
