@@ -107,6 +107,12 @@ public class ExperimentResultDto extends BaseDto {
     private String stuName;
 
     /**
+     * 专业班级
+     */
+    @ApiModelProperty("专业班级")
+    private String stuClass;
+
+    /**
      * 标题
      */
     @ApiModelProperty("标题")

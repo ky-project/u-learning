@@ -26,7 +26,7 @@
 
     <groupId>com.ky.ulearning</groupId>
     <artifactId>ulearning-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>基于泛在学习的教学管理系统</description>
     <packaging>pom</packaging>
 

@@ -51,6 +51,12 @@ public class StudentExaminationResultVo {
     private String stuDept;
 
     /**
+     * 专业班级
+     */
+    @ApiModelProperty("专业班级")
+    private String stuClass;
+
+    /**
      * 成绩
      */
     @ApiModelProperty("成绩")

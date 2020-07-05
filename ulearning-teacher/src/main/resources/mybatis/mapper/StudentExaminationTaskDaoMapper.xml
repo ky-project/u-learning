@@ -36,6 +36,7 @@
         <result column="stu_name" jdbcType="VARCHAR" property="stuName"/>
         <result column="stu_number" jdbcType="VARCHAR" property="stuNumber"/>
         <result column="stu_gender" jdbcType="VARCHAR" property="stuGender"/>
+        <result column="stu_class" jdbcType="VARCHAR" property="stuClass"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -58,7 +59,7 @@
         SELECT uset.id, uset.examination_task_id, uset.stu_id, uset.examining_hostIP, uset.examining_login_time,
         uset.examining_remain_time, uset.examining_state, uset.examining_state_switch_time, uset.valid, uset.memo,
         uset.create_time, uset.create_by, uset.update_time, uset.update_by,
-        us.stu_name,us.stu_number, us.stu_gender
+        us.stu_name,us.stu_number, us.stu_gender, us.stu_class
         FROM u_student_examination_task uset
         INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1
         WHERE uset.valid = 1
@@ -184,6 +185,7 @@
         us.stu_number AS stuNumber,
         us.stu_name AS stuName,
         us.stu_dept AS stuDept,
+        us.stu_class AS stuClass,
         uttet.examination_name AS examinationName
         FROM u_student_examination_task uset
         INNER JOIN u_student us ON uset.stu_id = us.id AND us.valid = 1

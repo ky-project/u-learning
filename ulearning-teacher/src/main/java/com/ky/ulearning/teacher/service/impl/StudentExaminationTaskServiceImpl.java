@@ -135,13 +135,7 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
             }
             examinationResultVo.setRanking(index);
         }
-
-        PageBean<StudentExaminationResultVo> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(studentExaminationTaskDao.countPageStudentExaminationResultList(studentExaminationResultVo))
-                //设置查询结果
-                .setContent(resultList);
-        return setPageBeanProperties(pageBean, pageParam);
+        return createPageBean(pageParam, studentExaminationTaskDao.countPageStudentExaminationResultList(studentExaminationResultVo), resultList);
     }
 
     @Override
