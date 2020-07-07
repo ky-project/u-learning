@@ -5,6 +5,8 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.student.dto.ExperimentResultDto;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
 
+import java.util.List;
+
 /**
  * 实验结果service - 接口
  *
@@ -45,4 +47,14 @@ public interface ExperimentResultService {
      * @param experimentShared 是否分享展示
      */
     void sharedExperimentResult(Long id, String username, Boolean experimentShared);
+
+    /**
+     * 查询所有实验结果
+     *
+     * @param experimentId 实验id
+     * @return 实验结果集合
+     * @author luyuhao
+     * @date 20/07/08 02:33
+     */
+    List<ExperimentResultDto> listByExperimentId(Long experimentId);
 }

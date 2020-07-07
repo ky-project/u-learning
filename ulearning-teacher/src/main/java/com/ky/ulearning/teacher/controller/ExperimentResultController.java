@@ -5,6 +5,7 @@ import com.ky.ulearning.common.core.api.controller.BaseController;
 import com.ky.ulearning.common.core.component.component.FastDfsClientWrapper;
 import com.ky.ulearning.common.core.constant.MicroConstant;
 import com.ky.ulearning.common.core.message.JsonResult;
+import com.ky.ulearning.common.core.utils.FileUtil;
 import com.ky.ulearning.common.core.utils.RequestHolderUtil;
 import com.ky.ulearning.common.core.utils.ResponseEntityUtil;
 import com.ky.ulearning.common.core.utils.StringUtil;
@@ -22,15 +23,27 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiOperationSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @author luyuhao
@@ -129,5 +142,56 @@ public class ExperimentResultController extends BaseController {
         teachingTaskValidUtil.checkExperimentResultId(id, username);
         experimentResultService.sharedExperimentResult(id, username, experimentShared);
         return ResponseEntityUtil.ok(JsonResult.buildMsg("分享成功"));
+    }
+
+    @Log(value = "实验结果存档")
+    @ApiOperation(value = "实验结果存档", notes = "只能查看/操作已选教学任务的数据")
+    @ApiOperationSupport(ignoreParameters = {"id", "experimentUrl"})
+    @GetMapping("/experimentResultArchive")
+    public ResponseEntity experimentResultArchive(ExperimentResultDto experimentResultDto) {
+        ValidateHandler.checkNull(experimentResultDto.getExperimentId(), TeacherErrorCodeEnum.EXPERIMENT_ID_CANNOT_BE_NULL);
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        teachingTaskValidUtil.checkExperimentId(experimentResultDto.getExperimentId(), username);
+
+        //查询所有实验结果
+        List<ExperimentResultDto> experimentResultDtoList = experimentResultService.listByExperimentId(experimentResultDto.getExperimentId());
+        createZipByExperimentResultList(experimentResultDtoList);
+        return ResponseEntityUtil.ok(JsonResult.buildData(experimentResultDtoList));
+    }
+
+    private void createZipByExperimentResultList(List<ExperimentResultDto> experimentResultDtoList) {
+        ZipOutputStream zipOutputStream = null;
+        try {
+            zipOutputStream = new ZipOutputStream(new FileOutputStream(FileUtil.getSystemTempPath() + "test.zip"), StandardCharsets.UTF_8);
+            if(CollectionUtils.isEmpty(experimentResultDtoList)){
+                return;
+            }
+            for (ExperimentResultDto experimentResultDto : experimentResultDtoList) {
+                String experimentUrl = experimentResultDto.getExperimentUrl();
+                if(StringUtil.isEmpty(experimentUrl)){
+                    continue;
+                }
+                byte[] fileTemp = fastDfsClientWrapper.download(experimentUrl);
+                if(Objects.isNull(fileTemp)){
+                    continue;
+                }
+                String fileName = experimentResultDto.getStuNumber() + "-" + experimentResultDto.getStuName() + "." + FileUtil.getExtensionName(experimentResultDto.getExperimentAttachmentName());
+                ZipEntry zipEntry = new ZipEntry(fileName);
+                zipEntry.setSize(fileTemp.length);
+                zipOutputStream.putNextEntry(zipEntry);
+                zipOutputStream.write(fileTemp);
+                zipOutputStream.closeEntry();
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        } finally {
+            if(Objects.nonNull(zipOutputStream)){
+                try {
+                    zipOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

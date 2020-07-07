@@ -19,6 +19,8 @@ import java.util.Set;
  */
 public class FileUtil {
 
+    private static final String TEMP_PATH = "/ulearning/temp/";
+
     /**
      * 定义GB的计算常量
      */
@@ -236,6 +238,17 @@ public class FileUtil {
             }
         }
         return typeList;
+    }
+
+    public static String getSystemTempPath(){
+        String[] pathSplit = TEMP_PATH.split("/");
+        for (String path : pathSplit) {
+            File targetFile = new File("/" + path);
+            if (!targetFile.exists()) {
+                targetFile.mkdirs();
+            }
+        }
+        return TEMP_PATH;
     }
 
     /**

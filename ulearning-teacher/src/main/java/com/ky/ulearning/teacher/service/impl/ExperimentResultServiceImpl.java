@@ -47,13 +47,7 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
             }
             resultDto.setIsCorrected(StringUtil.isNotEmpty(resultDto.getExperimentAdvice()) || StringUtil.isNotEmpty(resultDto.getExperimentScore()));
         }
-
-        PageBean<ExperimentResultDto> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(experimentResultDao.countListPage(experimentResultDto))
-                //设置查询结果
-                .setContent(resultList);
-        return setPageBeanProperties(pageBean, pageParam);
+        return createPageBean(pageParam, experimentResultDao.countListPage(experimentResultDto), resultList);
     }
 
     @Override
@@ -81,5 +75,18 @@ public class ExperimentResultServiceImpl extends BaseService implements Experime
     @Transactional(rollbackFor = Throwable.class)
     public void sharedExperimentResult(Long id, String username, Boolean experimentShared) {
         experimentResultDao.updateSharedById(id, username, experimentShared);
+    }
+
+    /**
+     * 查询所有实验结果
+     *
+     * @param experimentId 实验id
+     * @return 实验结果集合
+     * @author luyuhao
+     * @date 20/07/08 02:33
+     */
+    @Override
+    public List<ExperimentResultDto> listByExperimentId(Long experimentId) {
+        return experimentResultDao.listByExperimentId(experimentId);
     }
 }

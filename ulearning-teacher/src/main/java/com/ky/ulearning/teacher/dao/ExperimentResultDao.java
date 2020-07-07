@@ -70,4 +70,14 @@ public interface ExperimentResultDao {
      * @param experimentShared 是否分享展示
      */
     void updateSharedById(@Param("id") Long id, @Param("username") String username, @Param("experimentShared") Boolean experimentShared);
+
+    /**
+     * 查询所有实验结果
+     *
+     * @param experimentId 实验id
+     * @return 实验结果集合
+     * @author luyuhao
+     * @date 20/07/08 02:33
+     */
+    List<ExperimentResultDto> listByExperimentId(@Param("experimentId") Long experimentId);
 }
