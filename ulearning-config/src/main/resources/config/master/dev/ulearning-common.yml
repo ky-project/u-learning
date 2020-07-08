@@ -90,3 +90,5 @@ ulearning:
     suffix: /server
     # 系统模块映射
     module-map: "{1: '后台管理系统', 2: '监控系统', 3: '教师端', 4: '学生端'}"
+    # 系统临时文件夹
+    temp-dir: /tmp/ulearning/temp/

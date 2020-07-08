@@ -1,25 +1,28 @@
 package com.ky.ulearning.common.core.utils;
 
+import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.IdUtil;
 import com.ky.ulearning.common.core.constant.FileTypeEnum;
+import com.ky.ulearning.spi.common.dto.BatchDownFileDto;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * @author luyuhao
  * @date 19/12/05 02:44
  */
-public class FileUtil {
-
-    private static final String TEMP_PATH = "/ulearning/temp/";
+@Slf4j
+public class FileUtil extends cn.hutool.core.io.FileUtil {
 
     /**
      * 定义GB的计算常量
@@ -240,15 +243,61 @@ public class FileUtil {
         return typeList;
     }
 
-    public static String getSystemTempPath(){
-        String[] pathSplit = TEMP_PATH.split("/");
-        for (String path : pathSplit) {
-            File targetFile = new File("/" + path);
-            if (!targetFile.exists()) {
-                targetFile.mkdirs();
+    /**
+     * 根据文件目录，新建文件夹
+     *
+     * @param systemTempPath 文件目录
+     * @return 文件夹路径
+     * @author luyuhao
+     * @date 20/07/09 02:16
+     */
+    public static String getSystemTempPath(String systemTempPath) {
+        mkdir(systemTempPath);
+        return systemTempPath;
+    }
+
+    /**
+     * 打包文件为zip，并存在临时文件夹中，返回文件路径
+     *
+     * @param batchDownFileDtoList dto
+     * @param systemTempPath       系统临时文件夹路径
+     * @return 文件路径
+     * @author luyuhao
+     * @date 20/07/09 01:30
+     */
+    public static String packFileBytes(List<BatchDownFileDto> batchDownFileDtoList, String systemTempPath) {
+        ZipOutputStream zipOutputStream = null;
+        try {
+            //创建临时文件名
+            String tempFileName = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_MS_PATTERN);
+            String filePath = systemTempPath + tempFileName + ".zip";
+            //打包
+            zipOutputStream = new ZipOutputStream(new FileOutputStream(filePath), StandardCharsets.UTF_8);
+            for (BatchDownFileDto batchDownFileDto : batchDownFileDtoList) {
+                //创建压缩内容对象
+                ZipEntry zipEntry = new ZipEntry(batchDownFileDto.getFileName());
+                //记录大小
+                zipEntry.setSize(batchDownFileDto.getBytes().length);
+                //加入压缩包
+                zipOutputStream.putNextEntry(zipEntry);
+                //写入流
+                zipOutputStream.write(batchDownFileDto.getBytes());
+                //关闭
+                zipOutputStream.closeEntry();
+            }
+            return filePath;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        } finally {
+            if (Objects.nonNull(zipOutputStream)) {
+                try {
+                    zipOutputStream.close();
+                } catch (IOException e) {
+                    log.error("关闭文件流失败", e);
+                }
             }
         }
-        return TEMP_PATH;
     }
 
     /**

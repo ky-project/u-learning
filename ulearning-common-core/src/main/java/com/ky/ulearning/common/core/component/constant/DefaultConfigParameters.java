@@ -56,4 +56,7 @@ public class DefaultConfigParameters {
 
     @Value("#{${ulearning.system.module-map}}")
     private Map<Integer, String> moduleMap;
+
+    @Value("${ulearning.system.temp-dir}")
+    private String systemTempDir;
 }
