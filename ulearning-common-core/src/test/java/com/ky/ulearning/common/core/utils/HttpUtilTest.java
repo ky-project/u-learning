@@ -94,4 +94,17 @@ public class HttpUtilTest {
         System.out.println("转float: " + Float.valueOf(tmp));
         System.out.println("转double: " + Double.valueOf(tmp));
     }
+
+    @Test
+    public void test04(){
+        String code = "023tpXVI1uERo10dz1WI1HhXVI1tpXVT";
+        String appid = "wxb248e7e33f255980";
+        String secret = "733571c5fcd87c19058506f27bac13e3";
+        String url =    "https://api.weixin.qq.com/sns/jscode2session?appid=" + appid +
+                "&secret="  + secret +
+                "&js_code=" + code   +
+                "&grant_type=authorization_code";
+        String jsonResult = httpClientUtil.getForString(url);
+        System.out.println(jsonResult);
+    }
 }
