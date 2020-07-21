@@ -97,9 +97,9 @@ public class HttpUtilTest {
 
     @Test
     public void test04(){
-        String code = "023tpXVI1uERo10dz1WI1HhXVI1tpXVT";
-        String appid = "wxb248e7e33f255980";
-        String secret = "733571c5fcd87c19058506f27bac13e3";
+        String code = "xxxx";
+        String appid = "yyyy";
+        String secret = "aaaaa";
         String url =    "https://api.weixin.qq.com/sns/jscode2session?appid=" + appid +
                 "&secret="  + secret +
                 "&js_code=" + code   +
