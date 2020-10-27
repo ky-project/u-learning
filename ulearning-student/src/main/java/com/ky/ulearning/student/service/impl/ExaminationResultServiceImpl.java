@@ -154,7 +154,20 @@ public class ExaminationResultServiceImpl extends BaseService implements Examina
                     }
                 }
                 temp.setStudentScore(studentScore);
-            } else {
+            } else if(CommonConstant.QUESTION_TYPE[2].equals(examinationResultDto.getQuestionType())){
+                //多选题需要逐一对比
+                List<String> studentAnswerList = StringUtil.strToList(examinationResultDto.getStudentAnswer(), CommonConstant.COURSE_QUESTION_SEPARATE);
+                List<String> questionKeyList = StringUtil.strToList(examinationResultDto.getQuestionKey(), CommonConstant.COURSE_QUESTION_SEPARATE);
+                Double questionScore = quantityMap.get(examinationResultDto.getQuestionType());
+                boolean isTrue = true;
+                for (String studentAnswer : studentAnswerList) {
+                    if(! questionKeyList.contains(studentAnswer)){
+                        isTrue = false;
+                        break;
+                    }
+                }
+                temp.setStudentScore(isTrue ? questionScore : 0.0);
+            } else{
                 temp.setStudentScore(examinationResultDto.getStudentAnswer().equals(examinationResultDto.getQuestionKey()) ? quantityMap.get(examinationResultDto.getQuestionType()) : 0.0);
             }
             resList.add(temp);
