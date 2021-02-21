@@ -57,6 +57,7 @@
         <xxl-job-core.version>2.1.1</xxl-job-core.version>
         <easyexcel.version>2.1.6</easyexcel.version>
         <rocketmq.version>4.4.0</rocketmq.version>
+        <jasypt.version>2.1.0</jasypt.version>
         <target.dir>D:\Mydata\Major\java\develop\u-learning\shell</target.dir>
     </properties>
 
@@ -239,6 +240,14 @@
                 <version>${rocketmq.version}</version>
             </dependency>
             <!-- rocketmq-client End -->
+
+            <!-- [jasypt] Start -->
+            <dependency>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-spring-boot-starter</artifactId>
+                <version>${jasypt.version}</version>
+            </dependency>
+            <!-- [jasypt] End -->
             <!-- Plugins End -->
 
             <!-- ulearning Begin -->

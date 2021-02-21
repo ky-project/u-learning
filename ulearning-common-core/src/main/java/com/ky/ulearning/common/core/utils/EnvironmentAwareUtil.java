@@ -11,13 +11,16 @@ import org.springframework.util.StringUtils;
 @Slf4j
 public class EnvironmentAwareUtil {
 
-    public static void adjust(){
+    public static void adjust() {
         String path = System.getenv("ulearning");
-        if(StringUtils.isEmpty(path)){
+        String ulearningSecret = System.getenv("ulearningSecret");
+        if (StringUtils.isEmpty(path)) {
             path = "local";
         }
-        log.info("当前环境为 {}" , path);
+        log.info("当前环境为 {}", path);
+        log.info("系统密钥为 {}", ulearningSecret);
         System.setProperty(ConfigFileApplicationListener.CONFIG_LOCATION_PROPERTY, "classpath:/config/" + path + "/");
         System.setProperty(ConfigFileApplicationListener.ACTIVE_PROFILES_PROPERTY, path);
+        System.setProperty("jasypt.encryptor.password", ulearningSecret);
     }
 }

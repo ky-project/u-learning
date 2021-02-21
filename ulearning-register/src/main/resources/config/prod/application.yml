@@ -19,24 +19,34 @@ server:
       rotate: true
       suffix: .log
 
+# 账号密码
+spring:
+  security:
+    user:
+      name: ENC(mRN97UhK2D6PTcXIdLhvdwxduCpXn1YF)
+      password: ENC(orrD1ow1NHp+dB7PMJX03GTtKSb1wElV)
+
 eureka:
   #关闭自我保护机制-开发环境开启
   server:
     enable-self-preservation: true
-  instance:
-    hostname: 10.66.2.81
-    instance-id: ${eureka.instance.hostname}:${server.port}
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
   client:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
 
 logging:
   config: classpath:config/prod/logback.xml
 
 #监控配置
 management:
+  health:
+    redis:
+      enabled: false
+    mail:
+      enabled: false
   endpoints:
     web:
       exposure:

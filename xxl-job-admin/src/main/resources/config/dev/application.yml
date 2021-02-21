@@ -64,4 +64,4 @@ xxl:
         max: 100
     logretentiondays: 30
     i18n:
-    accessToken:
+    accessToken: ENC(xc+ARngNTDP7iBGBW7mW42QtrCUka+3hwXPVzwxz8pW0PvOdEVmtv9B9Ilze9SrT)

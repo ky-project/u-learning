@@ -14,14 +14,19 @@ spring:
 eureka:
   instance:
     # 所部署服务器域名
-    hostname: 10.66.2.81
-    instance-id: ${eureka.instance.hostname}:${server.port}
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
     home-page-url-path: /
     lease-expiration-duration-in-seconds: 90
     lease-renewal-interval-in-seconds: 30
     metadata-map:
+      eureka:
+        hostname: ENC(D6R5v3Ca5HV5BMoMAGmA+wIWFdtaH9x5)
+      user:
+        name: ENC(WW7qCsx/a27S3DQesW04TR7jzp6obnx+)
+        password: ENC(RRUQU6X7k4+T8SrCSf2gcBaNfROT+0rs)
       management.context-path: /actuator
   client:
     serviceUrl:
       # 注册中心url
-      defaultZone: http://10.66.2.81:14001/eureka/
+      defaultZone: http://${eureka.instance.metadata-map.user.name}:${eureka.instance.metadata-map.user.password}@${eureka.instance.metadata-map.eureka.hostname}:14001/eureka/
+    registry-fetch-interval-seconds: 15
