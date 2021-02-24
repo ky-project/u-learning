@@ -10,7 +10,7 @@ spring:
       max-request-size: 600MB
   mail:
     username: ludaye1112@163.com
-    password: luyuhao2010
+    password: ENC(xvzMZf4GTHuXN7LGk0NoydZcY1ivgHsE)
     host: smtp.163.com
     default-encoding: UTF-8
     properties:
@@ -29,7 +29,7 @@ spring:
 jwt:
   header-token: Authorization-token
   header-refresh-token: Authorization-refresh-token
-  secret: RxaM3fZtzFSEj02WlM7pjfUkUoedD561p54uZ4u3OR1R9KqpsEuthgFMEnG4zH9B
+  secret: ENC(h4oC1lSpF6gH029MP9lxTUM9jmtEeeTrvLCH+mo5aUZJLbY1C04Txuo5f1kBh6J0IlJd3guroYoQO3ynVRpu0njf/pa1tvctlkmbzWQwjKA=)
   # token 过期时间 5分钟
   token: 300000
   # refresh-token 过期时间2天
@@ -44,12 +44,12 @@ fdfs:
   so-timeout: 1501
   connect-timeout: 601
   #nginx访问地址
-  reqHost: 10.66.2.81
+  reqHost: ENC(zZLQk3TuXuhFvbNd2Q2SLTZMPkKA38dN)
   #nginx访问端口
   reqPort: 8888
   #TrackerList参数,支持多个
   tracker-list:
-    - 10.66.2.81:22122
+    - ENC(h2FjkbB8PAP4AfjPF6y2tzp33niJWYjxDJdyedQ1a0w=)
   pool:
     #从池中借出的对象的最大数目（配置为-1表示不限制）
     max-total: -1

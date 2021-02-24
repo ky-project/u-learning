@@ -1,13 +1,13 @@
 # xxl-job
 xxl:
   job:
-    accessToken:
+    accessToken: ENC(A7C2SrXPk5/teQ1K7ft4fFNSMKgqVL6hSv3si4EeqJeSHqyKJE/k5LDeAuttvyit)
     admin:
-      addresses: http://10.66.2.81:14007/xxl-job-admin
+      addresses: ENC(bvoakjqyDE9iK9LKcuJ1+pq3iNS/MmtJTybDYY03CvAV1LaDXyr6jNtG+Ae+sHge)
     executor:
       appname: ${spring.application.name}
       # 双网卡时需要指定可通信ip
-      ip: 10.66.2.81
+      ip: ${eureka.instance.hostname}
       logpath: /tmp/ulearning-logs/xxl-job/${spring.application.name}
       logretentiondays: 30
       port: 24004

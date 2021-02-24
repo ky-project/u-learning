@@ -5,9 +5,9 @@ spring:
       # 数据库访问配置, 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://10.66.2.81:3306/ulearning?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false
-      username: root
-      password: daye1112
+      url: ENC(wSVdBKYoLs3/9caJzHZTcZRt0BDUKXGqtEXYjRB9lDe6id0PHQr5bpRlU5xVXvQeTjDZ0fU/BKAn1jZ1bqp3EWZbyXyEmMbasAKsostxDf0P5aj3eHmqeRG91HqLKpU298esBecTHDs7G2pJiSIx0Q==)
+      username: ENC(82ZC0wu+MDftNYD8dzAITw==)
+      password: ENC(3FBXwh5h/N8jRp5fDZfe3T0U7pgDAoCB)
       # 连接池配置
       initial-size: 5
       min-idle: 5
@@ -60,9 +60,9 @@ spring:
   redis:
     #数据库索引
     database: 1
-    host: 10.66.2.81
-    port: 6379
-    password: PSKn6YDqgTvRtCbVtzD2PUwv
+    host: ENC(KxkmnStO93939d5x1SwiFO08wV9eJK85)
+    port: ENC(rDbF9z03AAZKpyWb9VYWIQ==)
+    password: ENC(IK7c6wcLmwHUCj+9TNAF2ivuwFMSC6PIcq6xn6llRCdSlFNuYNhWrg==)
     #连接超时时间
     timeout: 5000
 
