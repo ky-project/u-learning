@@ -1,9 +1,9 @@
 info:
   build:
-    name: @project.name@
-    description: @project.description@
-    artifactId: @project.artifactId@
-    version: @project.version@
+    name: '@project.name@'
+    description: '@project.description@'
+    artifactId: '@project.artifactId@'
+    version: '@project.version@'
 #服务器配置
 server:
   port: 14004

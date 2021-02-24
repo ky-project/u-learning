@@ -1,9 +1,9 @@
 info:
   build:
-    name: @project.name@
-    description: @project.description@
-    artifactId: @project.artifactId@
-    version: @project.version@
+    name: '@project.name@'
+    description: '@project.description@'
+    artifactId: '@project.artifactId@'
+    version: '@project.version@'
 
 ### web
 server:
@@ -24,7 +24,7 @@ server:
 #日志配置
 logging:
   config: classpath:config/local/logback.xml
-  file: ./ulearning-logs/${spring.application.name}/sys/info.${spring.application.name}.log
+  file: ./ulearning-logs/xxl-job-admin/sys/info.xxl-job-admin.log
 ### actuator
 management:
   health:

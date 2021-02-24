@@ -1,9 +1,9 @@
 info:
   build:
-    name: @project.name@
-    description: @project.description@
-    artifactId: @project.artifactId@
-    version: @project.version@
+    name: '@project.name@'
+    description: '@project.description@'
+    artifactId: '@project.artifactId@'
+    version: '@project.version@'
 
 server:
   port: 14001
@@ -34,7 +34,8 @@ eureka:
     hostname: 127.0.0.1
     instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
   client:
-    register-with-eureka: true
+    instance-info-replication-interval-seconds: 15
+    register-with-eureka: false
     fetch-registry: false
     service-url:
       defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
