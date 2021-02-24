@@ -116,4 +116,12 @@
                    AND student_score != 0
              ) AS t3
     </select>
+    <!--删除测试结果-->
+    <delete id="deleteByExaminingId">
+        UPDATE u_examination_result
+        SET update_time = now(),
+            update_by   = #{username},
+            valid       = 0
+        WHERE examining_id = #{examiningId}
+    </delete>
 </mapper>

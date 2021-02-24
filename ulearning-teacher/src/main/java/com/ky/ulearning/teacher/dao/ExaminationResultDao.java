@@ -1,9 +1,9 @@
 package com.ky.ulearning.teacher.dao;
 
 import com.ky.ulearning.spi.student.dto.ExaminationResultDto;
-import com.ky.ulearning.spi.student.entity.ExaminationResultEntity;
 import com.ky.ulearning.spi.teacher.vo.CourseQuestionDetailVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,4 +42,14 @@ public interface ExaminationResultDao {
      * @return stuScore、accuracy
      */
     Map<String, Object> getScoreAndAccuracyByExaminingId(Long examiningId);
+
+    /**
+     * 删除测试结果
+     *
+     * @param examiningId 学生测试id
+     * @param username    用户账号
+     * @author luyuhao
+     * @date 2021/02/25 00:56
+     */
+    void deleteByExaminingId(@Param("examiningId") Long examiningId, @Param("username") String username);
 }

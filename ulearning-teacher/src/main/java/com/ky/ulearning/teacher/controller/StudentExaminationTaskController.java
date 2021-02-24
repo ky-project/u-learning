@@ -34,6 +34,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.charset.StandardCharsets;
@@ -145,4 +146,17 @@ public class StudentExaminationTaskController extends BaseController {
         return ResponseEntityUtil.ok(headers, courseFileBytes);
     }
 
+    @Log(value = "重置测试结果", devModel = true)
+    @ApiOperation(value = "重置测试结果", notes = "只能查看/操作已选教学任务的数据")
+    @GetMapping("/resetExaminationResult")
+    public ResponseEntity<JsonResult> resetExaminationResult(@RequestParam(value = "examiningId", required = false) Long examiningId) {
+        ValidateHandler.checkNull(examiningId, TeacherErrorCodeEnum.EXAMINATION_ID_CANNOT_BE_NULL);
+        //权限校验
+        String username = RequestHolderUtil.getAttribute(MicroConstant.USERNAME, String.class);
+        teachingTaskValidUtil.checkExaminingId(examiningId, username);
+
+        // 重置测试结果
+        studentExaminationTaskService.resetExaminationResult(examiningId, username);
+        return ResponseEntityUtil.ok(JsonResult.buildData(null));
+    }
 }

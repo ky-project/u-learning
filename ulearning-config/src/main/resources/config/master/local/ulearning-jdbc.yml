@@ -60,7 +60,7 @@ spring:
   redis:
     #数据库索引
     database: 0
-    host: ENC(Au0eh4xlD0DY5rE0V3/MI9WwURgGqO6N)
+    host: ENC(EnhRklYS0p4LAURrxaNRZMq9QhVMJmE1)
     port: ENC(K+nO+pJckTgTp2WidMBpTA==)
     password: ENC(NRn1nrHXH9y840inHppxwtybofU5s5Go8eMTD1WylYCt82OIHRbrcQ==)
     #连接超时时间

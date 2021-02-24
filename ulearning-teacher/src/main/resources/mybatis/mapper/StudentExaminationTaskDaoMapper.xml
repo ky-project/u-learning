@@ -257,4 +257,12 @@
         WHERE uset.valid = 1
           AND uset.examination_task_id = #{studentExaminationResultVo.examinationTaskId}
     </select>
+    <!--删除测试记录-->
+    <delete id="deleteById">
+        UPDATE u_student_examination_task
+        SET update_time = now(),
+            update_by   = #{username},
+            valid       = 0
+        WHERE id = #{examiningId}
+    </delete>
 </mapper>

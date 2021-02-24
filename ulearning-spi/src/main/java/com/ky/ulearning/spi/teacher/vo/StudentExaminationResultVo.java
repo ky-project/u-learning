@@ -22,7 +22,6 @@ public class StudentExaminationResultVo {
      * 学生测试id
      */
     @ApiModelProperty(value = "学生测试id", hidden = true)
-    @JsonIgnore
     private Long examiningId;
 
     /**

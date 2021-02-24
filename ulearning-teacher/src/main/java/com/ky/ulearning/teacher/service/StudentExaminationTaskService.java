@@ -63,4 +63,14 @@ public interface StudentExaminationTaskService {
      * @return 学生测试结果集合
      */
     List<StudentExaminationResultExcel> getStudentExaminationResultList(Long examinationTaskId, String examinationParameters);
+
+    /**
+     * 重置测试结果
+     *
+     * @param examiningId 测试id
+     * @param username    用户账号
+     * @author luyuhao
+     * @date 2021/02/25 00:52
+     */
+    void resetExaminationResult(Long examiningId, String username);
 }

@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -162,5 +161,22 @@ public class StudentExaminationTaskServiceImpl extends BaseService implements St
             examinationResultExcel.setRanking(index);
         }
         return resultList;
+    }
+
+    /**
+     * 重置测试结果
+     *
+     * @param examiningId 测试id
+     * @param username    用户账号
+     * @author luyuhao
+     * @date 2021/02/25 00:52
+     */
+    @Override
+    @Transactional(rollbackFor = Throwable.class)
+    public void resetExaminationResult(Long examiningId, String username) {
+        // 删除测试记录
+        studentExaminationTaskDao.deleteById(examiningId, username);
+        // 删除测试结果
+        examinationResultDao.deleteByExaminingId(examiningId, username);
     }
 }

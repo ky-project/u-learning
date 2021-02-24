@@ -106,4 +106,14 @@ public interface StudentExaminationTaskDao {
      * @return 学生测试结果
      */
     List<StudentExaminationResultExcel> getStudentExaminationResultList(Long examinationTaskId);
+
+    /**
+     * 删除测试记录
+     *
+     * @param examiningId 测试id
+     * @param username    用户账号
+     * @author luyuhao
+     * @date 2021/02/25 00:54
+     */
+    void deleteById(@Param("examiningId") Long examiningId, @Param("username") String username);
 }
