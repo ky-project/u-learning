@@ -19,10 +19,10 @@ eureka:
     lease-renewal-interval-in-seconds: 30
     metadata-map:
       eureka:
-        hostname: ENC(XnDkGLa7AFGKuF5t8/B4BVOiL90TUo4C)
+        hostname: ENC(z5SCMVVdD7jdRkZAgDS1aOuSv36uXwTW)
       user:
-        name: ENC(9L3EhnzrHPPbVoXPjDGKe58yKyzNlhaJ)
-        password: ENC(Y58EZDgAXhxc1X0NK1740xVXiRzwf7fa)
+        name: ENC(OOJj/02p2N6U9obTpkS95TXmhhr1A+fR)
+        password: ENC(B7zSqtyOaQ9tRmXwAL/3HFlu4tdQaDif)
       management.context-path: /actuator
   client:
     serviceUrl:
