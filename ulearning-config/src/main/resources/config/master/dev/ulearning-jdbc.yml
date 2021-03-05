@@ -5,7 +5,7 @@ spring:
       # 数据库访问配置, 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.jdbc.Driver
-      url: ENC(DNZnDnIspR8dP51T1VjD9WojOfgYCtMxpDJ6HJQfcBkP65+v8nXWK89JgGUw8eaIBIyS826l0tWTOyexl9jv8L6xuxdtr6eqZmyWg0tqC3wa0kYqtuHn9aRqjlhEF0yHqRnvSjzVgqpE/i9F8FZEIXATVwENxoJo)
+      url: ENC(jcJv7ojXNVuqap+Vu5A1XfYWhPIyBJAhL3R4Vo5WXogSM9gaBsRnK3B8LAhnw4G4L7eWOBP1HRGQGmbPv8vf53FpUvUtU8on/ZYGP2+dXDomXJhkXEf9W/9i3dydUMmmo3y8C8UWuh3esM2N1653hviw9mkcFe4d)
       username: ENC(z2cryvJHAuGCAqckNj/J/Q==)
       password: ENC(ZBdHlYAzBqNM8hDo+AhHS0Uq5XbNcTXE)
       # 连接池配置
