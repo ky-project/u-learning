@@ -12,6 +12,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -26,6 +27,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(prefix = "rocketmq", value = "isEnable", havingValue = "true")
 public class LogConsumerMQ extends AbstractRocketConsumer {
 
     @Autowired

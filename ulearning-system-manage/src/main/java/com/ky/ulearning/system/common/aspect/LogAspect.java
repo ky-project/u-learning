@@ -137,6 +137,7 @@ public class LogAspect {
                 remotingAdd(logEntity);
             }
         } else {
+            log.info(systemManageConfigParameters.getAppName() + " 生成一条日志发送至队列");
             remotingAdd(logEntity);
         }
     }

@@ -126,6 +126,7 @@ public class LogAspect {
                 remotingAdd(logEntity);
             }
         } else {
+            log.info(gatewayConfigParameters.getAppName() + " 生成一条日志发送至队列");
             remotingAdd(logEntity);
         }
     }
