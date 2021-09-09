@@ -46,13 +46,7 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     @Override
     public PageBean<TeachingTaskEntity> pageTeachingTaskList(TeachingTaskDto teachingTaskDto, PageParam pageParam) {
         List<TeachingTaskEntity> teacherList = teachingTaskDao.listPage(teachingTaskDto, pageParam);
-
-        PageBean<TeachingTaskEntity> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(teachingTaskDao.countListPage(teachingTaskDto))
-                //设置查询结果
-                .setContent(teacherList);
-        return setPageBeanProperties(pageBean, pageParam);
+        return createPageBean(pageParam, teachingTaskDao.countListPage(teachingTaskDto), teacherList);
     }
 
     @Override
