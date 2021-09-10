@@ -42,7 +42,7 @@ spring:
 
       # StatViewServlet配置
       stat-view-servlet:
-        enabled: true
+        enabled: false
         # 访问路径为/druid时，跳转到StatViewServlet
         url-pattern: /druid/*
         # 是否能够重置数据

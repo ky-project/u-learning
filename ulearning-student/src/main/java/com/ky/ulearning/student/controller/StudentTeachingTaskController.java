@@ -78,7 +78,9 @@ public class StudentTeachingTaskController extends BaseController {
                 //验证重复选课
                 .on(studentTeachingTaskUtil.selectedTeachingTask(teachingTaskId, RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class)), StudentErrorCodeEnum.STUDENT_TEACHING_TASK_SELECTED_ILLEGAL)
                 .doValidate().checkResult();
-        //添加选课记录
+        // 校验教学任务状态
+        studentTeachingTaskUtil.checkTeachingTaskStatus(teachingTaskId);
+        // 添加选课记录
         StudentTeachingTaskEntity studentTeachingTaskEntity = new StudentTeachingTaskEntity();
         studentTeachingTaskEntity.setStuId(RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class));
         studentTeachingTaskEntity.setTeachingTaskId(teachingTaskId);
@@ -97,6 +99,8 @@ public class StudentTeachingTaskController extends BaseController {
                 //验证是否已选课
                 .on(!studentTeachingTaskUtil.selectedTeachingTask(teachingTaskId, RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class)), StudentErrorCodeEnum.STUDENT_TEACHING_TASK_CANCEL_SELECTED_ILLEGAL)
                 .doValidate().checkResult();
+        // 校验教学任务状态
+        studentTeachingTaskUtil.checkTeachingTaskStatus(teachingTaskId);
         //删除选课记录
         studentTeachingTaskService.deleteByTeachingTaskIdAndStuId(teachingTaskId,
                 RequestHolderUtil.getAttribute(MicroConstant.USER_ID, Long.class),

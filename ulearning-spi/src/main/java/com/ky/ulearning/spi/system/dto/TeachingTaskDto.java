@@ -51,6 +51,6 @@ public class TeachingTaskDto extends BaseDto {
     /**
      * 教学任务状态 0：停用 1：启用
      */
-    @ApiModelProperty("教学任务状态 0：停用 1：启用")
-    private Integer taskStatus;
+    @ApiModelProperty("教学任务状态")
+    private Boolean taskStatus;
 }

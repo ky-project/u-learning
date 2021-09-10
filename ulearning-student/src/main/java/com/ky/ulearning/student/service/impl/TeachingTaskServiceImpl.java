@@ -33,29 +33,33 @@ public class TeachingTaskServiceImpl extends BaseService implements TeachingTask
     public PageBean<TeachingTaskEntity> pageNotSelectedList(TeachingTaskDto teachingTaskDto, PageParam pageParam) {
         List<TeachingTaskEntity> teacherList = teachingTaskDao.listNotSelectedPage(teachingTaskDto, pageParam);
 
-        PageBean<TeachingTaskEntity> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(teachingTaskDao.countNotSelectedListPage(teachingTaskDto))
-                //设置查询结果
-                .setContent(teacherList);
-        return setPageBeanProperties(pageBean, pageParam);
+        return createPageBean(pageParam, teachingTaskDao.countNotSelectedListPage(teachingTaskDto), teacherList);
     }
 
     @Override
     public PageBean<TeachingTaskEntity> pageSelectedList(TeachingTaskDto teachingTaskDto, PageParam pageParam) {
         List<TeachingTaskEntity> teacherList = teachingTaskDao.listSelectedPage(teachingTaskDto, pageParam);
 
-        PageBean<TeachingTaskEntity> pageBean = new PageBean<>();
-        //设置总记录数
-        pageBean.setTotal(teachingTaskDao.countSelectedListPage(teachingTaskDto))
-                //设置查询结果
-                .setContent(teacherList);
-        return setPageBeanProperties(pageBean, pageParam);
+        return createPageBean(pageParam, teachingTaskDao.countSelectedListPage(teachingTaskDto), teacherList);
     }
 
     @Override
     @Cacheable(keyGenerator = "keyGenerator")
     public Long getCourseIdById(Long id) {
         return teachingTaskDao.getCourseIdById(id);
+    }
+
+    /**
+     * 根据id查询教学任务
+     *
+     * @param teachingTaskId 教学任务id
+     * @return {@link TeachingTaskEntity}
+     * @author luyuhao
+     * @since 2021/9/10
+     */
+    @Override
+    @Cacheable(keyGenerator = "keyGenerator")
+    public TeachingTaskEntity getById(Long teachingTaskId) {
+        return teachingTaskDao.getById(teachingTaskId);
     }
 }

@@ -54,6 +54,8 @@ public enum StudentErrorCodeEnum implements BaseEnum {
     TEACHING_TASK_ID_ERROR(HttpStatus.BAD_REQUEST, "教学任务id错误"),
     COURSE_FOLDER_CANNOT_DOWNLOAD(HttpStatus.BAD_REQUEST, "暂不支持文件夹下载"),
     STUDENT_EXAMINATION_END(HttpStatus.BAD_REQUEST, "您已测试结束"),
+    TEACHING_TASK_NOT_EXISTS(HttpStatus.BAD_REQUEST, "教学任务不存在"),
+    TEACHING_TASK_STATUS_INVALID(HttpStatus.BAD_REQUEST, "教学任务已关闭"),
     ;
 
     private Integer code;

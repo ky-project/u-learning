@@ -5,8 +5,6 @@ import com.ky.ulearning.spi.common.dto.PageParam;
 import com.ky.ulearning.spi.system.dto.TeachingTaskDto;
 import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 
-import java.util.Set;
-
 /**
  * 教学任务service - 接口
  *
@@ -40,4 +38,14 @@ public interface TeachingTaskService {
      * @return 课程id
      */
     Long getCourseIdById(Long id);
+
+    /**
+     * 根据id查询教学任务
+     *
+     * @param teachingTaskId 教学任务id
+     * @return {@link TeachingTaskEntity}
+     * @author luyuhao
+     * @since 2021/9/10
+     */
+    TeachingTaskEntity getById(Long teachingTaskId);
 }
