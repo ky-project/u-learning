@@ -30,7 +30,7 @@ public class ValidateHandler {
      * @param baseEnum 错误码
      */
     public static void checkParameter(Boolean checkResult, BaseEnum baseEnum){
-        if(checkResult){
+        if(Boolean.TRUE.equals(checkResult)){
             throw new BadRequestException(baseEnum);
         }
     }

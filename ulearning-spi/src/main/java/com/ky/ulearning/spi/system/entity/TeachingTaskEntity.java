@@ -52,4 +52,10 @@ public class TeachingTaskEntity extends BaseEntity {
      */
     @ApiModelProperty("课程信息")
     private CourseEntity course;
+
+    /**
+     * 教学任务状态 0：停用 1：启用
+     */
+    @ApiModelProperty("教学任务状态")
+    private Boolean taskStatus;
 }

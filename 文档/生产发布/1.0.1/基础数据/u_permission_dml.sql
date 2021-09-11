@@ -1,0 +1,2 @@
+INSERT INTO `u_permission`(permission_name, permission_source, permission_group, permission_url, memo, create_by,update_by) VALUES ('修改教师密码', 'teacher:updatePasswordById', '教师管理', '/system-manage/teacher/updatePasswordById', NULL, NULL, NULL);
+INSERT INTO `u_permission`(permission_name, permission_source, permission_group, permission_url, memo, create_by,update_by) VALUES ('修改学生密码', 'student:updatePasswordById', '学生管理', '/system-manage/student/updatePasswordById', NULL, NULL, NULL);

@@ -2,6 +2,7 @@ package com.ky.ulearning.student.common.utils;
 
 import com.ky.ulearning.common.core.validate.handler.ValidateHandler;
 import com.ky.ulearning.spi.student.entity.ExperimentResultEntity;
+import com.ky.ulearning.spi.system.entity.TeachingTaskEntity;
 import com.ky.ulearning.spi.teacher.dto.TeachingTaskExperimentDto;
 import com.ky.ulearning.spi.teacher.entity.CourseFileEntity;
 import com.ky.ulearning.spi.teacher.entity.ExaminationTaskEntity;
@@ -139,5 +140,21 @@ public class StudentTeachingTaskUtil {
         ValidateHandler.checkParameter(examinationTaskEntity == null, StudentErrorCodeEnum.EXAMINATION_NOT_EXISTS);
         checkTeachingTaskId(examinationTaskEntity.getTeachingTaskId(), stuId);
         return examinationTaskEntity;
+    }
+
+    /**
+     * 验证教学任务状态是否启用
+     *
+     * @param teachingTaskId 教学任务id
+     * @return {@link TeachingTaskEntity}
+     * @author luyuhao
+     * @since 2021/9/10
+     */
+    public TeachingTaskEntity checkTeachingTaskStatus(Long teachingTaskId) {
+        TeachingTaskEntity teachingTaskEntity = teachingTaskService.getById(teachingTaskId);
+        //校验
+        ValidateHandler.checkParameter(teachingTaskEntity == null, StudentErrorCodeEnum.TEACHING_TASK_NOT_EXISTS);
+        ValidateHandler.checkParameter(!teachingTaskEntity.getTaskStatus(), StudentErrorCodeEnum.TEACHING_TASK_STATUS_INVALID);
+        return teachingTaskEntity;
     }
 }

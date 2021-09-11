@@ -5,9 +5,9 @@ spring:
       # 数据库访问配置, 使用druid数据源
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.jdbc.Driver
-      url: ENC(oTYG4n2Q/bLR3rno4C3s3YTgiAGQC0deYB8xsq/uO+C8t/WCjDLAv5K3HGYBXjAvCoslvrp5EDdiMtng4BiY1FMhrmgLHiXri5xXIrdSHaPxwLenYcHq3kKBf14NE06COOM5rs9OUqYlPQyy0mbtJAWPKhLT+72M)
-      username: ENC(4y9Ze1pA9LhK35XabeKeeA==)
-      password: ENC(uEzTgnletUJkM01XgGK8ofRqzIgxGEGT)
+      url: ENC(O24V48xwJUM/zPLQcIPIJpZ+AxfztGlkETdvGQsNRrpmkYzX10AoCt6kPOsalB2uuZXgHJC3hTUh+2XiUvTB8K1VdE/zjCP1fO/7afpJPG1D+C+T3KuvLPzT1E/fBa07nZxLARhWa4Wh5AzhslOuC3soROOpIcV6eSB2FQcR0RcZsOlGDNJq6p3Wq881a4S0)
+      username: ENC(FGVkCwrpE3Lz8AeQwZk4LTuuNnSjDOzL)
+      password: ENC(H0A1DU5ku5O/0w3AdMaZNtDLgxVW35TQ)
       # 连接池配置
       initial-size: 5
       min-idle: 5
@@ -42,7 +42,7 @@ spring:
 
       # StatViewServlet配置
       stat-view-servlet:
-        enabled: true
+        enabled: false
         # 访问路径为/druid时，跳转到StatViewServlet
         url-pattern: /druid/*
         # 是否能够重置数据
@@ -59,8 +59,8 @@ spring:
   #redis配置
   redis:
     #数据库索引
-    database: 0
-    host: ENC(EnhRklYS0p4LAURrxaNRZMq9QhVMJmE1)
+    database: 1
+    host: ENC(3Ei9KVSH4Dnwbm3+q60orwRzk1ftFGXt)
     port: ENC(K+nO+pJckTgTp2WidMBpTA==)
     password: ENC(NRn1nrHXH9y840inHppxwtybofU5s5Go8eMTD1WylYCt82OIHRbrcQ==)
     #连接超时时间

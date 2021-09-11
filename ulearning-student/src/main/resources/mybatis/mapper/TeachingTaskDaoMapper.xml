@@ -14,6 +14,7 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="task_status" jdbcType="BOOLEAN" property="taskStatus"/>
         <collection property="teacher" ofType="com.ky.ulearning.spi.system.entity.TeacherEntity">
             <id column="teaId" jdbcType="BIGINT" property="id"/>
             <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
@@ -61,7 +62,8 @@
             create_time,
             create_by,
             update_time,
-            update_by
+            update_by,
+            task_status
     </sql>
 
     <!--分页查询未选教学任务信息-->
@@ -96,6 +98,7 @@
         <include refid="Base_Column_List"/>
         FROM u_teaching_task
         WHERE valid = 1
+        AND task_status = 1
         AND id NOT IN (SELECT u_student_teaching_task.teaching_task_id
         FROM u_student_teaching_task
         WHERE
@@ -175,6 +178,7 @@
         utt.create_by,
         utt.update_time,
         utt.update_by,
+        utt.task_status,
         uc.id AS courseId,
         uc.course_number,
         uc.course_name,
