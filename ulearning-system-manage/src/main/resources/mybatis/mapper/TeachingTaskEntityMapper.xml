@@ -13,6 +13,7 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="task_status" jdbcType="BOOLEAN" property="taskStatus"/>
         <collection property="teacher" ofType="com.ky.ulearning.spi.system.entity.TeacherEntity">
             <id column="teaId" jdbcType="BIGINT" property="id"/>
             <result column="tea_number" jdbcType="VARCHAR" property="teaNumber"/>
@@ -44,6 +45,7 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="task_status" jdbcType="BOOLEAN" property="taskStatus"/>
     </resultMap>
     <sql id="Base_Column_List">
             id,
@@ -56,7 +58,8 @@
             create_time,
             create_by,
             update_time,
-            update_by
+            update_by,
+            task_status
     </sql>
     <!--插入教学任务信息-->
     <insert id="insert" keyColumn="id" keyProperty="id"
@@ -131,6 +134,7 @@
         utt.create_by,
         utt.update_time,
         utt.update_by,
+        utt.task_status,
         uc.id AS courseId,
         uc.course_number,
         uc.course_name,
