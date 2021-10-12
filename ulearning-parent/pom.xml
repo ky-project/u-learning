@@ -54,7 +54,7 @@
         <fastinfoset.version>1.2.16</fastinfoset.version>
         <fastdfs-client.version>1.26.6</fastdfs-client.version>
         <xxl-rpc.version>1.5.0</xxl-rpc.version>
-        <xxl-job-core.version>2.1.1</xxl-job-core.version>
+        <xxl-job-core.version>2.3.0</xxl-job-core.version>
         <easyexcel.version>2.1.6</easyexcel.version>
         <rocketmq.version>4.4.0</rocketmq.version>
         <jasypt.version>2.1.0</jasypt.version>
